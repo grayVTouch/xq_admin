@@ -1,0 +1,300 @@
+.container {
+    background-color: rgba(0,0,0,0.6);
+    background-image: url(../res/background.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: row;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    justify-content: center;
+    -webkit-justify-content: center;
+    align-items: center;
+    -webkit-align-items: center;
+}
+
+.container .login {
+    width: 450px;
+    padding: 20px 20px 40px;
+    background-color: rgba(0, 0, 0, 0.5);
+    /*position: absolute;*/
+    /*left: 50%;*/
+    /*top: 50%;*/
+    /*transform: translate(-50% , -50%);*/
+}
+
+.container .login > * {
+    padding-bottom: 20px;
+    box-sizing: content-box;
+}
+
+.container .login > *:nth-last-of-type(1) {
+    padding-bottom: 0;
+}
+
+.container .login .logo {
+    height: 120px;
+    position: relative;
+}
+
+.container .login .logo .outer {
+    width: 120px;
+    height: 120px;
+    border-radius: 200px;
+    position: absolute;
+    left: 50%;
+    border: 5px solid #ccc;
+    overflow: hidden;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+}
+
+.container .login .logo .outer .image {
+    width: 100%;
+    min-height: 100%;
+    vertical-align: top;
+}
+
+/*** 提示信息 ***/
+.container .message {
+    font-weight: bold;
+    text-align: center;
+}
+
+/*** 表单  ***/
+.container .form {
+
+}
+
+.container .form .form-inner {
+
+}
+
+.container .form .form-inner .line {
+    margin-bottom: 20px;
+}
+
+.container .form .form-inner .line:nth-last-of-type(1) {
+    margin-bottom: 0;
+}
+
+.container .form .form-inner .line .top {
+    height: 50px;
+    line-height: 50px;
+    position: relative;
+    background-color: rgba(17, 17, 17, 0.55);
+}
+
+.container .form .form-inner .line .top .left {
+    height: 100%;
+    margin-right: 50px;
+    position: relative;
+}
+
+.container .form .form-inner .line .top .left .form-input {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: none;
+    color: #fff;
+}
+
+.container .form .form-inner .line .top .left .form-input:focus {
+
+}
+
+.container .form .form-inner .line .top .left .form-input:focus {
+    width: 100%;
+}
+
+.container .form .form-inner .line .top .right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 50px;
+    text-align: center;
+}
+
+.container .form .form-inner .line .top .right .image {
+    width: 30px;
+    height: 30px;
+}
+
+.container .form .form-inner .line .btm {
+    padding-top: 2px;
+    font-size: 12px;
+    color: #ccc;
+    position: relative;
+    box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    overflow: hidden;
+}
+
+.container .form .form-inner .line .top:before {
+    display: block;
+    content: '';
+    width: 0;
+    height: 2px;
+    background-color: #f3c669;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transition: all 0.2s linear;
+    transform: translate(-50% , 100%);
+}
+
+.container .form .form-inner .line .btm {
+    transition: all 0.2s linear;
+    opacity: 0;
+    height: 0;
+}
+
+
+
+.container .form .form-inner .password .top .left .preview-password {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 30px;
+    height: 100%;
+    text-align: center;
+}
+
+/*.container .form .form-inner .password .top .left .preview-password:hover {*/
+/*    border-radius: inherit;*/
+/*    color: inherit;*/
+/*    content: "";*/
+/*    position: absolute;*/
+/*    left: 0;*/
+/*    top: 0;*/
+/*    height: 100%;*/
+/*    opacity: 0.12;*/
+/*    width: 100%;*/
+/*}*/
+
+.container .form .form-inner .password .top .left .preview-password .outer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    transform: translate(-50%,-50%);
+    cursor: pointer;
+    border-radius: 30px;
+    overflow: hidden;
+
+}
+
+.container .form .form-inner .password .top .left .preview-password .outer:before {
+    display: block;
+    content: '';
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    transition: all 0.12s linear;
+}
+
+.container .form .form-inner .password .top .left .preview-password .outer .image {
+    width: 20px;
+    height: 20px;
+}
+
+.container .form .form-inner .password .top .left .preview-password .outer:hover::before {
+    background-color: #54545480;
+}
+
+.container .form .form-inner .password .top .left .preview-password .outer:active::before {
+    background-color: #54545480;
+}
+
+.container .form .form-inner .password .top .left .form-input {
+    padding-right: 30px;
+}
+
+/*** 表单错误表现 ***/
+.container .form .form-inner .line.focus .top:before , .container .form .form-inner .line.error .top:before {
+    width: 100%;
+}
+
+/*.container .form .form-inner .line.focus .btm , */
+.container .form .form-inner .line.error .btm {
+    opacity: 1;
+    height: 30px;
+    line-height: 30px;
+    color: red;
+}
+
+.container .form .form-inner .line.captcha .top .left {
+    margin-right: 120px;
+}
+
+.container .form .form-inner .line.captcha .top .right {
+    width: 120px;
+}
+
+.container .form .form-inner .line.captcha .top .right .image {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 120px;
+    height: 36px;
+    transform: translateY(-50%);
+}
+
+.container .form .line.submit {
+    text-align: center;
+}
+
+.container .form .line.submit .button-submit {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    /*background-color: rgba(84,84,84,0.6);*/
+    border-radius: 2px;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s linear;
+    border: 1px solid rgba(147, 148, 150, 0.3);
+}
+
+.container .form .line.submit .button-submit:hover {
+    background-color: #b59a44;
+}
+
+
+
+.container .form .line.submit .button-disabled {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    border-radius: 2px;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s linear;
+    border: 1px solid rgba(147, 148, 150, 0.3);
+    background-color: #ffffff1f;
+    color: hsla(0,0%,100%,.3)!important
+}

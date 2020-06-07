@@ -1,0 +1,213 @@
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+/*** 菜单 ***/
+.container > .menu {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 220px;
+    height: 100%;
+    z-index: 10;
+    background-color: #464b56;
+}
+
+.container > .menu > .logo {
+    padding: 10px;
+    height: 50px;
+    display: flex;
+    display: -webkit-flex;
+    justify-content: flex-start;
+    -webkit-justify-content: flex-start;
+    align-items: flex-start;
+    -webkit-align-items: flex-start;
+    background-color: #525865;
+}
+
+.container > .menu > .logo .image-outer {
+    width: 30px;
+    height: 100%;
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: row;
+    justify-content: center;
+    -webkit-justify-content: center;
+    align-items: center;
+    -webkit-align-items: center;
+}
+
+.container > .menu > .logo .image-outer .inner {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.container > .menu > .logo .image-outer .inner .image {
+    width: auto;
+    height: 100%;
+    vertical-align: top;
+}
+
+.container > .menu > .logo .text-outer {
+    padding-left: 10px;
+    height: 100%;
+    display: flex;
+    display: -webkit-flex;
+    align-items: center;
+    -webkit-align-items: center;
+    color: #fff;
+    font-weight: bold;
+}
+
+
+/*** 左边：头像  ***/
+.container > .menu > .avatar {
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.container > .menu > .avatar > .top {
+    height: 150px;
+    text-align: center;
+    line-height: 150px;
+}
+
+.container > .menu > .avatar > .top .outer {
+    width: 120px;
+    height: 120px;
+    overflow: hidden;
+    border-radius: 50%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.container > .menu > .avatar > .top .outer .image {
+    width: 100%;
+    min-height: 100%;
+    vertical-align: top;
+}
+
+.container > .menu > .avatar > .btm {
+    font-size: 14px;
+    color: white;
+    text-align: center;
+}
+
+/**
+ * *************
+ * 滑块
+ * *************
+ */
+.container > .menu > .block {
+    background-color:#3e4448;
+}
+
+.container > .menu > .block:hover .horizontal .in .line , .container > .menu > .block:hover .vertical .in .line {
+    background-color:#e7e7e7;
+}
+
+.container > .menu > .block>*  {
+    height:30px;
+    position:relative;
+    cursor:pointer;
+}
+
+.container > .menu > .block .horizontal {
+
+}
+
+.container > .menu > .block .vertical {
+
+}
+
+.container > .menu > .block .horizontal .in , .container > .menu > .block .vertical .in {
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate3d(-50% , -50% , 0px);
+    -webkit-transform:translate3d(-50% , -50% , 0px);
+    -moz-transform:translate3d(-50% , -50% , 0px);
+    -ms-transform:translate3d(-50% , -50% , 0px);
+    -otransform:translate3d(-50% , -50% , 0px);
+}
+
+.container > .menu > .block .horizontal .in:after {
+    display:block;
+    content:'';
+    clear:both;
+}
+
+.container > .menu > .block .horizontal .in .line {
+    float:left;
+    width: 3px;
+    height: 12px;
+    margin-right:3px;
+    box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -ms-box-sizing:border-box;
+    -o-box-sizing:border-box;
+    background-color: #868686;
+}
+
+.container > .menu > .block .horizontal .in .line:nth-last-of-type(1) {
+    margin-right: 0;
+}
+
+.container > .menu > .block .vertical {
+    width:50px;
+    margin: 0;
+}
+
+.container > .menu > .block .vertical .in {
+
+}
+
+.container > .menu > .block .vertical .in .line {
+    background-color: #868686;
+    margin-bottom:3px;
+    width:12px;
+    height:2px;
+    transition:all 0.3s linear;
+    -webkit-transition:all 0.3s linear;
+    -moz-transition:all 0.3s linear;
+    -ms-transition:all 0.3s linear;
+    -o-transition:all 0.3s linear;
+}
+
+.container > .menu > .block .vertical .in .line:nth-last-of-type(1) {
+    margin-bottom: 0;
+}
+
+
+
+
+
+/*** 内容 ***/
+.container > .content {
+    margin-left: 220px;
+}
+
+.container > .content > .nav {
+
+}
+
+.container > .content > .nav .toolbar {
+    height: 50px;
+    background-color: #495060;
+}
+
+.container > .content > .nav .tabs {
+    height: 30px;
+    background-color: #464646;
+}
+
+.container > .content > .area {
+    background-color: #f3f3f3;
+}
