@@ -1,4 +1,4 @@
-import line from '../../public/js/line';
+import line from '../../public/js/line.js';
 
 const form = {
     type: 'view' ,

@@ -181,91 +181,43 @@
                         <tr :class="getClass(val.error.b_ico)" id="b_ico">
                             <td>大图标</td>
                             <td ref="b-ico">
-                                <!-- 上传图片组件 -->
-                                <div class='upload-image'>
+                                <div>
+                                    <!-- 上传图片组件 -->
+                                    <div class='uploader'>
+                                        <div class="upload">
+                                            <div class="handler">
 
-                                    <div class='select-images'>
-                                        <div class="upload-show">
-                                            <div class="image-line"><img src="" class="image upload-image-btn" /><span class="selected-count hide">10</span></div>
-                                            <div class="text-line">请选择要上传的图片</div>
-                                            <div class="clear-selected" title="清空已选择的图片"><img src="" class="image" /></div>
-                                            <input type='file' name='upload_images' multiple="multiple" class='upload-images-input'  />
-                                        </div>
-                                        <div class="tip">这边是提示内容</div>
-                                    </div>
-
-                                    <!-- 预置显示图片 -->
-                                    <div class="init-show-image-list">
-                                        <img src="http://qp333com.oss-cn-hangzhou.aliyuncs.com/7peishang.com/avatar/2017-11-10/bf07531ad5dd288afc93bab47ee8d258.jpg" class="init-show-image" />
-                                        <img src="http://qp333com.oss-cn-hangzhou.aliyuncs.com/7peishang.com/avatar/2017-11-10/bf07531ad5dd288afc93bab47ee8d258.jpg" class="init-show-image" />
-                                        <img src="http://qp333com.oss-cn-hangzhou.aliyuncs.com/7peishang.com/avatar/2017-11-10/bf07531ad5dd288afc93bab47ee8d258.jpg" class="init-show-image" />
-                                    </div>
-
-                                    <div class='preview-images hide'>
-                                        <!-- 图片上传项目：旧 -->
-                                        <div class="image-item" data-filename="sama-96.jpg">
-                                            <div class="img"><img src="http://qp333com.oss-cn-hangzhou.aliyuncs.com/7peishang.com/avatar/2017-11-10/bf07531ad5dd288afc93bab47ee8d258.jpg" class="image"></div>
-
-                                            <div class="close"><img src="/UploadImages/Images/delete_unfocus.png" data-focus="/UploadImages/Images/delete_focus.png" data-unfocus="/UploadImages/Images/delete_unfocus.png" class="image"></div>
-
-                                            <div class="progress hide">
-                                                <div class="p-total">
-                                                    <div class="p-cur"></div>
+                                                <div class="line input hide">
+                                                    <input type="file" class="file-input">
                                                 </div>
-                                            </div>
 
-                                            <div class="msg hide">
-                                                <div class="msg-in">成功</div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                    <!-- 待上传列表 -->
-                                    <div class="upload-image-list hide">
-                                        <div class="upload-title">待上传列表</div>
-
-                                        <div class="image-list">
-                                            <div class="list-content list-title">
-                                                <div class="item div-preview">图片预览</div>
-                                                <div class="item div-type">类型</div>
-                                                <div class="item div-size">大小</div>
-                                                <div class="item div-speed">速度</div>
-                                                <div class="item div-status">状态</div>
-                                                <div class="item div-opr">操作</div>
-                                            </div>
-
-                                            <div class="list-content list-body">
-                                                <!-- 项 -->
-                                                <div class="line total-progress">
-                                                    <div class="line-in">
-                                                        <!-- 上传进度 -->
-                                                        <div class="cur-progress"></div>
-
-                                                        <!-- 状态 -->
-                                                        <div class="msg hide">
-                                                            <div class="msg-in">...</div>
-                                                        </div>
-                                                        <div class="item div-preview multiple-rows">
-                                                            <div class="row">sama-01.jpg</div>
-                                                            <div class="row"><img src="http://qp333com.oss-cn-hangzhou.aliyuncs.com/7peishang.com/avatar/2017-11-10/bf07531ad5dd288afc93bab47ee8d258.jpg" class="image" /></div>
-                                                        </div>
-                                                        <div class="item div-type">image/jpeg</div>
-                                                        <div class="item div-size">2.4M</div>
-                                                        <div class="item div-speed">50kb/s</div>
-                                                        <div class="item div-status">上传中...</div>
-                                                        <div class="item div-opr multiple-rows">
-                                                            <div class="row"><button type="button" class="run-button run-button-orange cancel">取消上传</button></div>
-                                                            <div class="row"><button type="button" class="run-button run-button-yellow delete">删除图片</button></div>
-                                                        </div>
+                                                <div class="line icon">
+                                                    <div class="ico">
+                                                        <div class="feedback run-action-feedback"><i title="上传文件" class="iconfont run-iconfont run-shangchuan"></i></div>
+                                                        <div class="clear run-action-feedback" title="清空"><i class="iconfont run-iconfont run-qingkong"></i></div>
                                                     </div>
+                                                    <div class="text">请选择要上传的文件</div>
                                                 </div>
 
                                             </div>
 
+                                            <div class="msg">提示内容</div>
                                         </div>
-                                    </div>
+                                        <div class="preview">
 
+                                            <!-- 预览：图片 -->
+                                            <div class="item image" v-if="form.__b_ico__">
+                                                <div class="inner">
+                                                    <img :src="form.__b_ico__" class="image">
+                                                </div>
+                                                <div class="mask">
+                                                    <div class="line view run-action-feedback"><i class="iconfont run-iconfont run-chakan"></i></div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
                                 </div>
 
                                 <span class="msg"></span>
@@ -288,7 +240,7 @@
     </my-base>
 </template>
 
-<script src="./js/list.js"></script>
+<script src="./js/index.js"></script>
 
 <style scoped>
     .mask {
