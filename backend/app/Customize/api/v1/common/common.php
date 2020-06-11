@@ -4,6 +4,8 @@ namespace api\v1;
 
 
 use Illuminate\Contracts\Validation\Validator;
+use Exception;
+use function extra\config;
 
 /**
  * @param string $data
@@ -59,4 +61,22 @@ function get_form_error(Validator $validator)
 function user()
 {
     return app()->make('user');
+}
+
+function parse_order(string $order = '' , $delimiter = '|')
+{
+    if (empty($order)) {
+        throw new Exception('参数 1 错误');
+    }
+    $res = explode($delimiter , $order);
+    return [
+        'field' => $res[0] ,
+        'value' => $res[1] ,
+    ];
+}
+
+function my_config($key , $value = [])
+{
+    $dir = __DIR__ . '/../config';
+    return config($dir , $key , $value);
 }

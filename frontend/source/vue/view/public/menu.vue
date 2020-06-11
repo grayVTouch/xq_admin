@@ -2,7 +2,7 @@
 <template>
     <div class='infinite-classification'>
         <div class="list">
-            <v-item v-for="v in $store.state.menu" :data="v" :key="v.id"></v-item>
+            <v-item v-for="v in list" :item="v" :key="v.id"></v-item>
         </div>
     </div>
 </template>
@@ -12,14 +12,11 @@
 
     export default {
         name: "v-menu" ,
-        data () {
-            return {
-                // mapping ,
-            };
-        } ,
-        created () {
-        } ,
-        mounted () {
+        props: {
+            list: {
+                type: Array ,
+                required: true
+            }
         } ,
         components: {
             'v-item': item

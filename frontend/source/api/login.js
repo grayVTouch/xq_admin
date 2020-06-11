@@ -1,5 +1,5 @@
-const login = url('/login');
-const avatar = url('/avatar');
+const login = genUrl('/login');
+const avatar = genUrl('/avatar');
 
 export default {
     login (data , success , error) {

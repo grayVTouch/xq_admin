@@ -1,10 +1,24 @@
 window.request = function(url , method , data , success , error)
 {
+    const token = G.s.get('token');
     return G.ajax({
         url ,
         method ,
+        header: {
+            Authorization: token ,
+        } ,
         data ,
-        success ,
+        success (data , code) {
+            if (code === 401) {
+                // 登录认证失败
+                G.s.del('token');
+                window.history.go(0);
+                return ;
+            }
+            if (G.isFunction(success)) {
+                success(data , code);
+            }
+        } ,
         error ,
         netError () {
             // console.log();
@@ -12,9 +26,8 @@ window.request = function(url , method , data , success , error)
     });
 };
 
-window.url = function(path){
-    const api = topContext.api.replace(/^\// , '');
+window.genUrl = function(path){
+    const api = TopContext.api.replace(/^\// , '');
     path = path.replace(/^\// , '');
-    console.log('path' , path);
-    return topContext.api + '/' + path;
+    return TopContext.api + '/' + path;
 };

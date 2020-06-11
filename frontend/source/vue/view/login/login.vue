@@ -43,7 +43,9 @@
                     <div class="line captcha" :class="{error: isValid(val.error.captcha_code) , focus: val.focus.captcha_code}" ref="line-captcha">
                         <div class="top">
                             <div class="left"><input type="text" class="form-input"  v-model="form.captcha_code" @input="val.error.captcha_code = ''" data-name="captcha" placeholder="图形验证码" @focus="focusEvent" @blur="blurEvent"></div>
-                            <div class="right"><img :src="val.captcha.img" class="image" @click="captcha"></div>
+                            <div class="right">
+                                <img :src="val.captcha.img" class="image" @click="captcha">
+                            </div>
                         </div>
                         <div class="btm">
                             <template v-if="!isValid(val.error.captcha_code)"></template>

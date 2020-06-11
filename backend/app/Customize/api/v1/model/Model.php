@@ -4,7 +4,6 @@
 namespace App\Customize\api\v1\model;
 
 use Illuminate\Database\Eloquent\Model as BaseModel;
-use function core\convert_obj;
 
 class Model extends BaseModel
 {
@@ -22,13 +21,10 @@ class Model extends BaseModel
             ->update($data);
     }
 
-    public static function findById(int $id)
+    public static function getAll()
     {
-        $res = static::find($id);
-        if (empty($res)) {
-            return ;
-        }
-        $res = convert_obj($res);
+        $res = static::orderBy('id' , 'asc')
+            ->get();
         return $res;
     }
 

@@ -1,4 +1,4 @@
-const captcha = `${topContext.api}/captcha`;
+const captcha = `${TopContext.api}/captcha`;
 
 export default {
     captcha (success , error) {

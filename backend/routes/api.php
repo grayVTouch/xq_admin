@@ -1,6 +1,5 @@
 <?php
 
-use App\Customize\api\v1\middleware\CustomizeMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

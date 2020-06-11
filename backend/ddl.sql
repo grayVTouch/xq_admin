@@ -180,6 +180,8 @@ create table if not exists `xq_admin_permission` (
      is_view tinyint default 0 comment '仅在 type=client 的时候有效，是否是一个视图：0-否 1-是' ,
      enable tinyint default 1 comment '是否启用：0-否 1-是' ,
      p_id bigint unsigned default 0 comment 'xq_admin_permission.id' ,
+     s_ico varchar(500) default '' comment '小图标' ,
+     b_ico varchar(500) default '' comment '大图标' ,
      weight smallint default 0 comment '权重' ,
      create_time datetime default current_timestamp ,
      update_time datetime default current_timestamp on update current_timestamp ,

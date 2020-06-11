@@ -8,5 +8,4 @@
     }
 </script>
 
-<style src="./asset/css/global.css"></style>
 <style scoped></style>

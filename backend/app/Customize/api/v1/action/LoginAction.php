@@ -18,7 +18,7 @@ use function core\random;
 
 class LoginAction extends Action
 {
-    public static function login(Base $context , array $param)
+    public static function login(Base $context , array $param = [])
     {
         $validator = Validator::make($param , [
             'username' => 'required|min:6' ,
@@ -66,7 +66,7 @@ class LoginAction extends Action
         }
     }
 
-    public static function avatar(Base $context , array $param)
+    public static function avatar(Base $context , array $param = [])
     {
         $validator = Validator::make($param , [
             'username' => 'required'

@@ -4,6 +4,7 @@
 namespace App\Customize\api\v1\middleware;
 
 
+use App\Customize\api\v1\handler\AdminHandler;
 use App\Customize\api\v1\model\AdminModel;
 use App\Customize\api\v1\model\AdminTokenModel;
 use App\Customize\api\v1\util\UserUtil;
@@ -33,11 +34,11 @@ class UserAuthMiddleware
         if (empty($token)) {
             return error('Auth Failed【Token Invalid】' , 401);
         }
-        $user = AdminModel::findById($token->user_id);
-        if (empty($user)) {
+        $admin = AdminModel::find($token->user_id);
+        if (empty($admin)) {
             return error('Auth Failed【User Not Found】' , 401);
         }
-        UserUtil::handle($user);
-        app()->instance('user' , $user);
+        $admin = AdminHandler::handle($admin);
+        app()->instance('user' , $admin);
     }
 }

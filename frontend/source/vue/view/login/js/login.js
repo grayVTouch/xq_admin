@@ -46,34 +46,38 @@ export default {
     methods: {
 
         message(text = '' , classname = '') {
-            this.val.message = {
+            this.val.message = Object.assign({} , {
                 text ,
                 class: classname
-            };
+            });
         } ,
 
-        error (data = {}) {
-            this.val.error = {...data};
+        error (data = {} , clear = true) {
+            if (clear) {
+                this.val.error = {...data};
+                return ;
+            }
+            this.val.error = {...this.val.error , ...data};
         } ,
 
         pending (name , val) {
             if (!G.isValid(val)) {
                 return this.val.pending[name];
             }
-            this.val.pending[name] = val;
+            this.val.pending = {...this.val.pending , ...{[name]: val}};
         } ,
 
         request (name , val) {
             if (!G.isValid(val)) {
                 return this.val.request[name];
             }
-            this.val.request[name] = val;
+            this.val.request = {...this.val.request , ...{[name]: val}};
         } ,
 
         captcha () {
             Api.misc.captcha((data , code) => {
-                if (code !== topContext.successCode) {
-                    console.log('发生错误' , data);
+                if (code !== TopContext.successCode) {
+                    this.error({captcha_code: '获取图形验证码失败，请稍后重新点击验证码再次尝试'} , false);
                     return ;
                 }
                 this.val.captcha = data;
@@ -84,20 +88,20 @@ export default {
         focusEvent (e) {
             const tar = G(e.currentTarget);
             const name = tar.data('name');
-            this.val.focus[name] = true;
+            this.val.focus = {...this.val.focus , ...{[name]: true}};
         } ,
 
         blurEvent (e) {
             const tar = G(e.currentTarget);
             const name = tar.data('name');
-            this.val.focus[name] = false;
+            this.val.focus = {...this.val.focus , ...{[name]: false}};
         } ,
 
         usernameInputEvent () {
-            this.val.error.username = '';
+            this.error({username: ''} , false);
             Api.login.avatar({username: this.form.username} , (data , code) => {
                 this.val.avatar = '';
-                if (code !== topContext.successCode) {
+                if (code !== TopContext.successCode) {
                     return ;
                 }
                 this.val.avatar = data;
@@ -114,7 +118,7 @@ export default {
                 this.error();
                 this.message();
                 this.captcha();
-                if (code !== topContext.successCode) {
+                if (code !== TopContext.successCode) {
                     if (G.isString(data)) {
                         this.message(data , 'red');
                         return ;
@@ -125,7 +129,6 @@ export default {
                 this.request('submit' , false);
                 this.message('登录成功' , 'green');
                 G.s.set('token' , data);
-                G.s.set('logined' , 'true');
                 G.setTimeout(() => {
                     this.push({name: 'home'});
                 } , 1000);

@@ -13,7 +13,7 @@ class Misc extends Base
     // 图形验证码
     public function captcha()
     {
-        $res = MiscAction::captcha();
+        $res = MiscAction::captcha($this);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
         }

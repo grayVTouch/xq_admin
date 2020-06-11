@@ -1,19 +1,17 @@
-/**
- * @author running
- */
-
-import routes from './routes.js';
+import routes from "./routes.js";
 
 const router = new VueRouter({
     routes ,
 });
 
+/**
+ * ****************
+ * 路由守卫
+ * ****************
+ */
 router.beforeEach((to , from , next) => {
-    const logined = G.s.get('logined');
-
-    console.log('logined' , logined);
-
-    if (!G.isNull(logined)) {
+    const token = G.s.get('token');
+    if (!G.isNull(token)) {
         if (to.name === 'login') {
             // 已经跳转到首页
             next({name: 'home'});
@@ -27,7 +25,6 @@ router.beforeEach((to , from , next) => {
         }
     }
     next();
-
 });
 
 export default router;
