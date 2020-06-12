@@ -197,8 +197,8 @@ create table if not exists `xq_role` (
     primary key (id)
 ) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '角色表';
 
-drop table if exists `xq_role_perm`;
-create table if not exists `xq_role_perm` (
+drop table if exists `xq_role_permission`;
+create table if not exists `xq_role_permission` (
  id bigint unsigned not null auto_increment ,
  role_id bigint unsigned default 0 comment 'xq_role.id' ,
  admin_permission_id bigint unsigned default 0 comment 'xq_admin_permission.id' ,

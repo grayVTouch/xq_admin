@@ -58,7 +58,7 @@ module.exports = {
                                 [
                                     "import" ,
                                     {
-                                        "libraryName": "view-design" ,
+                                        "libraryName": "iview" ,
                                         "libraryDirectory": "src/components"
                                     }
                                 ] ,

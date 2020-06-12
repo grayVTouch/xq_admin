@@ -117,7 +117,7 @@ export default {
                 // 次要的图标类型，new || number || switch
                 icon: 'switch' ,
                 // id: [1] ,
-                id: [4] ,
+                // id: [4] ,
                 // 初始状态，spread || shrink
                 status: 'shrink' ,
                 // 层级视觉显示效果
@@ -322,14 +322,19 @@ export default {
 
         // 组件
         component (route) {
+            let emptyPage = null;
             for (let i = 0; i < routes.length; ++i)
             {
                 let v = routes[i];
                 if (v.path == route) {
                     return v.component;
                 }
+                if (v.name === '404') {
+                    // 默认错误页面
+                    emptyPage = v.component;
+                }
             }
-            throw new Error('未找到 route：' + route + '对应的路由');
+            return emptyPage;
         } ,
 
         // 挂载组建

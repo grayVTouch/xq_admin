@@ -9,7 +9,7 @@ use stdClass;
 use Traversable;
 use function core\convert_obj;
 
-class AdminPermissionHandler
+class AdminPermissionHandler extends Handler
 {
     public static function handle(?AdminPermissionModel $model , bool $deep = true): ?stdClass
     {
@@ -24,16 +24,10 @@ class AdminPermissionHandler
             $permission = null;
         }
         $model->permission = $permission;
+        $model->__s_ico__ = $model->s_ico ? asset($model->s_ico) : '';
+        $model->__b_ico__ = $model->b_ico ? asset($model->b_ico) : '';
         return $model;
     }
 
-    public static function handleAll(Traversable $list) :array
-    {
-        $res = [];
-        foreach ($list as $v)
-        {
-            $res[] = self::handle($v);
-        }
-        return $res;
-    }
+
 }

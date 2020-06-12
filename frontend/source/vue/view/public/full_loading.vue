@@ -63,7 +63,7 @@
                 // 类名
                 class: 'Loading' ,
                 // 支持 'show' , 'hide'
-                status: 'show' ,
+                status: 'hide' ,
                 // 具体风格: line-scale ball-pulse
                 type: 'line-scale' ,
                 // 加载文本提示，支持字符串 & 数组

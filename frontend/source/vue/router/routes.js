@@ -1,7 +1,9 @@
 import login from '../view/login/login.vue';
 import index from '../view/index/index.vue';
 import pannel from '../view/pannel/pannel.vue';
-import listForPermission from '../view/permission/index.vue';
+import indexForAdminPermission from '../view/admin_permission/index.vue';
+import indexForRole from '../view/role/index.vue';
+import NotFoundView from '../view/error/404.vue';
 
 export default [
     {
@@ -22,6 +24,17 @@ export default [
 
     {
         path: '/admin_permission/list' ,
-        component: listForPermission
+        component: indexForAdminPermission
+    } ,
+
+    {
+        path: '/role/index' ,
+        component: indexForRole
+    } ,
+
+    {
+        name: '404' ,
+        path: '/404' ,
+        component: NotFoundView
     } ,
 ]

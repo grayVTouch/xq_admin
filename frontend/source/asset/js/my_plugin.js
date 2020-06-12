@@ -14,14 +14,13 @@ import '../../plugin/Run/table/line.css';
 import '../../plugin/Run/form/filter.css';
 import '../../plugin/Run/form/input.css';
 import '../../plugin/Run/form/ui.css';
-// import '../../plugin/Run/font/iconfont.css';
+import '../../plugin/Run/font/iconfont.css';
 
 import '../../plugin/TouchFeedback/css/TouchFeedback.css';
 import '../../plugin/Prompt/css/Prompt.css';
 import '../../plugin/InfiniteClassification/css/InfiniteClassification.css';
 import '../../plugin/MultipleTab/css/MultipleTab.css';
 import '../../plugin/Loading/css/Loading.css';
-import '../../plugin/Uploader/font/iconfont.css';
 import '../../plugin/Uploader/css/Uploader.css';
 
 

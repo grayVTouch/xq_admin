@@ -8,7 +8,7 @@ use App\Customize\api\v1\model\RoleModel;
 use stdClass;
 use function core\convert_obj;
 
-class RoleHandler
+class RoleHandler extends Handler
 {
     public static function handle(?RoleModel $model): ?stdClass
     {
@@ -18,4 +18,5 @@ class RoleHandler
         $res = convert_obj($model);
         return $res;
     }
+
 }

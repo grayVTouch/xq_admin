@@ -1,0 +1,207 @@
+<template>
+    <my-form-drawer
+            :title="title"
+            v-model="show"
+    >
+
+        <template slot="header">
+            <div class="run-action">
+                <div class="left">{{ title }}</div>
+                <div class="right">
+                    <Button type="primary" :loading="val.pending.submit" @click="submitEvent">提交</Button>
+                    <Button type="error" @click="closeFormDrawer">关闭</Button>
+                </div>
+            </div>
+        </template>
+
+        <template slot="default">
+            <form class="form" @submit.prevent ref="form">
+                <table class="input-table">
+                    <tbody>
+                    <tr :class="getClass(val.error.cn)" id="form_cn">
+                        <td>中文名称</td>
+                        <td>
+                            <input type="text" v-model="form.cn"  @input="val.error.cn = ''" class="form-text">
+                            <span class="msg"></span>
+                            <span class="need"></span>
+                            <span class="e-msg">{{ val.error.cn }}</span>
+                        </td>
+                    </tr>
+                    <tr :class="getClass(val.error.en)" id="form_en">
+                        <td>英文名称</td>
+                        <td>
+                            <input type="text" v-model="form.en"  @input="val.error.en = ''" class="form-text">
+                            <span class="msg"></span>
+                            <span class="need"></span>
+                            <span class="e-msg">{{ val.error.en }}</span>
+                        </td>
+                    </tr>
+                    <tr :class="getClass(val.error.value)" id="form_value">
+                        <td>权限</td>
+                        <td>
+                            <input type="text" class="form-text"  @input="val.error.value = ''" v-model="form.value">
+                            <span class="msg"></span>
+                            <span class="need">*</span>
+                            <span class="e-msg">{{ val.error.value }}</span>
+                        </td>
+                    </tr>
+                    <tr :class="getClass(val.error.p_id)" id="form_p_id">
+                        <td>上级权限</td>
+                        <td>
+                            <my-select :data="data" v-model="form.p_id" :has="true" :attr="val.attr"  @change="val.error.p_id = ''"></my-select>
+                            <span class="msg"></span>
+                            <span class="need">*</span>
+                            <span class="e-msg">{{ val.error.p_id }}</span>
+                        </td>
+                    </tr>
+                    <tr :class="getClass(val.error.description)" id="form_description">
+                        <td>描述</td>
+                        <td>
+                            <textarea v-model="form.description" class="form-textarea" @input="val.error.description = ''"></textarea>
+                            <span class="msg"></span>
+                            <span class="need"></span>
+                            <span class="e-msg">{{ val.error.description }}</span>
+                        </td>
+                    </tr>
+                    <tr :class="getClass(val.error.type)" id="form_type">
+                        <td>类型</td>
+                        <td>
+                            <RadioGroup v-model="form.type" @on-change="val.error.type = ''">
+                                <Radio v-for="(v,k) in $store.state.business.admin_permission.type" :key="k" :label="k">{{ v }}</Radio>
+                            </RadioGroup>
+                            <span class="msg"></span>
+                            <span class="need">*</span>
+                            <span class="e-msg">{{ val.error.type }}</span>
+                        </td>
+                    </tr>
+                    <tr :class="getClass(val.error.is_menu)" id="form_is_menu">
+                        <td>菜单？</td>
+                        <td>
+                            <RadioGroup v-model="form.is_menu"  @on-change="val.error.is_menu = ''">
+                                <Radio v-for="(v,k) in $store.state.business.bool_for_int" :key="k" :label="parseInt(k)">{{ v }}</Radio>
+                            </RadioGroup>
+                            <span class="msg">默认：否</span>
+                            <span class="need">*</span>
+                            <span class="e-msg">{{ val.error.is_menu }}</span>
+                        </td>
+                    </tr>
+                    <tr :class="getClass(val.error.is_view)" id="form_is_view">
+                        <td>视图？</td>
+                        <td>
+                            <RadioGroup v-model="form.is_view"  @on-change="val.error.is_view = ''">
+                                <Radio v-for="(v,k) in $store.state.business.bool_for_int" :key="k" :label="parseInt(k)">{{ v }}</Radio>
+                            </RadioGroup>
+                            <span class="msg">默认：是</span>
+                            <span class="need">*</span>
+                            <span class="e-msg">{{ val.error.is_view }}</span>
+                        </td>
+                    </tr>
+                    <tr :class="getClass(val.error.enable)" id="form_enable">
+                        <td>启用？</td>
+                        <td>
+                            <RadioGroup v-model="form.enable"  @input="val.error.enable = ''">
+                                <Radio v-for="(v,k) in $store.state.business.bool_for_int" :key="k" :label="parseInt(k)">{{ v }}</Radio>
+                            </RadioGroup>
+                            <span class="msg">默认：开启</span>
+                            <span class="need">*</span>
+                            <span class="e-msg">{{ val.error.enable }}</span>
+                        </td>
+                    </tr>
+
+                    <tr :class="getClass(val.error.b_ico)" id="b_ico">
+                        <td>大图标</td>
+                        <td>
+                            <div ref="b-ico">
+                                <!-- 上传图片组件 -->
+                                <div class='uploader'>
+                                    <div class="upload">
+                                        <div class="handler">
+
+                                            <div class="line input hide">
+                                                <input type="file" class="file-input">
+                                            </div>
+
+                                            <div class="line icon">
+                                                <div class="ico">
+                                                    <div class="feedback run-action-feedback"><i title="上传文件" class="iconfont run-iconfont run-shangchuan"></i></div>
+                                                    <div class="clear run-action-feedback" title="清空"><i class="iconfont run-iconfont run-qingkong"></i></div>
+                                                </div>
+                                                <div class="text">请选择要上传的文件</div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="msg"></div>
+                                    </div>
+                                    <div class="preview"></div>
+
+                                </div>
+                            </div>
+
+                            <span class="msg"></span>
+                            <span class="need">*</span>
+                            <span class="e-msg">{{ val.error.b_ico }}</span>
+                        </td>
+                    </tr>
+
+                    <tr :class="getClass(val.error.s_ico)" id="s_ico">
+                        <td>小图标</td>
+                        <td>
+                            <div ref="s-ico">
+                                <!-- 上传图片组件 -->
+                                <div class='uploader'>
+                                    <div class="upload">
+                                        <div class="handler">
+
+                                            <div class="line input hide">
+                                                <input type="file" class="file-input">
+                                            </div>
+
+                                            <div class="line icon">
+                                                <div class="ico">
+                                                    <div class="feedback run-action-feedback"><i title="上传文件" class="iconfont run-iconfont run-shangchuan"></i></div>
+                                                    <div class="clear run-action-feedback" title="清空"><i class="iconfont run-iconfont run-qingkong"></i></div>
+                                                </div>
+                                                <div class="text">请选择要上传的文件</div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="msg"></div>
+                                    </div>
+                                    <div class="preview"></div>
+
+                                </div>
+                            </div>
+
+                            <span class="msg"></span>
+                            <span class="need">*</span>
+                            <span class="e-msg">{{ val.error.b_ico }}</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+        </template>
+
+    </my-form-drawer>
+</template>
+
+<script src="./js/form.js"></script>
+
+<style scoped>
+    .my-drawer-form-wrapper {
+
+    }
+
+    .my-drawer-form-wrapper > .form {
+        margin-bottom: 50px;
+    }
+
+    .my-drawer-form-wrapper > .footer {
+        height: 50px;
+        flex-shrink: 1;
+    }
+
+
+</style>

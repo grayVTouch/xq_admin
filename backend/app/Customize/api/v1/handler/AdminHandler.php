@@ -28,6 +28,7 @@ class AdminHandler
         } else {
             $permission = AdminPermissionModel::getByRoleId($model->role_id);
         }
+        $permission = AdminPermissionHandler::handleAll($permission);
         $permission = obj_to_array($permission);
         $permission = Category::childrens(0 , $permission , [
             'id'    => 'id' ,

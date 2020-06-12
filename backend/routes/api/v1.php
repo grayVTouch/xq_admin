@@ -31,15 +31,30 @@ Route::prefix('v1')
             /**
              * 权限管理
              */
-            Route::get('permission' , 'AdminPermission@index');
-            Route::get('permission/{id}' , 'AdminPermission@show');
-            Route::patch('permission/{id}' , 'AdminPermission@localUpdate');
-            Route::put('permission/{id}' , 'AdminPermission@update');
-            Route::post('permission' , 'AdminPermission@store');
+            Route::get('admin_permission' , 'AdminPermission@index');
+            Route::get('admin_permission/{id}' , 'AdminPermission@show');
+            Route::patch('admin_permission/{id}' , 'AdminPermission@localUpdate');
+            Route::put('admin_permission/{id}' , 'AdminPermission@update');
+            Route::post('admin_permission' , 'AdminPermission@store');
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('permission/destroy_all' , 'AdminPermission@destroyAll');
-            Route::delete('permission/{id}' , 'AdminPermission@destroy');
+            Route::delete('admin_permission/destroy_all' , 'AdminPermission@destroyAll');
+            Route::delete('admin_permission/{id}' , 'AdminPermission@destroy');
+
+            /**
+             * ******************
+             * 角色管理
+             * ******************
+             */
+            Route::get('role' , 'Role@index');
+            Route::get('role/{id}' , 'Role@show');
+            Route::patch('role/{id}' , 'Role@localUpdate');
+            Route::put('role/{id}' , 'Role@update');
+            Route::post('role' , 'Role@store');
+            // 特别注意，这边这个顺序不能更换
+            // 如果更换会导致 路由匹配出现不是期望的现象
+            Route::delete('role/destroy_all' , 'Role@destroyAll');
+            Route::delete('role/{id}' , 'Role@destroy');
 
 
         });

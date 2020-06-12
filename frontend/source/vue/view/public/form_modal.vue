@@ -1,19 +1,23 @@
 <template>
-    <Drawer
+    <Modal
             :title="title"
-            :type="type"
             :width="width"
             :mask-closable="maskClosable"
             :closable="closable"
+            class-name="my-form-modal"
+            @on-ok="okEvent"
+            @on-cancel="cancelEvent"
+            :loading="loading"
             v-model="valueCopy">
-        <template slot="default">
+
+        <template>
             <slot></slot>
         </template>
 
-        <template slot="header">
-            <slot name="header"></slot>
+        <template slot="footer">
+            <slot name="footer"></slot>
         </template>
-    </Drawer>
+    </Modal>
 </template>
 
 <script>
@@ -43,7 +47,7 @@
             } ,
             width: {
                 type: Number ,
-                default: 800 ,
+                default: 600 ,
             } ,
             maskClosable: {
                 type: Boolean ,
@@ -53,9 +57,21 @@
                 type: Boolean ,
                 default: false ,
             } ,
+            loading: {
+                type: Boolean ,
+                default: false ,
+            } ,
         } ,
 
         methods: {
+            okEvent () {
+                this.$emit('on-ok');
+            } ,
+
+            cancelEvent () {
+                this.$emit('on-cancel');
+            } ,
+
 
         } ,
 
@@ -80,6 +96,15 @@
     }
 </script>
 
-<style scoped>
+<style>
+    .my-form-modal {
+        display: flex;
+        display: -webkit-flex;
+        align-items: center;
+        -webkit-align-items: center;
+    }
 
+    .my-form-modal > * {
+        top: 0;
+    }
 </style>

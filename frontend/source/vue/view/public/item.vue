@@ -5,7 +5,7 @@
         <div class="function">
             <div class="icon">
                 <span class="text" v-if="item.floor > 1"></span>
-                <img :src="item.__s_ico" class="image">
+                <img :src="item.__s_ico__" class="image">
             </div>
             <div class="explain">
                 <div class="in">

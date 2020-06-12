@@ -6,6 +6,9 @@
             <slot></slot>
         </div>
         <my-full-loading ref="loading"></my-full-loading>
+        <div class="to-top hide">
+            <img src="" class="image">
+        </div>
     </div>
 </template>
 
@@ -26,16 +29,11 @@
         } ,
 
         mounted () {
-            console.log(this.$el);
-
             // return ;
             this.dom.root = G(this.$el);
             this.dom.navigation = G(this.$refs.navigation.$el);
             this.dom.dynamic = G(this.$refs.dynamic);
             this.dom.win = G(window);
-            //
-            // this.initDynamicH();
-            // this.dom.win.on('resize' , this.initDynamicH.bind(this) , true , false);
         } ,
 
         methods: {

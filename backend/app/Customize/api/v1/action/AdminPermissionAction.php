@@ -50,17 +50,19 @@ class AdminPermissionAction extends Action
         if (empty($permission)) {
             return self::error('权限不存在' , 404);
         }
-        $param['value']     = $param['value'] == '' ? $permission->value : $param['value'];
-        $param['cn']        = $param['cn'] == '' ?  $permission->cn : $param['cn'];
-        $param['en']        = $param['en'] == '' ? $permission->en : $param['en'];
-        $param['description'] = $param['description'] == '' ? $permission->description : $param['description'];
-        $param['type']      = $param['type'] == '' ? $permission->type : $param['type'];
-        $param['is_menu']   = $param['is_menu'] == '' ? $permission->is_menu : $param['is_menu'];
-        $param['is_view']   = $param['is_view'] == '' ? $permission->is_view : $param['is_view'];
-        $param['weight']    = $param['weight'] == '' ? $permission->weight : $param['weight'];
-        $param['s_ico']     = $param['s_ico'] == '' ? $permission->s_ico : $param['s_ico'];
-        $param['b_ico']     = $param['b_ico'] == '' ? $permission->b_ico : $param['b_ico'];
-        $param['p_id']     = $param['p_id'] == '' ? $permission->p_id : $param['p_id'];
+        $param['value']     = $param['value'] === '' ? $permission->value : $param['value'];
+        $param['cn']        = $param['cn'] === '' ?  $permission->cn : $param['cn'];
+        $param['en']        = $param['en'] === '' ? $permission->en : $param['en'];
+        $param['description'] = $param['description'] === '' ? $permission->description : $param['description'];
+        $param['type']      = $param['type'] === '' ? $permission->type : $param['type'];
+        $param['is_menu']   = $param['is_menu'] === '' ? $permission->is_menu : $param['is_menu'];
+        $param['is_view']   = $param['is_view'] === '' ? $permission->is_view : $param['is_view'];
+        $param['enable']   = $param['enable'] === '' ? $permission->enable : $param['enable'];
+        $param['weight']    = $param['weight'] === '' ? $permission->weight : $param['weight'];
+        $param['s_ico']     = $param['s_ico'] === '' ? $permission->s_ico : $param['s_ico'];
+        $param['b_ico']     = $param['b_ico'] === '' ? $permission->b_ico : $param['b_ico'];
+        $param['p_id']     = $param['p_id'] === '' ? $permission->p_id : $param['p_id'];
+
         AdminPermissionModel::updateById($permission->id , array_unit($param , [
             'value' ,
             'cn' ,
@@ -69,6 +71,7 @@ class AdminPermissionAction extends Action
             'type' ,
             'is_menu' ,
             'is_view' ,
+            'enable' ,
             'weight' ,
             's_ico' ,
             'b_ico' ,
@@ -96,8 +99,8 @@ class AdminPermissionAction extends Action
         if (empty($permission)) {
             return self::error('权限不存在' , 404);
         }
-        $param['s_ico']     = $param['s_ico'] == '' ? $permission->s_ico : $param['s_ico'];
-        $param['b_ico']     = $param['b_ico'] == '' ? $permission->b_ico : $param['b_ico'];
+        $param['s_ico']     = $param['s_ico'] === '' ? $permission->s_ico : $param['s_ico'];
+        $param['b_ico']     = $param['b_ico'] === '' ? $permission->b_ico : $param['b_ico'];
         AdminPermissionModel::updateById($permission->id , array_unit($param , [
             'value' ,
             'cn' ,
@@ -106,6 +109,7 @@ class AdminPermissionAction extends Action
             'type' ,
             'is_menu' ,
             'is_view' ,
+            'enable' ,
             'weight' ,
             's_ico' ,
             'b_ico' ,
@@ -123,13 +127,14 @@ class AdminPermissionAction extends Action
             'type'      => ['required'   , Rule::in($type_range)],
             'is_menu'   => ['required', Rule::in($bool_range)],
             'is_view'   => ['required', Rule::in($bool_range)],
+            'enable'   => ['required', Rule::in($bool_range)],
             'weight'    => 'sometimes|integer',
             'p_id'    => 'required|integer',
         ]);
         if ($validator->fails()) {
             return self::error(get_form_error($validator));
         }
-        $param['weight'] = $param['weight'] == '' ? 0 : $param['weight'];
+        $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $id = AdminPermissionModel::insertGetId(array_unit($param , [
             'value' ,
             'cn' ,
@@ -138,6 +143,7 @@ class AdminPermissionAction extends Action
             'type' ,
             'is_menu' ,
             'is_view' ,
+            'enable' ,
             'weight' ,
             's_ico' ,
             'b_ico' ,

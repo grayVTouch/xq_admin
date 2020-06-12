@@ -1,14 +1,13 @@
-const index = genUrl('admin_permission');
-const store = genUrl('admin_permission');
-const localUpdate = genUrl('admin_permission/{id}');
-const update = genUrl('admin_permission/{id}');
-const show = genUrl('admin_permission/{id}');
-const destroy = genUrl('admin_permission/{id}');
-const destroyAll = genUrl('admin_permission/destroy_all');
+const index = genUrl('role');
+const store = genUrl('role');
+const update = genUrl('role/{id}');
+const show = genUrl('role/{id}');
+const destroy = genUrl('role/{id}');
+const destroyAll = genUrl('role/destroy_all');
 
 export default {
-    index (success , error) {
-        return request(index , 'get' , null , success , error);
+    index (data , success , error) {
+        return request(index , 'get' , data , success , error);
     } ,
 
     localUpdate (id , data , success , error) {
