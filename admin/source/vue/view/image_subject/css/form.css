@@ -1,0 +1,178 @@
+/**
+ * *****************
+ * 标签
+ * *****************
+ */
+.tags {
+
+}
+
+.tags > .top {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
+
+.tags > .top > .tag-input {
+    position: relative;
+    height: 24px;
+    display: inline-block;
+}
+
+.tags > .top > .tag-input.disabled::before {
+    display:block;
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    cursor: not-allowed;
+    z-index: 1;
+}
+
+.tags > .top > .tag-input .input {
+    display: inline-block;
+    border: 1px dashed #96c5f7;
+    border-radius: 3px;
+    min-width: 60px;
+    padding: 2px 6px;
+}
+
+.tags > .btm {
+    padding-top: 10px;
+}
+
+.tags > .btm > .title {
+    padding-bottom: 10px;
+}
+
+.tags > .btm > .__tags__ {
+
+}
+
+.tags > .btm > .__tags__ > .tag {
+    display: inline-block;
+    padding: 4px 8px;
+    border: 1px solid #2d8cf0;
+    color: #2d8cf0;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    transition: all 0.3s linear;
+    -webkit-transition: all 0.3s linear;
+    -moz-transition: all 0.3s linear;
+    -o-transition: all 0.3s linear;
+}
+
+.tags > .btm > .__tags__ > .tag::before {
+    background-color: rgba(45, 140, 240, 0.2);
+}
+
+.tags > .btm > .__tags__ > .tag:active::before {
+    background-color: rgba(45, 140, 240, 0.4);
+}
+
+/**
+ * *********************
+ * 活动图标
+ * *********************
+ */
+.active-tag {
+    display: inline-block;
+    padding: 4px 8px;
+    position: relative;
+    background-color: #f0f4fa;
+    color: #7490b9;
+    cursor: pointer;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    transition: all 0.3s linear;
+    -webkit-transition: all 0.3s linear;
+    -moz-transition: all 0.3s linear;
+    -ms-transition: all 0.3s linear;
+    -o-transition: all 0.3s linear;
+}
+
+.active-tag:hover {
+    color: #7490b9;
+    background-color: #dfe5ee;
+}
+
+.active-tag .text {
+    margin-right: 30px;
+}
+
+.active-tag .close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 30px;
+    height: 100%;
+}
+
+.active-tag .close .inner {
+    width: 18px;
+    height: 18px;
+    border-radius: 24px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate3d(-50% , -50% , 0);
+    -webkit-transform: translate3d(-50% , -50% , 0);
+    -moz-transform: translate3d(-50% , -50% , 0);
+    -ms-transform: translate3d(-50% , -50% , 0);
+    -o-transform: translate3d(-50% , -50% , 0);
+    transition: all 0.3s linear;
+    -webkit-transition: all 0.3s linear;
+    -moz-transition: all 0.3s linear;
+    -o-transition: all 0.3s linear;
+}
+
+.active-tag .close .inner:hover {
+    background-color: #fff;
+}
+
+.active-tag .close .inner  > * {
+    width: 1px;
+    height: 8px;
+    background-color: red;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
+
+.active-tag .close .inner  .positive {
+    transform: translate3d(-50% , -50% , 0) rotateZ(45deg);
+}
+
+.active-tag .close .inner  .negative {
+    transform: translate3d(-50% , -50% , 0) rotateZ(-45deg);
+}
+
+/**
+ * ***********************
+ * 图片信息
+ * ***********************
+ */
+.image-info {
+
+}
+
+.image-info > .line {
+    margin-bottom: 20px;
+}
+
+.image-info > .line:nth-last-of-type(1) {
+    margin-bottom: 0;
+}
+
+.image-info > .images {
+
+}
+
+.image-info > .images > .line {
+    margin-bottom: 10px;
+}
+
+.image-info > .images > .line:nth-last-of-type(1) {
+    margin-bottom: 0;
+}
