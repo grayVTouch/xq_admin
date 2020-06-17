@@ -107,6 +107,7 @@ create table if not exists `xq_image_subject_comment` (
 drop table if exists `xq_image_subject_comment_image`;
 create table if not exists `xq_image_subject_comment_image` (
   id bigint unsigned not null auto_increment ,
+  image_subject_id bigint unsigned default 0 comment 'xq_image_subject.id' ,
   image_subject_comment_id bigint unsigned default 0 comment 'xq_image_subject_comment.id' ,
   name varchar(500) default '' comment '文件名称' ,
   mime varchar(50) comment '文件 mime 类型' ,
@@ -129,7 +130,7 @@ create table if not exists `xq_user` (
     last_ip varchar(50) default '' comment '最近登录ip' ,
     phone varchar(30) default '' comment '手机' ,
     email varchar(50) default '' comment '电子邮件' ,
-    group_id bigint unsigned default 0 comment 'xq_group.id' ,
+    user_group_id bigint unsigned default 0 comment 'xq_user_group.id' ,
     create_time datetime default current_timestamp ,
     update_time datetime default current_timestamp on update current_timestamp ,
     primary key `id` (`id`) ,

@@ -212,7 +212,7 @@ export default {
             this.error();
             this.attr = record.__attr__;
             this.form = {...record};
-            this.ins.thumb.render(record.__thumb__);
+            this.ins.thumb.render(record.thumb);
         } ,
 
         addEvent () {

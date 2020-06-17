@@ -88,7 +88,7 @@
                 <div class="table">
 
                     <Table border :columns="table.field" :data="table.data" @on-selection-change="selectedEvent">
-                        <template v-slot:thumb="{row,index}"><img :src="row.__thumb__ ? row.__thumb__ : $store.state.context.res.notFound" class="image" height="40" @click.stop="link(row.__thumb__)"></template>
+                        <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" class="image" height="40" @click.stop="link(row.thumb)"></template>
                         <template v-slot:attr="{row,index}">
                             <Poptip placement="right" width="400" title="关联主体属性" :transfer="true" trigger="hover">
                                 <Button>悬浮可查看详情</Button>

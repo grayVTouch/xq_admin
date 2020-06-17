@@ -5,6 +5,7 @@ namespace App\Customize\api\admin_v1\handler;
 
 
 use App\Customize\api\admin_v1\model\ImageModel;
+use Illuminate\Support\Facades\Storage;
 use stdClass;
 use function core\convert_obj;
 
@@ -16,7 +17,7 @@ class ImageHandler extends Handler
             return null;
         }
         $res = convert_obj($model);
-        $res->__path__ = empty($res->path) ? '' : asset($res->path);
+        $res->__path__ = empty($res->path) ? '' : Storage::url($res->path);
         return $res;
     }
 

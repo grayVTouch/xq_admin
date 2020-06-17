@@ -62,7 +62,7 @@ export default {
         } ,
 
         initData () {
-            Api.user.info((data , code) => {
+            Api.admin.info((data , code) => {
                 if (code !== TopContext.code.Success) {
                     Prompt.alert(data);
                     return ;

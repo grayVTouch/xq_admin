@@ -21,4 +21,14 @@ export default {
             1: '审核通过'
         }
     } ,
+
+    user: {
+        sex: {
+            male: '男' ,
+            female: '女' ,
+            secret: '保密' ,
+            both: '两性' ,
+            shemale: '人妖' ,
+        } ,
+    } ,
 };

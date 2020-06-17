@@ -71,13 +71,13 @@ class ModuleAction extends Action
 
     public static function destroy(Base $context , $id , array $param = [])
     {
-        $count = ModuleModel::delById($id);;
+        $count = ModuleModel::delById($id);
         return self::success($count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
-        $count = ModuleModel::delByIds($ids);;
+        $count = ModuleModel::delByIds($ids);
         return self::success($count);
     }
 

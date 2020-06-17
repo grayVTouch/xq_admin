@@ -95,4 +95,13 @@ class Role extends Base
         }
         return success($res['data']);
     }
+
+    public function all()
+    {
+        $res = RoleAction::all($this);
+        if ($res['code'] != 0) {
+            return error($res['data'] , $res['code']);
+        }
+        return success($res['data']);
+    }
 }

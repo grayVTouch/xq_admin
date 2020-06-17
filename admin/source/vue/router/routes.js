@@ -9,6 +9,8 @@ import indexForTag from '../view/tag/index.vue';
 import indexForCategory from '../view/category/index.vue';
 import indexForSubject from '../view/subject/index.vue';
 import indexForImageSubject from '../view/image_subject/index.vue';
+import indexForUser from '../view/user/index.vue';
+import indexForAdmin from '../view/admin/index.vue';
 
 
 export default [
@@ -65,5 +67,14 @@ export default [
         component: indexForImageSubject
     } ,
 
+    {
+        path: '/user/index' ,
+        component: indexForUser
+    } ,
+
+    {
+        path: '/admin/index' ,
+        component: indexForAdmin
+    } ,
 
 ]

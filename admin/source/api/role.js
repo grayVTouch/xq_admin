@@ -6,6 +6,7 @@ const destroy = genUrl('role/{id}');
 const destroyAll = genUrl('destroy_all_role');
 const allocatePermission = genUrl('role/{id}/allocate_permission');
 const permission = genUrl('role/{id}/permission');
+const all = genUrl('all_role');
 
 export default {
     index (data , success , error) {
@@ -49,6 +50,10 @@ export default {
 
     permission (id , success , error) {
         return request(permission.replace('{id}' , id) , 'get' , null , success , error)
+    } ,
+
+    all (success , error) {
+        return request(all , 'get' , null , success , error)
     } ,
 
 };

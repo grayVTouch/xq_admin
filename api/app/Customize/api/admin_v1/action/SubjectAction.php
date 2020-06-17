@@ -78,13 +78,13 @@ class SubjectAction extends Action
 
     public static function destroy(Base $context , $id , array $param = [])
     {
-        $count = SubjectModel::delById($id);;
+        $count = SubjectModel::delById($id);
         return self::success($count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
-        $count = SubjectModel::delByIds($ids);;
+        $count = SubjectModel::delByIds($ids);
         return self::success($count);
     }
 

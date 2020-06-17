@@ -37,7 +37,7 @@ class AdminPermissionAction extends Action
     public static function localUpdate(Base $context , $id , array $param = [])
     {
         $type_range = my_config('business.type_for_admin_permission');
-        $bool_range = my_config('business.bool_for_int');
+        $bool_range = array_keys(my_config('business.bool_for_int'));
         $validator = Validator::make($param , [
             'type'      => ['sometimes'   , Rule::in($type_range)],
             'is_menu'   => ['sometimes', Rule::in($bool_range)],
@@ -85,7 +85,7 @@ class AdminPermissionAction extends Action
     public static function update(Base $context , $id , array $param = [])
     {
         $type_range = my_config('business.type_for_admin_permission');
-        $bool_range = my_config('business.bool_for_int');
+        $bool_range = array_keys(my_config('business.bool_for_int'));
         $validator = Validator::make($param , [
             'value'     => 'required' ,
             'type'      => ['required'   , Rule::in($type_range)],
@@ -123,7 +123,7 @@ class AdminPermissionAction extends Action
     public static function store(Base $context , array $param = [])
     {
         $type_range = my_config('business.type_for_admin_permission');
-        $bool_range = my_config('business.bool_for_int');
+        $bool_range = array_keys(my_config('business.bool_for_int'));
         $validator = Validator::make($param , [
             'value'     => 'required' ,
             'type'      => ['required'   , Rule::in($type_range)],

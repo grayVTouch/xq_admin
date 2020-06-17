@@ -11,8 +11,11 @@ export default {
     number: 130 ,
     type: 80 ,
     mobile: 130 ,
+    phone: 130 ,
     addr: 300 ,
     weight: 80 ,
+    email: 130 ,
+    ip: 180 ,
     action: 200 ,
 
     w_160: 160 ,

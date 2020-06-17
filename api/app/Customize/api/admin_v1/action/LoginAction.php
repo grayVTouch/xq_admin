@@ -4,6 +4,7 @@
 namespace App\Customize\api\admin_v1\action;
 
 
+use App\Customize\api\admin_v1\handler\AdminHandler;
 use App\Customize\api\admin_v1\model\AdminModel;
 use App\Customize\api\admin_v1\model\AdminTokenModel;
 use App\Http\Controllers\api\admin_v1\Base;
@@ -78,6 +79,7 @@ class LoginAction extends Action
         if (empty($user)) {
             return self::error('用户不存在' , 404);
         }
-        return self::success($user->avatar);
+        $user = AdminHandler::handle($user);
+        return self::success($user->__avatar__);
     }
 }

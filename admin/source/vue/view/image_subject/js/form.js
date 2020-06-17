@@ -340,7 +340,7 @@ export default {
 
         form (form , oldVal) {
             this.table.data = form.images;
-            this.ins.thumb.render(form.__thumb__);
+            this.ins.thumb.render(form.thumb);
             this.createTime = form.create_time;
         } ,
     } ,

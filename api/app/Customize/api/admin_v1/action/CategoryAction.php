@@ -32,7 +32,7 @@ class CategoryAction extends Action
 
     public static function localUpdate(Base $context , $id , array $param = [])
     {
-        $bool_range = my_config('business.bool_for_int');
+        $bool_range = array_keys(my_config('business.bool_for_int'));
         $validator = Validator::make($param , [
             'enable'   => ['sometimes', Rule::in($bool_range)],
             'weight'    => 'sometimes|integer',
@@ -63,7 +63,7 @@ class CategoryAction extends Action
 
     public static function update(Base $context , $id , array $param = [])
     {
-        $bool_range = my_config('business.bool_for_int');
+        $bool_range = array_keys(my_config('business.bool_for_int'));
         $validator = Validator::make($param , [
             'name'    => 'required',
             'enable'   => ['required', Rule::in($bool_range)],
@@ -90,7 +90,7 @@ class CategoryAction extends Action
 
     public static function store(Base $context , array $param = [])
     {
-        $bool_range = my_config('business.bool_for_int');
+        $bool_range = array_keys(my_config('business.bool_for_int'));
         $validator = Validator::make($param , [
             'name'    => 'required',
             'enable'  => ['required', Rule::in($bool_range)],

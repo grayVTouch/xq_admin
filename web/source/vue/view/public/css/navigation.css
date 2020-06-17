@@ -1,0 +1,110 @@
+/**
+ * ******************
+ * 模块导航
+ * ******************
+ */
+.navigation {
+    height: 60px;
+    line-height: 60px;
+    position: relative;
+}
+
+.navigation:after {
+    display: block;
+    content: '';
+    clear: both;
+}
+
+.navigation > .nav {
+    height: 100%;
+}
+
+.navigation > .nav.fixed {
+    background-color: #8e95a5;
+    z-index: 8;
+    width: 100%;
+    height: 60px;
+    padding-left: 240px;
+    padding-right: 20px;
+    position: fixed;
+    top: 80px;
+    left: 0;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+}
+
+.navigation > .nav.fixed:before {
+    display: block;
+    content: '';
+    width: 100%;
+    height: 2px;
+    position: absolute;
+    background-color: red;
+    left: 0;
+    bottom: 0;
+    box-shadow: 0 0 5px 0 red;
+    transform: translateY(100%);
+    -webkit-transform: translateY(100%);
+    -moz-transform: translateY(100%);
+    -ms-transform: translateY(100%);
+    -o-transform: translateY(100%);
+}
+
+.navigation > .nav > * {
+    height: 100%;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+}
+
+.navigation > .nav > .left {
+    float: left;
+    font-size: 20px;
+}
+
+.navigation > .nav > .right {
+    float: right;
+}
+
+.navigation > .nav > .left > .image {
+    width: 40px;
+    height: 40px;
+}
+
+.navigation > .nav > .left > .cn {
+    color: white;
+}
+
+.navigation > .nav > .left .delimiter {
+    color: white;
+}
+
+.navigation > .nav > .left > .en {
+    color: white;
+}
+
+.navigation > .nav > .right {
+    color: #e4e4e4;
+    font-size: 14px;
+}
+
+.navigation > .nav > .right > * {
+
+}
+
+.navigation > .nav > .right > .text {
+    cursor: pointer;
+}
+
+.navigation > .nav > .right > .delimiter {
+    padding: 0 8px;
+}
+
+.navigation > .nav > .right > *:nth-last-of-type(1) {
+    font-weight: bold;
+}

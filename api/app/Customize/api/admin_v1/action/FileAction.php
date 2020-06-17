@@ -16,17 +16,14 @@ class FileAction extends Action
         if (empty($file)) {
             return self::error('请提供上传文件');
         }
-        $ext_range  = my_config('business.file');
-        $ext        = $file->extension();
-        $filename   = $file->getClientOriginalName();
-        if (!in_array($ext , $ext_range)) {
-            return self::error('不支持的文件类型，当前支持的文件类型有：' . implode(',' , $ext_range));
-        }
+//        $ext_range  = my_config('business.file');
+//        $ext        = $file->extension();
+//        $filename   = $file->getClientOriginalName();
+//        if (!in_array($ext , $ext_range)) {
+//            return self::error('不支持的文件类型，当前支持的文件类型有：' . implode(',' , $ext_range));
+//        }
         $dir    = date('Ymd');
-        $path   = Storage::disk('public')->put($dir , $file);
-        $path   = ltrim($path , '/');
-        $storage = my_config('app.storage_soft_link');
-        $path   = sprintf('/%s/%s' , $storage , $path);
+        $path   = Storage::put($dir , $file);
         return self::success($path);
     }
 }

@@ -24,9 +24,38 @@ Route::prefix('admin_v1')
         Route::middleware([
             UserAuthMiddleware::class
         ])->group(function(){
-            // 要求登录的相关接口
-            Route::get('info' , 'User@info');
+            // 要求用户登录的相关接口
+
+            /**
+             * *****************************
+             * 后台用户
+             * *****************************
+             */
+            Route::get('info' , 'Admin@info');
+            Route::get('search_admin' , 'Admin@search');
+            Route::get('admin' , 'Admin@index');
+            Route::get('admin/{id}' , 'Admin@show');
+            Route::put('admin/{id}' , 'Admin@update');
+            Route::post('admin' , 'Admin@store');
+            // 特别注意，这边这个顺序不能更换
+            // 如果更换会导致 路由匹配出现不是期望的现象
+            Route::delete('destroy_all_admin' , 'User@destroyAll');
+            Route::delete('admin/{id}' , 'User@destroy');
+
+            /**
+             * ********************
+             * 用户相关
+             * ********************
+             */
             Route::get('search_user' , 'User@search');
+            Route::get('user' , 'User@index');
+            Route::get('user/{id}' , 'User@show');
+            Route::put('user/{id}' , 'User@update');
+            Route::post('user' , 'User@store');
+            // 特别注意，这边这个顺序不能更换
+            // 如果更换会导致 路由匹配出现不是期望的现象
+            Route::delete('destroy_all_user' , 'User@destroyAll');
+            Route::delete('user/{id}' , 'User@destroy');
 
             /**
              * 权限管理
@@ -58,6 +87,7 @@ Route::prefix('admin_v1')
             Route::delete('destroy_all_role' , 'Role@destroyAll');
             Route::delete('role/{id}' , 'Role@destroy');
             Route::post('role/{id}/allocate_permission' , 'Role@allocatePermission');
+            Route::get('all_role' , 'Role@all');
 
 
             /**

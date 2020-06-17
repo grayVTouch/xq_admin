@@ -89,7 +89,7 @@
 
                     <Table border :columns="table.field" :data="table.data" @on-selection-change="selectedEvent">
                         <template v-slot:thumb="{row,index}">
-                            <img :src="row.__thumb__ ? row.__thumb__ : $store.state.res.context.notFound" height="40" class="image">
+                            <img :src="row.thumb ? row.__thumb__ : $store.state.res.context.notFound" height="40" class="image">
                         </template>
                         <template v-slot:user_id="{row,index}">
                             {{ row.user ? `${row.user.username}【${row.user.id}】` : `unknow【${row.user_id}】` }}

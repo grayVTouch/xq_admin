@@ -45,26 +45,11 @@ export default {
 
     methods: {
 
-        message(text = '' , classname = '') {
+        topMessage (text = '' , classname = '') {
             this.val.message = Object.assign({} , {
                 text ,
                 class: classname
             });
-        } ,
-
-        error (data = {} , clear = true) {
-            if (clear) {
-                this.val.error = {...data};
-                return ;
-            }
-            this.val.error = {...this.val.error , ...data};
-        } ,
-
-        pending (name , val) {
-            if (!G.isValid(val)) {
-                return this.val.pending[name];
-            }
-            this.val.pending = {...this.val.pending , ...{[name]: val}};
         } ,
 
         request (name , val) {
@@ -116,18 +101,14 @@ export default {
             Api.login.login(this.form , (data , code) => {
                 this.pending('submit' , false);
                 this.error();
-                this.message();
+                this.topMessage();
                 this.captcha();
                 if (code !== TopContext.code.Success) {
-                    if (G.isString(data)) {
-                        this.message(data , 'red');
-                        return ;
-                    }
-                    this.error(data);
+                    this.errorHandle(data);
                     return ;
                 }
                 this.request('submit' , false);
-                this.message('登录成功' , 'green');
+                this.topMessage('登录成功' , 'green');
                 G.s.set('token' , data);
                 G.setTimeout(() => {
                     this.push({name: 'home'});

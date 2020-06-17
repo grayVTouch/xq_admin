@@ -151,4 +151,10 @@ class RoleAction extends Action
         return self::success($permission);
     }
 
+    public static function all(Base $context , array $param = [])
+    {
+        $res = RoleModel::get();
+        $res = RoleHandler::handleAll($res);
+        return self::success($res);
+    }
 }

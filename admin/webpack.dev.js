@@ -6,7 +6,7 @@ module.exports = merge(common, {
     devtool: 'inline-source-map',
     devServer: {
         // web 网站根目录
-        contentBase: './compile' ,
+        contentBase: './compiled' ,
         // 初始访问的文件
         index: 'index.html' ,
         // Ip

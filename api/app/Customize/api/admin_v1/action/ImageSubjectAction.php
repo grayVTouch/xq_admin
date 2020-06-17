@@ -6,6 +6,8 @@ namespace App\Customize\api\admin_v1\action;
 use App\Customize\api\admin_v1\handler\ImageSubjectHandler;
 use App\Customize\api\admin_v1\model\CategoryModel;
 use App\Customize\api\admin_v1\model\ImageModel;
+use App\Customize\api\admin_v1\model\ImageSubjectCommentImageModel;
+use App\Customize\api\admin_v1\model\ImageSubjectCommentModel;
 use App\Customize\api\admin_v1\model\ImageSubjectModel;
 use App\Customize\api\admin_v1\model\ModuleModel;
 use App\Customize\api\admin_v1\model\SubjectModel;
@@ -226,14 +228,45 @@ class ImageSubjectAction extends Action
 
     public static function destroy(Base $context , $id , array $param = []): array
     {
-        $count = ImageSubjectModel::delById($id);;
-        return self::success($count);
+        try {
+            DB::beginTransaction();
+            // 删除图片主题
+            ImageSubjectModel::delById($id);
+            // 删除图片主题相关的图片
+            ImageModel::delByImageSubjectId($id);
+            // 删除图片主题相关的评论
+            ImageSubjectCommentModel::delByImageSubjectId($id);
+            // 删除图片主题相关评论对应的评论图片
+            ImageSubjectCommentImageModel::delByImageSubjectId($id);
+            DB::commit();
+            return self::success();
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = []): array
     {
-        $count = ImageSubjectModel::delByIds($ids);;
-        return self::success($count);
+        try {
+            DB::beginTransaction();
+            foreach ($ids as $id)
+            {
+                // 删除图片主题
+                ImageSubjectModel::delById($id);
+                // 删除图片主题相关的图片
+                ImageModel::delByImageSubjectId($id);
+                // 删除图片主题相关的评论
+                ImageSubjectCommentModel::delByImageSubjectId($id);
+                // 删除图片主题相关评论对应的评论图片
+                ImageSubjectCommentImageModel::delByImageSubjectId($id);
+            }
+            DB::commit();
+            return self::success();
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function destroyImages(Base $context , array $ids , array $param = []): array

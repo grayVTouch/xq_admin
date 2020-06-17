@@ -8,6 +8,7 @@ import tag from '../../api/tag.js';
 import category from '../../api/category.js';
 import subject from '../../api/subject.js';
 import image_subject from '../../api/image_subject.js';
+import admin from '../../api/admin.js';
 
 window.Api = {
     login ,
@@ -20,4 +21,5 @@ window.Api = {
     category ,
     subject ,
     image_subject ,
+    admin ,
 };

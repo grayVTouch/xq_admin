@@ -10,7 +10,8 @@ class AdminPermissionModel extends Model
 
     public static function getByRoleId(int $role_id)
     {
-        return self::where('role_id' , $role_id)
+        $admin_permission_ids = RolePermissionPivot::getPermissionIdsByRoleId($role_id);
+        return self::whereIn('id' , $admin_permission_ids)
             ->get();
     }
 

@@ -10,6 +10,7 @@ use App\Customize\api\admin_v1\model\ImageSubjectModel;
 use App\Customize\api\admin_v1\model\ModuleModel;
 use App\Customize\api\admin_v1\model\SubjectModel;
 use App\Customize\api\admin_v1\model\UserModel;
+use Illuminate\Support\Facades\Storage;
 use stdClass;
 use function api\admin_v1\get_value;
 use function core\convert_obj;
@@ -48,7 +49,7 @@ class ImageSubjectHandler extends Handler
         $res->subject = $subject;
 
         $res->images = $images;
-        $res->__thumb__ = empty($res->thumb) ? '' : asset($res->thumb);
+        $res->__thumb__ = empty($res->thumb) ? '' : Storage::url($res->thumb);
         $res->__tag__ = empty($res->tag) ? [] : json_decode($res->tag , true);
         $res->__type__ = get_value('business.type_for_image_subject' , $res->type);
         $res->__status__ = get_value('business.status_for_image_subject' , $res->status);

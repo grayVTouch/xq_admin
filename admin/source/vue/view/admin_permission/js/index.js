@@ -151,7 +151,7 @@ export default {
     } ,
 
     computed: {
-        drawerTitle () {
+        title () {
             return this.val.mode === 'edit' ? '编辑' : '添加';
         } ,
 

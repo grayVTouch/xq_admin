@@ -75,13 +75,13 @@ class TagAction extends Action
 
     public static function destroy(Base $context , $id , array $param = [])
     {
-        $count = TagModel::delById($id);;
+        $count = TagModel::delById($id);
         return self::success($count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
-        $count = TagModel::delByIds($ids);;
+        $count = TagModel::delByIds($ids);
         return self::success($count);
     }
 
