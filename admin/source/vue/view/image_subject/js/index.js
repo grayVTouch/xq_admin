@@ -277,6 +277,11 @@ export default {
             this.confirmModal('你确定删除吗？'  , (res) => {
                 if (res) {
                     Api.image_subject.destroyAll(idList , (data , code) => {
+                        if (code !== TopContext.code.Success) {
+                            G.invoke(callback , this , false);
+                            this.message('error' , data);
+                            return ;
+                        }
                         G.invoke(callback , this , true);
                         this.message('success' , '操作成功' , '影响的记录数：' + data);
                         this.getData();

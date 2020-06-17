@@ -39,8 +39,8 @@ Route::prefix('admin_v1')
             Route::post('admin' , 'Admin@store');
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_admin' , 'User@destroyAll');
-            Route::delete('admin/{id}' , 'User@destroy');
+            Route::delete('destroy_all_admin' , 'Admin@destroyAll');
+            Route::delete('admin/{id}' , 'Admin@destroy');
 
             /**
              * ********************

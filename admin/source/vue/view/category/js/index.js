@@ -158,6 +158,11 @@ export default {
                     return ;
                 }
                 Api.category.destroyAll(ids , (data , code) => {
+                    if (code !== TopContext.code.Success) {
+                        G.invoke(callback , this , false);
+                        this.message('error' , data);
+                        return ;
+                    }
                     G.invoke(callback , self , true);
                     self.message('success' , '操作成功' , '影响的记录数：' + data);
                     self.getData();

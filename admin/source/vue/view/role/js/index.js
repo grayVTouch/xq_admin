@@ -171,17 +171,21 @@ export default {
                 return ;
             }
             const self = this;
-            this.modal('confirm' , '你确定删除吗？' , '' , null , {
-                onOk () {
-                    Api.role.destroyAll(idList , (data , code) => {
-                        G.invoke(callback , self , true);
-                        self.message('success' , '操作成功' , '影响的记录数：' + data);
-                        self.getData();
-                    });
-                } ,
-                onCancel () {
-                    G.invoke(callback , self , false);
-                } ,
+            this.confirmModal('你确定删除吗？'  , (res) => {
+                if (!res) {
+                    G.invoke(callback , this , false);
+                    return ;
+                }
+                Api.role.destroyAll(idList , (data , code) => {
+                    if (code !== TopContext.code.Success) {
+                        G.invoke(callback , this , false);
+                        this.message('error' , data);
+                        return ;
+                    }
+                    G.invoke(callback , self , true);
+                    self.message('success' , '操作成功' , '影响的记录数：' + data);
+                    self.getData();
+                });
             });
         } ,
 
@@ -340,6 +344,7 @@ export default {
                     return ;
                 }
                 this.successHandle((keep) => {
+                    this.getData();
                     if (keep) {
                         return ;
                     }

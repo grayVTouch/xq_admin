@@ -18,16 +18,13 @@ import './asset/js/my_plugin.js';
 
 import app from './app.vue';
 
-console.log('入口 1');
-
-
-const debug = true;
-
-Vue.config.debug = debug;
-
-Vue.config.devtools = debug;
-
-Vue.config.productionTip = debug;
+// const debug = true;
+//
+// Vue.config.debug = debug;
+//
+// Vue.config.devtools = debug;
+//
+// Vue.config.productionTip = debug;
 
 /**
  * ****************
