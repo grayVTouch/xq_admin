@@ -16,6 +16,7 @@ import './asset/js/iview.js';
 import './asset/js/my_view.js';
 import './asset/js/my_plugin.js';
 
+import router from './vue/router';
 import app from './app.vue';
 
 const debug = true;
@@ -33,6 +34,7 @@ Vue.config.productionTip = debug;
  */
 new Vue({
     el: '#app' ,
+    router ,
     template: '<app />' ,
     components: {
         app ,

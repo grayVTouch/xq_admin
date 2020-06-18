@@ -9,22 +9,16 @@ const router = new VueRouter({
  * 路由守卫
  * ****************
  */
-router.beforeEach((to , from , next) => {
-    const token = G.s.get('token');
-    if (!G.isNull(token)) {
-        if (to.name === 'login') {
-            // 已经跳转到首页
-            next({name: 'home'});
-            return ;
-        }
-    } else {
-        // 未登录
-        if (to.name !== 'login') {
-            next({name: 'login'});
-            return ;
-        }
-    }
-    next();
-});
+// router.beforeEach((to , from , next) => {
+//     // const module = G.s.get('module');
+//     // if (G.isNull(module)) {
+//     //     if (to.name !== 'index') {
+//     //         // 已经跳转到首页
+//     //         next({name: 'index'});
+//     //         return ;
+//     //     }
+//     // }
+//     next();
+// });
 
 export default router;

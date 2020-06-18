@@ -19,6 +19,7 @@ module.exports = {
         // babel-polyfill，在 ie 环境下，vuex 需要用到！
         // 相关文档请看 babel 官方文档: https://www.babeljs.cn/docs/babel-polyfill
         app: ['@babel/polyfill' , './source/app.js'] ,
+        // app: ['@babel/polyfill' , './source/index.js'] ,
     },
     plugins: [
         // 这个用法错了

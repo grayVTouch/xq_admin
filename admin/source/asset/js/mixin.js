@@ -1,5 +1,4 @@
 
-import router from '../../vue/router';
 import store from '../../vue/vuex';
 
 /**
@@ -8,8 +7,6 @@ import store from '../../vue/vuex';
  * ****************
  */
 Vue.mixin({
-    router ,
-
     store ,
 
     data () {

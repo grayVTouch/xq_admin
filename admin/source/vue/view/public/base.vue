@@ -1,10 +1,12 @@
 <template>
     <div class="view">
+
         <my-navigation ref="navigation" :topRoute="topRoute" :position="position"></my-navigation>
         <div class="dynamic" ref="dynamic">
             <!-- 匿名插槽 -->
             <slot></slot>
         </div>
+
         <my-full-loading ref="loading"></my-full-loading>
         <div class="to-top hide">
             <img src="" class="image">
