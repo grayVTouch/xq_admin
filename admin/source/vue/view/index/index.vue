@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="main">
         <div class="menu" ref="menu">
             <div class="inner" ref="menu-inner">
                 <div class="line logo" ref="logo">

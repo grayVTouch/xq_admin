@@ -1,4 +1,4 @@
-.container {
+.main {
     position: fixed;
     top: 0;
     left: 0;
@@ -8,14 +8,14 @@
 
 }
 
-.container > * {
+.main > * {
     transition: all 0.3s ease-in-out;
     -webkit-transition: all 0.3s ease-in-out;
     -moz-transition: all .3s ease-in-out;
     -o-transition: all .3s ease-in-out;
 }
 
-.container > .menu {
+.main > .menu {
     min-width: 50px;
     width: 220px;
     height: 100%;
@@ -27,11 +27,11 @@
     top: 0;
 }
 
-.container > .menu.shrink {
+.main > .menu.shrink {
     width: 50px;
 }
 
-.container > .content {
+.main > .content {
     z-index: 8;
     padding-left: 220px;
     background-color: #464b56;
@@ -40,18 +40,18 @@
     -moz-box-sizing: border-box;
 }
 
-.container > .content.spread {
+.main > .content.spread {
     padding-left: 50px;
 }
 
 /*** 菜单 ***/
 
-.container > .menu > .inner {
+.main > .menu > .inner {
     width: 220px;
     height: 100%;
 }
 
-.container > .menu > .inner > .logo {
+.main > .menu > .inner > .logo {
     padding: 10px;
     height: 50px;
     display: flex;
@@ -63,11 +63,11 @@
     background-color: #525865;
 }
 
-.container > .menu > .inner > .logo > * {
+.main > .menu > .inner > .logo > * {
     margin: 0;
 }
 
-.container > .menu > .inner > .logo .image-outer {
+.main > .menu > .inner > .logo .image-outer {
     width: 30px;
     height: 100%;
     display: flex;
@@ -79,19 +79,19 @@
     -webkit-align-items: center;
 }
 
-.container > .menu > .inner > .logo .image-outer .inner {
+.main > .menu > .inner > .logo .image-outer .inner {
     width: 100%;
     height: 100%;
     overflow: hidden;
 }
 
-.container > .menu > .inner > .logo .image-outer .inner .image {
+.main > .menu > .inner > .logo .image-outer .inner .image {
     width: auto;
     height: 100%;
     vertical-align: top;
 }
 
-.container > .menu > .inner > .logo .text-outer {
+.main > .menu > .inner > .logo .text-outer {
     padding-left: 10px;
     height: 100%;
     display: flex;
@@ -104,7 +104,7 @@
 
 
 /*** 左边：头像  ***/
-.container > .menu > .inner > .avatar {
+.main > .menu > .inner > .avatar {
     overflow: hidden;
     width: 220px;
     height: 186px;
@@ -117,16 +117,16 @@
 
 }
 
-.container > .menu > .inner > .avatar.shrink {
+.main > .menu > .inner > .avatar.shrink {
     width: 0;
     height: 0;
 }
 
-.container > .menu > .inner > .avatar > .inner {
+.main > .menu > .inner > .avatar > .inner {
     width: 220px;
 }
 
-.container > .menu > .inner > .avatar > .inner > .top {
+.main > .menu > .inner > .avatar > .inner > .top {
     height: 150px;
     display: flex;
     display: -webkit-flex;
@@ -135,13 +135,13 @@
 
 }
 
-.container > .menu > .inner > .avatar > .inner > .top .my-avatar {
+.main > .menu > .inner > .avatar > .inner > .top .my-avatar {
     width: 120px;
     height: 120px;
     border-radius: 50%;
 }
 
-.container > .menu > .inner > .avatar > .inner > .btm {
+.main > .menu > .inner > .avatar > .inner > .btm {
     font-size: 14px;
     color: white;
     text-align: center;
@@ -152,29 +152,29 @@
  * 滑块
  * *************
  */
-.container > .menu > .inner > .block {
+.main > .menu > .inner > .block {
     background-color:#3e4448;
 }
 
-.container > .menu > .inner > .block:hover .horizontal .in .line , .container > .menu > .inner > .block:hover .vertical .in .line {
+.main > .menu > .inner > .block:hover .horizontal .in .line , .main > .menu > .inner > .block:hover .vertical .in .line {
     background-color:#e7e7e7;
 }
 
-.container > .menu > .inner > .block>*  {
+.main > .menu > .inner > .block>*  {
     height:30px;
     position:relative;
     cursor:pointer;
 }
 
-.container > .menu > .inner > .block .horizontal {
+.main > .menu > .inner > .block .horizontal {
 
 }
 
-.container > .menu > .inner > .block .vertical {
+.main > .menu > .inner > .block .vertical {
 
 }
 
-.container > .menu > .inner > .block .horizontal .in , .container > .menu > .inner > .block .vertical .in {
+.main > .menu > .inner > .block .horizontal .in , .main > .menu > .inner > .block .vertical .in {
     position:absolute;
     left:50%;
     top:50%;
@@ -185,13 +185,13 @@
     -otransform:translate3d(-50% , -50% , 0px);
 }
 
-.container > .menu > .inner > .block .horizontal .in:after {
+.main > .menu > .inner > .block .horizontal .in:after {
     display:block;
     content:'';
     clear:both;
 }
 
-.container > .menu > .inner > .block .horizontal .in .line {
+.main > .menu > .inner > .block .horizontal .in .line {
     float:left;
     width: 3px;
     height: 12px;
@@ -204,20 +204,20 @@
     background-color: #868686;
 }
 
-.container > .menu > .inner > .block .horizontal .in .line:nth-last-of-type(1) {
+.main > .menu > .inner > .block .horizontal .in .line:nth-last-of-type(1) {
     margin-right: 0;
 }
 
-.container > .menu > .inner > .block .vertical {
+.main > .menu > .inner > .block .vertical {
     width:50px;
     margin: 0;
 }
 
-.container > .menu > .inner > .block .vertical .in {
+.main > .menu > .inner > .block .vertical .in {
 
 }
 
-.container > .menu > .inner > .block .vertical .in .line {
+.main > .menu > .inner > .block .vertical .in .line {
     background-color: #868686;
     margin-bottom:3px;
     width:12px;
@@ -229,18 +229,18 @@
     -o-transition:all 0.3s linear;
 }
 
-.container > .menu > .inner > .block .vertical .in .line:nth-last-of-type(1) {
+.main > .menu > .inner > .block .vertical .in .line:nth-last-of-type(1) {
     margin-bottom: 0;
 }
 
 /*** 功能菜单  ***/
-.container > .menu > .inner > .menus {
+.main > .menu > .inner > .menus {
     margin-bottom: 30px;
     overflow: hidden;
     overflow-y: auto;
 }
 
-.container > .menu > .inner > .desc {
+.main > .menu > .inner > .desc {
     position: absolute;
     bottom: 0;
     width: 100%;
@@ -259,11 +259,11 @@
  * *****************
  */
 
-.container > .content > .inner > .nav {
+.main > .content > .inner > .nav {
 
 }
 
-.container > .content > .inner > .nav > .toolbar {
+.main > .content > .inner > .nav > .toolbar {
     height: 50px;
     line-height: 50px;
     background-color: #5c626d;
@@ -271,7 +271,7 @@
 
 }
 
-.container > .content > .inner > .nav > .tabs {
+.main > .content > .inner > .nav > .tabs {
     height: 30px;
 }
 
@@ -280,17 +280,17 @@
  * 文档右边，顶部上边
  * *********************
  */
-.container > .content > .inner > .nav > .toolbar {
+.main > .content > .inner > .nav > .toolbar {
 
 }
 
-.container > .content > .inner > .nav > .toolbar:after {
+.main > .content > .inner > .nav > .toolbar:after {
     display: block;
     content: '';
     clear: both;
 }
 
-.container > .content > .inner > .nav > .toolbar > * {
+.main > .content > .inner > .nav > .toolbar > * {
     height: 100%;
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -299,21 +299,21 @@
     -ms-box-sizing: border-box;
 }
 
-.container > .content > .inner > .nav > .toolbar > .left {
+.main > .content > .inner > .nav > .toolbar > .left {
     float: left;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right {
+.main > .content > .inner > .nav > .toolbar > .right {
     float: right;
 }
 
-.container > .content > .inner > .nav > .toolbar > .left:after {
+.main > .content > .inner > .nav > .toolbar > .left:after {
     display: block;
     content: '';
     clear: both;
 }
 
-.container > .content > .inner > .nav > .toolbar > .left > * {
+.main > .content > .inner > .nav > .toolbar > .left > * {
     float: left;
     position: relative;
     text-align: center;
@@ -332,17 +332,17 @@
     -o-transition: all 0.3s linear;
 }
 
-.container > .content > .inner > .nav > .toolbar > .left > *:hover {
+.main > .content > .inner > .nav > .toolbar > .left > *:hover {
     background-color: #797d84;
 }
 
 
-.container > .content > .inner > .nav > .toolbar > .left > * .image {
+.main > .content > .inner > .nav > .toolbar > .left > * .image {
     width: 28px;
     height: 28px;
 }
 
-.container > .content > .inner > .nav > .toolbar > .left > *:after {
+.main > .content > .inner > .nav > .toolbar > .left > *:after {
     display: block;
     content: '';
     width: 1px;
@@ -358,21 +358,21 @@
     -o-transform: translateY(-50%);
 }
 
-.container > .content > .inner > .nav > .toolbar > .left > *:nth-last-of-type(1)::after {
+.main > .content > .inner > .nav > .toolbar > .left > *:nth-last-of-type(1)::after {
     display: none;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right {
+.main > .content > .inner > .nav > .toolbar > .right {
 
 }
 
-.container > .content > .inner > .nav > .toolbar > .right:after {
+.main > .content > .inner > .nav > .toolbar > .right:after {
     display: block;
     content: '';
     clear: both;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > * {
+.main > .content > .inner > .nav > .toolbar > .right > * {
     float: left;
     height: 100%;
     cursor: pointer;
@@ -383,15 +383,15 @@
     -o-box-sizing: border-box;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .user {
+.main > .content > .inner > .nav > .toolbar > .right > .user {
     position: relative;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .user:hover .ctrl {
+.main > .content > .inner > .nav > .toolbar > .right > .user:hover .ctrl {
     background-color: #797d84;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .user .ctrl {
+.main > .content > .inner > .nav > .toolbar > .right > .user .ctrl {
     padding: 0 10px;
     cursor: pointer;
     transition: all 0.3s linear;
@@ -401,13 +401,13 @@
     -o-transition: all 0.3s linear;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .user .ctrl:after {
+.main > .content > .inner > .nav > .toolbar > .right > .user .ctrl:after {
     display: block;
     content: '';
     clear: both;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .user .ctrl > * {
+.main > .content > .inner > .nav > .toolbar > .right > .user .ctrl > * {
     float: left;
     height: 50px;
     padding-right: 10px;
@@ -419,25 +419,25 @@
     -ms-box-sizing: border-box;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .user .ctrl > *:nth-last-of-type(1) {
+.main > .content > .inner > .nav > .toolbar > .right > .user .ctrl > *:nth-last-of-type(1) {
     padding-right: 0;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .user .ctrl .avatar {
+.main > .content > .inner > .nav > .toolbar > .right > .user .ctrl .avatar {
     text-align: center;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .user .ctrl .avatar .my-avatar {
+.main > .content > .inner > .nav > .toolbar > .right > .user .ctrl .avatar .my-avatar {
     width: 30px;
     height: 30px;
     border-radius: 50%;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .user .ctrl .username {
+.main > .content > .inner > .nav > .toolbar > .right > .user .ctrl .username {
     color: white;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .user .functions {
+.main > .content > .inner > .nav > .toolbar > .right > .user .functions {
     background-color: #484e58;
     padding: 10px;
     position: absolute;
@@ -453,7 +453,7 @@
     -ms-transform: translateY(100%);
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .user .functions .function {
+.main > .content > .inner > .nav > .toolbar > .right > .user .functions .function {
     height: 40px;
     line-height: 40px;
     cursor: pointer;
@@ -465,38 +465,38 @@
     -o-transition: all 0.3s linear;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .user .functions .function:hover {
+.main > .content > .inner > .nav > .toolbar > .right > .user .functions .function:hover {
     background-color: #626a77;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .user .functions .function:after {
+.main > .content > .inner > .nav > .toolbar > .right > .user .functions .function:after {
     display: block;
     content: '';
     clear: both;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .user .functions .function > * {
+.main > .content > .inner > .nav > .toolbar > .right > .user .functions .function > * {
     height: 100%;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .user .functions .function .left {
+.main > .content > .inner > .nav > .toolbar > .right > .user .functions .function .left {
     width: 40px;
     text-align: center;
     position: absolute;
     left: 0;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .user .functions .function .left .image {
+.main > .content > .inner > .nav > .toolbar > .right > .user .functions .function .left .image {
     width: 20px;
     height: 20px;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .user .functions .function .right {
+.main > .content > .inner > .nav > .toolbar > .right > .user .functions .function .right {
     color: white;
     margin-left: 40px;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .notification {
+.main > .content > .inner > .nav > .toolbar > .right > .notification {
     width: 50px;
     transition: all 0.3s linear;
     -webkit-transition: all 0.3s linear;
@@ -505,16 +505,16 @@
     -o-transition: all 0.3s linear;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .notification:hover {
+.main > .content > .inner > .nav > .toolbar > .right > .notification:hover {
     background-color: #797d84;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .notification > .in {
+.main > .content > .inner > .nav > .toolbar > .right > .notification > .in {
     position: relative;
     height: 100%;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .notification > .in .image-container {
+.main > .content > .inner > .nav > .toolbar > .right > .notification > .in .image-container {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -528,13 +528,13 @@
     -o-transform: translate(-50%,-50%);
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .notification > .in .image-container .image {
+.main > .content > .inner > .nav > .toolbar > .right > .notification > .in .image-container .image {
     width: 100%;
     min-height: 100%;
     vertical-align: top;
 }
 
-.container > .content > .inner > .nav > .toolbar > .right > .notification > .in .text {
+.main > .content > .inner > .nav > .toolbar > .right > .notification > .in .text {
     position: absolute;
     right: 0;
     top: 0;
@@ -557,19 +557,19 @@
  * 文档右边：底部
  * **************************
  */
-.container > .content > .inner > .area {
+.main > .content > .inner > .area {
     background-color: #777d8a;
     min-width: 600px;
     overflow: hidden;
 }
 
-.container > .content > .inner > .area > .inner {
+.main > .content > .inner > .area > .inner {
     height: 100%;
     /*overflow: hidden;*/
     /*position: relative;*/
 }
 
-.container > .content > .inner > .area > .inner > .item {
+.main > .content > .inner > .area > .inner > .item {
     /*position: absolute;*/
     /*left: 0;*/
     /*top: 0;*/
@@ -578,11 +578,11 @@
     /*z-index: 0;*/
 }
 
-.container > .content > .inner > .area > .inner > .item.cur {
+.main > .content > .inner > .area > .inner > .item.cur {
     /*z-index: 1;*/
 }
 
-.container > .content > .inner > .info {
+.main > .content > .inner > .info {
     text-align: center;
     font-size: 12px;
     color: #fff;

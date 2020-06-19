@@ -65,7 +65,8 @@
                 // 支持 'show' , 'hide'
                 status: 'hide' ,
                 // 具体风格: line-scale ball-pulse
-                type: 'line-scale' ,
+                // type: 'line-scale' ,
+                type: 'ball-pulse' ,
                 // 加载文本提示，支持字符串 & 数组
                 // 实际上就是展示进度信息
                 text: '' ,

@@ -327,6 +327,7 @@ export default {
                 return ;
             }
             this._val('drawer' , false);
+            this.rolePermission = [];
         } ,
 
         allocatePermission () {
@@ -360,6 +361,7 @@ export default {
 
         permissionSelectedEvent (data , cur) {
             cur.checked = cur.selected;
+            this.rolePermission = data;
         } ,
     } ,
 }

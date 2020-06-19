@@ -51,5 +51,4 @@
     }
 </script>
 
-
 <style scoped src="./css/welcome.css"></style>
