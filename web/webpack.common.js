@@ -24,7 +24,10 @@ module.exports = {
     plugins: [
         // 这个用法错了
         // new CleanWebpackPlugin(['compiled']),
-        new CleanWebpackPlugin() ,
+        new CleanWebpackPlugin({
+            // 仅删除陈旧的资源
+            cleanStaleWebpackAssets: false ,
+        }) ,
         new HtmlWebpackPlugin({
             title: '兴趣部落' ,
             filename: 'index.html' ,
@@ -69,18 +72,18 @@ module.exports = {
                 ]
             } ,
             {
-                // test: /\.s?[ac]ss$/,
-                test: /\.css$/ ,
+                test: /\.s?[ac]ss$/,
+                // test: /\.css$/ ,
                 use: [
                     MiniCssExtractPlugin.loader ,
-                    // 'vue-style-loader' ,
-                    // 'style-loader' ,
+                    // // 'vue-style-loader' ,
+                    // // 'style-loader' ,
                     {
                         loader: 'css-loader' ,
                         options: {
                             sourceMap: true
                         }
-                    }
+                    } ,
                 ],
             } ,
             {

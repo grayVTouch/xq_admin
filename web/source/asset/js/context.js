@@ -10,9 +10,10 @@ import config from './config.js';
  * ******************
  */
 window.TopContext = {
-    api: 'http://api.xq.test/api/admin_v1' ,
+    // api: 'http://api.xq.test/api/web_v1' ,
+    api: 'http://192.168.3.200:10001/api/web_v1' ,
     // 图片上传 api
-    fileApi: 'http://api.xq.test/api/admin_v1/upload' ,
+    fileApi: 'http://api.xq.test/api/web_v1/upload' ,
     code: {
         Success: 200 ,
         AuthFailed: 401

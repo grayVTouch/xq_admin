@@ -22,6 +22,8 @@ import '../../plugin/InfiniteClassification/css/InfiniteClassification.css';
 import '../../plugin/MultipleTab/css/MultipleTab.css';
 import '../../plugin/Loading/css/Loading.css';
 import '../../plugin/Uploader/css/Uploader.css';
+import '../../plugin/Nav/css/Nav.css';
+import '../../plugin/PicPlay_Touch/css/PicPlay_Touch.css';
 
 
 import '../../plugin/TouchFeedback/js/TouchFeedback.js';
@@ -30,5 +32,7 @@ import '../../plugin/InfiniteClassification/js/InfiniteClassification.js';
 import '../../plugin/MultipleTab/js/MultipleTab.js';
 import '../../plugin/Loading/js/Loading.js';
 import '../../plugin/Uploader/js/Uploader.js';
+import '../../plugin/Nav/js/Nav.js';
+import '../../plugin/PicPlay_Touch/js/PicPlay_Touch.js';
 
 import '../../plugin/SmallJs/SmallJs.js';

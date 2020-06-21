@@ -1,13 +1,17 @@
 window.request = function(url , method , data , success , error)
 {
     const token = G.s.get('token');
+    const moduleId = G.s.get('module_id');
     return G.ajax({
         url ,
         method ,
         header: {
             Authorization: token ,
         } ,
-        data ,
+        data: {
+            ...data ,
+            ...{module_id: moduleId}
+        } ,
         success (data , code) {
             if (code === 401) {
                 // 登录认证失败

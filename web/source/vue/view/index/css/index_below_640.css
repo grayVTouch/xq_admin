@@ -1,0 +1,39 @@
+@media screen and (max-width: 640px) {
+
+    .view .focus-bar {
+
+    }
+
+    .view .focus-bar .content {
+        flex-wrap: wrap;
+    }
+
+    .view .focus-bar .content .slidebar {
+        width: 100%;
+    }
+
+    .view .focus-bar .content .box {
+        width: 100%;
+        height: auto;
+        padding-top: 0.2rem;
+        overflow: hidden;
+        overflow-x: auto;
+    }
+
+
+    .view .focus-bar .content .box .inner {
+        flex-wrap: nowrap;
+    }
+
+    .view .focus-bar .content .box .inner .item {
+        width: 1.8rem;
+        height: 1.8rem;
+        margin: 0;
+        margin-right: 0.2rem;
+        flex: 1 0 auto;
+    }
+
+    .view .focus-bar .content .box .inner .item:nth-of-type(3n) {
+        margin-right: 0.2rem;
+    }
+}

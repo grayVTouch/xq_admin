@@ -1,0 +1,16 @@
+@media screen and (max-width: 640px) {
+
+    .main .center .header .site {
+        font-size: 16px;
+    }
+
+    .main .center .nav .title {
+        font-size: 12px;
+    }
+
+    .main .center .nav .module .list .item .link {
+        height: 30px;
+        line-height: 30px;
+        font-size: 14px;
+    }
+}

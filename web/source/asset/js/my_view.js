@@ -7,6 +7,8 @@ import formDrawer from '../../vue/view/public/form_drawer.vue';
 import tableButton from '../../vue/view/public/table_button.vue';
 import formModal from '../../vue/view/public/form_modal.vue';
 import icon from '../../vue/view/public/icon.vue';
+import navMenu from '../../vue/view/public/nav_menu.vue';
+import navMenuItem from '../../vue/view/public/nav_menu_item.vue';
 
 Vue.component('my-loading' , loading);
 Vue.component('my-avatar' , avatar);
@@ -17,4 +19,6 @@ Vue.component('my-form-drawer' , formDrawer);
 Vue.component('my-table-button' , tableButton);
 Vue.component('my-form-modal' , formModal);
 Vue.component('my-icon' , icon);
+Vue.component('my-nav-menu' , navMenu);
+Vue.component('my-nav-menu-item' , navMenuItem);
 

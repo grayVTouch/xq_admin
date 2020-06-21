@@ -1,17 +1,25 @@
 <template>
-    <img src="./res/loading.png" class="image">
+    <img src="./res/loading.png" :width="width" :height="30" class="image">
 </template>
 
 <script>
     export default {
-        name: "loading"
+        name: "loading" ,
+        props: {
+            width: {
+                type: Number ,
+                default: 30 ,
+            } ,
+            height: {
+                type: Number ,
+                default: 30
+            } ,
+        } ,
     }
 </script>
 
 <style scoped>
     .image {
-        width: 30px;
-        height: 30px;
         animation: loading 0.6s infinite linear;
         -webkit-animation: loading 0.6s infinite linear;
         -moz-animation: loading 0.6s infinite linear;

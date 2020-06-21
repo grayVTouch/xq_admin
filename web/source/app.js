@@ -12,9 +12,12 @@ import './asset/js/api.js';
 //
 import './asset/js/vue.js';
 import './asset/js/mixin.js';
-import './asset/js/iview.js';
-import './asset/js/my_view.js';
+
+// import vuetify from './asset/js/vuetify.js';
+// import './asset/js/iview.js';
+
 import './asset/js/my_plugin.js';
+import './asset/js/my_view.js';
 
 import router from './vue/router';
 
@@ -28,6 +31,8 @@ Vue.config.devtools = debug;
 
 Vue.config.productionTip = debug;
 
+
+
 /**
  * ****************
  * vue 实例
@@ -35,6 +40,8 @@ Vue.config.productionTip = debug;
  */
 new Vue({
     el: '#app' ,
+    // vuetify 框架
+    // vuetify ,
     // 路由仅允许在根组件上注册！！
     // 不允许在嵌套组件上注册
     router ,

@@ -1,0 +1,66 @@
+.main > .header .navigation .nav-top .action .login-layer-below-640 {
+    display: none;
+}
+
+@media screen and (max-width: 640px) {
+    /**
+     * ***********************
+     * 针对 nav 导航插件的修改
+     * ***********************
+     */
+    .main > .header {
+        height: 60px;
+    }
+
+    .main > .header .navigation.fixed {
+        transform: translateY(0);
+    }
+
+    .main > .header .navigation .nav-top {
+        height: 50px;
+        border-bottom: none;
+    }
+
+    .main > .header .navigation .nav-top .logo > * {
+        display: none;
+    }
+
+    .main > .header .navigation .nav-top .logo .web-logo {
+        display: block;
+    }
+
+    .main > .header .navigation .nav-top .logo .web-logo {
+        width: 30px;
+    }
+
+    .main > .header .navigation .nav-top .search {
+        width: calc(100% - 60px - 0.4rem - 40px);
+    }
+
+    .main > .header .navigation .nav-top .search .inner .type {
+        font-size: 13px;
+    }
+
+    .main > .header .navigation .nav-top .action .login-layer {
+        display: none;
+    }
+
+    .main > .header .navigation .nav-top .action .login-layer-below-640 {
+        display: block;
+        height: 100%;
+    }
+
+    .main > .header .navigation .nav-top .action .login-layer-below-640 .login {
+        width: 30px;
+        height: 100%;
+    }
+
+    .main > .header .navigation .nav-top .action .login-layer-below-640 .login .image {
+        height: 100%;
+        vertical-align: top;
+    }
+
+    .main > .header .navigation .nav-btm {
+        display: none;
+    }
+}

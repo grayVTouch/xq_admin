@@ -26,40 +26,16 @@ Vue.mixin({
             return G.isValid(val);
         } ,
 
-        getClass (val) {
-            return G.isValid(val) ? 'error' : '';
-        } ,
-
         push (...args) {
             this.$router.push.apply(this.$router , args);
-        } ,
-
-        notice (title , desc) {
-            return this.$Notice.open({
-                title ,
-                desc ,
-            });
         } ,
 
         state (key) {
             return this.$store.state[key];
         } ,
 
-        modal (action , title , content = '' , onOk , merge = {}) {
-            return this.$Modal[action]({
-                title ,
-                content ,
-                onOk ,
-                ...merge ,
-            });
-        } ,
-
-        message (action , content = '' , merge = {}) {
-            return this.$Message[action]({
-                background: true ,
-                content ,
-                ...merge ,
-            });
+        message (message , option = {}) {
+            return Prompt.alert(message , option);
         } ,
 
         link (url , type = '_blank') {
@@ -88,46 +64,12 @@ Vue.mixin({
             this.val = {...this.val , ...{[key]: val}};
         } ,
 
-        select (key , val) {
-            if (!G.isValid(val)) {
-                return this.val.select[key];
-            }
-            this.val.select[key] = val;
-            this.val.select = {...this.val.select , ...{[key]: val}};
-        } ,
-
         errorHandle (data) {
-            if (G.isString(data)) {
-                this.error();
-                this.message('error' , data);
-                return ;
-            }
-            this.message('error' , '操作失败，请检查');
-            this.error(data);
+
         } ,
 
         successHandle (callback) {
-            return this.modal('confirm' , '操作成功' , '' , null , {
-                okText: '继续' ,
-                cancelText: '取消' ,
-                onOk () {
-                    G.invoke(callback , null , true);
-                } ,
-                onCancel () {
-                    G.invoke(callback , null , false);
-                } ,
-            });
-        } ,
 
-        confirmModal (title , callback) {
-            return this.modal('confirm' , title , '' , null , {
-                onOk () {
-                    G.invoke(callback , null , true);
-                } ,
-                onCancel () {
-                    G.invoke(callback , null , false);
-                } ,
-            });
         } ,
     }
 });
