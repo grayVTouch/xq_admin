@@ -9,14 +9,14 @@
             </div>
             <div class="explain">
                 <div class="in">
-                    <div class="ico"><i class="run-iconfont run-huanxingtu"></i></div>
+                    <div class="ico"><i class="run-iconfont run-iconfont-huanxingtu"></i></div>
                     <div class="text">{{ item.cn }}</div>
                 </div>
             </div>
             <div class="flag hide">
                 <div class="new">新的</div>
                 <div class="number">0</div>
-                <div class="switch"><i class="run-iconfont run-top_zhankai_icon"></i></div>
+                <div class="switch"><i class="run-iconfont run-iconfont-top_zhankai_icon"></i></div>
             </div>
         </div>
 
