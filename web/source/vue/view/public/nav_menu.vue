@@ -40,6 +40,10 @@
         background-color: #656565;
     }
 
+    .__nav__ .list .item.cur > .action {
+        background-color: #656565;
+    }
+
     .__nav__ .list .item {
         height: auto;
         line-height: inherit;

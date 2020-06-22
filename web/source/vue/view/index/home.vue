@@ -9,7 +9,8 @@
 
                     <div class="item logo">
 
-                        <div class="thing web-logo"><img src="./res/logo.png" class="image"></div>
+                        <div class="thing __logo__"><img src="./res/logo.png" class="image"></div>
+                        <div class="thing menu"><img src="./res/menu.png" class="image"></div>
                         <div class="thing website"><a class="link">兴趣部落</a></div>
 
                     </div>
@@ -67,6 +68,11 @@
         </section>
         <!-- 尾部 -->
         <footer class="footer"></footer>
+
+        <!-- 导航菜单 -->
+        <div class="main-nav">
+
+        </div>
     </main>
 </template>
 

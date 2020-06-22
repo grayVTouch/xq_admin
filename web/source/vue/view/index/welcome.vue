@@ -13,7 +13,7 @@
             <nav class="nav">
                 <h2 class="title">请选择模块</h2>
                 <div class="module">
-                    <ul class="list" v-if="!val.pending.module">
+                    <ul class="list" v-if="!val.pending.loading">
                         <li v-for="v in module" class="item"><a class="link" @click="toHome(v)">{{ v.name }}</a></li>
                     </ul>
                     <div class="loading" v-else>
@@ -35,7 +35,7 @@
             return {
                 val: {
                     pending: {
-                        module: false ,
+                        loading: false ,
                     } ,
                     module: false ,
                     // 模块显示
@@ -66,9 +66,9 @@
             } ,
 
             getModuleData () {
-                this.pending('module' , true);
+                this.pending('loading' , true);
                 Api.module.all((data , code) => {
-                    this.pending('module' , false);
+                    this.pending('loading' , false);
                     if (code !== TopContext.code.Success) {
                         this.message(data);
                         return ;
@@ -79,6 +79,7 @@
 
             toHome (v) {
                 G.s.json('module' , v);
+                this.pending('loading' , true);
                 this.push({name: 'index'});
             } ,
 

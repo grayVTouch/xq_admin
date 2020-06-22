@@ -10,14 +10,14 @@ const router = new VueRouter({
  * ****************
  */
 router.beforeEach((to , from , next) => {
-    // const module = G.s.get('module');
-    // if (G.isNull(module)) {
-    //     if (to.name !== 'welcome') {
-    //         // 已经跳转到首页
-    //         next({name: 'welcome'});
-    //         return ;
-    //     }
-    // }
+    const module = G.s.get('module');
+    if (G.isNull(module)) {
+        if (to.name !== 'welcome') {
+            // 已经跳转到首页
+            next({name: 'welcome'});
+            return ;
+        }
+    }
     next();
 });
 

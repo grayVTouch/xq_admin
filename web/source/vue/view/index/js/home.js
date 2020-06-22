@@ -51,7 +51,15 @@ export default {
         initIns () {
 
             this.ins.nav = new Nav(this.dom.navMenu.get(0) , {
-
+                click () {
+                    console.log('你点击了 nav 项');
+                } ,
+                // 是否选中项
+                focus: true ,
+                // 是否选中顶级项
+                topFocus: true ,
+                // 初始选中的项
+                ids: [0] ,
             });
         } ,
 
@@ -75,6 +83,12 @@ export default {
                     return ;
                 }
                 const category = G.tree.childrens(0 , data , null , false , true);
+                category.unshift({
+                    id: 0 ,
+                    name: '首页' ,
+                    floor: 1 ,
+                    children: [] ,
+                });
                 this.category = category;
                 this.$nextTick(() => {
                     this.initIns();
