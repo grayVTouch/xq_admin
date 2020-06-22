@@ -133,7 +133,7 @@ export default {
                 // 点击项后是否选中
                 focus: true ,
                 // 是否选中顶级菜单
-                topFocus: true ,
+                topFocus: false ,
                 // 子级项点击后回调
                 child (id) {
                     const topRoute = self.topRoute(id);
