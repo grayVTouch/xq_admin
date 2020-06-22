@@ -23,7 +23,10 @@ module.exports = {
     plugins: [
         // 这个用法错了
         // new CleanWebpackPlugin(['compiled']),
-        new CleanWebpackPlugin() ,
+        new CleanWebpackPlugin({
+            // 仅删除陈旧的资源
+            cleanStaleWebpackAssets: false ,
+        }) ,
         new HtmlWebpackPlugin({
             title: '兴趣部落' ,
             filename: 'index.html' ,

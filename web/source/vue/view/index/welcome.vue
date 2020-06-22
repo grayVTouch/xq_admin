@@ -89,4 +89,3 @@
 
 <style src="./css/global.css"></style>
 <style scoped src="./css/welcome.css"></style>
-<style scoped src="./css/welcome_below_640.css"></style>
