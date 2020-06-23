@@ -77,7 +77,7 @@ export default {
         } ,
 
         getCategoryData () {
-            Api.category.all((data , code) => {
+            Api.home.category((data , code) => {
                 if (code !== TopContext.code.Success) {
                     this.message(data);
                     return ;

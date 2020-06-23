@@ -4,20 +4,34 @@
         <!-- 焦点栏目 -->
         <div class="focus-bar">
             
-            <div class="background"><img src="./res/background1.jpg" class="image"></div>
+            <div class="background">
+
+                <div class="mask"></div>
+                <div class="bg-image" :style="'background-image: url(\'' + background.image + '\')'"></div>
+
+
+            </div>
 
             <div class="content">
                 <div class="slidebar" ref="slidebar">
                     <div class='pic-play-touch'>
                         <div class='images'>
                             <div class='_images'>
-                                <a href='javascript:;' class='link'><img src='./res/slidebar/01.jpg' alt="" class='image'></a>
-                                <a href='javascript:;' class='link'><img src='./res/slidebar/02.jpg' alt="" class='image'></a>
-                                <a href='javascript:;' class='link'><img src='./res/slidebar/03.jpg' alt="" class='image'></a>
+
+                                <a v-for="v in homeSlideshow" :href='v.link' class='link'><img :src='v.__path__' alt="" class='image'></a>
+<!--                                <a href='javascript:;' class='link'><img src='./res/slidebar/02.jpg' alt="" class='image'></a>-->
+<!--                                <a href='javascript:;' class='link'><img src='./res/slidebar/03.jpg' alt="" class='image'></a>-->
+
                             </div>
 
-                            <div class='prev'><img src='../../../plugin/PicPlay_Touch/image/prev.png' alt="" class='image'></div>
-                            <div class='next'><img src='../../../plugin/PicPlay_Touch/image/next.png' alt="" class='image'></div>
+                            <div class='prev'>
+<!--                                <img src='../../../plugin/PicPlay_Touch/image/prev.png' alt="" class='image'>-->
+                                <i class="run-iconfont run-iconfont-prev01"></i>
+                            </div>
+                            <div class='next'>
+<!--                                <img src='../../../plugin/PicPlay_Touch/image/next.png' alt="" class='image'>-->
+                                <i class="run-iconfont run-iconfont-next01"></i>
+                            </div>
                         </div>
 
                         <div class="index">
@@ -67,59 +81,62 @@
                             <a class="tag">全部</a>
                         </div>
                         <div class="operation">
-                            <button class="prev"><my-icon icon="prev01" /></button>
+                            <button class="prev" @click=""><my-icon icon="prev01" /></button>
                             <button class="next"><my-icon icon="next01" /></button>
                         </div>
                     </div>
                 </div>
 
                 <div class="list">
+                    <div class="inner">
+                        <div class="item card-box" v-for="v in images">
+                            <!-- 封面 -->
+                            <div class="thumb">
+                                <img :src="v.__thumb__" class="image">
+                                <div class="mask">
+                                    <div class="top">
+                                        <div class="type" v-if="v.type === 'pro'"><my-icon icon="zhuanyerenzheng" size="35" /></div>
+                                        <div class="collection"><my-icon icon="shoucang2" size="35" /></div>
+                                    </div>
+                                    <div class="btm">
+                                        <div class="count">{{ v.images.length }}P</div>
+                                    </div>
 
-                    <div class="item card-box" v-for="v in 10">
-                        <!-- 封面 -->
-                        <div class="thumb">
-                            <img src="https://cdn.zzdaye.com/images/b/3/a/b3a1c940-025d-11ea-83d8-e7dea6ce9725.jpg" class="image">
-                            <div class="mask">
-                                <div class="top">
-                                    <div class="type"><my-icon icon="zhuanyerenzheng" size="35" /></div>
-                                    <div class="collection"><my-icon icon="shoucang2" size="35" /></div>
                                 </div>
-                                <div class="btm">
-                                    <div class="count">40P</div>
-                                </div>
+                            </div>
 
+                            <div class="introduction">
+                                <!-- 标签 -->
+                                <div class="tags">
+                                    <span class="ico"><my-icon icon="icontag" size="18" /></span>
+
+                                    <span class="tag" v-for="tag in v.__tag__">{{ tag.name }}</span>
+                                </div>
+                                <!-- 标题 -->
+                                <div class="title">{{ v.name }}</div>
+                                <!-- 发布者 -->
+                                <div class="user">
+                                    <template v-if="v.user">
+                                        <span class="avatar-outer"><img :src="v.user.__avatar__" alt="" class="image avatar"></span>
+                                        <a class="name">{{ v.user.username }}</a>
+                                    </template>
+                                    <template v-else>
+                                        <span class="avatar-outer"><img src="./res/logo.png" alt="" class="image avatar"></span>
+                                        <a class="name">real_yami</a>
+                                    </template>
+                                </div>
+                                <!-- 统计信息 -->
+                                <div class="info">
+                                    <div class="left"><my-icon icon="shijian" class="ico" mode="right" /> {{ v.update_time }}</div>
+                                    <div class="right">
+                                        <span><my-icon icon="chakan" mode="right" />{{ v.view_count }}</span>
+                                        <span><my-icon icon="shoucang" mode="right" />{{ v.praise_count }}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="introduction">
-                            <!-- 标签 -->
-                            <div class="tags">
-                                <span class="ico"><my-icon icon="icontag" size="18" /></span>
-                                <span class="tag">美女</span>
-                                <span class="tag">大尺度</span>
-                                <span class="tag">奶味</span>
-                                <span class="tag">爆乳</span>
-                                <span class="tag">蜜桃臀</span>
-                                <span class="tag">酥胸</span>
-                            </div>
-                            <!-- 标题 -->
-                            <div class="title">可爱人妻糯美子童颜巨乳等你品尝</div>
-                            <!-- 发布者 -->
-                            <div class="user">
-                                <span class="avatar-outer"><img src="./res/logo.png" alt="" class="image avatar"></span>
-                                <a class="name">real_yami</a>
-                            </div>
-                            <!-- 统计信息 -->
-                            <div class="info">
-                                <div class="left"><my-icon icon="shijian" class="ico" mode="right" /> 2个月前</div>
-                                <div class="right">
-                                    <span><my-icon icon="chakan" mode="right" />10</span>
-                                    <span><my-icon icon="shoucang" mode="right" />100</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-
 
                 </div>
             </div>

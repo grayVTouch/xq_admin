@@ -1,6 +1,6 @@
 import NotFoundView from '../view/error/404.vue';
-import welcome from '../view/index/welcome.vue';
-import home from '../view/index/home.vue';
+import welcome from '../view/welcome/welcome.vue';
+import home from '../view/public/home.vue';
 import index from '../view/index/index.vue';
 
 

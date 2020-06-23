@@ -34,8 +34,8 @@ Vue.mixin({
             return this.$store.state[key];
         } ,
 
-        message (message , option = {}) {
-            return Prompt.alert(message , option);
+        message (msg , option = {}) {
+            return Prompt.alert(msg , option);
         } ,
 
         link (url , type = '_blank') {

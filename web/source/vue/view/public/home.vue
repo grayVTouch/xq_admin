@@ -9,7 +9,7 @@
                     <div class="inner">
                         <div class="logo">
 
-                            <div class="__logo__"><img src="./res/logo.png" class="image"></div>
+                            <div class="__logo__"><img src="../index/res/logo.png" class="image"></div>
                             <div class="site"><a class="link">兴趣部落</a></div>
 
                         </div>
@@ -82,6 +82,5 @@
 </template>
 
 <script src="./js/home.js"></script>
-
-<style src="./css/global.css"></style>
+<style src="./css/base.css"></style>
 <style scoped src="./css/home.css"></style>

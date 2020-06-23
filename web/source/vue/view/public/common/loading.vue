@@ -1,5 +1,5 @@
 <template>
-    <img src="./res/loading.png" :width="width" :height="30" class="image">
+    <img src="../res/loading.png" :width="width" :height="30" class="image">
 </template>
 
 <script>

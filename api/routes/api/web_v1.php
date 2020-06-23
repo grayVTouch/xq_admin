@@ -24,6 +24,8 @@ Route::prefix('web_v1')
              */
             Route::get('get_all_module' , 'Module@all');
             Route::get('get_all_category' , 'Category@all');
+            Route::get('get_home_slideshow' , 'ImageAtPosition@homeSlideshow');
+            Route::get('image_subject/{limit}/newest' , 'ImageSubject@getNewestBylimit');
         });
 
         Route::middleware([

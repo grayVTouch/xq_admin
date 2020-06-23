@@ -262,3 +262,27 @@ create table if not exists `xq_user_token` (
 	primary key (id) ,
 	unique key `token` (`token`)
 ) comment '平台用户登录表';
+
+drop table if exists `xq_position`;
+create table if not exists `xq_position` (
+     id bigint unsigned not null auto_increment ,
+     value varchar(255) default '' comment '值' ,
+     description varchar(1000) default '' comment '位置描述' ,
+     create_time datetime default current_timestamp ,
+     primary key (id)
+) comment '位置';
+
+
+drop table if exists `xq_image_at_position`;
+create table if not exists `xq_image_at_position` (
+   id bigint unsigned not null auto_increment ,
+   position_id varchar(255) default '' comment '放置位置' ,
+   name varchar(255) default '' comment '名称' ,
+   mime varchar(50) default '' comment 'mime' ,
+   path varchar(1000) default '' comment '路径' ,
+   link varchar(1000) default '' comment '跳转链接' ,
+   create_time datetime default current_timestamp ,
+   primary key (id)
+) comment '定点图片';
+
+

@@ -1,9 +1,11 @@
 import misc from './../../api/misc.js';
-import module from './../../api/module.js';
-import category from './../../api/category.js';
+import welcome from '../../api/welcome.js';
+import index from './../../api/index.js';
+import home from './../../api/home.js';
 
 window.Api = {
     misc ,
-    module ,
-    category ,
+    welcome ,
+    index ,
+    home ,
 };

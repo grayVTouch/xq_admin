@@ -1,0 +1,15 @@
+
+/*** 滚动条重置 ***/
+::-webkit-scrollbar-thumb {
+    background-color: rgb(101, 101, 101);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(130, 130, 130);
+}
+
+/**
+ * *****************
+ * 网站总体颜色格调
+ * *****************
+ */

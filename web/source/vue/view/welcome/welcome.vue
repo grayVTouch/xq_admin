@@ -67,7 +67,7 @@
 
             getModuleData () {
                 this.pending('loading' , true);
-                Api.module.all((data , code) => {
+                Api.welcome.module((data , code) => {
                     this.pending('loading' , false);
                     if (code !== TopContext.code.Success) {
                         this.message(data);
@@ -87,5 +87,5 @@
     }
 </script>
 
-<style src="./css/global.css"></style>
+<style src="../public/css/base.css"></style>
 <style scoped src="./css/welcome.css"></style>

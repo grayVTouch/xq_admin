@@ -5,7 +5,7 @@
             <div class="btm">{{ btmVal }}</div>
         </div>
         <img :src="src" v-if="src" class="image">
-        <img src="./res/avatar.png" v-else class="image">
+        <img src="../res/avatar.png" v-else class="image">
     </div>
 </template>
 
