@@ -1,18 +1,22 @@
 <template>
     <my-form-drawer :title="title" v-model="drawer">
+
         <template slot="header">
-            <div class="run-action">
+
+            <div class="run-action-title">
                 <div class="left">{{ title }}</div>
                 <div class="right">
                     <Button type="primary" :loading="val.pending.submit" @click="submitEvent"><my-icon icon="tijiao" />提交</Button>
                     <Button type="error" @click="closeFormDrawer"><my-icon icon="guanbi" />关闭</Button>
                 </div>
             </div>
+
         </template>
+
         <template slot="default">
             <form @submit.prevent="submitEvent" class="form">
-                <Tabs value="base">
-                    <TabPane label="基本信息" name="base" v-model="val.tab">
+                <Tabs v-model="val.tab">
+                    <TabPane label="基本信息" name="base">
                         <table class="input-table">
                             <tbody>
 
@@ -147,8 +151,8 @@
 
                                                     <div class="line icon">
                                                         <div class="ico">
-                                                            <div class="feedback run-action-feedback-round"><i title="上传文件" class="iconfont run-iconfont run-shangchuan"></i></div>
-                                                            <div class="clear run-action-feedback-round" title="清空"><i class="iconfont run-iconfont run-qingkong"></i></div>
+                                                            <div class="feedback run-action-feedback-round"><i class="iconfont run-iconfont run-iconfont-shangchuan"></i></div>
+                                                            <div class="clear run-action-feedback-round" title="清空"><i class="iconfont run-iconfont run-iconfont-qingkong"></i></div>
                                                         </div>
                                                         <div class="text">请选择要上传的文件</div>
                                                     </div>
@@ -243,7 +247,7 @@
                             </tbody>
                         </table>
                     </TabPane>
-                    <TabPane label="图片信息" name="image" v-model="val.tab">
+                    <TabPane label="图片信息" name="image">
                         <div class="image-info">
                             <div class="line upload">
                                 <div class="run-title">
@@ -267,8 +271,8 @@
 
                                                                 <div class="line icon">
                                                                     <div class="ico">
-                                                                        <div class="feedback run-action-feedback-round"><i title="上传文件" class="iconfont run-iconfont run-shangchuan"></i></div>
-                                                                        <div class="clear run-action-feedback-round" title="清空"><i class="iconfont run-iconfont run-qingkong"></i></div>
+                                                                        <div class="feedback run-action-feedback-round"><i class="iconfont run-iconfont run-iconfont-shangchuan"></i></div>
+                                                                        <div class="clear run-action-feedback-round" title="清空"><i class="iconfont run-iconfont run-iconfont-qingkong"></i></div>
                                                                     </div>
                                                                     <div class="text">请选择要上传的文件</div>
                                                                 </div>
@@ -296,12 +300,14 @@
                                 <div class="line">
                                     <div class="run-title">
                                         <div class="left">图片列表</div>
-                                        <div class="right"></div>
+                                        <div class="right">
+                                            <my-table-button type="error" :loading="val.pending['destroyAll']" @click="destroyAllEvent">删除选中项</my-table-button>
+                                        </div>
                                     </div>
                                     <div>
                                         <Table border :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" style="width: 100%;">
                                             <template v-slot:path="{row,index}">
-                                                <img :src="row.path ? row.__path__ : $store.state.context.res.notFound" height="40" class="image">
+                                                <img :src="row.path ? row.__path__ : $store.state.context.res.notFound" height="40" class="image" @click.stop="link(row.__path__)">
                                             </template>
                                             <template v-slot:action="{row,index}">
                                                 <my-table-button :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)">删除</my-table-button>

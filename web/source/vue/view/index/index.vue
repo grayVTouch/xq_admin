@@ -81,14 +81,14 @@
                             <a class="tag">全部</a>
                         </div>
                         <div class="operation">
-                            <button class="prev" @click=""><my-icon icon="prev01" /></button>
-                            <button class="next"><my-icon icon="next01" /></button>
+                            <button class="prev" @click="prevByGroup('image')"><my-icon icon="prev01" /></button>
+                            <button class="next" @click="nextByGroup('image')"><my-icon icon="next01" /></button>
                         </div>
                     </div>
                 </div>
 
-                <div class="list">
-                    <div class="inner">
+                <div class="list" ref="list-for-image">
+                    <div class="inner" ref="inner-for-image">
                         <div class="item card-box" v-for="v in images">
                             <!-- 封面 -->
                             <div class="thumb">

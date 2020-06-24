@@ -1,5 +1,5 @@
 <template>
-    <i class="run-iconfont" :class="{['run-' + icon]: true , 'padding-left': mode === 'left' || mode === 'both' , 'padding-right': mode === 'right' || mode === 'both' , ['f-' + size]: true}"></i>
+    <i class="run-iconfont" :title="title" :class="{['run-iconfont-' + icon]: true , 'padding-left': mode === 'left' || mode === 'both' , 'padding-right': mode === 'right' || mode === 'both' , ['f-' + size]: true}"></i>
 </template>
 
 <script>
@@ -14,12 +14,17 @@
 
             mode: {
                 type: String ,
-                default: 'right' ,
+                default: '' ,
             } ,
 
             size: {
                 type: [Number,String] ,
                 default: 14 ,
+            } ,
+
+            title: {
+                type: String ,
+                default: '' ,
             } ,
         } ,
     }

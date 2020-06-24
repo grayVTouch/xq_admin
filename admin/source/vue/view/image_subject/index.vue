@@ -67,7 +67,7 @@
             </div>
 
             <div class="line">
-                <div class="run-action">
+                <div class="run-action-title">
                     <div class="left">
                         <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
                         <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项</my-table-button>
@@ -89,7 +89,7 @@
 
                     <Table border :columns="table.field" :data="table.data" @on-selection-change="selectedEvent">
                         <template v-slot:thumb="{row,index}">
-                            <img :src="row.thumb ? row.__thumb__ : $store.state.res.context.notFound" height="40" class="image">
+                            <img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" height="40" class="image">
                         </template>
                         <template v-slot:user_id="{row,index}">
                             {{ row.user ? `${row.user.username}【${row.user.id}】` : `unknow【${row.user_id}】` }}
@@ -110,7 +110,7 @@
 
                         <template v-slot:images="{row,index}">
                             <Poptip placement="right" width="400" title="图片列表" :transfer="true" trigger="hover">
-                                <Button>悬浮可查看详情</Button>
+                                <Button>{{ row.images.length }}P</Button>
                                 <div slot="content">
                                     <table class="line-table">
                                         <tbody>

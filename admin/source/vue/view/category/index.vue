@@ -20,7 +20,7 @@
 
                     <Table border width="100%" height="600" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent">
                         <template v-slot:name="{row,index}">
-                            <template v-if="row.floor > 1">{{ '|' + '_'.repeat((row.floor - 1) * 4) + row.name }}</template>
+                            <template v-if="row.floor > 1">{{ '|' + '_'.repeat((row.floor - 1) * 10) + row.name }}</template>
                             <template v-else>{{ row.name }}</template>
                         </template>
                         <template v-slot:enable="{row,index}"><my-switch v-model="row.enable" :loading="val.pending['enable_' + row.id]" :extra="{id: row.id , field: 'enable'}" @on-change="updateBoolValEvent" /></template>
@@ -41,7 +41,7 @@
 
             <div class="line page hide"></div>
 
-            <my-form-modal v-model="val.modal" :title="modalTitle">
+            <my-form-modal v-model="val.modal" :title="title">
                 <template slot="default">
                     <form class="form" @submit.prevent ref="form">
                         <table class="input-table">

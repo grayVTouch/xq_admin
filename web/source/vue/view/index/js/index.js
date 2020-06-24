@@ -121,10 +121,25 @@ export default {
                 // 是否开启拖拽功能
                 enableDrag: false,
                 // 是否开启定时轮播功能
-                enableTimer: true ,
+                enableTimer: false ,
                 // 初始显示的索引
                 index: 1
             })
         } ,
-    },
+
+        prevByGroup (group) {
+            const list = G(this.$refs['list-for-' + group]);
+            const inner = G(this.$refs['inner-for-' + group]);
+            const scrollWidth = list.scrollWidth();
+            const clientWidth = list.width();
+            const scrollLeft = list.scrollLeft();
+            // console.log('当前 scrollLeft' , scrollLeft , scrollWidth , clientWidth , scrollLeft + clientWidth);
+
+
+        } ,
+
+        nextByGroup (group) {
+
+        } ,
+    } ,
 }

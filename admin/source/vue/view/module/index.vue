@@ -67,7 +67,7 @@
             </div>
 
             <div class="line">
-                <div class="run-action">
+                <div class="run-action-title">
                     <div class="left">
                         <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
                         <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项</my-table-button>
@@ -107,7 +107,7 @@
                 <Page :total="table.total" :page-size="$store.state.context.limit" :current="table.page" :show-total="true" :show-sizer="false" :show-elevator="true"  @on-change="pageEvent" />
             </div>
 
-            <my-form-modal v-model="val.modal" :title="modalTitle" :loading="val.pending.submit" @on-ok="submitEvent" @on-cancel="closeFormModal">
+            <my-form-modal v-model="val.modal" :title="title" :loading="val.pending.submit" @on-ok="submitEvent" @on-cancel="closeFormModal">
                 <template slot="default">
                     <form class="form" @submit.prevent>
                         <table class="input-table">

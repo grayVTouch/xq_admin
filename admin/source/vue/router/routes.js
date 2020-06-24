@@ -11,6 +11,8 @@ import indexForSubject from '../view/subject/index.vue';
 import indexForImageSubject from '../view/image_subject/index.vue';
 import indexForUser from '../view/user/index.vue';
 import indexForAdmin from '../view/admin/index.vue';
+import indexForPosition from '../view/position/index.vue';
+import indexForImageAtPosition from '../view/image_at_position/index.vue';
 
 
 export default [
@@ -75,6 +77,16 @@ export default [
     {
         path: '/admin/index' ,
         component: indexForAdmin
+    } ,
+
+    {
+        path: '/position/index' ,
+        component: indexForPosition
+    } ,
+
+    {
+        path: '/image_at_position/index' ,
+        component: indexForImageAtPosition
     } ,
 
 ]

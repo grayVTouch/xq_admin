@@ -267,6 +267,7 @@ drop table if exists `xq_position`;
 create table if not exists `xq_position` (
      id bigint unsigned not null auto_increment ,
      value varchar(255) default '' comment '值' ,
+     name varchar(255) default '' comment '名称' ,
      description varchar(1000) default '' comment '位置描述' ,
      create_time datetime default current_timestamp ,
      primary key (id)
@@ -276,7 +277,7 @@ create table if not exists `xq_position` (
 drop table if exists `xq_image_at_position`;
 create table if not exists `xq_image_at_position` (
    id bigint unsigned not null auto_increment ,
-   position_id varchar(255) default '' comment '放置位置' ,
+   position_id bigint unsigned default 0 comment '放置位置' ,
    name varchar(255) default '' comment '名称' ,
    mime varchar(50) default '' comment 'mime' ,
    path varchar(1000) default '' comment '路径' ,

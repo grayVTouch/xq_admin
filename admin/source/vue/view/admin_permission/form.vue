@@ -5,7 +5,7 @@
     >
 
         <template slot="header">
-            <div class="run-action">
+            <div class="run-action-title">
                 <div class="left">{{ title }}</div>
                 <div class="right">
                     <Button type="primary" :loading="val.pending.submit" @click="submitEvent">提交</Button>
@@ -123,8 +123,8 @@
 
                                             <div class="line icon">
                                                 <div class="ico">
-                                                    <div class="feedback run-action-feedback-round"><i title="上传文件" class="iconfont run-iconfont run-shangchuan"></i></div>
-                                                    <div class="clear run-action-feedback-round" title="清空"><i class="iconfont run-iconfont run-qingkong"></i></div>
+                                                    <div class="feedback run-action-feedback-round"><i class="iconfont run-iconfont run-iconfont-shangchuan"></i></div>
+                                                    <div class="clear run-action-feedback-round" title="清空"><i class="iconfont run-iconfont run-iconfont-qingkong"></i></div>
                                                 </div>
                                                 <div class="text">请选择要上传的文件</div>
                                             </div>
@@ -159,8 +159,8 @@
 
                                             <div class="line icon">
                                                 <div class="ico">
-                                                    <div class="feedback run-action-feedback-round"><i title="上传文件" class="iconfont run-iconfont run-shangchuan"></i></div>
-                                                    <div class="clear run-action-feedback-round" title="清空"><i class="iconfont run-iconfont run-qingkong"></i></div>
+                                                    <div class="feedback run-action-feedback-round"><i class="iconfont run-iconfont run-iconfont-shangchuan"></i></div>
+                                                    <div class="clear run-action-feedback-round" title="清空"><i class="iconfont run-iconfont run-iconfont-qingkong"></i></div>
                                                 </div>
                                                 <div class="text">请选择要上传的文件</div>
                                             </div>

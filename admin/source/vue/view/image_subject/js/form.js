@@ -180,6 +180,9 @@ export default {
             this.drawer = false;
             this.ins.thumb.clearAll();
             this.ins.images.clearAll();
+            this.images = [];
+            // 切换回基本的内容
+            this._val('tab' , 'base');
         } ,
 
         destroy (id , callback) {

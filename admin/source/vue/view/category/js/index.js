@@ -29,45 +29,56 @@ export default {
                         type: 'selection',
                         width: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
                     },
                     {
                         title: 'id' ,
                         key: 'id' ,
+                        width: TopContext.table.id ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
                     } ,
                     {
                         title: '名称' ,
                         slot: 'name' ,
-                        width: TopContext.table.name ,
+                        width: 600 ,
+                        fixed: 'left' ,
                     } ,
                     {
                         title: '上级id' ,
                         key: 'p_id' ,
+                        width: TopContext.table.name ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '描述' ,
                         key: 'description' ,
+                        width: TopContext.table.desc
                     } ,
                     {
                         title: '启用?' ,
                         slot: 'enable' ,
+                        width: TopContext.table.status ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '权重' ,
                         key: 'weight' ,
+                        width: TopContext.table.weight ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '创建时间' ,
                         key: 'create_time' ,
+                        width: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '操作' ,
                         slot: 'action' ,
+                        width: TopContext.table.action ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
                     } ,
                 ] ,
                 data: [] ,
@@ -82,7 +93,7 @@ export default {
     } ,
 
     computed: {
-        modalTitle () {
+        title () {
             return this.val.mode === 'edit' ? '编辑分类' : '添加分类';
         } ,
 

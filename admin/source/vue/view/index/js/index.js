@@ -1,5 +1,5 @@
 import base from '../../public/base.vue';
-import menu from '../../public/menu.vue';
+import menu from '../../public/common/menu.vue';
 import route from './route.js';
 import routes from '../../../router/routes.js';
 

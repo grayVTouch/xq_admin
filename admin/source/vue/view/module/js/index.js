@@ -74,7 +74,7 @@ export default {
     } ,
 
     computed: {
-        modalTitle () {
+        title () {
             return this.val.mode === 'edit' ? '编辑' : '添加';
         } ,
 

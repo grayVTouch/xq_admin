@@ -172,5 +172,38 @@ Route::prefix('admin_v1')
             Route::delete('image_subject/{id}' , 'ImageSubject@destroy');
             Route::delete('destroy_all_image_for_image_subject' , 'ImageSubject@destroyImages');
 
+            /**
+             * ******************
+             * 系统位置
+             * ******************
+             */
+            Route::get('position' , 'Position@index');
+            Route::get('position/{id}' , 'Position@show');
+            Route::patch('position/{id}' , 'Position@localUpdate');
+            Route::put('position/{id}' , 'Position@update');
+            Route::post('position' , 'Position@store');
+            // 特别注意，这边这个顺序不能更换
+            // 如果更换会导致 路由匹配出现不是期望的现象
+            Route::delete('destroy_all_position' , 'Position@destroyAll');
+            Route::delete('position/{id}' , 'Position@destroy');
+            Route::get('search_position' , 'Position@search');
+            Route::get('get_all_position' , 'Position@all');
+
+            /**
+             * ******************
+             * 定点图片
+             * ******************
+             */
+            Route::get('image_at_position' , 'ImageAtPosition@index');
+            Route::get('image_at_position/{id}' , 'ImageAtPosition@show');
+            Route::patch('image_at_position/{id}' , 'ImageAtPosition@localUpdate');
+            Route::put('image_at_position/{id}' , 'ImageAtPosition@update');
+            Route::post('image_at_position' , 'ImageAtPosition@store');
+            // 特别注意，这边这个顺序不能更换
+            // 如果更换会导致 路由匹配出现不是期望的现象
+            Route::delete('destroy_all_image_at_position' , 'ImageAtPosition@destroyAll');
+            Route::delete('image_at_position/{id}' , 'ImageAtPosition@destroy');
+
+
         });
     });

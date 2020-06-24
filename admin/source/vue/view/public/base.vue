@@ -15,7 +15,7 @@
 </template>
 
 <script>
-    import navigation from './navigation.vue';
+    import navigation from './common/navigation.vue';
 
     export default {
         name: "my-base" ,

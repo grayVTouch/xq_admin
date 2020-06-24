@@ -7,7 +7,7 @@ export default {
     status: 120 ,
     sex: 80 ,
     bool: 80 ,
-    time: 180 ,
+    time: 200 ,
     number: 130 ,
     type: 80 ,
     mobile: 130 ,
@@ -23,5 +23,6 @@ export default {
 
     alignCenter: 'center' ,
     alignLeft: 'left' ,
+
 
 };

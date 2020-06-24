@@ -81,23 +81,21 @@
             <div class="line data">
 
                 <div class="run-title">
-                    <div class="left">
-                        数据列表&nbsp;&nbsp;&nbsp;
-
-<!--                        <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>-->
-<!--                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项</my-table-button>-->
-                    </div>
-                    <div class="right">
-<!--                        <Page :total="table.total" :page-size="$store.state.context.limit" :current="table.page" :show-total="true" :show-sizer="false" :show-elevator="true"  @on-change="pageEvent" />-->
-                    </div>
+                    <div class="left">数据列表</div>
+                    <div class="right"></div>
                 </div>
 
                 <div class="table">
 
                     <Table border :columns="table.field" :data="table.data" @on-selection-change="selectedEvent">
+                        <template v-slot:position_id="{row,index}">
+                            {{ row.position ? `${row.position.name}【${row.position.id}】` : `unknow【${row.position_id}】` }}
+                        </template>
+                        <template v-slot:path="{row , index}">
+                            <img :src="row.path ? row.__path__ : $store.state.context.res.notFound" height="40" @click.stop="link(row.__path__)" class="image">
+                        </template>
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
-                            <my-table-button @click="allocateEvent(row)"><my-icon icon="privilege" />权限分配</my-table-button>
                             <my-table-button type="error" :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
                         </template>
                     </Table>
@@ -120,24 +118,65 @@
                     <form class="form" @submit.prevent>
                         <table class="input-table">
                             <tbody>
-                            <tr :class="getClass(val.error.name)" id="form-name">
-                                <td>名称</td>
+
+                            <tr :class="getClass(val.error.position_id)" id="form-position_id">
+                                <td>位置</td>
                                 <td>
-                                    <input type="text" v-model="form.name" @input="val.error.name=''" class="form-text">
-                                    <span class="msg"></span>
+                                    <i-select class="iview-form-select" v-model="form.position_id">
+                                        <i-option v-for="v in position" :key="v.id" :value="v.id">{{ v.name }}</i-option>
+                                    </i-select>
                                     <span class="need">*</span>
-                                    <span class="e-msg"></span>
+                                    <div class="msg"></div>
+                                    <div class="e-msg">{{ val.error.position_id }}</div>
                                 </td>
                             </tr>
-                            <tr :class="getClass(val.error.weight)" id="form-weight">
-                                <td>权重</td>
+
+                            <tr :class="getClass(val.error.path)" id="form-path">
+                                <td>图片</td>
                                 <td>
-                                    <input type="number" v-model="form.weight" @input="val.error.weight = ''" class="form-text">
-                                    <span class="msg">仅允许整数</span>
+                                    <div ref="path">
+                                        <!-- 上传图片组件 -->
+                                        <div class='uploader'>
+                                            <div class="upload">
+                                                <div class="handler">
+
+                                                    <div class="line input hide">
+                                                        <input type="file" class="file-input">
+                                                    </div>
+
+                                                    <div class="line icon">
+                                                        <div class="ico">
+                                                            <div class="feedback run-action-feedback-round"><i class="iconfont run-iconfont run-iconfont-shangchuan"></i></div>
+                                                            <div class="clear run-action-feedback-round" title="清空"><i class="iconfont run-iconfont run-iconfont-qingkong"></i></div>
+                                                        </div>
+                                                        <div class="text">请选择要上传的文件</div>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="msg"></div>
+                                            </div>
+                                            <div class="preview"></div>
+
+                                        </div>
+                                    </div>
+
                                     <span class="need"></span>
-                                    <span class="e-msg"></span>
+                                    <div class="msg"></div>
+                                    <div class="e-msg">{{ val.error.path }}</div>
                                 </td>
                             </tr>
+
+                            <tr :class="getClass(val.error.link)" id="form-link">
+                                <td>链接</td>
+                                <td>
+                                    <input type="text" v-model="form.link" @input="val.error.link=''" class="form-text">
+                                    <span class="need"></span>
+                                    <div class="msg"></div>
+                                    <div class="e-msg">{{ val.error.link }}</div>
+                                </td>
+                            </tr>
+
                             </tbody>
                         </table>
                     </form>
@@ -148,20 +187,7 @@
                 </template>
             </my-form-modal>
 
-            <my-form-drawer v-model="val.drawer">
-                <template slot="header">
-                    <div class="run-action-title">
-                        <div class="left">权限分配</div>
-                        <div class="right">
-                            <Button type="primary" :loading="val.pending.allocatePermission" @click="allocatePermission">提交</Button>
-                            <Button type="error" @click="closeFormDrawer">关闭</Button>
-                        </div>
-                    </div>
-                </template>
-                <template slot="default">
-                    <Tree :data="permission" :show-checkbox="true" :check-strictly="true" @on-select-change="permissionSelectedEvent" @on-check-change="permissionCheckedEvent" :multiple="true"></Tree>
-                </template>
-            </my-form-drawer>
+
         </div>
     </my-base>
 </template>

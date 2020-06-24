@@ -64,7 +64,8 @@ export default {
                         title: '封面' ,
                         slot: 'thumb' ,
                         width: TopContext.table.name ,
-                        align: TopContext.table.alignCenter
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
                     } ,
                     {
                         title: '用户【id】' ,
@@ -330,6 +331,9 @@ export default {
             this._val('drawer' , true);
             this._val('mode' , 'add');
             this.error();
+
+            console.log(form);
+
             this.form = {...form};
         } ,
 

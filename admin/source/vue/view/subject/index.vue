@@ -67,7 +67,7 @@
             </div>
 
             <div class="line">
-                <div class="run-action">
+                <div class="run-action-title">
                     <div class="left">
                         <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
                         <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项</my-table-button>
@@ -124,116 +124,120 @@
             </div>
 
             <my-form-drawer v-model="val.drawer" :title="title" :loading="val.pending.submit" @on-ok="submitEvent" @on-cancel="closeFormDrawer">
-                <template slot="default">
-                    <form class="form subject-form" @submit.prevent>
-                        <table class="input-table">
-                            <tbody>
 
-                            <tr :class="getClass(val.error.name)" id="form-name">
-                                <td>名称</td>
-                                <td>
-                                    <input type="text" v-model="form.name" @input="val.error.name=''" class="form-text">
-                                    <span class="need">*</span>
-                                    <div class="msg"></div>
-                                    <div class="e-msg"></div>
-                                </td>
-                            </tr>
+                <div class="run-action-title" slot="header">
+                    <div class="left">{{ title }}</div>
+                    <div class="right">
+                        <Button type="primary" :loading="val.pending.submit" @click="submitEvent"><my-icon icon="tijiao" />提交</Button>
+                        <Button type="error" @click="closeFormDrawer"><my-icon icon="guanbi" />关闭</Button>
+                    </div>
+                </div>
 
-                            <tr :class="getClass(val.error.thumb)" id="form-thumb">
-                                <td>封面</td>
-                                <td>
-                                    <div ref="thumb">
-                                        <!-- 上传图片组件 -->
-                                        <div class='uploader'>
-                                            <div class="upload">
-                                                <div class="handler">
+                <form class="form subject-form" @submit.prevent slot="default">
+                    <table class="input-table">
+                        <tbody>
 
-                                                    <div class="line input hide">
-                                                        <input type="file" class="file-input">
-                                                    </div>
+                        <tr :class="getClass(val.error.name)" id="form-name">
+                            <td>名称</td>
+                            <td>
+                                <input type="text" v-model="form.name" @input="val.error.name=''" class="form-text">
+                                <span class="need">*</span>
+                                <div class="msg"></div>
+                                <div class="e-msg"></div>
+                            </td>
+                        </tr>
 
-                                                    <div class="line icon">
-                                                        <div class="ico">
-                                                            <div class="feedback run-action-feedback-round"><i title="上传文件" class="iconfont run-iconfont run-shangchuan"></i></div>
-                                                            <div class="clear run-action-feedback-round" title="清空"><i class="iconfont run-iconfont run-qingkong"></i></div>
-                                                        </div>
-                                                        <div class="text">请选择要上传的文件</div>
-                                                    </div>
+                        <tr :class="getClass(val.error.thumb)" id="form-thumb">
+                            <td>封面</td>
+                            <td>
+                                <div ref="thumb">
+                                    <!-- 上传图片组件 -->
+                                    <div class='uploader'>
+                                        <div class="upload">
+                                            <div class="handler">
 
+                                                <div class="line input hide">
+                                                    <input type="file" class="file-input">
                                                 </div>
 
-                                                <div class="msg"></div>
+                                                <div class="line icon">
+                                                    <div class="ico">
+                                                        <div class="feedback run-action-feedback-round"><i class="iconfont run-iconfont run-iconfont-shangchuan"></i></div>
+                                                        <div class="clear run-action-feedback-round" title="清空"><i class="iconfont run-iconfont run-iconfont-qingkong"></i></div>
+                                                    </div>
+                                                    <div class="text">请选择要上传的文件</div>
+                                                </div>
+
                                             </div>
-                                            <div class="preview"></div>
 
+                                            <div class="msg"></div>
                                         </div>
+                                        <div class="preview"></div>
+
                                     </div>
+                                </div>
 
-                                    <span class="need"></span>
-                                    <div class="msg"></div>
-                                    <div class="e-msg">{{ val.error.thumb }}</div>
-                                </td>
-                            </tr>
+                                <span class="need"></span>
+                                <div class="msg"></div>
+                                <div class="e-msg">{{ val.error.thumb }}</div>
+                            </td>
+                        </tr>
 
-                            <tr :class="getClass(val.error.attr)" id="form-attr">
-                                <td>属性</td>
-                                <td>
-                                    <div class="attr">
-                                        <div class="line">
-                                            <table class="line-table">
-                                                <thead>
-                                                <tr>
-                                                    <th>字段</th>
-                                                    <th>值</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr v-for="(v,k) in attr" :key="k">
-                                                    <td><input type="text" v-model="v.field" class="form-text"></td>
-                                                    <td><input type="text" v-model="v.value" class="form-text"></td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="line">
-                                            <my-table-button @click="attr.push({field: '' , value: ''})"><my-icon icon="add" />添加</my-table-button>
-                                            <my-table-button type="error" @click="attr.pop()"><my-icon icon="delete" />减少</my-table-button>
-                                        </div>
+                        <tr :class="getClass(val.error.attr)" id="form-attr">
+                            <td>属性</td>
+                            <td>
+                                <div class="attr">
+                                    <div class="line">
+                                        <table class="line-table">
+                                            <thead>
+                                            <tr>
+                                                <th>字段</th>
+                                                <th>值</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr v-for="(v,k) in attr" :key="k">
+                                                <td><input type="text" v-model="v.field" class="form-text"></td>
+                                                <td><input type="text" v-model="v.value" class="form-text"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                    <span class="need"></span>
-                                    <div class="msg"></div>
-                                    <div class="e-msg">{{ val.error.attr }}</div>
-                                </td>
-                            </tr>
+                                    <div class="line">
+                                        <my-table-button @click="attr.push({field: '' , value: ''})"><my-icon icon="add" />添加</my-table-button>
+                                        <my-table-button type="error" @click="attr.pop()"><my-icon icon="delete" />减少</my-table-button>
+                                    </div>
+                                </div>
+                                <span class="need"></span>
+                                <div class="msg"></div>
+                                <div class="e-msg">{{ val.error.attr }}</div>
+                            </td>
+                        </tr>
 
-                            <tr :class="getClass(val.error.description)" id="form-description">
-                                <td>描述</td>
-                                <td>
-                                    <textarea v-model="form.description" @input="val.error.description=''" class="form-textarea"></textarea>
-                                    <span class="need"></span>
-                                    <div class="msg"></div>
-                                    <div class="e-msg">{{ val.error.description }}</div>
-                                </td>
-                            </tr>
+                        <tr :class="getClass(val.error.description)" id="form-description">
+                            <td>描述</td>
+                            <td>
+                                <textarea v-model="form.description" @input="val.error.description=''" class="form-textarea"></textarea>
+                                <span class="need"></span>
+                                <div class="msg"></div>
+                                <div class="e-msg">{{ val.error.description }}</div>
+                            </td>
+                        </tr>
 
-                            <tr :class="getClass(val.error.weight)" id="form-weight">
-                                <td>权重</td>
-                                <td>
-                                    <input type="number" v-model="form.weight" @input="val.error.weight = ''" class="form-text">
-                                    <span class="need"></span>
-                                    <div class="msg">仅允许整数</div>
-                                    <div class="e-msg">{{ val.error.thumb }}</div>
-                                </td>
-                            </tr>
+                        <tr :class="getClass(val.error.weight)" id="form-weight">
+                            <td>权重</td>
+                            <td>
+                                <input type="number" v-model="form.weight" @input="val.error.weight = ''" class="form-text">
+                                <span class="need"></span>
+                                <div class="msg">仅允许整数</div>
+                                <div class="e-msg">{{ val.error.thumb }}</div>
+                            </td>
+                        </tr>
 
-                            </tbody>
-                        </table>
-                    </form>
-                </template>
-                <template slot="header">
-                    <Button type="primary" :loading="val.pending.submit" @click="submitEvent">确认</Button>
-                    <Button type="error" @click="closeFormDrawer">关闭</Button>
-                </template>
+                        </tbody>
+                    </table>
+                </form>
+
             </my-form-drawer>
 
 

@@ -12,9 +12,11 @@ class ImageSubjectModel extends Model
 
     public static function getNewestByLimit(int $limit = 0): Collection
     {
-        return self::orderBy('update_time' , 'desc')
+        return self::where([
+                ['status' , '=' , 1] ,
+            ])
             ->orderBy('create_time' , 'desc')
-            ->orderBy('id' , 'desc')
+            ->orderBy('id' , 'asc')
             ->limit($limit)
             ->get();
     }

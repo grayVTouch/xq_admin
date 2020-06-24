@@ -9,6 +9,8 @@ import category from '../../api/category.js';
 import subject from '../../api/subject.js';
 import image_subject from '../../api/image_subject.js';
 import admin from '../../api/admin.js';
+import position from '../../api/position.js';
+import image_at_position from '../../api/image_at_position.js';
 
 window.Api = {
     login ,
@@ -22,4 +24,6 @@ window.Api = {
     subject ,
     image_subject ,
     admin ,
+    position ,
+    image_at_position ,
 };

@@ -111,7 +111,7 @@ class ImageSubjectAction extends Action
                 'fail_reason' ,
                 'create_time' ,
             ]));
-            ImageModel::delByImageSubjectId($image_subject->id);
+//            ImageModel::delByImageSubjectId($image_subject->id);
             foreach ($images as $v)
             {
                 ImageModel::insertGetId([

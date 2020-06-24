@@ -92,4 +92,4 @@
         }
     }
 </script>
-<style scoped src="./css/navigation.css"></style>
+<style scoped src="../css/navigation.css"></style>

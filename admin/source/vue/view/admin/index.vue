@@ -67,7 +67,7 @@
             </div>
 
             <div class="line">
-                <div class="run-action">
+                <div class="run-action-title">
                     <div class="left">
                         <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
                         <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项</my-table-button>
@@ -167,8 +167,8 @@
 
                                                     <div class="line icon">
                                                         <div class="ico">
-                                                            <div class="feedback run-action-feedback-round"><i title="上传文件" class="iconfont run-iconfont run-shangchuan"></i></div>
-                                                            <div class="clear run-action-feedback-round" title="清空"><i class="iconfont run-iconfont run-qingkong"></i></div>
+                                                            <div class="feedback run-action-feedback-round"><i class="iconfont run-iconfont run-iconfont-shangchuan"></i></div>
+                                                            <div class="clear run-action-feedback-round" title="清空"><i class="iconfont run-iconfont run-iconfont-qingkong"></i></div>
                                                         </div>
                                                         <div class="text">请选择要上传的文件</div>
                                                     </div>

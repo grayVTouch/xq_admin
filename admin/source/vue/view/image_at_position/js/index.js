@@ -1,6 +1,6 @@
 
 const form = {
-    weight: 0 ,
+    position_id: 0 ,
 };
 
 export default {
@@ -16,16 +16,10 @@ export default {
             val: {
                 pending: {} ,
                 modal: false ,
-                attr: {
-                    id: 'id',
-                    p_id: 'p_id',
-                } ,
                 error: {} ,
                 // edit-编辑 add-添加
                 mode: '' ,
                 selectedIds: [] ,
-                // 抽屉
-                drawer: false ,
 
             } ,
             table: {
@@ -41,13 +35,28 @@ export default {
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
-                        title: '名称' ,
-                        key: 'name' ,
+                        title: '位置' ,
+                        slot: 'position_id' ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
-                        title: '权重' ,
-                        key: 'weight' ,
+                        title: '图片' ,
+                        slot: 'path' ,
+                        align: TopContext.table.alignCenter ,
+                    } ,
+                    // {
+                    //     title: '文件名' ,
+                    //     key: 'name' ,
+                    //     align: TopContext.table.alignCenter ,
+                    // } ,
+                    // {
+                    //     title: 'mime' ,
+                    //     key: 'mime' ,
+                    //     align: TopContext.table.alignCenter ,
+                    // } ,
+                    {
+                        title: '链接' ,
+                        key: 'link' ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
@@ -65,15 +74,9 @@ export default {
                 page: 1 ,
                 data: [] ,
             } ,
-            // 角色权限
-            permission: [] ,
-            // 所有权限
-            permissions: [] ,
-            // 选中的权限
-            rolePermission: [] ,
+            position: [] ,
             search: {} ,
             form: {...form}  ,
-            role: {} ,
         };
     } ,
 
@@ -96,39 +99,50 @@ export default {
         init () {
             this.initDom();
             this.initIns();
-            this.getPermission();
+            this.getPositionData();
             this.getData();
         } ,
 
 
         initDom () {
+            this.dom.path = G(this.$refs.path);
         } ,
 
+        getPositionData () {
+            Api.position.all((data , code) => {
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , data);
+                    return ;
+                }
+                this.position = data;
+            });
+        } ,
 
 
         initIns () {
-
-        } ,
-
-        getPermission () {
-            Api.admin_permission.index((data , code) => {
-                if (code !== TopContext.code.Success) {
-                    this.errorHandle(data);
-                    return ;
-                }
-                data.forEach((v) => {
-                    // 展开
-                    v.expand = true;
-                    v.title = v.cn;
-                });
-                this.permissions = data;
+            const self = this;
+            this.ins.path = new Uploader(this.dom.path.get(0) , {
+                api: TopContext.fileApi ,
+                mode: 'override' ,
+                clear: true ,
+                uploaded (file , data , code) {
+                    if (code !== TopContext.code.Success) {
+                        this.status(file.id , false);
+                        return ;
+                    }
+                    this.status(file.id , true);
+                    self.form.path = data;
+                } ,
+                cleared () {
+                    self.form.path = '';
+                } ,
             });
         } ,
 
         getData () {
             this.$refs.base.show();
             this.pending('getData' , true);
-            Api.role.index(this.search , (data , code) => {
+            Api.image_at_position.index(this.search , (data , code) => {
                 this.pending('getData' , false);
                 this.$refs.base.hide();
                 if (code !== TopContext.code.Success) {
@@ -145,19 +159,7 @@ export default {
         handleData (data) {
             data.forEach((v) => {
                 this.pending(`delete_${v.id}` , false);
-                this.select(`select_${v.id}` , false);
             });
-        } ,
-
-        findRecordById (id) {
-            for (let i = 0; i < this.table.data.length; ++i)
-            {
-                const cur = this.table.data[i];
-                if (cur.id == id) {
-                    return cur;
-                }
-            }
-            throw new Error('未找到 id 对应记录：' + id);
         } ,
 
         destroy (id , callback) {
@@ -176,35 +178,16 @@ export default {
                     G.invoke(callback , this , false);
                     return ;
                 }
-                Api.role.destroyAll(idList , (data , code) => {
+                Api.image_at_position.destroyAll(idList , (data , code) => {
                     if (code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
                         this.message('error' , data);
                         return ;
                     }
-                    G.invoke(callback , self , true);
-                    self.message('success' , '操作成功' , '影响的记录数：' + data);
-                    self.getData();
+                    G.invoke(callback , this , true);
+                    this.message('success' , '操作成功' , '影响的记录数：' + data);
+                    this.getData();
                 });
-            });
-        } ,
-
-        updateBoolValEvent (val , extra) {
-            const oVal = val > 0 ? 0 : 1;
-            const pendingKey = `${extra.field}_${extra.id}`;
-            const record = this.findRecordById(extra.id);
-            this.pending(pendingKey , true);
-
-            Api.role.localUpdate(record.id , {
-                [extra.field]: val
-            } , (data , code) => {
-                this.pending(pendingKey , false);
-                if (code !== TopContext.code.Success) {
-                    record[extra.field] = oVal;
-                    this.notice(data);
-                    return ;
-                }
-                this.notice('操作成功');
             });
         } ,
 
@@ -268,10 +251,10 @@ export default {
                 });
             };
             if (this.val.mode === 'edit') {
-                Api.role.update(this.form.id , this.form , callback);
+                Api.image_at_position.update(this.form.id , this.form , callback);
                 return ;
             }
-            Api.role.store(this.form , callback);
+            Api.image_at_position.store(this.form , callback);
         } ,
 
         closeFormModal () {
@@ -280,7 +263,7 @@ export default {
                 return;
             }
             this.val.modal = false;
-
+            this.ins.path.clearAll();
         } ,
 
         searchEvent () {
@@ -292,76 +275,11 @@ export default {
             this.search.page = page;
             this.getData();
         } ,
+    } ,
 
-        allocateEvent (record) {
-            this.role = {...record};
-            this._val('drawer' , true);
-            Api.role.permission(record.id , (data , code) => {
-                if (code !== TopContext.code.Success) {
-                    this.errorHandle(data);
-                    return ;
-                }
-                const permissions = [...this.permissions];
-                permissions.forEach((v) => {
-                    for (let i = 0; i < data.length; ++i)
-                    {
-                        const cur = data[i];
-                        if (cur.id === v.id) {
-                            v.checked = true;
-                            v.selected = true;
-                            return ;
-                        }
-                    }
-                    v.checked = false;
-                    v.selected = false;
-                });
-                const permission = G.t.childrens(0 , permissions , this.val.attr , false , true);
-                this.permission = permission;
-                this.rolePermission = data;
-            });
-        } ,
-
-        closeFormDrawer() {
-            if (this.pending('allocatePermission')) {
-                this.message('请求中...请耐心等待');
-                return ;
-            }
-            this._val('drawer' , false);
-            this.rolePermission = [];
-        } ,
-
-        allocatePermission () {
-            this.pending('allocatePermission' , true);
-            const ids = [];
-            this.rolePermission.forEach((v) => {
-                ids.push(v.id);
-            });
-            Api.role.allocatePermission(this.role.id , {
-                permission: G.jsonEncode(ids)
-            } , (data , code) => {
-                this.pending('allocatePermission' , false);
-                if (code !== TopContext.code.Success) {
-                    this.errorHandle(data);
-                    return ;
-                }
-                this.successHandle((keep) => {
-                    this.getData();
-                    if (keep) {
-                        return ;
-                    }
-                    this.closeFormDrawer();
-                });
-            });
-        } ,
-
-        permissionCheckedEvent (data ,cur) {
-            cur.selected = cur.checked;
-            this.rolePermission = data;
-        } ,
-
-        permissionSelectedEvent (data , cur) {
-            cur.checked = cur.selected;
-            this.rolePermission = data;
+    watch: {
+        form (form) {
+            this.ins.path.render(form.__path__);
         } ,
     } ,
 }
