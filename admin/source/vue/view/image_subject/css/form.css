@@ -78,18 +78,17 @@
  */
 .active-tag {
     display: inline-block;
-    padding: 4px 8px;
+    padding: 0 8px;
+    height: 26px;
+    line-height: 26px;
     position: relative;
     background-color: #f0f4fa;
     color: #7490b9;
     cursor: pointer;
     margin-right: 6px;
     margin-bottom: 6px;
-    transition: all 0.3s linear;
-    -webkit-transition: all 0.3s linear;
-    -moz-transition: all 0.3s linear;
-    -ms-transition: all 0.3s linear;
-    -o-transition: all 0.3s linear;
+    transition: all 0.3s;
+    box-sizing: border-box;
 }
 
 .active-tag:hover {
@@ -117,14 +116,7 @@
     left: 50%;
     top: 50%;
     transform: translate3d(-50% , -50% , 0);
-    -webkit-transform: translate3d(-50% , -50% , 0);
-    -moz-transform: translate3d(-50% , -50% , 0);
-    -ms-transform: translate3d(-50% , -50% , 0);
-    -o-transform: translate3d(-50% , -50% , 0);
     transition: all 0.3s linear;
-    -webkit-transition: all 0.3s linear;
-    -moz-transition: all 0.3s linear;
-    -o-transition: all 0.3s linear;
 }
 
 .active-tag .close .inner:hover {

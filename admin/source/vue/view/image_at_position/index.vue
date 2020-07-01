@@ -122,9 +122,12 @@
                             <tr :class="getClass(val.error.position_id)" id="form-position_id">
                                 <td>位置</td>
                                 <td>
-                                    <i-select class="iview-form-select" v-model="form.position_id">
-                                        <i-option v-for="v in position" :key="v.id" :value="v.id">{{ v.name }}</i-option>
-                                    </i-select>
+
+                                    <select v-model="form.position_id" class="form-select">
+                                        <option :value="0">请选择...</option>
+                                        <option v-for="v in position" :value="v.id" :key="v.id">{{ `${v.module ? v.module.name : 'unknow'}-${v.name}` }}</option>
+                                    </select>
+
                                     <span class="need">*</span>
                                     <div class="msg"></div>
                                     <div class="e-msg">{{ val.error.position_id }}</div>

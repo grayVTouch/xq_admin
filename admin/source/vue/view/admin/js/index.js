@@ -1,6 +1,7 @@
 
 const form = {
     sex: 'secret' ,
+    role_id: 0 ,
 };
 
 export default {
@@ -117,7 +118,9 @@ export default {
                 data: [] ,
             } ,
             role: [] ,
-            search: {} ,
+            search: {
+                limit: this.$store.state.context.limit
+            } ,
             form: {...form}  ,
         };
     } ,

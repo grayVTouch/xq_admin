@@ -5,6 +5,7 @@ create table if not exists `xq_module` (
   name varchar(255) default '' comment '名称' ,
   description varchar(500) comment '描述' ,
   weight int default 0 comment '权重' ,
+  enable tinyint default 1 comment '启用？0-否 1-是' ,
   create_time datetime default current_timestamp ,
   update_time datetime default current_timestamp on update current_timestamp ,
   primary key `id` (id)
@@ -17,10 +18,11 @@ create table if not exists `xq_tag` (
   name varchar(255) default '' comment '标签名称' ,
   weight int default 0 comment '权重' ,
   `count` int default 0 comment '使用次数' ,
+  module_id bigint unsigned default 0 comment 'xq_module.id' ,
   create_time datetime default current_timestamp ,
   update_time datetime default current_timestamp on update current_timestamp ,
   primary key (id) ,
-  unique key (name)
+  unique key `name_module_id` (name , module_id)
 ) engine=innodb default charset=utf8 comment='标签表';
 
 drop table if exists `xq_category`;
@@ -31,6 +33,7 @@ create table if not exists `xq_category` (
   p_id bigint unsigned default 0 comment 'xq_category.id' ,
   enable tinyint default 1 comment '是否启用：0-否 1-是' ,
   weight int default 0 comment '权重' ,
+  module_id bigint unsigned default 0 comment 'xq_module.id' ,
   create_time datetime default current_timestamp comment '创建时间' ,
   update_time datetime default current_timestamp on update current_timestamp ,
   primary key(id)
@@ -45,6 +48,7 @@ create table if not exists `xq_subject` (
   thumb varchar(500) default '' comment '封面' ,
   attr text comment 'json:其他属性' ,
   weight int default 0 comment '权重' ,
+  module_id bigint unsigned default 0 comment 'xq_module.id' ,
   create_time datetime default current_timestamp ,
   update_time datetime default current_timestamp on update current_timestamp ,
   primary key (id) ,
@@ -76,6 +80,19 @@ create table if not exists `xq_image_subject` (
   key (module_id) ,
   key (category_id)
 ) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '图片专题表';
+
+drop table if exists `xq_relation_tag`;
+create table if not exists `xq_relation_tag` (
+  id bigint unsigned not null auto_increment ,
+  tag_id bigint unsigned default 0 comment 'xq_tag.id' ,
+  module_id bigint unsigned default 0 comment 'xq_module.id，缓存字段' ,
+  name varchar(500) default '' comment '标签名称，缓存字段' ,
+  relation_table varchar(255) default '' comment '关联表名称，比如 xq_image_subject' ,
+  relation_id bigint unsigned default 0 comment '对应关联表中的 id' ,
+  primary key (id)
+  -- unique key `relation` (`tag_id` , `relation_table` , 'relation_id')
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '关联标签';
+
 
 drop table if exists `xq_image`;
 create table if not exists `xq_image` (
@@ -212,6 +229,7 @@ create table if not exists `xq_user_group` (
 	id bigint unsigned not null auto_increment ,
 	name varchar(500) comment '组名' ,
 	p_id int comment 'xq_user_group.id' ,
+    module_id bigint unsigned default 0 comment 'xq_module.id' ,
 	create_time datetime default current_timestamp ,
 	update_time datetime default current_timestamp on update current_timestamp ,
 	primary key (id) ,
@@ -234,6 +252,7 @@ create table if not exists `xq_user_permission` (
 	name varchar(255) default '' comment '权限名称' ,
 	description varchar(500) default '' comment '权限描述' ,
 	enable tinyint default 1 comment '是否启用：0-否 1-是' ,
+    module_id bigint unsigned default 0 comment 'xq_module.id' ,
 	create_time datetime default current_timestamp ,
 	update_time datetime default current_timestamp on update current_timestamp ,
 	primary key `id` (`id`)
@@ -269,6 +288,7 @@ create table if not exists `xq_position` (
      value varchar(255) default '' comment '值' ,
      name varchar(255) default '' comment '名称' ,
      description varchar(1000) default '' comment '位置描述' ,
+     module_id bigint unsigned default 0 comment 'xq_module.id' ,
      create_time datetime default current_timestamp ,
      primary key (id)
 ) comment '位置';
@@ -282,8 +302,88 @@ create table if not exists `xq_image_at_position` (
    mime varchar(50) default '' comment 'mime' ,
    path varchar(1000) default '' comment '路径' ,
    link varchar(1000) default '' comment '跳转链接' ,
+   module_id bigint unsigned default 0 comment 'xq_module.id' ,
    create_time datetime default current_timestamp ,
    primary key (id)
 ) comment '定点图片';
 
+drop table if exists `xq_collection_group`;
+create table if not exists `xq_collection_group` (
+   id bigint unsigned not null auto_increment ,
+   name varchar(500) default '' comment '名称' ,
+   user_id bigint unsigned default 0 comment 'xq_user.id' ,
+   module_id bigint unsigned default 0 comment 'xq_module.id' ,
+   create_time datetime default current_timestamp ,
+   primary key (id)
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '收藏分组';
 
+
+drop table if exists `xq_collection`;
+create table if not exists `xq_collection` (
+    id bigint unsigned not null auto_increment ,
+    user_id bigint unsigned default 0 comment 'xq_user.id' ,
+    collection_group_id bigint unsigned default 0 comment 'xq_collection_group.id' ,
+    relation_table varchar(255) default '' comment '关联表' ,
+    relation_id bigint unsigned default 0 comment '关联表id' ,
+    module_id bigint unsigned default 0 comment 'xq_module.id' ,
+    create_time datetime default current_timestamp ,
+    primary key (id)
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '我的收藏';
+
+drop table if exists `xq_history`;
+create table if not exists `xq_history` (
+    id bigint unsigned not null auto_increment ,
+    user_id bigint unsigned default 0 comment 'xq_user.id' ,
+    relation_table varchar(255) default '' comment '关联表' ,
+    relation_id bigint unsigned default 0 comment '关联表id' ,
+    module_id bigint unsigned default 0 comment 'xq_module.id' ,
+    create_time datetime default current_timestamp ,
+    primary key (id)
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '活动记录';
+
+drop table if exists `xq_nav`;
+create table if not exists `xq_nav` (
+    id bigint unsigned not null auto_increment ,
+    name varchar(255) default '' comment '菜单名称' ,
+    link varchar(500) default '' comment '链接' ,
+    p_id bigint unsigned default 0 comment 'xq_nav.id' ,
+    is_menu tinyint default 0 comment '菜单？0-否 1-是' ,
+    enable tinyint default 0 comment '启用？0-否 1-是' ,
+    weight int default 0 comment '权重' ,
+    module_id bigint unsigned default 0 comment 'xq_module.id' ,
+    platform varchar(255) default '' comment '平台：app | android | ios | web | mobile' ,
+    create_time datetime default null ,
+    primary key (id)
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '菜单表-区分不同平台';
+
+drop table if exists `xq_focus_user`;
+create table if not exists `xq_focus_user` (
+    id bigint unsigned not null auto_increment ,
+    user_id bigint unsigned default 0 comment 'xq_user.id' ,
+    focus_user_id bigint unsigned default 0 comment 'xq_user.id，关注的用户' ,
+    create_time datetime default null ,
+    primary key (id)
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '关注的用户';
+
+
+alter table xq_tag add module_id bigint unsigned default 0 comment 'xq_module.id';
+alter table xq_category add module_id bigint unsigned default 0 comment 'xq_module.id';
+alter table xq_subject add module_id bigint unsigned default 0 comment 'xq_module.id';
+alter table xq_relation_tag add module_id bigint unsigned default 0 comment 'xq_module.id';
+alter table xq_user_group add module_id bigint unsigned default 0 comment 'xq_module.id';
+alter table xq_user_permission add module_id bigint unsigned default 0 comment 'xq_module.id';
+alter table xq_position add module_id bigint unsigned default 0 comment 'xq_module.id';
+alter table xq_image_at_position add module_id bigint unsigned default 0 comment 'xq_module.id';
+alter table xq_collection add module_id bigint unsigned default 0 comment 'xq_module.id';
+alter table xq_history add module_id bigint unsigned default 0 comment 'xq_module.id';
+alter table xq_module add enable tinyint default 1 comment '启用？0-否 1-是';
+
+-- 新增菜单
+delete from xq_nav;
+alter table xq_nav auto_increment=1;
+insert into `xq_nav` (id , name , link , p_id , is_menu , enable , module_id , platform , create_time) values
+(1 , '首页' , '/index' , 0 , 1 , 1 , 3 , 'web' , current_time()) ,
+(2 , '图片专区' , '/image_subject/index' , 0 , 1 , 1 , 3 , 'web' , current_time()) ,
+(3 , '二次元' , '/image_subject/search?category_id=37' , 2 , 1 , 1 , 3 , 'web' , current_time()) ,
+(4 , '三次元' , '/image_subject/search?category_id=38' , 2 , 1 , 1 , 3 , 'web' , current_time()) ,
+(5 , '琉璃神社' , '/image_subject/search?category_id=39' , 3 , 1 , 1 , 3 , 'web' , current_time());

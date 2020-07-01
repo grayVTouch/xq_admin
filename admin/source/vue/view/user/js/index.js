@@ -104,7 +104,9 @@ export default {
                 page: 1 ,
                 data: [] ,
             } ,
-            search: {} ,
+            search: {
+                limit: this.$store.state.context.limit
+            } ,
             form: {...form}  ,
         };
     } ,

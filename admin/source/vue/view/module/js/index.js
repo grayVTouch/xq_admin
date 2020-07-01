@@ -45,6 +45,11 @@ export default {
                         align: TopContext.table.alignLeft ,
                     } ,
                     {
+                        title: '启用？' ,
+                        key: 'enable' ,
+                        align: TopContext.table.alignCenter ,
+                    } ,
+                    {
                         title: '权重' ,
                         key: 'weight' ,
                         align: TopContext.table.alignCenter ,
@@ -64,7 +69,9 @@ export default {
                 page: 1 ,
                 data: [] ,
             } ,
-            search: {} ,
+            search: {
+                limit: this.$store.state.context.limit
+            } ,
             form: {...form}  ,
         };
     } ,

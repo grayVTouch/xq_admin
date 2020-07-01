@@ -39,4 +39,18 @@ return [
         'both' => '两性' ,
         'shemale' => '人妖' ,
     ] ,
+
+    'action_for_collection' => [
+        // 收藏
+        'collect' ,
+        // 取消收藏
+        'cancel' ,
+    ] ,
+
+    'mode_for_image_subject' => [
+        // 收藏
+        'strict' ,
+        // 取消收藏
+        'loose' ,
+    ] ,
 ];

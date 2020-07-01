@@ -48,7 +48,7 @@
                     <tr :class="getClass(val.error.p_id)" id="form_p_id">
                         <td>上级权限</td>
                         <td>
-                            <my-select :data="permission" v-model="form.p_id" :has="true" :attr="val.attr"  @change="val.error.p_id = ''"></my-select>
+                            <my-deep-select :data="permission" v-model="form.p_id" :has="true" :attr="val.attr"  @change="val.error.p_id = ''"></my-deep-select>
                             <span class="msg"></span>
                             <span class="need">*</span>
                             <span class="e-msg">{{ val.error.p_id }}</span>

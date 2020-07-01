@@ -14,9 +14,10 @@ class CategoryModel extends Model
             ->get();
     }
 
-    public static function getAll()
+    public static function getAllByModuleId(int $module_id)
     {
-        return self::orderBy('weight' , 'desc')
+        return self::where('module_id' , $module_id)
+            ->orderBy('weight' , 'desc')
             ->orderBy('id' , 'asc')
             ->get();
     }

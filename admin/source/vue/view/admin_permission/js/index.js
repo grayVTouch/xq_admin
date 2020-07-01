@@ -308,7 +308,6 @@ export default {
             this._val('mode' , 'edit');
             this.error();
             this.form = {...v};
-
             this.permission = this.getPermissionExcludeSelfAndChildrenById(v.id);
 
 

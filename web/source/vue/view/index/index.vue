@@ -14,50 +14,29 @@
 
             <div class="content">
                 <div class="slidebar" ref="slidebar">
-                    <div class='pic-play-touch'>
-                        <div class='images'>
-                            <div class='_images'>
 
-                                <a v-for="v in homeSlideshow" :href='v.link' class='link'><img :src='v.__path__' alt="" class='image'></a>
-<!--                                <a href='javascript:;' class='link'><img src='./res/slidebar/02.jpg' alt="" class='image'></a>-->
-<!--                                <a href='javascript:;' class='link'><img src='./res/slidebar/03.jpg' alt="" class='image'></a>-->
-
-                            </div>
-
-                            <div class='prev'>
-<!--                                <img src='../../../plugin/PicPlay_Touch/image/prev.png' alt="" class='image'>-->
-                                <i class="run-iconfont run-iconfont-prev01"></i>
-                            </div>
-                            <div class='next'>
-<!--                                <img src='../../../plugin/PicPlay_Touch/image/next.png' alt="" class='image'>-->
-                                <i class="run-iconfont run-iconfont-next01"></i>
-                            </div>
+                    <div class="pic-play-transform">
+                        <div class="images">
+                            <a class="link" v-for="v in homeSlideshow" :href='v.link'><img :src="v.__path__" alt="" class="image"></a>
                         </div>
-
-                        <div class="index">
-                            <div class='_index hide'></div>
-                            <div class='_image hide'></div>
-                        </div>
+                        <div class="index"></div>
+                        <div class="action prev"><i class="run-iconfont run-iconfont-prev01"></i></div>
+                        <div class="action next"><i class="run-iconfont run-iconfont-next01"></i></div>
                     </div>
+
                 </div>
 
                 <div class="box">
                     <div class="inner">
-                        <div class="item">
-                            <img src="./res/logo.jpg" class="image">
+
+                        <div class="item" v-for="(v,k) in hotImages" v-if="k < 6">
+                            <img :src="v.thumb ? v.__thumb__ : $store.state.context.res.notFound" alt="" class="image">
                             <div class="info">
-                                <h5 class="title">【COS正片】明日方舟黑cos 甜美动人 cn周叽是可爱兔兔</h5>
-                                <p class="desc">介绍：不喜欢与他人交流。即使有人想与她交流，通常也只会得到比较冷淡的回应。 不过，偶尔也会</p>
+                                <h5 class="title">{{ v.name  }}</h5>
+                                <p class="desc">{{ v.desc }}</p>
                             </div>
                         </div>
-                        <div class="item"><img src="./res/logo.jpg" class="image"></div>
-                        <div class="item"><img src="./res/logo.jpg" class="image"></div>
-                        <div class="item"><img src="./res/logo.jpg" class="image"></div>
-                        <div class="item"><img src="./res/logo.jpg" class="image"></div>
-                        <div class="item"><img src="./res/logo.jpg" class="image"></div>
 
-                        <div class="item"><img src="./res/logo.jpg" class="image"></div>
-                        <div class="item"><img src="./res/logo.jpg" class="image"></div>
                     </div>
                 </div>
             </div>
@@ -74,24 +53,24 @@
                     <div class="left">图片</div>
                     <div class="right">
                         <div class="tags">
-                            <a class="tag">最新</a>
-                            <a class="tag">性感</a>
-                            <a class="tag">活力</a>
-                            <a class="tag">少女</a>
-                            <a class="tag">全部</a>
+                            <button class="tag" :class="{cur: group.image.curTag === 'newest'}" @click="newestInImageSubject">最新</button>
+                            <button class="tag" :class="{cur: group.image.curTag === 'hot'}" @click="getHotImageSubject">热门</button>
+                            <button class="tag" v-for="v in group.image.tag" :class="{cur: group.image.curTag === 'tag_' + v.tag_id}" @click="getImageByTagId(v.tag_id)">{{ v.name }}</button>
+                            <button class="tag" @click="push('/image_subject/index')">更多</button>
                         </div>
                         <div class="operation">
-                            <button class="prev" @click="prevByGroup('image')"><my-icon icon="prev01" /></button>
-                            <button class="next" @click="nextByGroup('image')"><my-icon icon="next01" /></button>
+                            <button class="prev" :class="{disabled: group.image.action.translateX === group.image.action.maxTranslateX}" @click="prevByGroup('image')"><my-icon icon="prev01" /></button>
+                            <button class="next" :class="{disabled: group.image.action.translateX === group.image.action.minTranslateX}" @click="nextByGroup('image')"><my-icon icon="next01" /></button>
                         </div>
                     </div>
                 </div>
 
                 <div class="list" ref="list-for-image">
+                    <div class="loading" v-if="val.pending.images"><my-loading width="50" height="50"></my-loading></div>
                     <div class="inner" ref="inner-for-image">
                         <div class="item card-box" v-for="v in images">
                             <!-- 封面 -->
-                            <div class="thumb">
+                            <div class="thumb" @click.stop="link(`#/image_subject/${v.id}/show`)">
                                 <img :src="v.__thumb__" class="image">
                                 <div class="mask">
                                     <div class="top">
@@ -110,10 +89,10 @@
                                 <div class="tags">
                                     <span class="ico"><my-icon icon="icontag" size="18" /></span>
 
-                                    <span class="tag" v-for="tag in v.__tag__">{{ tag.name }}</span>
+                                    <span class="tag" v-for="tag in v.tags">{{ tag.name }}</span>
                                 </div>
                                 <!-- 标题 -->
-                                <div class="title">{{ v.name }}</div>
+                                <div class="title"  @click.stop="link(`#/image_subject/${v.id}/show`)">{{ v.name }}</div>
                                 <!-- 发布者 -->
                                 <div class="user">
                                     <template v-if="v.user">
@@ -148,5 +127,5 @@
 </template>
 
 <script src="./js/index.js"></script>
-
+<style scoped src="../public/css/base.css"></style>
 <style scoped src="./css/index.css"></style>

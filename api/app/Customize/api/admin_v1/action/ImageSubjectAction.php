@@ -10,7 +10,9 @@ use App\Customize\api\admin_v1\model\ImageSubjectCommentImageModel;
 use App\Customize\api\admin_v1\model\ImageSubjectCommentModel;
 use App\Customize\api\admin_v1\model\ImageSubjectModel;
 use App\Customize\api\admin_v1\model\ModuleModel;
+use App\Customize\api\admin_v1\model\RelationTagModel;
 use App\Customize\api\admin_v1\model\SubjectModel;
+use App\Customize\api\admin_v1\model\TagModel;
 use App\Customize\api\admin_v1\model\UserModel;
 use App\Http\Controllers\api\admin_v1\Base;
 use Exception;
@@ -88,10 +90,10 @@ class ImageSubjectAction extends Action
                 'fail_reason' => '请提供失败原因' ,
             ]);
         }
-        $param['tag']    = $param['tag'] === '' ? '[]' : $param['tag'];
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $param['create_time'] = $param['create_time'] === '' ? date('Y-m-d H:i:s') : $param['create_time'];
         $images = $param['images'] === '' ? [] : json_decode($param['images'] , true);
+        $tags = $param['tags'] === '' ? [] : json_decode($param['tags']);
         try {
             DB::beginTransaction();
             ImageSubjectModel::updateById($image_subject->id , array_unit($param , [
@@ -111,7 +113,35 @@ class ImageSubjectAction extends Action
                 'fail_reason' ,
                 'create_time' ,
             ]));
-//            ImageModel::delByImageSubjectId($image_subject->id);
+            $my_tags = RelationTagModel::getByRelationTableAndRelationId('xq_image_subject' , $image_subject->id);
+            foreach ($tags as $v)
+            {
+                foreach ($my_tags as $v1)
+                {
+                    if ($v1->tag_id === $v) {
+                        DB::rollBack();
+                        return self::error([
+                            'tags' => '存在重复标签: name: ' . $v1->name . '; id: ' . $v1->tag_id ,
+                        ]);
+                    }
+                }
+                $tag = TagModel::find($v);
+                if (empty($tag)) {
+                    DB::rollBack();
+                    return self::error('存在不存在的标签' , 404);
+                }
+                RelationTagModel::insertGetId([
+                    'relation_table' => 'xq_image_subject' ,
+                    'relation_id' => $image_subject->id ,
+                    'tag_id' => $tag->id ,
+                    'name' => $tag->name ,
+                    'module_id' => $tag->module_id ,
+                ]);
+                // 针对该标签的计数要增加
+                TagModel::updateById($tag->id , [
+                    'count' => ++$tag->count
+                ]);
+            }
             foreach ($images as $v)
             {
                 ImageModel::insertGetId([
@@ -178,10 +208,10 @@ class ImageSubjectAction extends Action
                 'fail_reason' => '请提供失败原因' ,
             ]);
         }
-        $param['tag']    = $param['tag'] === '' ? '[]' : $param['tag'];
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $param['create_time'] = $param['create_time'] === '' ? date('Y-m-d H:i:s') : $param['create_time'];
         $images = $param['images'] === '' ? [] : json_decode($param['images'] , true);
+        $tags = $param['tags'] === '' ? [] : json_decode($param['tags']);
         try {
             DB::beginTransaction();
             $id = ImageSubjectModel::insertGetId(array_unit($param , [
@@ -201,6 +231,25 @@ class ImageSubjectAction extends Action
                 'fail_reason' ,
                 'create_time' ,
             ]));
+            foreach ($tags as $v)
+            {
+                $tag = TagModel::find($v);
+                if (empty($tag)) {
+                    DB::rollBack();
+                    return self::error('存在不存在的标签' , 404);
+                }
+                RelationTagModel::insertGetId([
+                    'relation_table' => 'xq_image_subject' ,
+                    'relation_id' => $id ,
+                    'tag_id' => $tag->id ,
+                    'name' => $tag->name ,
+                    'module_id' => $tag->module_id ,
+                ]);
+                // 针对该标签的计数要增加
+                TagModel::updateById($tag->id , [
+                    'count' => ++$tag->count
+                ]);
+            }
             foreach ($images as $v)
             {
                 ImageModel::insertGetId([
@@ -238,6 +287,8 @@ class ImageSubjectAction extends Action
             ImageSubjectCommentModel::delByImageSubjectId($id);
             // 删除图片主题相关评论对应的评论图片
             ImageSubjectCommentImageModel::delByImageSubjectId($id);
+            // 删除图片对应的标签
+            RelationTagModel::delByRelationTableAndRelationId('xq_image_subject' , $id);
             DB::commit();
             return self::success();
         } catch(Exception $e) {
@@ -260,6 +311,8 @@ class ImageSubjectAction extends Action
                 ImageSubjectCommentModel::delByImageSubjectId($id);
                 // 删除图片主题相关评论对应的评论图片
                 ImageSubjectCommentImageModel::delByImageSubjectId($id);
+                // 删除图片对应的标签
+                RelationTagModel::delByRelationTableAndRelationId('xq_image_subject' , $id);
             }
             DB::commit();
             return self::success();
@@ -272,6 +325,13 @@ class ImageSubjectAction extends Action
     public static function destroyImages(Base $context , array $ids , array $param = []): array
     {
         $count = ImageModel::delByIds($ids);
+        return self::success($count);
+    }
+
+    // 删除单个标签
+    public static function destroyTag(Base $context , int $image_subject_id , int $tag_id ,  array $param = []): array
+    {
+        $count = RelationTagModel::delByRelationTableAndRelationIdAndTagId('xq_image_subject' , $image_subject_id , $tag_id);
         return self::success($count);
     }
 }

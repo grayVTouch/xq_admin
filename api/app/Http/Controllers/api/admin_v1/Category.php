@@ -12,7 +12,17 @@ class Category extends Base
 {
     public function index()
     {
-        $res = CategoryAction::index($this);
+        $param = $this->request->query();
+        $res = CategoryAction::index($this , $param);
+        if ($res['code'] != 0) {
+            return error($res['data'] , $res['code']);
+        }
+        return success($res['data']);
+    }
+
+    public function searchByModuleId($module_id)
+    {
+        $res = CategoryAction::searchByModuleId($this , $module_id);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
         }
@@ -36,6 +46,7 @@ class Category extends Base
         $param['description'] = $param['description'] ?? '';
         $param['enable']    = $param['enable'] ?? '';
         $param['weight']    = $param['weight'] ?? '';
+        $param['module_id']        = $param['module_id'] ?? '';
         $res = CategoryAction::localUpdate($this , $id ,$param);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
@@ -51,6 +62,7 @@ class Category extends Base
         $param['description'] = $param['description'] ?? '';
         $param['enable']    = $param['enable'] ?? '';
         $param['weight']    = $param['weight'] ?? '';
+        $param['module_id']        = $param['module_id'] ?? '';
         $res = CategoryAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
@@ -66,6 +78,7 @@ class Category extends Base
         $param['description'] = $param['description'] ?? '';
         $param['enable']    = $param['enable'] ?? '';
         $param['weight']    = $param['weight'] ?? '';
+        $param['module_id']        = $param['module_id'] ?? '';
         $res = CategoryAction::store($this ,$param);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);

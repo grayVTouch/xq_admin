@@ -35,7 +35,9 @@
             item: {
                 type: Object ,
                 required: true ,
-                default: {}
+                default () {
+                    return {};
+                } ,
             }
         }
     }

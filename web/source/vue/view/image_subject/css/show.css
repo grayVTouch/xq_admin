@@ -1,0 +1,412 @@
+.view {
+    padding-top: 20px;
+}
+
+
+.view .images .image {
+    max-width: 100%;
+}
+
+.view > .loading {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 100;
+}
+
+/**
+ * ***************
+ * 内容
+ * ***************
+ */
+
+.view > .content {
+
+}
+
+.view .content:after {
+    display: block;
+    content: '';
+    clear: both;
+}
+
+.view > .content > div {
+    box-sizing: border-box;
+}
+
+.view > .content .image-subject {
+    float: left;
+    width: 1000px;
+    padding: 25px 40px;
+    background-color: #464646;
+}
+
+.view > .content .image-subject .subject {
+
+}
+
+.view > .content .image-subject .subject .title {
+
+}
+
+.view > .content .image-subject .subject .title .right .praise {
+    background-color: #5d5d5d;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 20px;
+    color: #fff;
+    font-size: 12px;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.view > .content .image-subject .subject .title .right .praise:hover {
+    background-color: #828282;
+}
+
+.view > .content .image-subject .subject .tags {
+
+}
+
+.view > .content .image-subject .subject .tags > div {
+    box-sizing: border-box;
+}
+
+.view > .content .image-subject .subject .tags:after {
+    display: block;
+    content: '';
+    clear: both;
+}
+
+.view > .content .image-subject .subject .tags .left {
+    float: left;
+    max-width: calc(100% - 250px);
+}
+
+.view > .content .image-subject .subject .tags .run-tags span {
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.view > .content .image-subject .subject .tags .right {
+    float: right;
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.view > .content .image-subject .subject .tags .right {
+    /*background-color: rgba(62, 62, 62, 0.5);*/
+    /*padding: 0 15px;*/
+    /*height: 24px;*/
+    /*line-height: 24px;*/
+    /*font-size: 12px;*/
+    font-size: 12px;
+}
+
+
+
+.view > .content .image-subject .subject .desc {
+    font-size: 15px;
+}
+
+.view > .content .image-subject .images {
+
+}
+
+.view > .content .image-subject .images .image {
+    max-width: 100%;
+}
+
+
+/*** 杂项 ***/
+.view > .content .misc {
+    float: right;
+    width: 260px;
+    min-height: 200px;
+    position: relative;
+}
+
+
+.view > .content .misc .inner {
+    width: inherit;
+}
+
+.view > .content .misc .inner.fixed {
+    position: fixed;
+    top: 62px;
+}
+
+
+.view > .content .misc .inner > div {
+    margin-bottom: 20px;
+}
+
+.view > .content .misc .inner > div:nth-last-of-type(1) {
+    margin-bottom: 0;
+}
+
+
+.view > .content .misc .inner .user {
+    cursor: pointer;
+    background-color: #464646;
+    padding: 20px;
+}
+
+.view > .content .misc .inner .user > div {
+    margin-bottom: 10px;
+}
+
+.view > .content .misc .inner .user > div:nth-last-of-type(1) {
+    margin-bottom: 0;
+}
+
+.view > .content .misc .inner .user .avatar {
+    display: flex;
+    justify-content: center;
+}
+
+.view > .content .misc .inner .user .avatar .mask {
+    width: 80px;
+    height: 80px;
+    border-radius: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.view > .content .misc .inner .user .avatar .mask .image {
+    height: 100%;
+    min-width: 100%;
+    vertical-align: top;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50% , -50%);
+}
+
+.view > .content .misc .inner .user .name {
+    text-align: center;
+    /*color: */
+    font-size: 12px;
+    color: #fff;
+}
+
+.view > .content .misc .inner .user .data {
+    font-size: 12px;
+    color: #ccc;
+    display: flex;
+    position: relative;
+}
+
+.view > .content .misc .inner .user .data > div {
+    width: 50%;
+    box-sizing: border-box;
+}
+
+.view > .content .misc .inner .user .data .left {
+    text-align: right;
+    padding-right: 10px;
+}
+
+.view > .content .misc .inner .user .data .right {
+    text-align: left;
+    padding-left: 10px;
+}
+
+.view > .content .misc .inner .user .data:after {
+    position: absolute;
+    display: block;
+    content: '';
+    left: 50%;
+    top: 50%;
+    height: 12px;
+    width: 1px;
+    background-color: #ccc;
+    transform: translate(-50% , -50%);
+}
+
+
+.view > .content .misc .inner .user .desc {
+    text-align: center;
+    font-size: 12px;
+    color: #ccc;
+}
+
+.view > .content .misc .inner .user .action {
+    text-align: center;
+}
+
+.view > .content .misc .inner .user .action button {
+    color: #fff;
+    background-color: #5d5d5d;
+    padding: 0 12px;
+    height: 24px;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.view > .content .misc .inner .user .action button:hover {
+    background-color: #828282;
+}
+
+.view > .content .misc .inner .user .action .focus .run-iconfont {
+    vertical-align: top;
+}
+
+/*** 关联主体 ***/
+
+.view > .content .misc .inner .subject {
+    cursor: pointer;
+    background-color: #464646;
+    padding: 20px;
+}
+
+.view > .content .misc .inner .subject > div {
+    margin-bottom: 10px;
+}
+
+.view > .content .misc .inner .subject > div:nth-last-of-type(1) {
+    margin-bottom: 0;
+}
+
+.view > .content .misc .inner .subject .info {
+    border-bottom: 1px solid #636363;
+    padding-bottom: 10px;
+}
+
+.view > .content .misc .inner .subject .info > * {
+    margin-bottom: 10px;
+}
+
+.view > .content .misc .inner .subject .info > *:nth-last-of-type(1) {
+    margin-bottom: 0;
+}
+
+.view > .content .misc .inner .subject .info .thumb {
+    display: flex;
+    justify-content: center;
+}
+
+.view > .content .misc .inner .subject .info .thumb .mask {
+    width: 80px;
+    height: 80px;
+    border-radius: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.view > .content .misc .inner .subject .info .thumb .mask .image {
+    height: 100%;
+    min-width: 100%;
+    vertical-align: top;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50% , -50%);
+}
+
+.view > .content .misc .inner .subject .info .name {
+    text-align: center;
+    /*color: */
+    font-size: 12px;
+    color: #fff;
+}
+
+.view > .content .misc .inner .subject .info .desc {
+    text-align: center;
+    font-size: 12px;
+    color: #ccc;
+}
+
+.view > .content .misc .inner .subject .attr {
+    font-size: 12px;
+    color: #ccc;
+    /*display: flex;*/
+    /*justify-content: center;*/
+}
+
+.view > .content .misc .inner .subject .attr .title {
+
+}
+
+.view > .content .misc .inner .subject .attr .list .line {
+    display: flex;
+}
+
+.view > .content .misc .inner .subject .attr .list .line span {
+    flex: 0 0 auto;
+}
+
+.view > .content .misc .inner .subject .attr .list .line .field {
+    /*width: 80px;*/
+}
+
+.view > .content .misc .inner .subject .action {
+    text-align: center;
+}
+
+.view > .content .misc .inner .subject .action button {
+    color: #fff;
+    background-color: #5d5d5d;
+    padding: 0 12px;
+    height: 24px;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.view > .content .misc .inner .subject .action button:hover {
+    background-color: #828282;
+}
+
+.view > .content .misc .inner .subject .action .focus .run-iconfont {
+    vertical-align: top;
+}
+
+/**
+ * *************
+ * 标签重置
+ * *************
+ */
+.run-tags {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+
+}
+.run-tags .tag {
+    height: 22px;
+    line-height: 22px;
+}
+
+/*** 箭头 ***/
+.view > .to-top {
+    position: fixed;
+    right: 120px;
+    bottom: 100px;
+    background-color: #5d5d5d;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: rotateZ(180deg);
+    transition: all 0.3s;
+}
+
+.view > .to-top:hover {
+    background-color: #828282;
+}
+
+.view > .to-top.hide {
+    display: none;
+}

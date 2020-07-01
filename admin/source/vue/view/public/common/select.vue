@@ -1,10 +1,8 @@
 <template>
-    <div>
-        <i-select v-model="valueCopy" @on-change="changeEvent" class="iview-form-select">
-            <i-option v-if="has" :value="top.key">{{ top.value }}</i-option>
-            <i-option v-for="v in data" :value="v[attr.id]" :key="v[attr.id]">{{ v[attr.floor] > 1 ? '|' + '_'.repeat((v[attr.floor] - 1) * 4) : '' }}{{ v[attr.name] }}</i-option>
-        </i-select>
-    </div>
+    <select v-model="valueCopy" @change="changeEvent" class="form-select">
+        <option :value="empty">请选择...</option>
+        <option v-for="v in data" :value="v[attr.id]" :key="v[attr.id]">{{ v[attr.name] }}</option>
+    </select>
 </template>
 
 <script>
@@ -12,7 +10,7 @@
         name: "my-select" ,
         data () {
             return {
-                valueCopy: 0 ,
+                valueCopy: '' ,
             };
         } ,
         model: {
@@ -28,26 +26,15 @@
                 type: Array ,
                 required: true ,
             } ,
-            // 是否需要顶级项
-            has: {
-                type: Boolean ,
-                default: true ,
-            } ,
-            top: {
-                type: Object ,
-                default () {
-                    return {
-                        key: 0 ,
-                        value: '顶级项' ,
-                    };
-                } ,
+            // 未选择时的默认值
+            empty: {
+                default: 0 ,
             } ,
             attr: {
                 type: Object ,
                 default () {
                     return {
                         id: 'id',
-                        floor: 'floor',
                         name: 'name',
                     }
                 }
@@ -55,21 +42,15 @@
         } ,
 
         methods: {
-            changeEvent (value) {
-                this.$emit('on-change' , value);
+            changeEvent (e) {
+                this.$emit('change' , e.target.value);
             } ,
         } ,
 
         watch: {
-            valueCopy (newVal , oldVal) {
-                this.$emit('change' , newVal);
-            } ,
-
             value: {
-                // 新增 这个选项是因为需要在
-                // 参数首次传递的时候就
-                // 映射到 valueCopy 上
-                // 所以需要这么做
+                // 为了避免初始化的时候在出现重复值导致不应用
+                // 所以，必须要加上 immediate
                 immediate: true ,
                 handler (newVal , oldVal) {
                     this.valueCopy = newVal;

@@ -12,7 +12,9 @@ class Category extends Base
 {
     public function all()
     {
-        $res = CategoryAction::all($this);
+        $param = $this->request->query();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $res = CategoryAction::all($this , $param);
         if ($res['code'] !== 0) {
             return error($res['data'] , $res['code']);
         }

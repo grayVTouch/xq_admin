@@ -12,7 +12,10 @@ class ImageAtPositionAction extends Action
 {
     public static function imageAtPosition(Base $context , string $position ,  array $param = [])
     {
-        $position = PositionModel::getByValue($position);
+        if (empty($param['module_id'])) {
+            return self::error('请提供 module_id');
+        }
+        $position = PositionModel::getByModuleAndValue($param['module_id'] , $position);
         if (empty($position)) {
             return self::error('位置不存在' , 404);
         }

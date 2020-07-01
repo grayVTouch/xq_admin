@@ -114,4 +114,13 @@ class ImageSubject extends Base
         }
         return success($res['data']);
     }
+
+    public function destroyTag($image_subject_id , $tag_id)
+    {
+        $res = ImageSubjectAction::destroyTag($this , $image_subject_id , $tag_id);
+        if ($res['code'] != 0) {
+            return error($res['data'] , $res['code']);
+        }
+        return success($res['data']);
+    }
 }

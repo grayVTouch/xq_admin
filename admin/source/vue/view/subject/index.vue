@@ -88,6 +88,7 @@
                 <div class="table">
 
                     <Table border :columns="table.field" :data="table.data" @on-selection-change="selectedEvent">
+                        <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
                         <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" class="image" height="40" @click.stop="link(row.thumb)"></template>
                         <template v-slot:attr="{row,index}">
                             <Poptip placement="right" width="400" title="关联主体属性" :transfer="true" trigger="hover">
@@ -144,6 +145,16 @@
                                 <span class="need">*</span>
                                 <div class="msg"></div>
                                 <div class="e-msg"></div>
+                            </td>
+                        </tr>
+
+                        <tr :class="getClass(val.error.module_id)" id="form-module_id">
+                            <td>所属模块</td>
+                            <td>
+                                <my-select :data="modules" v-model="form.module_id"></my-select>
+                                <span class="need">*</span>
+                                <div class="msg"></div>
+                                <div class="e-msg">{{ val.error.module_id }}</div>
                             </td>
                         </tr>
 

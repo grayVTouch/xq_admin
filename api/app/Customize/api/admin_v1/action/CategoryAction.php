@@ -30,6 +30,21 @@ class CategoryAction extends Action
         return self::success($res);
     }
 
+    public static function searchByModuleId(Base $context , $module_id , array $param = [])
+    {
+        if (empty($module_id)) {
+            return self::success([]);
+        }
+        $res = CategoryModel::getAllByModuleId($module_id);
+        $res = CategoryHandler::handleAll($res);
+        $res = obj_to_array($res);
+        $res = Category::childrens(0 , $res , [
+            'id'    => 'id' ,
+            'p_id'  => 'p_id' ,
+        ] , false , false);
+        return self::success($res);
+    }
+
     public static function localUpdate(Base $context , $id , array $param = [])
     {
         $bool_range = array_keys(my_config('business.bool_for_int'));
@@ -37,6 +52,7 @@ class CategoryAction extends Action
             'enable'   => ['sometimes', Rule::in($bool_range)],
             'weight'    => 'sometimes|integer',
             'p_id'    => 'sometimes|integer',
+            'module_id'    => 'sometimes|integer',
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first());
@@ -50,6 +66,7 @@ class CategoryAction extends Action
         $param['enable']   = $param['enable'] === '' ? $category->enable : $param['enable'];
         $param['weight']    = $param['weight'] === '' ? $category->weight : $param['weight'];
         $param['p_id']     = $param['p_id'] === '' ? $category->p_id : $param['p_id'];
+        $param['module_id']     = $param['module_id'] === '' ? $category->module_id : $param['module_id'];
 
         CategoryModel::updateById($category->id , array_unit($param , [
             'name' ,
@@ -57,6 +74,7 @@ class CategoryAction extends Action
             'enable' ,
             'weight' ,
             'p_id' ,
+            'module_id' ,
         ]));
         return self::success();
     }
@@ -69,6 +87,7 @@ class CategoryAction extends Action
             'enable'   => ['required', Rule::in($bool_range)],
             'p_id'    => 'required|integer',
             'weight'    => 'sometimes|integer',
+            'module_id'    => 'required|integer',
         ]);
         if ($validator->fails()) {
             return self::error(get_form_error($validator));
@@ -84,6 +103,7 @@ class CategoryAction extends Action
             'enable' ,
             'weight' ,
             'p_id' ,
+            'module_id' ,
         ]));
         return self::success();
     }
@@ -96,6 +116,7 @@ class CategoryAction extends Action
             'enable'  => ['required', Rule::in($bool_range)],
             'p_id'    => 'required|integer',
             'weight'  => 'sometimes|integer',
+            'module_id'  => 'required|integer',
         ]);
         if ($validator->fails()) {
             return self::error(get_form_error($validator));
@@ -107,6 +128,7 @@ class CategoryAction extends Action
             'enable' ,
             'weight' ,
             'p_id' ,
+            'module_id' ,
         ]));
         return self::success($id);
     }

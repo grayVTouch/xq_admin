@@ -5,6 +5,7 @@ namespace App\Customize\api\admin_v1\handler;
 
 
 use App\Customize\api\admin_v1\model\CategoryModel;
+use App\Customize\api\admin_v1\model\ModuleModel;
 use stdClass;
 use Traversable;
 use function core\convert_obj;
@@ -16,15 +17,19 @@ class CategoryHandler extends Handler
         if (empty($model)) {
             return null;
         }
-        $model = convert_obj($model);
+        $res = convert_obj($model);
         if ($deep) {
-            $category = $model->p_id ? CategoryModel::find($model->p_id) : null;
+            $category = $res->p_id ? CategoryModel::find($res->p_id) : null;
             $category = self::handle($category , false);
         } else {
             $category = null;
         }
-        $model->category = $category;
-        return $model;
+        $module = ModuleModel::find($res->module_id);
+        ModuleHandler::handle($module);
+
+        $res->module = $module;
+        $res->category = $category;
+        return $res;
     }
 
 

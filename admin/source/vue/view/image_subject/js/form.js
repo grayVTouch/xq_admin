@@ -5,8 +5,6 @@ export default {
                 tab: 'base' ,
                 pending: {} ,
                 error: {} ,
-                // 用户添加的变迁
-                tags: [] ,
                 selectedIds: [] ,
             } ,
 
@@ -26,6 +24,10 @@ export default {
 
             // 实例
             ins: {} ,
+
+            subject: {
+                name: '琉璃神社' ,
+            } ,
 
             table: {
                 field: [
@@ -52,7 +54,6 @@ export default {
             } ,
 
             images: [] ,
-            // 用户追加的标签
 
             createTime: '' ,
         };
@@ -74,19 +75,27 @@ export default {
         } ,
         form: {
             type: Object ,
-            default: {} ,
+            default () {
+                return {};
+            } ,
         } ,
         categories: {
             type: Array ,
-            default: [] ,
+            default () {
+                return [];
+            } ,
         } ,
         modules: {
             type: Array ,
-            default: [] ,
+            default () {
+                return [];
+            } ,
         } ,
         topTags: {
             type: Array ,
-            default: [] ,
+            default () {
+                return [];
+            } ,
         } ,
         mode: {
             type: String ,
@@ -101,6 +110,16 @@ export default {
     } ,
 
     methods: {
+
+        moduleChangedEvent (moduleId) {
+            moduleId = parseInt(moduleId);
+            this.val.error.module_id = '';
+            this.form.category_id = 0;
+            this.form.subject_id = 0;
+            this.form.topTags = [];
+
+            this.$emit('on-module-change' , moduleId);
+        } ,
 
         initDom () {
             this.dom.tagInput = G(this.$refs['tag-input']);
@@ -149,7 +168,9 @@ export default {
         } ,
 
         searchUser (value) {
+            this.pending('searchUser' , true);
             Api.user.search(value , (data , code) => {
+                this.pending('searchUser' , false);
                 if (code !== TopContext.code.Success) {
                     this.error({user_id: data});
                     return ;
@@ -159,13 +180,31 @@ export default {
         } ,
 
         searchSubject (value) {
-            Api.subject.search(value , (data , code) => {
+            if (this.form.module_id < 1) {
+                this.error({subject_id: '请选择模块后操作'});
+                return ;
+            }
+            this.pending('searchSubject' , true);
+            Api.subject.search({
+                module_id: this.form.module_id ,
+                value: value ,
+            } , (data , code) => {
+                this.pending('searchSubject' , false);
                 if (code !== TopContext.code.Success) {
                     this.error({subject_id: data});
                     return ;
                 }
                 this.subjects = data;
             });
+        } ,
+
+        searchSubjectEvent (e) {
+            const tar = G(e.currentTarget);
+            const value = tar.val();
+            if (!G.isValid(value)) {
+                this.message('warning' , '请提供有效的搜索值');
+            }
+            // 开始搜索
         } ,
 
         selectedTagEvent () {
@@ -181,6 +220,7 @@ export default {
             this.ins.thumb.clearAll();
             this.ins.images.clearAll();
             this.images = [];
+            this.tags = [];
             // 切换回基本的内容
             this._val('tab' , 'base');
         } ,
@@ -243,10 +283,29 @@ export default {
             });
         } ,
 
-        isExistTag (name) {
-            for (let i = 0; i < this.form.__tag__.length; ++i)
+        isExistTagByTagId (tagId) {
+            for (let i = 0; i < this.form.tags.length; ++i)
             {
-                const cur = this.form.__tag__[i];
+                const cur = this.form.tags[i];
+                if (tagId === cur.tag_id) {
+                    return true;
+                }
+            }
+            for (let i = 0; i < this.tags.length; ++i)
+            {
+                const cur = this.tags[i];
+                if (tagId === cur.id) {
+                    return true;
+                }
+            }
+            return false;
+        } ,
+
+        isExistTagByName (name) {
+            const tags = this.form.tags.concat(this.tags);
+            for (let i = 0; i < tags.length; ++i)
+            {
+                const cur = tags[i];
                 if (name === cur.name) {
                     return true;
                 }
@@ -254,43 +313,69 @@ export default {
             return false;
         } ,
 
-        appendTag (name) {
-            if (this.isExistTag(name)) {
+        appendTag (v) {
+            if (this.isExistTagByTagId(v.id)) {
                 this.message('error' , '标签已经存在');
                 return ;
             }
-            this.form.__tag__.push({name});
+            this.tags.push(v);
         } ,
 
-        destroyTag (name) {
-            for (let i = 0; i < this.form.__tag__.length; ++i)
-            {
-                const cur = this.form.__tag__[i];
-                if (name === cur.name) {
-                    this.form.__tag__.splice(i , 1);
+        destroyTag (tagId , direct = true) {
+            if (direct) {
+                for (let i = 0; i < this.tags.length; ++i)
+                {
+                    const tag = this.tags[i];
+                    if (tag.id === tagId) {
+                        this.tags.splice(i , 1);
+                        i--;
+                    }
+                }
+                return ;
+            }
+            // 编辑模式
+            this.pending('destroy_tag_' + tagId , true);
+            Api.image_subject.destroyTag(this.form.id , tagId , (data , code) => {
+                this.pending('destroy_tag_' + tagId , false);
+                if (code !== TopContext.code.Success) {
+                    this.error({tags: data});
                     return ;
                 }
-            }
+                for (let i = 0; i < this.form.tags.length; ++i)
+                {
+                    const tag = this.form.tags[i];
+                    if (tag.tag_id === tagId) {
+                        this.form.tags.splice(i , 1);
+                        i--;
+                    }
+                }
+            });
         } ,
 
         createOrAppendTag () {
+            this.val.error.tags = '';
             const name = this.dom.tagInput.text().replace(/\s/g , '');
             this.dom.tagInput.html(name);
             if (!G.isValid(name)) {
                 this.message('error' , '请提供标签名称');
                 return ;
             }
-            if (this.isExistTag(name)) {
+            if (this.isExistTagByName(name)) {
                 this.message('error' , '标签已经存在');
                 return ;
             }
             this.dom.tagInput.origin('blur');
             this.dom.tagInputOuter.addClass('disabled');
-            Api.tag.store({
+            Api.tag.findOrCreateTag({
                 name ,
+                module_id: this.form.module_id ,
             } , (data , code) => {
-                this.form.__tag__.push({name});
                 this.dom.tagInputOuter.removeClass('disabled');
+                if (code !== TopContext.code.Success) {
+                    this.error({tags: data});
+                    return ;
+                }
+                this.tags.push(data);
                 this.dom.tagInput.html('');
             });
         } ,
@@ -309,23 +394,33 @@ export default {
                 }
                 this.successHandle((keep) => {
                     this.$emit('on-success');
+
                     if (!keep) {
                         this.closeFormDrawer();
                     }
                 });
             };
-            this.form.images = G.jsonEncode(this.images);
-            this.form.tag = G.jsonEncode(this.form.__tag__);
+            const form = {...this.form};
+            form.images = G.jsonEncode(this.images);
+            form.tags = [];
+            this.tags.forEach((v) => {
+                form.tags.push(v.id);
+            });
+            form.tags = G.jsonEncode(form.tags);
             this.pending('submit' , true);
             if (this.mode === 'edit') {
-                Api.image_subject.update(this.form.id , this.form , callback);
+                Api.image_subject.update(form.id , form , callback);
                 return ;
             }
-            Api.image_subject.store(this.form , callback);
+            Api.image_subject.store(form , callback);
         } ,
 
         setDatetimeEvent (date) {
             this.form.create_time = date;
+        } ,
+
+        changeEventTest (value) {
+            console.log('i-select changed' , value , JSON.stringify(this.modules));
         } ,
     } ,
 

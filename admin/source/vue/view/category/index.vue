@@ -23,6 +23,7 @@
                             <template v-if="row.floor > 1">{{ '|' + '_'.repeat((row.floor - 1) * 10) + row.name }}</template>
                             <template v-else>{{ row.name }}</template>
                         </template>
+                        <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
                         <template v-slot:enable="{row,index}"><my-switch v-model="row.enable" :loading="val.pending['enable_' + row.id]" :extra="{id: row.id , field: 'enable'}" @on-change="updateBoolValEvent" /></template>
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
@@ -56,15 +57,26 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.p_id)" id="form_p_id">
-                                <td>上级权限</td>
+                            <tr :class="getClass(val.error.module_id)" id="form-module_id">
+                                <td>所属模块</td>
                                 <td>
-                                    <my-select :data="category" v-model="form.p_id" :has="true" :attr="val.attr"  @change="val.error.p_id = ''"></my-select>
-                                    <span class="msg"></span>
+                                    <my-select :data="modules" v-model="form.module_id" @change="moduleChangedEvent"></my-select>
                                     <span class="need">*</span>
-                                    <span class="e-msg">{{ val.error.p_id }}</span>
+                                    <div class="msg"></div>
+                                    <div class="e-msg">{{ val.error.module_id }}</div>
                                 </td>
                             </tr>
+
+                            <tr :class="getClass(val.error.p_id)" id="form_p_id">
+                                <td>上级分类</td>
+                                <td>
+                                    <my-deep-select :data="category" v-model="form.p_id" :has="true" :attr="val.attr"  @change="val.error.p_id = ''"></my-deep-select>
+                                    <span class="need">*</span>
+                                    <div class="msg">请务必选择模块后操作</div>
+                                    <div class="e-msg">{{ val.error.p_id }}</div>
+                                </td>
+                            </tr>
+
                             <tr :class="getClass(val.error.description)" id="form_description">
                                 <td>描述</td>
                                 <td>

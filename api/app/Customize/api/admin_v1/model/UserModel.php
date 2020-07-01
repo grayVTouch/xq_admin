@@ -11,12 +11,13 @@ class UserModel extends Model
 {
     protected $table = 'xq_user';
 
-    public static function search(string $value = ''): Collection
+    public static function search(string $value = '' , int $limit = 20): Collection
     {
         return self::where('id' , $value)
             ->orWhere('username' , $value)
             ->orWhere('phone' , $value)
             ->orWhere('email' , $value)
+            ->limit($limit)
             ->get();
     }
 

@@ -7,9 +7,9 @@
             <div class="navigation" :class="{fixed: val.fixed}">
                 <nav class="nav nav-top">
                     <div class="inner">
-                        <div class="logo">
+                        <div class="logo"  @click="push('/welcome')">
 
-                            <div class="__logo__"><img src="../index/res/logo.png" class="image"></div>
+                            <div class="__logo__"><img src="./res/logo.png" class="image"></div>
                             <div class="site"><a class="link">兴趣部落</a></div>
 
                         </div>
@@ -17,7 +17,7 @@
                         <div class="search search-in-logged">
                             <div class="inner">
                                 <div class="ico"><i class="run-iconfont run-iconfont-search"></i></div>
-                                <div class="input"><input type="text" placeholder="搜索" class="form-input"></div>
+                                <div class="input"><input type="text" placeholder="搜索" class="form-input" @focus="push({name: 'search' , param: val.mime.key})"></div>
                                 <div class="type" :class="{show: val.navTypeList}">
                                     <div class="current" @click.stop="showNavTypeList">{{ val.mime.value }}<i class="iconfont run-iconfont run-iconfont-arrow"></i></div>
                                     <ul class="list hide" ref="nav-type-list" @click.stop>
@@ -47,7 +47,7 @@
                 <nav class="nav nav-btm">
                     <div class="inner">
                         <div class="item left menu" ref="nav-menu">
-                            <my-nav-menu :data="category"></my-nav-menu>
+                            <my-nav-menu :data="nav"></my-nav-menu>
                         </div>
                         <div class="item right action"></div>
                     </div>
@@ -61,8 +61,11 @@
 
         <!-- 内容 -->
         <section class="body" ref="body">
-            <router-view></router-view>
+            <keep-alive>
+                <router-view></router-view>
+            </keep-alive>
         </section>
+
         <!-- 尾部 -->
         <footer class="footer">
             <p class="website">兴趣部落</p>
@@ -78,9 +81,10 @@
         <div class="main-nav hide">
 
         </div>
+
+        <div class="to-top" ref="to-top"><my-icon icon="jiantou" size="20" /></div>
     </main>
 </template>
 
 <script src="./js/home.js"></script>
-<style src="./css/base.css"></style>
 <style scoped src="./css/home.css"></style>

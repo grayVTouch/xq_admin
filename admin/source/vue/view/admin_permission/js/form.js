@@ -36,7 +36,9 @@ export default {
 
         form: {
             type: Object ,
-            default: {} ,
+            default () {
+                return {};
+            } ,
         } ,
 
         mode: {
@@ -46,7 +48,9 @@ export default {
 
         permission: {
             type: Array ,
-            default: []
+            default () {
+                return [];
+            } ,
         }
     } ,
 

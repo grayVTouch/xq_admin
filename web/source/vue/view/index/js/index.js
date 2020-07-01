@@ -5,7 +5,8 @@ export default {
             dom: {} ,
             ins: {} ,
             val: {
-                limit: 20 ,
+                limit: 16 ,
+                pending: {} ,
             } ,
 
             homeSlideshow: [] ,
@@ -16,65 +17,142 @@ export default {
                 index: 0 ,
             } ,
 
+            // 最热门图片
+            hotImages: [] ,
+            // 最新图片
+            newestImages: [] ,
+
             // 图片专区
             images: [] ,
-        };
-    } ,
 
-    beforeRouteEnter (to, from, next) {
-        // 在渲染该组件的对应路由被 confirm 前调用
-        // 不！能！获取组件实例 `this`
-        // 因为当守卫执行前，组件实例还没被创建
-        next();
-    },
-    beforeRouteUpdate (to, from, next) {
-        // 在当前路由改变，但是该组件被复用时调用
-        // 举例来说，对于一个带有动态参数的路径 /foo/:id，在 /foo/1 和 /foo/2 之间跳转的时候，
-        // 由于会渲染同样的 Foo 组件，因此组件实例会被复用。而这个钩子就会在这个情况下被调用。
-        // 可以访问组件实例 `this`
-        this.ins.slidebar.setTime();
-        next();
-    },
-    beforeRouteLeave (to, from, next) {
-        // 导航离开该组件的对应路由时调用
-        // 可以访问组件实例 `this`
-        this.ins.slidebar.clearTime();
-        G.timer.clearAll();
-        next();
+            group: {
+                image: {
+                    action: {
+                        scrollWidth: 0 ,
+                        clientWidth: 0 ,
+                        translateX: 0 ,
+                        maxTranslateX: 0 ,
+                        minTranslateX: 0 ,
+                    } ,
+                    curTag: 'newest' ,
+                    tag: [] ,
+                } ,
+            } ,
+
+            //
+            initOnce: true ,
+
+
+        };
     } ,
 
     mounted () {
         this.initDom();
         this.getHomeSlideshow();
-        this.getImages();
+        this.newestInImageSubject();
+        this.hotInImageSubject((keep , data) => {
+            if (!keep) {
+                return ;
+            }
+            this.hotImages = data;
+        });
+        this.hotTags();
     } ,
-
-
 
     methods: {
 
-        // 首页幻灯片
-        getImages () {
-            Api.index.getNewestImageSubject(this.val.limit , (data , code) => {
+        // 图片-最新图片
+        newestInImageSubject () {
+            this.pending('images' , true);
+            this.group.image.curTag = 'newest';
+            Api.index.newestInImageSubject({
+                limit: this.val.limit
+            } , (data , code) => {
+                this.pending('images' , false);
+                if (code !== TopContext.code.Success) {
+                    this.message(data);
+                    return ;
+                }
+                this.newestImages = data;
+                this.images = data;
+                this.$nextTick(() => {
+                    this.initContentGroupContainerWidthByGroup('image');
+                });
+            });
+        } ,
+
+        // 图片-最热门的图片
+        hotInImageSubject (callback) {
+            Api.index.hotInImageSubject({
+                limit: this.val.limit
+            } , (data , code) => {
+                if (code !== TopContext.code.Success) {
+                    G.invoke(callback , this , false , data);
+                    this.message(data);
+                    return ;
+                }
+                G.invoke(callback , this , true , data);
+            });
+        } ,
+
+        getHotImageSubject () {
+            this.pending('images' , true);
+            this.group.image.curTag = 'hot';
+            this.hotInImageSubject((keep , data) => {
+                this.pending('images' , false);
+                if (!keep) {
+                    return ;
+                }
+                this.images = data;
+                this.$nextTick(() => {
+                    this.initContentGroupContainerWidthByGroup('image');
+                });
+            })
+        } ,
+
+        // 图片-按标签分类获取的图片
+        getImageByTagId (tagId) {
+            this.pending('images' , true);
+            this.group.image.curTag = 'tag_' + tagId;
+            Api.index.getImageByTagId(tagId , {
+                limit: this.val.limit
+            } , (data , code) => {
+                this.pending('images' , false);
                 if (code !== TopContext.code.Success) {
                     this.message(data);
                     return ;
                 }
                 this.images = data;
+                this.$nextTick(() => {
+                    this.initContentGroupContainerWidthByGroup('image');
+                });
+            });
+        } ,
+
+        // 图片-按标签分类获取的图片
+        hotTags () {
+            Api.index.hotTags({
+                limit: 5 ,
+            } , (data , code) => {
+                if (code !== TopContext.code.Success) {
+                    this.message(data);
+                    return ;
+                }
+                this.group.image.tag = data;
             });
         } ,
 
         // 首页幻灯片
         getHomeSlideshow () {
-            Api.index.getHomeSlideshow((data , code) => {
+            Api.index.homeSlideshow((data , code) => {
                 if (code !== TopContext.code.Success) {
                     this.message(data);
                     return ;
                 }
                 this.homeSlideshow = data;
                 this.$nextTick(() => {
-                    this.initPicPlay_Touch();
-                    this.initBackground();
+                    this.initPicPlay_Transform();
+                    // this.initBackground();
                 });
             });
         } ,
@@ -97,49 +175,61 @@ export default {
         } ,
 
         // 首页幻灯片
-        initPicPlay_Touch () {
-            this.ins.slidebar = new PicPlay_Touch(this.dom.slidebar.get(0) , {
+        initPicPlay_Transform () {
+
+            console.log('initPicPlay_Transform ... !');
+
+            this.ins.slidebar = new PicPlay_Transform(this.dom.slidebar.get(0) , {
                 // 动画过度时间
                 time: 400,
                 // 定时器时间
                 duration: this.background.duration ,
-                // 索引类型, index-普通索引 image-图片索引 none-无索引
-                indexType: 'index',
-                // 索引容器位置 (inset | outset)
-                indexPos: 'inset',
-                // 索引摆放类型（horizontal|vertical）
-                placementType: 'horizontal',
-                // 索引摆放位置（top|right|bottom|left）
-                // placementType = horizontal，则允许的值有 top|bottom；placementType = vertical，则允许的值有 left|right
-                placementPos: 'bottom',
-                // 默认点击图片会进行跳转
-                linkTo: true,
-                // 是否启用 上一张 | 下一张 功能
-                enableOpr: true,
-                // 是否启用滚动功能
-                enableScroll: false,
-                // 是否开启拖拽功能
-                enableDrag: false,
-                // 是否开启定时轮播功能
-                enableTimer: false ,
-                // 初始显示的索引
-                index: 1
             })
         } ,
 
         prevByGroup (group) {
-            const list = G(this.$refs['list-for-' + group]);
+            if (this.group.image.action.translateX >= this.group.image.action.maxTranslateX) {
+                return ;
+            }
+            this.group.image.action.translateX += this.group.image.action.clientWidth;
             const inner = G(this.$refs['inner-for-' + group]);
-            const scrollWidth = list.scrollWidth();
-            const clientWidth = list.width();
-            const scrollLeft = list.scrollLeft();
-            // console.log('当前 scrollLeft' , scrollLeft , scrollWidth , clientWidth , scrollLeft + clientWidth);
-
-
+            inner.css({
+                transform: 'translateX(' + this.group.image.action.translateX + 'px)'
+            });
         } ,
 
         nextByGroup (group) {
-
+            if (this.group.image.action.translateX <= this.group.image.action.minTranslateX) {
+                return ;
+            }
+            this.group.image.action.translateX -= this.group.image.action.clientWidth;
+            const inner = G(this.$refs['inner-for-' + group]);
+            inner.css({
+                transform: 'translateX(' + this.group.image.action.translateX + 'px)'
+            });
         } ,
+
+        // 初始化内容分组的容器宽度
+        initContentGroupContainerWidthByGroup (group) {
+            const list = G(this.$refs['list-for-' + group]);
+            const inner = G(this.$refs['inner-for-' + group]);
+            const items = inner.children();
+            let width = 0;
+            items.each((item) => {
+                item = G(item);
+                width += item.getTW();
+            });
+            inner.css({
+                width: width + 'px' ,
+                transform: 'translateX(0px)'
+            });
+            this.group.image.action.translateX = 0;
+            this.group.image.action.scrollWidth = width;
+            this.group.image.action.clientWidth = parseInt(list.width('content-box'));
+            this.group.image.action.maxTranslateX = 0;
+            this.group.image.action.minTranslateX = -(Math.ceil(this.group.image.action.scrollWidth / this.group.image.action.clientWidth) - 1) * this.group.image.action.clientWidth;
+        } ,
+
+
     } ,
 }

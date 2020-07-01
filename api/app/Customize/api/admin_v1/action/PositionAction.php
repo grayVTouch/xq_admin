@@ -4,6 +4,7 @@
 namespace App\Customize\api\admin_v1\action;
 
 use App\Customize\api\admin_v1\handler\PositionHandler;
+use App\Customize\api\admin_v1\model\ModuleModel;
 use App\Customize\api\admin_v1\model\PositionModel;
 use App\Http\Controllers\api\admin_v1\Base;
 use Illuminate\Support\Facades\Validator;
@@ -28,6 +29,7 @@ class PositionAction extends Action
         $validator = Validator::make($param , [
             'name' => 'required' ,
             'value' => 'required' ,
+            'module_id' => 'required' ,
         ]);
         if ($validator->fails()) {
             return self::error(get_form_error($validator));
@@ -40,6 +42,7 @@ class PositionAction extends Action
             'value' ,
             'name' ,
             'description' ,
+            'module_id' ,
         ]));
         return self::success();
     }
@@ -49,11 +52,16 @@ class PositionAction extends Action
         $validator = Validator::make($param , [
             'name' => 'required' ,
             'value' => 'required' ,
+            'module_id' => 'required' ,
         ]);
         if ($validator->fails()) {
             return self::error(get_form_error($validator));
         }
-        $tag = PositionModel::getByValue($param['value']);
+        $module = ModuleModel::find($param['module_id']);
+        if (empty($module)) {
+            return self::error('模块不存在');
+        }
+        $tag = PositionModel::getByModuleIdAndValue($module->id , $param['value']);
         if (!empty($tag)) {
             return self::error('位置已经存在');
         }
@@ -61,6 +69,7 @@ class PositionAction extends Action
             'value' ,
             'name' ,
             'description' ,
+            'module_id' ,
         ]));
         return self::success($id);
     }

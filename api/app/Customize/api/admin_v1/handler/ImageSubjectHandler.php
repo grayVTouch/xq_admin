@@ -8,6 +8,7 @@ use App\Customize\api\admin_v1\model\CategoryModel;
 use App\Customize\api\admin_v1\model\ImageModel;
 use App\Customize\api\admin_v1\model\ImageSubjectModel;
 use App\Customize\api\admin_v1\model\ModuleModel;
+use App\Customize\api\admin_v1\model\RelationTagModel;
 use App\Customize\api\admin_v1\model\SubjectModel;
 use App\Customize\api\admin_v1\model\UserModel;
 use Illuminate\Support\Facades\Storage;
@@ -43,14 +44,17 @@ class ImageSubjectHandler extends Handler
         $images = ImageModel::getByImageSubjectId($res->id);
         $images = ImageHandler::handleAll($images);
 
+        $tags = RelationTagModel::getByRelationTableAndRelationId('xq_image_subject' , $res->id);
+
         $res->user = $user;
         $res->module = $module;
         $res->category = $category;
         $res->subject = $subject;
 
         $res->images = $images;
+        $res->tags = $tags;
+
         $res->__thumb__ = empty($res->thumb) ? '' : Storage::url($res->thumb);
-        $res->__tag__ = empty($res->tag) ? [] : json_decode($res->tag , true);
         $res->__type__ = get_value('business.type_for_image_subject' , $res->type);
         $res->__status__ = get_value('business.status_for_image_subject' , $res->status);
         return $res;

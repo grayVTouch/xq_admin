@@ -71,7 +71,9 @@ export default {
             permissions: [] ,
             // 选中的权限
             rolePermission: [] ,
-            search: {} ,
+            search: {
+                limit: this.$store.state.context.limit
+            } ,
             form: {...form}  ,
             role: {} ,
         };

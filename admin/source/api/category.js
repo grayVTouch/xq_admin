@@ -6,10 +6,15 @@ const show = genUrl('category/{id}');
 const destroy = genUrl('category/{id}');
 const destroyAll = genUrl('destroy_all_category');
 const categoryExcludeSelfAndChildren = genUrl('category/{id}/all');
+const searchByModuleId = genUrl('category/{module_id}/search_by_module_id');
 
 export default {
     index (success , error) {
         return request(index , 'get' , null , success , error);
+    } ,
+
+    searchByModuleId (moduleId , success , error) {
+        return request(searchByModuleId.replace('{module_id}' , moduleId) , 'get' , null , success , error);
     } ,
 
     localUpdate (id , data , success , error) {

@@ -29,6 +29,7 @@ class Tag extends Base
         $param['name']          = $param['name'] ?? '';
         $param['description']   = $param['description'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
+        $param['module_id']        = $param['module_id'] ?? '';
         $res = TagAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
@@ -42,7 +43,22 @@ class Tag extends Base
         $param['name']          = $param['name'] ?? '';
         $param['description']   = $param['description'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
+        $param['module_id']        = $param['module_id'] ?? '';
         $res = TagAction::store($this ,$param);
+        if ($res['code'] != 0) {
+            return error($res['data'] , $res['code']);
+        }
+        return success($res['data']);
+    }
+
+    public function findOrCreate()
+    {
+        $param = $this->request->post();
+        $param['name']          = $param['name'] ?? '';
+        $param['description']   = $param['description'] ?? '';
+        $param['weight']        = $param['weight'] ?? '';
+        $param['module_id']        = $param['module_id'] ?? '';
+        $res = TagAction::findOrCreate($this ,$param);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
         }
@@ -78,19 +94,9 @@ class Tag extends Base
         return success($res['data']);
     }
 
-    public function search()
+    public function topByModuleId($module_id)
     {
-        $value = $this->request->get('value' , '');
-        $res = TagAction::search($this , $value);
-        if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
-        }
-        return success($res['data']);
-    }
-
-    public function top()
-    {
-        $res = TagAction::top($this);
+        $res = TagAction::topByModuleId($this , $module_id);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
         }

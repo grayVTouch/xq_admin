@@ -31,6 +31,7 @@ class Subject extends Base
         $param['thumb']         = $param['thumb'] ?? '';
         $param['attr']          = $param['attr'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
+        $param['module_id']        = $param['module_id'] ?? '';
         $res = SubjectAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
@@ -46,6 +47,7 @@ class Subject extends Base
         $param['thumb']         = $param['thumb'] ?? '';
         $param['attr']          = $param['attr'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
+        $param['module_id']        = $param['module_id'] ?? '';
         $res = SubjectAction::store($this ,$param);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
@@ -84,8 +86,11 @@ class Subject extends Base
 
     public function search()
     {
-        $value = $this->request->get('value' , '');
-        $res = SubjectAction::search($this , $value);
+        $param = $this->request->query();
+        $param['value'] = $param['value'] ?? '';
+        $param['module_id'] = $param['module_id'] ?? '';
+
+        $res = SubjectAction::search($this , $param);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
         }

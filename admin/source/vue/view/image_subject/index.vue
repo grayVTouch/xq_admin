@@ -129,7 +129,7 @@
                                 <div slot="content">
                                     <table class="line-table">
                                         <tbody>
-                                        <tr v-for="v in row.__tag__" :key="v.id">
+                                        <tr v-for="v in row.tags" :key="v.id">
                                             <td>{{ v.name }}</td>
                                         </tr>
                                         </tbody>
@@ -165,6 +165,7 @@
                     :topTags="topTags"
                     :mode="val.mode"
                     v-model="val.drawer"
+                    @on-module-change="moduleChanged"
                     @on-success="getData"
             ></my-form>
 

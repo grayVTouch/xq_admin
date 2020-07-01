@@ -5,7 +5,8 @@ const show = genUrl('tag/{id}');
 const destroy = genUrl('tag/{id}');
 const destroyAll = genUrl('destroy_all_tag');
 const search = genUrl('search_tag');
-const top = genUrl('top_tag');
+const topByModule = genUrl('tag/{module_id}/top_by_module_id');
+const findOrCreateTag = genUrl('find_or_create_tag');
 
 export default {
     index (data , success , error) {
@@ -48,7 +49,12 @@ export default {
         } , success , error);
     } ,
 
-    top (success , error) {
-        return request(top , 'get' , null , success , error);
+    topByModule (moduleId , success , error) {
+        return request(topByModule.replace('{module_id}' , moduleId) , 'get' , null , success , error);
     } ,
+
+    findOrCreateTag (data , success , error) {
+        return request(findOrCreateTag , 'post' , data , success , error)
+    } ,
+
 };

@@ -75,13 +75,17 @@ export default {
                 data: [] ,
             } ,
             position: [] ,
-            search: {} ,
+            search: {
+                limit: this.$store.state.context.limit
+            } ,
             form: {...form}  ,
         };
     } ,
 
     mounted () {
-        this.init();
+        this.initDom();
+        this.initIns();
+        this.getData();
     } ,
 
     computed: {
@@ -95,13 +99,6 @@ export default {
     } ,
 
     methods: {
-
-        init () {
-            this.initDom();
-            this.initIns();
-            this.getPositionData();
-            this.getData();
-        } ,
 
 
         initDom () {
@@ -223,6 +220,7 @@ export default {
             this._val('mode' , 'edit');
             this.error();
             this.form = {...record};
+            this.getPositionData();
         } ,
 
         addEvent () {
@@ -230,6 +228,7 @@ export default {
             this._val('mode' , 'add');
             this.error();
             this.form = {...form};
+            this.getPositionData();
         } ,
 
         submitEvent () {

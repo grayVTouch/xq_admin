@@ -88,6 +88,7 @@
                 <div class="table">
 
                     <Table border :columns="table.field" :data="table.data" @on-selection-change="selectedEvent">
+                        <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
                             <my-table-button type="error" :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
@@ -128,6 +129,15 @@
                                     <span class="need">*</span>
                                     <div class="msg"></div>
                                     <div class="e-msg">{{ val.error.name }}</div>
+                                </td>
+                            </tr>
+                            <tr :class="getClass(val.error.module_id)" id="form-module_id">
+                                <td>所属模块</td>
+                                <td>
+                                    <my-select :data="modules" v-model="form.module_id"></my-select>
+                                    <span class="need">*</span>
+                                    <div class="msg"></div>
+                                    <div class="e-msg">{{ val.error.module_id }}</div>
                                 </td>
                             </tr>
                             <tr :class="getClass(val.error.description)" id="form-description">

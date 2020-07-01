@@ -26,8 +26,12 @@ Vue.mixin({
             return G.isValid(val);
         } ,
 
-        push (...args) {
-            this.$router.push.apply(this.$router , args);
+        push (location , onComplete , onAbort) {
+            if (location === this.$route.path) {
+                // 如果导航到同一个路由，则终止
+                return ;
+            }
+            this.$router.push.apply(this.$router , [location , onComplete , onAbort]);
         } ,
 
         state (key) {
@@ -70,6 +74,10 @@ Vue.mixin({
 
         successHandle (callback) {
 
+        } ,
+
+        dispatch (action , payload) {
+            this.$store.dispatch(action , payload);
         } ,
     }
 });

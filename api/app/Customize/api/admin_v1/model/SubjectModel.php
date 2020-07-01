@@ -30,10 +30,12 @@ class SubjectModel extends Model
             ->paginate($limit);
     }
 
-    public static function search(string $value = ''): Collection
+    public static function search($module_id , $value , int $limit = 20): Collection
     {
-        return self::where('id' , $value)
+        return self::where('module_id' , $module_id)
+            ->orWhere('id' , $value)
             ->orWhere('name' , $value)
+            ->limit(20)
             ->get();
     }
 }

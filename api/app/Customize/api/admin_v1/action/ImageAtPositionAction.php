@@ -43,12 +43,14 @@ class ImageAtPositionAction extends Action
                 'position_id' => '位置id对应记录不存在' ,
             ] , 404);
         }
+        $param['module_id'] = $position->module_id;
         ImageAtPositionModel::updateById($res->id , array_unit($param , [
             'position_id' ,
             'name' ,
             'mime' ,
             'path' ,
             'link' ,
+            'module_id' ,
         ]));
         return self::success();
     }
@@ -68,12 +70,14 @@ class ImageAtPositionAction extends Action
                 'position_id' => '位置id对应记录不存在' ,
             ] , 404);
         }
+        $param['module_id'] = $position->module_id;
         $id = ImageAtPositionModel::insertGetId(array_unit($param , [
             'position_id' ,
             'name' ,
             'mime' ,
             'path' ,
             'link' ,
+            'module_id' ,
         ]));
         return self::success($id);
     }

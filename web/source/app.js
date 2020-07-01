@@ -1,5 +1,5 @@
 
-import './asset/css/iview.css';
+import './asset/css/base.css';
 
 /**
  * **************************
@@ -18,6 +18,8 @@ import './asset/js/mixin.js';
 
 import './asset/js/my_plugin.js';
 import './asset/js/my_view.js';
+
+
 
 import router from './vue/router';
 

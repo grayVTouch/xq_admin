@@ -27,22 +27,24 @@ class SubjectAction extends Action
     {
         $validator = Validator::make($param , [
             'name' => 'required' ,
+            'module_id' => 'required' ,
         ]);
         if ($validator->fails()) {
             return self::error(get_form_error($validator));
         }
-        $role = SubjectModel::find($id);
-        if (empty($role)) {
+        $res = SubjectModel::find($id);
+        if (empty($res)) {
             return self::error('关联不存在' , 404);
         }
         $param['attr'] = $param['attr'] === '' ? '{}' : $param['attr'];
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
-        SubjectModel::updateById($role->id , array_unit($param , [
+        SubjectModel::updateById($res->id , array_unit($param , [
             'name' ,
             'description' ,
             'thumb' ,
             'attr' ,
             'weight' ,
+            'module_id' ,
         ]));
         return self::success();
     }
@@ -51,6 +53,7 @@ class SubjectAction extends Action
     {
         $validator = Validator::make($param , [
             'name' => 'required' ,
+            'module_id' => 'required' ,
         ]);
         if ($validator->fails()) {
             return self::error(get_form_error($validator));
@@ -62,18 +65,19 @@ class SubjectAction extends Action
             'thumb' ,
             'attr' ,
             'weight' ,
+            'module_id' ,
         ]));
         return self::success($id);
     }
 
     public static function show(Base $context , $id , array $param = [])
     {
-        $role = SubjectModel::find($id);
-        if (empty($role)) {
+        $res = SubjectModel::find($id);
+        if (empty($res)) {
             return self::error('关联主体不存在' , 404);
         }
-        $role = SubjectModel::handle($role);
-        return self::success($role);
+        $res = SubjectModel::handle($res);
+        return self::success($res);
     }
 
     public static function destroy(Base $context , $id , array $param = [])
@@ -88,12 +92,15 @@ class SubjectAction extends Action
         return self::success($count);
     }
 
-    public static function search(Base $context , $value , array $param = [])
+    public static function search(Base $context , array $param = [])
     {
-        if (empty($value)) {
+        if (empty($param['value'])) {
             return self::error('请提供搜索值');
         }
-        $res = SubjectModel::search($value);
+        if (empty($param['module_id'])) {
+            return self::error('请提供 module_id');
+        }
+        $res = SubjectModel::search($param['module_id'] , $param['value'] , 20);
         $res = SubjectHandler::handleAll($res);
         return self::success($res);
     }

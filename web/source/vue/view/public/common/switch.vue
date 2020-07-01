@@ -1,14 +1,7 @@
 <template>
-    <i-switch
-            :size="size"
-            v-model="copyValue"
-            :true-value="trueValue"
-            :false-value="falseValue"
-            :loading="loading"
-            @on-change="changeEvent"
-            :true-color="trueColor"
-            :false-color="falseColor"
-    ></i-switch>
+    <div class="run-switch" ref="run-switch" @click="modeSwitch" :class="{'run-switch-off': valueCopy === falseValue , 'run-switch-on': valueCopy === trueValue , 'run-switch-small': size === 'small'}">
+        <div class="run-switch-ctl"></div>
+    </div>
 </template>
 
 <script>
@@ -17,19 +10,25 @@
 
         data () {
             return {
-                copyValue: 0 ,
+                valueCopy: 0 ,
+                dom: {} ,
             };
+        } ,
+
+        mounted () {
+            this.dom.switch = G(this.$refs['run-switch']);
         } ,
 
         model: {
             prop: 'value' ,
-            event: 'change' ,
+            event: 'on-change' ,
         } ,
 
         props: {
             value: {
                 default: 0 ,
             } ,
+
             size: {
                 type: String ,
                 default: 'small' ,
@@ -41,12 +40,10 @@
             } ,
 
             trueValue: {
-                type: Number ,
                 default: 1
             } ,
 
             falseValue: {
-                type: Number ,
                 default: 0
             } ,
 
@@ -73,20 +70,21 @@
 
 
         methods: {
-            changeEvent (val) {
-                this.$emit('on-change' , val , this.extra);
+            modeSwitch () {
+                if (this.dom.switch.hasClass('run-switch-on')) {
+                    this.valueCopy = this.falseValue;
+                } else {
+                    this.valueCopy = this.trueValue;
+                }
+                this.$emit('on-change' , this.valueCopy , this.extra);
             } ,
         } ,
 
         watch: {
-            copyValue (newVal , oldVal) {
-                this.$emit("change" , newVal);
-            } ,
-
             value: {
                 immediate: true ,
                 handler (newVal , oldVal) {
-                    this.copyValue = newVal;
+                    this.valueCopy = newVal;
                 } ,
             } ,
 

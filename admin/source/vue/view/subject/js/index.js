@@ -1,5 +1,6 @@
 
 const form = {
+    module_id: 0 ,
     weight: 0 ,
 };
 
@@ -15,9 +16,6 @@ export default {
 
     data () {
         return {
-            filter: {
-                id: '' ,
-            } ,
             dom: {} ,
             ins: {} ,
             val: {
@@ -46,6 +44,11 @@ export default {
                         title: '名称',
                         key: 'name',
                         align: TopContext.table.alignCenter
+                    },
+                    {
+                        title: '模块【id】',
+                        slot: 'module_id',
+                        align: TopContext.table.alignCenter,
                     },
                     {
                         title: 'thumb',
@@ -77,14 +80,19 @@ export default {
                 page: 1,
                 data: [],
             },
-            search: {} ,
+            search: {
+                limit: this.$store.state.context.limit ,
+            } ,
             form: {...form}  ,
             attr ,
+            modules: [] ,
         };
     } ,
 
     mounted () {
-        this.init();
+        this.initDom();
+        this.initIns();
+        this.getData();
     } ,
 
     computed: {
@@ -99,15 +107,18 @@ export default {
 
     methods: {
 
-        init () {
-            this.initDom();
-            this.initIns();
-            this.getData();
-        } ,
-
-
         initDom () {
             this.dom.thumb = G(this.$refs.thumb);
+        } ,
+
+        getModuleData () {
+            Api.module.all((data , code) => {
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , data);
+                    return ;
+                }
+                this.modules = data;
+            });
         } ,
 
 
@@ -218,6 +229,7 @@ export default {
             this.attr = record.__attr__;
             this.form = {...record};
             this.ins.thumb.render(record.__thumb__);
+            this.getModuleData();
         } ,
 
         addEvent () {
@@ -226,6 +238,7 @@ export default {
             this.error();
             this.attr = attr;
             this.form = {...form};
+            this.getModuleData();
         } ,
 
         submitEvent () {

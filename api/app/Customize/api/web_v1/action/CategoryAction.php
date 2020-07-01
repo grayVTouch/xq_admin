@@ -13,7 +13,10 @@ class CategoryAction extends Action
 {
     public static function all(Base $context , array $param = [])
     {
-        $res = CategoryModel::getAll();
+        if (empty($param['module_id'])) {
+            return self::error('请提供 module_id');
+        }
+        $res = CategoryModel::getAllByModuleId($param['module_id']);
         $res = CategoryHandler::handleAll($res);
         $res = obj_to_array($res);
         $res = Category::childrens(0 , $res , null , false ,false);

@@ -1,7 +1,8 @@
-window.request = function(url , method , data , success , error)
+window.request = function(url , method , data = {} , success , error)
 {
     const token = G.s.get('token');
-    const moduleId = G.s.get('module_id');
+    const module = G.s.json('module');
+
     return G.ajax({
         url ,
         method ,
@@ -10,7 +11,7 @@ window.request = function(url , method , data , success , error)
         } ,
         data: {
             ...data ,
-            ...{module_id: moduleId}
+            ...{module_id: module ? module.id : 0}
         } ,
         success (data , code) {
             if (code === 401) {

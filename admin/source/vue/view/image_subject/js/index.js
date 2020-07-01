@@ -12,7 +12,7 @@ const form = {
     __tag__: [] ,
     status: 0 ,
     images: [] ,
-
+    tags: [] ,
 };
 
 export default {
@@ -59,6 +59,7 @@ export default {
                         width: TopContext.table.name ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
+                        resizable: true ,
                     } ,
                     {
                         title: '封面' ,
@@ -167,7 +168,9 @@ export default {
                 page: 1 ,
                 data: [] ,
             } ,
-            search: {} ,
+            search: {
+                limit: this.$store.state.context.limit ,
+            } ,
             form: {...form}  ,
             categories: [] ,
             modules: [] ,
@@ -176,7 +179,9 @@ export default {
     } ,
 
     mounted () {
-        this.init();
+        this.initDom();
+        this.initIns();
+        this.getData();
     } ,
 
     computed: {
@@ -191,16 +196,6 @@ export default {
 
     methods: {
 
-        init () {
-            this.initDom();
-            this.initIns();
-            this.getCategoriesData();
-            this.getModulesData();
-            this.getTopTags();
-            this.getData();
-        } ,
-
-
         initDom () {
 
         } ,
@@ -211,30 +206,43 @@ export default {
 
         } ,
 
-        getCategoriesData () {
-            Api.category.index((data , code) => {
+        moduleChanged (moduleId) {
+            this.getCategoriesData(moduleId);
+            this.getTopTags(moduleId);
+        } ,
+
+        getCategoriesData (moduleId , callback) {
+            Api.category.searchByModuleId(moduleId , (data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message(data);
+                    this.message('error' , data);
+                    G.invoke(callback , null , false);
                     return ;
                 }
                 this.categories = data;
+                this.$nextTick(() => {
+                    G.invoke(callback , null , true);
+                });
             });
         } ,
 
-        getModulesData () {
+        getModulesData (callback) {
             Api.module.all((data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message(data);
+                    this.message('error' , data);
+                    G.invoke(callback , null , false);
                     return ;
                 }
                 this.modules = data;
+                this.$nextTick(() => {
+                    G.invoke(callback , null , true);
+                });
             });
         } ,
 
-        getTopTags () {
-            Api.tag.top((data , code) => {
+        getTopTags (moduleId) {
+            Api.tag.topByModule(moduleId , (data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message(data);
+                    this.message('error' , data);
                     return ;
                 }
                 this.topTags = data;
@@ -325,16 +333,17 @@ export default {
             this._val('mode' , 'edit');
             this.error();
             this.form = {...record};
+            this.getModulesData();
+            this.getCategoriesData(record.module_id);
+            this.getTopTags(record.module_id);
         } ,
 
         addEvent () {
             this._val('drawer' , true);
             this._val('mode' , 'add');
             this.error();
-
-            console.log(form);
-
             this.form = {...form};
+            this.getModulesData();
         } ,
 
         submitEvent () {

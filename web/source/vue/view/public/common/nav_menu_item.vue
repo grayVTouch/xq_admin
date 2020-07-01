@@ -1,5 +1,5 @@
 <template>
-    <div class="item" :data-id="item.id">
+    <div class="item" :data-id="item.link" v-if="item.is_menu">
         <div class="action">
             <div class="text">{{ item.name }}</div>
             <div class="ico hide"><i class="icon run-iconfont run-iconfont-arrow"></i></div>

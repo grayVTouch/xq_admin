@@ -87,7 +87,7 @@
 
                 <div class="table">
 
-                    <Table border :columns="table.field" :data="table.data" @on-selection-change="selectedEvent">
+                    <Table border :page-size="$store.state.context.limit" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent">
                         <template v-slot:role_id="{row,index}">{{ row.role ? `${row.role.name}【${row.role.id}】` : `unknow【${row.role_id}】` }}</template>
                         <template v-slot:avatar="{row,index}">
                             <img :src="row.avatar ? row.__avatar__ : $store.state.context.res.notFound" @click="link(row.__avatar__ , '__blank')" height="40" class="image">
@@ -143,9 +143,7 @@
                             <tr :class="getClass(val.error.role_id)" id="form-role_id">
                                 <td>角色</td>
                                 <td>
-                                    <i-select class="iview-form-select" v-model="form.role_id">
-                                        <i-option v-for="v in role" :key="v.id" :value="v.id">{{ v.name }}</i-option>
-                                    </i-select>
+                                    <my-select :data="role" v-model="form.role_id"></my-select>
                                     <span class="need">*</span>
                                     <div class="msg"></div>
                                     <div class="e-msg">{{ val.error.role_id }}</div>

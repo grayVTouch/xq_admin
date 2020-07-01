@@ -5,6 +5,7 @@ const show = genUrl('image_subject/{id}');
 const destroy = genUrl('image_subject/{id}');
 const destroyAll = genUrl('destroy_all_image_subject');
 const destroyAllImageForImageSubject = genUrl('destroy_all_image_for_image_subject');
+const destroyTag = genUrl('image_subject/{image_subject_id}/destroy/{tag_id}');
 
 export default {
     index (data , success , error) {
@@ -46,5 +47,13 @@ export default {
             ids: G.jsonEncode(ids)
         } , success , error)
     } ,
+
+    destroyTag (imageSubjectId , tagId , success , error) {
+        let url = destroyTag.replace('{image_subject_id}' , imageSubjectId);
+            url = url.replace('{tag_id}' , tagId);
+            console.log(url , imageSubjectId , tagId);
+        return request(url , 'delete' , null , success , error)
+    } ,
+
 
 };

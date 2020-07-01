@@ -1,6 +1,7 @@
 
 const form = {
     p_id: 0 ,
+    module_id: 0 ,
     enable: 1 ,
     weight: 0 ,
 };
@@ -45,6 +46,12 @@ export default {
                         fixed: 'left' ,
                     } ,
                     {
+                        title: '模块【id】',
+                        slot: 'module_id',
+                        width: TopContext.table.name ,
+                        align: TopContext.table.alignCenter,
+                    },
+                    {
                         title: '上级id' ,
                         key: 'p_id' ,
                         width: TopContext.table.name ,
@@ -85,11 +92,14 @@ export default {
             } ,
             form: {...form}  ,
             category: [] ,
+            modules: [] ,
         };
     } ,
 
     mounted () {
-        this.init();
+        this.initDom();
+        this.initIns();
+        this.getData();
     } ,
 
     computed: {
@@ -104,10 +114,27 @@ export default {
 
     methods: {
 
-        init () {
-            this.initDom();
-            this.initIns();
-            this.getData();
+        getModuleData () {
+            Api.module.all((data , code) => {
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , data);
+                    return ;
+                }
+                this.modules = data;
+            });
+        } ,
+
+        moduleChangedEvent (moduleId) {
+            moduleId = parseInt(moduleId);
+            this.val.error.module_id = '';
+            this.form.p_id = 0;
+            let category;
+            if (this.val.mode === 'edit') {
+                category = this.getCategoryExcludeSelfAndChildrenByIdAndModuleId(this.form.id , moduleId);
+            } else {
+                category = this.getCategoryByModuleId(moduleId);
+            }
+            this.category = category;
         } ,
 
 
@@ -227,15 +254,29 @@ export default {
             });
         } ,
 
-        getCategoryExcludeSelfAndChildrenById (id) {
-            const exclude = G.t.childrens(id , this.table.data , null , true , false);
-            const exclude_ids = [];
-            exclude.forEach((v) => {
-                exclude_ids.push(v.id);
+        getCategoryExcludeSelfAndChildrenByIdAndModuleId (id , moduleId) {
+            const selfAndChildren = G.t.childrens(id , this.table.data , null , true , false);
+            const selfAndChildrenIds = [];
+            selfAndChildren.forEach((v) => {
+                selfAndChildrenIds.push(v.id);
             });
             const res = [];
             this.table.data.forEach((v) => {
-                if (G.contain(v.id , exclude_ids)) {
+                if (G.contain(v.id , selfAndChildrenIds)) {
+                    return ;
+                }
+                if (v.module_id !== moduleId) {
+                    return ;
+                }
+                res.push(v);
+            });
+            return res;
+        } ,
+
+        getCategoryByModuleId (moduleId) {
+            const res = [];
+            this.table.data.forEach((v) => {
+                if (v.module_id !== moduleId) {
                     return ;
                 }
                 res.push(v);
@@ -248,9 +289,8 @@ export default {
             this._val('mode' , 'edit');
             this.error();
             this.form = {...v};
-            this.category = this.getCategoryExcludeSelfAndChildrenById(v.id);
-
-
+            this.getModuleData();
+            this.category = this.getCategoryExcludeSelfAndChildrenByIdAndModuleId(v.id , this.form.module_id);
         } ,
 
         addEvent () {
@@ -258,7 +298,7 @@ export default {
             this._val('mode' , 'add');
             this.error();
             this.form = {...form};
-            this.category = this.table.data;
+            this.getModuleData();
         } ,
 
 

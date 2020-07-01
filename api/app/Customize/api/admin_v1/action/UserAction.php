@@ -24,7 +24,7 @@ class UserAction extends Action
         if (empty($value)) {
             return self::error('请提供搜索值');
         }
-        $res = UserModel::search($value);
+        $res = UserModel::search($value , 20);
         $res = UserHandler::handleAll($res);
         return self::success($res);
     }

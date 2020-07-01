@@ -11,7 +11,7 @@ class ModuleAction extends Action
 {
     public static function all(Base $context , array $param = [])
     {
-        $res = ModuleModel::get();
+        $res = ModuleModel::getAll();
         $res = ModuleHandler::handleAll($res);
         return self::success($res);
     }

@@ -117,18 +117,20 @@ Route::prefix('admin_v1')
             Route::patch('tag/{id}' , 'Tag@localUpdate');
             Route::put('tag/{id}' , 'Tag@update');
             Route::post('tag' , 'Tag@store');
+            Route::post('find_or_create_tag' , 'Tag@findOrCreate');
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
             Route::delete('destroy_all_tag' , 'Tag@destroyAll');
             Route::delete('tag/{id}' , 'Tag@destroy');
             Route::get('search_tag' , 'Tag@search');
-            Route::get('top_tag' , 'Tag@top');
+            Route::get('tag/{module_id}/top_by_module_id' , 'Tag@topByModuleId');
 
 
             /**
              * 分类管理
              */
             Route::get('category' , 'Category@index');
+            Route::get('category/{module_id}/search_by_module_id' , 'Category@searchByModuleId');
             Route::get('category/{id}/all' , 'Category@allExcludeSelfAndChildren');
             Route::get('category/{id}' , 'Category@show');
             Route::patch('category/{id}' , 'Category@localUpdate');
@@ -171,6 +173,7 @@ Route::prefix('admin_v1')
             Route::delete('destroy_all_image_subject' , 'ImageSubject@destroyAll');
             Route::delete('image_subject/{id}' , 'ImageSubject@destroy');
             Route::delete('destroy_all_image_for_image_subject' , 'ImageSubject@destroyImages');
+            Route::delete('image_subject/{image_subject_id}/destroy/{tag_id}' , 'ImageSubject@destroyTag');
 
             /**
              * ******************

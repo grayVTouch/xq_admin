@@ -1,5 +1,5 @@
 <template>
-    <img src="../res/loading.png" :width="width" :height="30" class="image">
+    <img src="../res/loading.png" :width="width" :height="height" class="image">
 </template>
 
 <script>
@@ -7,11 +7,11 @@
         name: "loading" ,
         props: {
             width: {
-                type: Number ,
+                type: [String,Number] ,
                 default: 30 ,
             } ,
             height: {
-                type: Number ,
+                type: [String,Number] ,
                 default: 30
             } ,
         } ,

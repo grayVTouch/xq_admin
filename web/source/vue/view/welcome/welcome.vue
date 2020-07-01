@@ -4,7 +4,7 @@
 
             <header class="header">
                 <div class="logo">
-                    <div class="inner"><img src="./res/logo.jpg" class="image" alt=""></div>
+                    <div class="inner"><img src="./res/logo1.jpg" class="image" alt=""></div>
                 </div>
                 <div class="site">兴趣部落</div>
             </header>
@@ -79,7 +79,7 @@
 
             toHome (v) {
                 G.s.json('module' , v);
-                this.pending('loading' , true);
+                // this.pending('loading' , true);
                 this.push({name: 'index'});
             } ,
 
@@ -87,5 +87,4 @@
     }
 </script>
 
-<style src="../public/css/base.css"></style>
 <style scoped src="./css/welcome.css"></style>

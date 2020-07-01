@@ -1,7 +1,7 @@
-const category = `${TopContext.api}/get_all_category`;
+const nav = `${TopContext.api}/nav`;
 
 export default {
-    category (success , error) {
-        return request(category , 'get' , null , success , error);
+    nav (success , error) {
+        return request(nav , 'get' , null , success , error);
     } ,
 };

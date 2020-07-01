@@ -4,10 +4,9 @@
 namespace App\Customize\api\web_v1\middleware;
 
 
-use App\Customize\api\web_v1\handler\AdminHandler;
-use App\Customize\api\web_v1\model\AdminModel;
-use App\Customize\api\web_v1\model\AdminTokenModel;
-use App\Customize\api\web_v1\util\UserUtil;
+use App\Customize\api\web_v1\handler\UserHandler;
+use App\Customize\api\web_v1\model\UserModel;
+use App\Customize\api\web_v1\model\UserTokenModel;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -30,15 +29,15 @@ class UserAuthMiddleware
         if (empty($token)) {
             return error('Auth Failed【Empty Authorization Header】' , 401);
         }
-        $token = AdminTokenModel::findByToken($token);
+        $token = UserTokenModel::findByToken($token);
         if (empty($token)) {
             return error('Auth Failed【Token Invalid】' , 401);
         }
-        $admin = AdminModel::find($token->user_id);
+        $admin = UserModel::find($token->user_id);
         if (empty($admin)) {
             return error('Auth Failed【User Not Found】' , 401);
         }
-        $admin = AdminHandler::handle($admin);
+        $admin = UserHandler::handle($admin);
         app()->instance('user' , $admin);
     }
 }

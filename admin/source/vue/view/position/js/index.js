@@ -1,5 +1,6 @@
 
 const form = {
+    module_id: 0 ,
     weight: 0 ,
 };
 
@@ -47,6 +48,11 @@ export default {
                         align: TopContext.table.alignCenter
                     } ,
                     {
+                        title: '模块【id】',
+                        slot: 'module_id',
+                        align: TopContext.table.alignCenter,
+                    },
+                    {
                         title: '描述' ,
                         key: 'description' ,
                         align: TopContext.table.alignCenter ,
@@ -66,13 +72,18 @@ export default {
                 page: 1 ,
                 data: [] ,
             } ,
-            search: {} ,
+            search: {
+                limit: this.$store.state.context.limit
+            } ,
             form: {...form}  ,
+            modules: [] ,
         };
     } ,
 
     mounted () {
-        this.init();
+        this.initDom();
+        this.initIns();
+        this.getData();
     } ,
 
     computed: {
@@ -87,10 +98,14 @@ export default {
 
     methods: {
 
-        init () {
-            this.initDom();
-            this.initIns();
-            this.getData();
+        getModuleData () {
+            Api.module.all((data , code) => {
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , data);
+                    return ;
+                }
+                this.modules = data;
+            });
         } ,
 
 
@@ -187,6 +202,7 @@ export default {
             this._val('mode' , 'edit');
             this.error();
             this.form = {...record};
+            this.getModuleData();
         } ,
 
         addEvent () {
@@ -194,6 +210,7 @@ export default {
             this._val('mode' , 'add');
             this.error();
             this.form = {...form};
+            this.getModuleData();
         } ,
 
         submitEvent () {

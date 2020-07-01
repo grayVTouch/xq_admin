@@ -1,4 +1,4 @@
-const module = `${TopContext.api}/get_all_module`;
+const module = `${TopContext.api}/module`;
 
 export default {
     module (success , error) {

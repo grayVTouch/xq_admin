@@ -29,6 +29,7 @@ class Position extends Base
         $param['value']          = $param['value'] ?? '';
         $param['name']        = $param['name'] ?? '';
         $param['description']        = $param['description'] ?? '';
+        $param['module_id']        = $param['module_id'] ?? '';
         $res = PositionAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
@@ -42,6 +43,7 @@ class Position extends Base
         $param['value']        = $param['value'] ?? '';
         $param['name']        = $param['name'] ?? '';
         $param['description']        = $param['description'] ?? '';
+        $param['module_id']        = $param['module_id'] ?? '';
         $res = PositionAction::store($this ,$param);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);

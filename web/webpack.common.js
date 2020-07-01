@@ -87,7 +87,7 @@ module.exports = {
                 ],
             } ,
             {
-                test: /\.(png|svg|jpg|gif)$/,
+                test: /\.(png|svg|jpg|gif|jpeg)$/,
                 use: [
                     {
                         // 请使用该文件加载器

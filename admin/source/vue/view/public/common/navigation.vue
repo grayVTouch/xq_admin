@@ -38,12 +38,16 @@
             topRoute: {
                 type: Object ,
                 required: true ,
-                default: {}
+                default () {
+                    return {};
+                } ,
             } ,
             position: {
                 type: Array ,
                 required: true ,
-                default: []
+                default () {
+                    return [];
+                } ,
             }
         } ,
         mounted () {
