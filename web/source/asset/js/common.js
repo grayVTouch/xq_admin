@@ -1,8 +1,6 @@
-window.request = function(url , method , data = {} , success , error)
-{
+window.request = function(url , method , data = {} , success , error) {
     const token = G.s.get('token');
     const module = G.s.json('module');
-
     return G.ajax({
         url ,
         method ,
@@ -17,8 +15,8 @@ window.request = function(url , method , data = {} , success , error)
             if (code === 401) {
                 // 登录认证失败
                 G.s.del('token');
-                window.history.go(0);
-                return ;
+                // G.s.del('user');
+                // window.history.go(0);
             }
             if (G.isFunction(success)) {
                 success(data , code);

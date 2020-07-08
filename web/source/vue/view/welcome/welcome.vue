@@ -14,7 +14,7 @@
                 <h2 class="title">请选择模块</h2>
                 <div class="module">
                     <ul class="list" v-if="!val.pending.loading">
-                        <li v-for="v in module" class="item"><a class="link" @click="toHome(v)">{{ v.name }}</a></li>
+                        <li v-for="v in module" class="item"><my-link class="link" @click="toHome(v)">{{ v.name }}</my-link></li>
                     </ul>
                     <div class="loading" v-else>
                         <my-loading></my-loading>
@@ -43,7 +43,18 @@
                 } ,
                 dom: {} ,
                 module: [] ,
+                once: true ,
             };
+        } ,
+
+        beforeRouteEnter (to , from , next) {
+            next((vm) => {
+                if (vm.once) {
+                    vm.once = false;
+                } else {
+                    vm.getModuleData();
+                }
+            });
         } ,
 
         mounted () {
@@ -80,7 +91,9 @@
             toHome (v) {
                 G.s.json('module' , v);
                 // this.pending('loading' , true);
-                this.push({name: 'index'});
+                window.setTimeout(() => {
+                    this.push({name: 'index'});
+                } , 200);
             } ,
 
         } ,

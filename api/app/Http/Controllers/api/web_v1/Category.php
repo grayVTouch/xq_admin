@@ -20,4 +20,15 @@ class Category extends Base
         }
         return success($res['data']);
     }
+
+    public function show($id)
+    {
+        $param = $this->request->query();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $res = CategoryAction::show($this , $id , $param);
+        if ($res['code'] !== 0) {
+            return error($res['data'], $res['code']);
+        }
+        return success($res['data']);
+    }
 }

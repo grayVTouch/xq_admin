@@ -53,4 +53,28 @@ return [
         // 取消收藏
         'loose' ,
     ] ,
+
+    'relation_type_for_history' => [
+        'image_subject' => '图片专题' ,
+        'xq_video_subject' => '视频专题' ,
+        'xq_article_subject' => '文章专题' ,
+    ] ,
+
+    'relation_type_for_collection' => [
+        'image_subject' => '图片专题' ,
+        'xq_video_subject' => '视频专题' ,
+        'xq_article_subject' => '文章专题' ,
+    ] ,
+
+    'relation_type_for_praise' => [
+        'image_subject' => '图片专题' ,
+        'xq_video_subject' => '视频专题' ,
+        'xq_article_subject' => '文章专题' ,
+    ] ,
+
+    'relation_type_for_tag' => [
+        'image_subject' => '图片专题' ,
+        'xq_video_subject' => '视频专题' ,
+        'xq_article_subject' => '文章专题' ,
+    ] ,
 ];

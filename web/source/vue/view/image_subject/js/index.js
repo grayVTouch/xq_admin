@@ -3,6 +3,7 @@ const allHotTags = {
     limit: TopContext.limit ,
     data: [] ,
     total: 0 ,
+    value: '' ,
 };
 
 const images = {
@@ -49,9 +50,43 @@ export default {
         this.hotTags();
         this.newestInImageSubject();
         this.initEvent();
+        // 调试阶段打开
+        // this.showTagSelector();
     } ,
 
     methods: {
+
+        // 图片点赞
+        praiseHandle (imageSubject) {
+            if (this.pending('praiseHandle')) {
+                return ;
+            }
+            const self = this;
+            const action = imageSubject.praised ? 0 : 1;
+            this.pending('praiseHandle' , true);
+            Api.user.praiseHandle({
+                relation_type: 'image_subject' ,
+                relation_id: imageSubject.id ,
+                action ,
+            } , (data , code) => {
+                this.pending('praiseHandle' , false);
+                if (code !== TopContext.code.Success) {
+                    this.errorHandle(data , code , () => {
+                        this.$parent.showUserForm('login');
+                    });
+                    return ;
+                }
+                this.handleImageSubject(data);
+                for (let i = 0; i <  this.images.data.length; ++i)
+                {
+                    const cur = this.images.data[i];
+                    if (cur.id === data.id) {
+                        this.images.data.splice(i , 1 ,data);
+                        break;
+                    }
+                }
+            });
+        } ,
 
         findInSelectedTagsByTagId (tagId) {
             for (let i = 0; i < this.search.tags.length; ++i)
@@ -299,6 +334,7 @@ export default {
             Api.image_subject.hotTagsWithPager({
                 limit: this.allHotTags.limit ,
                 page:  this.allHotTags.page ,
+                value: this.allHotTags.value ,
             } , (data , code) => {
                 this.pending('hotTagsWithPager' , false);
                 if (code !== TopContext.code.Success) {

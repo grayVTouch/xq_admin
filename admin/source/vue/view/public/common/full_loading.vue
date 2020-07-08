@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="Loading">
+        <div class="run-loading">
             <!-- 背景颜色 -->
             <div class='bg'></div>
             <div class="cons">

@@ -1,4 +1,5 @@
 import logo from "../res/logo.jpg";
+import avatar from "../res/avatar.jpg";
 import notFound from "../res/404.png";
 import business from './business.js';
 import table from './table.js';
@@ -25,6 +26,7 @@ window.TopContext = {
     res: {
         logo ,
         notFound ,
+        avatar ,
     } ,
     business ,
     table ,

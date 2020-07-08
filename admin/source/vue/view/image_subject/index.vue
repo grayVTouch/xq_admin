@@ -70,7 +70,7 @@
                 <div class="run-action-title">
                     <div class="left">
                         <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项</my-table-button>
+                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
                     </div>
                     <div class="right">
                         <Page :total="table.total" :page-size="$store.state.context.limit" :current="table.page" :show-total="true" :show-sizer="false" :show-elevator="true"  @on-change="pageEvent" />
@@ -89,7 +89,7 @@
 
                     <Table border :columns="table.field" :data="table.data" @on-selection-change="selectedEvent">
                         <template v-slot:thumb="{row,index}">
-                            <img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" height="40" class="image">
+                            <img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" height="40" class="image" @click="link(row.__thumb__)">
                         </template>
                         <template v-slot:user_id="{row,index}">
                             {{ row.user ? `${row.user.username}【${row.user.id}】` : `unknow【${row.user_id}】` }}
@@ -150,7 +150,7 @@
 
             <div class="line operation">
                 <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项</my-table-button>
+                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}） （{{ val.selectedIds.length }}）</my-table-button>
             </div>
 
             <div class="line page">

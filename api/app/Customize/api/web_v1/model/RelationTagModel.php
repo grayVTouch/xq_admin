@@ -12,40 +12,40 @@ class RelationTagModel extends Model
 {
     protected $table = 'xq_relation_tag';
 
-    public static function getByRelationTableAndRelationId(string $relation_table , int $relation_id): Collection
+    public static function getByRelationTypeAndRelationId(string $relation_type , int $relation_id): Collection
     {
         return self::where([
-                    ['relation_table' , '=' , $relation_table] ,
+                    ['relation_type' , '=' , $relation_type] ,
                     ['relation_id' , '=' , $relation_id] ,
                 ])
                 ->get();
     }
 
-    public static function delByRelationTableAndRelationId(string $relation_table , int $relation_id): int
+    public static function delByRelationTypeAndRelationId(string $relation_type , int $relation_id): int
     {
         return self::where([
-                    ['relation_table' , '=' , $relation_table] ,
+                    ['relation_type' , '=' , $relation_type] ,
                     ['relation_id' , '=' , $relation_id] ,
                 ])
                 ->delete();
     }
 
-    public static function delByRelationTableAndRelationIdAndTagId(string $relation_table , int $relation_id , int $tag_id): int
+    public static function delByRelationTypeAndRelationIdAndTagId(string $relation_type , int $relation_id , int $tag_id): int
     {
         return self::where([
-            ['relation_table' , '=' , $relation_table] ,
+            ['relation_type' , '=' , $relation_type] ,
             ['relation_id' , '=' , $relation_id] ,
             ['tag_id' , '=' , $tag_id] ,
         ])->delete();
     }
 
     // 热门标签-返回给定数量
-    public static function hotTagsByModuleIdAndRelationTableAndLimit(int $module_id , string $relation_table , int $limit = 20): Collection
+    public static function hotTagsByModuleIdAndRelationTypeAndLimit(int $module_id , string $relation_type , int $limit = 20): Collection
     {
         return self::select('*' , DB::raw('count(id) as total'))
             ->where([
                 ['module_id' , '=' , $module_id] ,
-                ['relation_table' , '=' , $relation_table] ,
+                ['relation_type' , '=' , $relation_type] ,
             ])
             ->groupBy('tag_id')
             ->orderBy('total' , 'desc')
@@ -55,13 +55,16 @@ class RelationTagModel extends Model
     }
 
     // 热门标签-分页
-    public static function hotTagsWithPagerByModuleIdAndRelationTableAndLimit(int $module_id , string $relation_table , int $limit = 20): Paginator
+    public static function hotTagsWithPagerByValueAndModuleIdAndRelationTypeAndLimit(string $value , int $module_id , string $relation_type , int $limit = 20): Paginator
     {
+        $value = strtolower($value);
         return self::select('*' , DB::raw('count(id) as total'))
             ->where([
                 ['module_id' , '=' , $module_id] ,
-                ['relation_table' , '=' , $relation_table] ,
+                ['relation_type' , '=' , $relation_type] ,
             ])
+            // like '%' and name like '%'
+            ->whereRaw("lower(name) like concat('%','{$value}','%')")
             ->groupBy('tag_id')
             ->orderBy('total' , 'desc')
             ->orderBy('id' , 'asc')

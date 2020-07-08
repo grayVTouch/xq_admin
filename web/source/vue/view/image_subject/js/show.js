@@ -23,6 +23,15 @@ export default {
             val: {
                 fixedMisc: false ,
             } ,
+            // 收藏夹列表
+            favorites: [] ,
+
+            // 收藏夹表单
+            collectionGroup: {
+                relation_type: 'image_subject' ,
+                relation_id: this.id ,
+                name: '' ,
+            } ,
         };
     } ,
 
@@ -33,20 +42,130 @@ export default {
     mounted () {
         this.initDom();
         this.initEvent();
+        this.getData();
+        this.incrementViewCount();
+        this.record();
     } ,
-
-    beforeRouteUpdate (to , from , next) {
-        console.log('hello');
-    } ,
-
-    beforeRouteEnter (to , from , next) {
-        console.log('route enter');
-        next((vm) => {
-            vm.getData();
-        });
-    } ,
+    //
+    // beforeRouteUpdate (to , from , next) {
+    //     console.log('hello');
+    // } ,
+    //
+    // beforeRouteEnter (to , from , next) {
+    //     console.log('route enter');
+    //     next((vm) => {
+    //         vm.getData();
+    //
+    //     });
+    // } ,
 
     methods: {
+
+        // 图片点赞
+        praiseHandle () {
+            if (this.pending('praiseHandle')) {
+                return ;
+            }
+            const self = this;
+            const action = this.data.praised ? 0 : 1;
+            this.pending('praiseHandle' , true);
+            Api.user.praiseHandle({
+                relation_type: 'image_subject' ,
+                relation_id: this.data.id ,
+                action ,
+            } , (data , code) => {
+                this.pending('praiseHandle' , false);
+                if (code !== TopContext.code.Success) {
+                    this.errorHandle(data , code , () => {
+                        this.$parent.showUserForm('login');
+                    });
+                    return ;
+                }
+                this.data = {...data};
+            })
+        } ,
+
+        showFavorites () {
+            this.dom.myFavorites.removeClass('hide');
+            this.dom.myFavorites.startTransition('show');
+            this.getFavorites();
+        } ,
+
+        hideFavorites () {
+            this.dom.myFavorites.endTransition('show' , () => {
+                this.dom.myFavorites.addClass('hide');
+            });
+        } ,
+
+        // 获取我的收藏夹
+        getFavorites () {
+            this.pending('getFavorites' , true);
+            Api.user.collectionGroup({
+                relation_type: 'image_subject' ,
+                relation_id: this.id ,
+            } , (data , code) => {
+                this.pending('getFavorites' , false);
+                if (code !== TopContext.code.Success) {
+                    this.errorHandle(data , code , (showLogin) => {
+                        if (!showLogin) {
+                            return ;
+                        }
+                        this.$parent.showUserForm();
+                    });
+                    return ;
+                }
+                this.favorites = data;
+            });
+        } ,
+
+        // 创建并添加收藏夹
+        createAndJoinCollectionGroup () {
+            if (this.pending('createAndJoinCollectionGroup')) {
+                return ;
+            }
+            this.pending('createAndJoinCollectionGroup' , true);
+            Api.user.createAndJoinCollectionGroup(this.collectionGroup , (data , code) => {
+                this.pending('createAndJoinCollectionGroup' , false);
+                if (code !== TopContext.code.Success) {
+                    this.errorHandleAtHomeChildren(data, code);
+                    return ;
+                }
+                // 刷新列表
+                this.getFavorites();
+            });
+        } ,
+
+        collectionHandle (collectionGroup) {
+            const pending = 'collectionHandle_' + collectionGroup.id;
+            if (this.pending(pending)) {
+                return ;
+            }
+            this.pending(pending , true);
+            const action = collectionGroup.inside ? 0 : 1;
+            Api.user.collectionHandle({
+                relation_type: 'image_subject' ,
+                relation_id: this.id ,
+                action ,
+                collection_group_id: collectionGroup.id ,
+            } , (data , code) => {
+                this.pending(pending , false);
+                if (code !== TopContext.code.Success) {
+                    this.errorHandleAtHomeChildren(data , code);
+                    return ;
+                }
+                for (let i = 0; i < this.favorites.length; ++i)
+                {
+                    const cur = this.favorites[i];
+                    if (cur.id === data.id) {
+                        this.favorites.splice(i , 1 , data);
+                        break;
+                    }
+                }
+                this.getData();
+            });
+        } ,
+
+
         getData () {
             this.pending('getData' , true);
             Api.image_subject.show(this.id , (data , code) => {
@@ -55,11 +174,12 @@ export default {
                     this.message(data);
                     return ;
                 }
-                this.handleData(data);
-                this.images.page = 1;
-                this.images.total = data.images.length;
-                this.images.maxPage = Math.ceil(this.images.total / this.images.limit);
-                this.images.data = data.images.slice(0 , this.images.limit);
+                data.user = data.user ? data.user : {};
+                data.subject = data.subject ? data.subject : {};
+                data.images = data.images ? data.images : [];
+                data.tags = data.tags ? data.tags : [];
+                data.module = data.module ? data.module : [];
+
                 this.data = {...data};
                 this.$nextTick(() => {
                     this.pending('getData' , false);
@@ -68,12 +188,15 @@ export default {
             });
         } ,
 
-        handleData (data) {
-            // data.user = data.user ? data.user : {};
-            // data.subject = data.subject ? data.subject : {};
-            // data.images = data.images ? data.images : [];
-            // data.tags = data.tags ? data.tags : [];
-            // data.module = data.module ? data.module : [];
+        incrementViewCount () {
+            Api.image_subject.incrementViewCount(this.id);
+        } ,
+
+        record () {
+            Api.user.record({
+                relation_type: 'image_subject' ,
+                relation_id: this.id ,
+            });
         } ,
 
         initPicPreview () {
@@ -91,7 +214,7 @@ export default {
             this.dom.html = G(document.documentElement);
             this.dom.imageSubject = G(this.$refs['image-subject']);
             this.dom.picPreviewContainer = G(this.$refs['pic-preview-container']);
-
+            this.dom.myFavorites = G(this.$refs['my-favorites']);
         },
 
         scrollEvent (e) {

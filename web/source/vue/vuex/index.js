@@ -5,13 +5,16 @@
 export default new Vuex.Store({
     state: {
         // 当前登录用户
-        user: {} ,
+        user: null ,
 
         context: TopContext ,
 
         business: TopContext.business ,
 
         position: [] ,
+
+        // 用户登录后需要处理的相关回调函数
+        loggedCallback: [] ,
     } ,
     mutations: {
         user (state , payload) {

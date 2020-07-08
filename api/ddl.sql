@@ -87,10 +87,10 @@ create table if not exists `xq_relation_tag` (
   tag_id bigint unsigned default 0 comment 'xq_tag.id' ,
   module_id bigint unsigned default 0 comment 'xq_module.id，缓存字段' ,
   name varchar(500) default '' comment '标签名称，缓存字段' ,
-  relation_table varchar(255) default '' comment '关联表名称，比如 xq_image_subject' ,
+  relation_type varchar(255) default '' comment '关联类型，比如 image_subject-图片专题' ,
   relation_id bigint unsigned default 0 comment '对应关联表中的 id' ,
   primary key (id)
-  -- unique key `relation` (`tag_id` , `relation_table` , 'relation_id')
+  -- unique key `relation` (`tag_id` , `relation_type` , 'relation_id')
 ) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '关联标签';
 
 
@@ -139,6 +139,7 @@ drop table if exists `xq_user`;
 create table if not exists `xq_user` (
     id bigint unsigned not null auto_increment ,
     username varchar(255) default '' comment '用户名' ,
+    nickname varchar(255) default '' comment '昵称' ,
     password varchar(255) default '' comment '密码' ,
     sex varchar(50) default 'secret' comment '性别: male-男 female-女 secret-保密 both-两性 shemale-人妖' ,
     birthday date default null comment '生日' ,
@@ -318,29 +319,6 @@ create table if not exists `xq_collection_group` (
 ) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '收藏分组';
 
 
-drop table if exists `xq_collection`;
-create table if not exists `xq_collection` (
-    id bigint unsigned not null auto_increment ,
-    user_id bigint unsigned default 0 comment 'xq_user.id' ,
-    collection_group_id bigint unsigned default 0 comment 'xq_collection_group.id' ,
-    relation_table varchar(255) default '' comment '关联表' ,
-    relation_id bigint unsigned default 0 comment '关联表id' ,
-    module_id bigint unsigned default 0 comment 'xq_module.id' ,
-    create_time datetime default current_timestamp ,
-    primary key (id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '我的收藏';
-
-drop table if exists `xq_history`;
-create table if not exists `xq_history` (
-    id bigint unsigned not null auto_increment ,
-    user_id bigint unsigned default 0 comment 'xq_user.id' ,
-    relation_table varchar(255) default '' comment '关联表' ,
-    relation_id bigint unsigned default 0 comment '关联表id' ,
-    module_id bigint unsigned default 0 comment 'xq_module.id' ,
-    create_time datetime default current_timestamp ,
-    primary key (id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '活动记录';
-
 drop table if exists `xq_nav`;
 create table if not exists `xq_nav` (
     id bigint unsigned not null auto_increment ,
@@ -356,15 +334,54 @@ create table if not exists `xq_nav` (
     primary key (id)
 ) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '菜单表-区分不同平台';
 
+
+drop table if exists `xq_history`;
+create table if not exists `xq_history` (
+    id bigint unsigned not null auto_increment ,
+    user_id bigint unsigned default 0 comment 'xq_user.id' ,
+    relation_type varchar(255) default '' comment '关联表类型: 比如 image_subject-图片专题' ,
+    relation_id bigint unsigned default 0 comment '关联表id' ,
+    module_id bigint unsigned default 0 comment 'xq_module.id' ,
+    `date` date default null comment '创建日期' ,
+    `time` time default null comment '创建时间' ,
+    create_time datetime default null ,
+    primary key (id)
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '活动记录';
+
+drop table if exists `xq_collection`;
+create table if not exists `xq_collection` (
+   id bigint unsigned not null auto_increment ,
+   user_id bigint unsigned default 0 comment 'xq_user.id' ,
+   collection_group_id bigint unsigned default 0 comment 'xq_collection_group.id' ,
+   relation_type varchar(255) default '' comment '关联表类型: 比如 image_subject-图片专题' ,
+   relation_id bigint unsigned default 0 comment '关联表id' ,
+   module_id bigint unsigned default 0 comment 'xq_module.id' ,
+   create_time datetime default null ,
+   primary key (id) ,
+   unique key `unique` (user_id , relation_type , relation_id , module_id , collection_group_id)
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '我的收藏';
+
 drop table if exists `xq_focus_user`;
 create table if not exists `xq_focus_user` (
     id bigint unsigned not null auto_increment ,
     user_id bigint unsigned default 0 comment 'xq_user.id' ,
     focus_user_id bigint unsigned default 0 comment 'xq_user.id，关注的用户' ,
     create_time datetime default null ,
-    primary key (id)
+    primary key (id) ,
+    unique key `unique` (user_id , focus_user_id)
 ) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '关注的用户';
 
+drop table if exists `xq_praise`;
+create table if not exists `xq_praise` (
+    id bigint unsigned not null auto_increment ,
+    user_id bigint unsigned default 0 comment 'xq_user.id' ,
+    relation_type varchar(255) default '' comment '关联表类型: 比如 image_subject-图片专题' ,
+    relation_id bigint unsigned default 0 comment '关联表主键id' ,
+    module_id bigint unsigned default 0 comment 'xq.module.id' ,
+    create_time datetime default null ,
+    primary key (id) ,
+    unique key `unique` (user_id , relation_type , relation_id , module_id)
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '点赞表';
 
 alter table xq_tag add module_id bigint unsigned default 0 comment 'xq_module.id';
 alter table xq_category add module_id bigint unsigned default 0 comment 'xq_module.id';

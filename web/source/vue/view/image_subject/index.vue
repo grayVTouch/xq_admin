@@ -27,16 +27,16 @@
         <div class="content">
             <!-- 标签列表 -->
             <div class="run-tags horizontal" ref="tags-selector-in-docs">
-                <a class="tag" :class="{cur: curTag === 'newest' && search.tags.length < 1}" @click="newestInImageSubject">最新</a>
-                <a class="tag" :class="{cur: curTag === 'hot' && search.tags.length < 1}" @click="hotInImageSubject">热门</a>
-                <a class="tag" v-for="v in partHotTags" :class="{cur: curTag === 'tag_' + v.tag_id && search.tags.length < 1}" @click="getWithPagerByTagIdInImageSubject(v.tag_id)">{{ v.name }}</a>
-                <a class="tag more" :class="{cur: search.tags.length > 0}" @click="showTagSelector">
+                <my-button class="tag" :class="{cur: curTag === 'newest' && search.tags.length < 1}" @click="newestInImageSubject">最新</my-button>
+                <my-button class="tag" :class="{cur: curTag === 'hot' && search.tags.length < 1}" @click="hotInImageSubject">热门</my-button>
+                <my-button class="tag" v-for="v in partHotTags" :key="v.id" :class="{cur: curTag === 'tag_' + v.tag_id && search.tags.length < 1}" @click="getWithPagerByTagIdInImageSubject(v.tag_id)">{{ v.name }}</my-button>
+                <my-button class="tag more" :class="{cur: search.tags.length > 0}" @click="showTagSelector">
                     更多标签
                     <span class="number" v-if="search.tags.length > 0">
                         <template v-if="search.tags.length < 10">{{ search.tags.length }}</template>
                         <template v-else>9+</template>
                     </span>
-                </a>
+                </my-button>
             </div>
 
             <!-- 列表 -->
@@ -48,20 +48,25 @@
                 </div>
 
                 <div class="inner">
-                    <div class="item card-box" v-for="v in images.data">
+                    <div class="item card-box" v-for="v in images.data" :key="v.id">
                         <!-- 封面 -->
-                        <div class="thumb" @click.stop="link(`#/image_subject/${v.id}/show`)">
-                            <img :src="v.__thumb__" class="image">
-                            <div class="mask">
-                                <div class="top">
-                                    <div class="type" v-if="v.type === 'pro'"><my-icon icon="zhuanyerenzheng" size="35" /></div>
-                                    <div class="collection"><my-icon icon="shoucang2" size="35" /></div>
-                                </div>
-                                <div class="btm">
-                                    <div class="count">{{ v.images.length }}P</div>
-                                </div>
+                        <div class="thumb">
+                            <a class="link" :href="`#/image_subject/${v.id}/show`" target="_blank">
+                                <img :src="v.__thumb__" class="image">
+                                <div class="mask">
+                                    <div class="top">
+                                        <div class="type" v-if="v.type === 'pro'"><my-icon icon="zhuanyerenzheng" size="35" /></div>
 
-                            </div>
+                                        <div class="praise" v-ripple @click.prevent="praiseHandle(v)">
+                                            <my-loading width="16" height="16" v-if="val.pending.praiseHandle"></my-loading>
+                                            <my-icon icon="shoucang2" :class="{'run-red': v.praised }" /> 喜欢
+                                        </div>
+                                    </div>
+                                    <div class="btm">
+                                        <div class="count">{{ v.images.length }}P</div>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
 
                         <div class="introduction">
@@ -69,27 +74,25 @@
                             <div class="tags">
                                 <span class="ico"><my-icon icon="icontag" size="18" /></span>
 
-                                <span class="tag" v-for="tag in v.tags">{{ tag.name }}</span>
+                                <a class="tag" v-for="tag in v.tags" :key="v.id" :href="`#/image_subject/search?tag_id=${tag.tag_id}`">{{ tag.name }}</a>
                             </div>
                             <!-- 标题 -->
-                            <div class="title" @click.stop="link(`#/image_subject/${v.id}/show`)">{{ v.name }}</div>
+                            <div class="title"><a class="link" target="_blank" :href="`#/image_subject/${v.id}/show`">{{ v.name }}</a></div>
                             <!-- 发布者 -->
                             <div class="user">
-                                <template v-if="v.user">
-                                    <span class="avatar-outer"><img :src="v.user.__avatar__" alt="" class="image avatar"></span>
-                                    <a class="name">{{ v.user.username }}</a>
-                                </template>
-                                <template v-else>
-                                    <span class="avatar-outer"><img src="./res/logo.png" alt="" class="image avatar"></span>
-                                    <a class="name">real_yami</a>
-                                </template>
+                                <div class="sender">
+                                    <span class="avatar-outer"><img :src="v.user ? v.user.__avatar__ : $store.state.context.res.avatar" alt="" class="image avatar"></span>
+                                    <a class="name">{{ v.user ? v.user.nickname : 'unknow' }}</a>
+                                </div>
+                                <div class="action"></div>
                             </div>
                             <!-- 统计信息 -->
                             <div class="info">
-                                <div class="left"><my-icon icon="shijian" class="ico" mode="right" /> {{ v.update_time }}</div>
+                                <div class="left"><my-icon icon="shijian" class="ico" mode="right" /> {{ v.create_time }}</div>
                                 <div class="right">
                                     <span><my-icon icon="chakan" mode="right" />{{ v.view_count }}</span>
-                                    <span><my-icon icon="shoucang" mode="right" />{{ v.praise_count }}</span>
+                                    <span><my-icon icon="shoucang2" mode="right" />{{ v.praise_count }}</span>
+                                    <span><my-icon icon="shoucang6" mode="right" />{{ v.collect_count }}</span>
                                 </div>
                             </div>
                         </div>
@@ -106,16 +109,16 @@
 
         <!-- 标签列表 -->
         <div class="run-tags vertical" ref="tags-selector-in-slidebar">
-            <a class="tag" :class="{cur: curTag === 'newest' && search.tags.length < 1}" @click="newestInImageSubject">最新</a>
-            <a class="tag" :class="{cur: curTag === 'hot' && search.tags.length < 1}" @click="hotInImageSubject">热门</a>
-            <a class="tag" v-for="v in partHotTags" :class="{cur: curTag === 'tag_' + v.tag_id && search.tags.length < 1}" @click="getWithPagerByTagIdInImageSubject(v.tag_id)">{{ v.name }}</a>
-            <a class="tag more" :class="{cur: search.tags.length > 0}" @click="showTagSelector">
+            <my-button class="tag" :class="{cur: curTag === 'newest' && search.tags.length < 1}" @click="newestInImageSubject">最新</my-button>
+            <my-button class="tag" :class="{cur: curTag === 'hot' && search.tags.length < 1}" @click="hotInImageSubject">热门</my-button>
+            <my-button class="tag" v-for="v in partHotTags" :key="v.id" :class="{cur: curTag === 'tag_' + v.tag_id && search.tags.length < 1}" @click="getWithPagerByTagIdInImageSubject(v.tag_id)">{{ v.name }}</my-button>
+            <my-button class="tag more" :class="{cur: search.tags.length > 0}" @click="showTagSelector">
                 更多标签
                 <span class="number" v-if="search.tags.length > 0">
                         <template v-if="search.tags.length < 10">{{ search.tags.length }}</template>
                         <template v-else>9+</template>
                     </span>
-            </a>
+            </my-button>
         </div>
 
         <!-- 标签选择器 -->
@@ -127,14 +130,14 @@
                         <button class="close-btn"><i class="run-iconfont run-iconfont-guanbi"></i></button>
                     </div>
                     <div class="text">标签列表</div>
-                    <div class="operation" @click="resetTagFilter">重置</div>
+                    <div class="operation" v-ripple @click="resetTagFilter">重置</div>
                 </div>
                 <div class="content">
                     <!-- 当前选中的标签 -->
                     <div class="line" v-if="search.tags.length > 0">
                         <div class="title m-b-15 f-14 weight">当前选择标签</div>
                         <div class="run-tags horizontal">
-                            <span class="tag" v-for="v in search.tags" @click="unselectedTagByTagId(v.tag_id)">{{ v.name }}</span>
+                            <span class="tag" v-for="v in search.tags" :key="v.id" @click="unselectedTagByTagId(v.tag_id)">{{ v.name }}</span>
                         </div>
                     </div>
                     <div class="line mode-swith">
@@ -151,9 +154,15 @@
                     </div>
                     <div class="line tags">
                         <div class="title f-14 weight">请选择过滤标签</div>
+                        <div class="search">
+                            <div class="inner">
+                                <div class="ico"><my-icon icon="search" /></div>
+                                <div class="input"><input type="text" class="form-text" v-model="allHotTags.value" @keyup.enter="hotTagsWithPager" placeholder="请搜索标签"></div>
+                            </div>
+                        </div>
                         <div class="list run-tags horizontal" :class="{loading: val.pending.hotTagsWithPager}">
-                            <my-loading v-if="val.pending.hotTagsWithPager"></my-loading>
-                            <span class="tag" v-for="v in allHotTags.data" :class="{selected: search.tagIds.indexOf(v.tag_id) >= 0}" :key="v.id" @click="filterByTag(v)">{{ v.name }}</span>
+                            <div class="mask" v-if="val.pending.hotTagsWithPager"><my-loading></my-loading></div>
+                            <span class="tag" v-ripple v-for="v in allHotTags.data" :class="{selected: search.tagIds.indexOf(v.tag_id) >= 0}" :key="v.id" @click="filterByTag(v)">{{ v.name }}</span>
                         </div>
                         <div class="pager">
                             <my-page :total="allHotTags.total" :limit="allHotTags.limit" :page="allHotTags.page" @on-change="tagPageEvent"></my-page>

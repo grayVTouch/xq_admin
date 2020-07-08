@@ -33,9 +33,14 @@ class SubjectModel extends Model
     public static function search($module_id , $value , int $limit = 20): Collection
     {
         return self::where('module_id' , $module_id)
-            ->orWhere('id' , $value)
-            ->orWhere('name' , $value)
-            ->limit(20)
+            ->where(function($query) use($value){
+                $query->where('id' , $value)
+                    ->orWhere('name' , 'like' , "%{$value}%");
+            })
+            ->orderBy('weight' , 'desc')
+            ->orderBy('create_time' , 'desc')
+            ->orderBy('id' , 'asc')
+            ->limit($limit)
             ->get();
     }
 }

@@ -4,6 +4,8 @@
 namespace App\Customize\api\web_v1\handler;
 
 
+use App\Customize\api\web_v1\model\CollectionModel;
+use App\Customize\api\web_v1\model\PraiseModel;
 use App\Customize\api\web_v1\model\RelationTagModel;
 use App\Customize\api\web_v1\model\CategoryModel;
 use App\Customize\api\web_v1\model\ImageModel;
@@ -14,6 +16,7 @@ use App\Customize\api\web_v1\model\UserModel;
 use Illuminate\Support\Facades\Storage;
 use stdClass;
 use function api\web_v1\get_value;
+use function api\web_v1\user;
 use function core\convert_obj;
 
 class ImageSubjectHandler extends Handler
@@ -44,7 +47,7 @@ class ImageSubjectHandler extends Handler
         $images = ImageModel::getByImageSubjectId($res->id);
         $images = ImageHandler::handleAll($images);
 
-        $tags = RelationTagModel::getByRelationTableAndRelationId('xq_image_subject' , $res->id);
+        $tags = RelationTagModel::getByRelationTypeAndRelationId('image_subject' , $res->id);
 
         $res->user = $user;
         $res->module = $module;
@@ -56,6 +59,19 @@ class ImageSubjectHandler extends Handler
         $res->__thumb__ = empty($res->thumb) ? '' : Storage::url($res->thumb);
         $res->__type__ = get_value('business.type_for_image_subject' , $res->type);
         $res->__status__ = get_value('business.status_for_image_subject' , $res->status);
+
+        // 针对当前用户的一些字段
+        // 是否收藏
+        $user = user();
+        if (empty($user)) {
+            $res->collected = 0;
+            $res->praised = 0;
+        } else {
+            $res->collected = CollectionModel::findByModuleIdAndUserIdAndRelationTypeAndRelationId($res->module_id , $user->id , 'image_subject' , $res->id) ? 1 : 0;
+            $res->praised = PraiseModel::findByModuleIdAndUserIdAndRelationTypeAndRelationId($res->module_id , $user->id , 'image_subject' , $res->id) ? 1 : 0;
+            $res->collect_count = CollectionModel::countByModuleIdAndRelationTypeAndRelationId($res->module_id , 'image_subject' , $res->id);
+        }
+
         return $res;
     }
 

@@ -2,13 +2,11 @@
     <div class="run-page">
         <div class="info">共 {{ total }} 条记录</div>
         <div class="links">
-            <a class="link home" @click="toPage(1)">首页</a>
-            <a class="link" @click="toPage(pageCopy - 1)">上一页</a>
-
-            <a class="link" v-for="v in pages" :class="{cur: pageCopy === v}" :key="v" @click="toPage(v)">{{ v }}</a>
-
-            <a class="link" @click="toPage(pageCopy + 1)">下一页</a>
-            <a class="link end" @click="toPage(maxPage)">尾页</a>
+            <a class="link home" v-ripple @click="toPage(1)">首页</a>
+            <a class="link" v-ripple @click="toPage(pageCopy - 1)">上一页</a>
+            <a class="link" v-ripple v-for="v in pages" :class="{cur: pageCopy === v}" :key="v" @click="toPage(v)">{{ v }}</a>
+            <a class="link" v-ripple @click="toPage(pageCopy + 1)">下一页</a>
+            <a class="link end" v-ripple @click="toPage(maxPage)">尾页</a>
         </div>
         <div class="go-to">共 {{ maxPage }} 页 跳至 <input type="text" class="step" ref="input" @keyup.enter="inputEvent"> 页
 <!--            <button type="button" class="confirm" @click="toPage($refs.input.value)">确定</button>-->
@@ -66,6 +64,9 @@
                 }
                 page = parseInt(page);
                 page = Math.max(this.minPage , Math.min(page , this.maxPage));
+                // if (this.pageCopy === page) {
+                //     return ;
+                // }
                 this.pageCopy = page;
                 this.$emit('on-change' , this.pageCopy);
             } ,

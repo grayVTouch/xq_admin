@@ -12,6 +12,7 @@ import './asset/js/api.js';
 //
 import './asset/js/vue.js';
 import './asset/js/mixin.js';
+import './asset/js/directive.js';
 
 // import vuetify from './asset/js/vuetify.js';
 // import './asset/js/iview.js';

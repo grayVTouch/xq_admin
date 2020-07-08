@@ -1,3 +1,49 @@
+const loginForm = {
+    username: '' ,
+    password: '' ,
+};
+const forgetForm = {
+    username: '' ,
+    password: '' ,
+    confirm_password: '' ,
+};
+
+const registerForm = {
+    username: '' ,
+    password: '' ,
+    captcha_code: '' ,
+    captcha_key: '' ,
+};
+
+const loginError = {
+    username: '' ,
+    password: '' ,
+};
+
+const forgetError = {
+    username: '' ,
+    password: '' ,
+    confirm_password: '' ,
+    captcha_code: '' ,
+    captcha_key: '' ,
+};
+
+const registerError = {
+    username: '' ,
+    password: '' ,
+    confirm_password: '' ,
+    captcha_code: '' ,
+    captcha_key: '' ,
+};
+
+const loginMessage = {
+    class: '' ,
+    text: '' ,
+};
+
+const registerMessage = {...loginMessage};
+const forgetMessage = {...loginMessage};
+
 export default {
     name: "home" ,
 
@@ -11,6 +57,48 @@ export default {
                     value: '图片' ,
                 } ,
                 toTop: false ,
+
+                // 用户登录、注册表单相关字段
+                loginError: {...loginError} ,
+                registerError: {...registerError} ,
+                forgetError: {...forgetError} ,
+                loginMessage: {...loginMessage} ,
+                registerMessage: {...registerMessage} ,
+                forgetMessage: {...forgetMessage} ,
+
+                showPasswordForLogin: false ,
+
+                showPasswordForRegister: false ,
+                showConfirmPasswordForRegister: false ,
+
+                showPasswordForForget: false ,
+                showConfirmPasswordForForget: false ,
+
+                pending: {
+                    userLogin: false ,
+                    userRegister: false ,
+                    updateUserPassword: false ,
+                } ,
+                focus: {
+                    usernameForLogin: false ,
+                    passwordForLogin: false ,
+
+                    usernameForRegister: false ,
+                    passwordForRegister: false ,
+                    confirmPasswordForRegister: false ,
+                    captchaCodeForRegister: false ,
+
+                    usernameForForget: false ,
+                    passwordForForget: false ,
+                    confirmPasswordForForget: false ,
+                } ,
+                captchaForRegister: {} ,
+                /**
+                 * login
+                 * forget
+                 * register
+                 */
+                userFormType: 'login' ,
             } ,
             dom: {} ,
             ins: {} ,
@@ -31,14 +119,20 @@ export default {
             nav: [] ,
             keepalive: true ,
             count: 0 ,
+            loginForm: {...loginForm} ,
+            registerForm: {...registerForm} ,
+            forgetForm: {...forgetForm} ,
+            histories:[] ,
         };
     } ,
 
     beforeRouteUpdate (to , from , next) {
         this.initPosition(to.path);
         // 找到当前路由所在位置
-        const position = this.getNavByPath(to.path);
+        const position = this.getNavByPath(to.fullPath);
+        // const position = this.getNavByPath(to.path);
         if (position.length > 0) {
+            // console.log(to.path , position , position[position.length - 1].link);
             this.ins.nav.focusById(position[position.length - 1].link);
         } else {
             // 没有选中项
@@ -53,6 +147,13 @@ export default {
         this.initEvent();
         this.initStyle();
         this.initToTop();
+
+        if (G.s.exists('token')) {
+            // 用户如果已经登录，则获取用户信息
+            this.userInfo();
+        }
+
+        // this.captcha();
     } ,
 
     computed: {
@@ -60,6 +161,306 @@ export default {
     } ,
 
     methods: {
+
+        // 获取历史记录
+        getHistories () {
+            this.pending('getHistories' , true);
+            Api.user.lessHistory({
+                limit: TopContext.limit
+            } , (data , code) => {
+                this.pending('getHistories' , false);
+                if (code !== TopContext.code.Success) {
+                    this.errorHandle(data , code , (login) => {
+                        if (!login) {
+                            return ;
+                        }
+                        this.showUserForm();
+                    });
+                    return ;
+                }
+                data.image_subject ? data.image_subject : {};
+                this.histories = data;
+            })
+        } ,
+
+
+        showHistoryCtrl () {
+            const groupsForHistory = G(this.$refs['groups-for-history']);
+            groupsForHistory.removeClass('hide');
+            groupsForHistory.startTransition('show');
+            if (this.histories.length <= 0) {
+                this.getHistories();
+            }
+        } ,
+
+        hideHistoryCtrl () {
+            const groupsForHistory = G(this.$refs['groups-for-history']);
+            groupsForHistory.endTransition('show' , () => {
+                groupsForHistory.addClass('hide');
+            });
+        } ,
+
+        showUserCtrl () {
+            const infoForUser = G(this.$refs['info-for-user']);
+            infoForUser.removeClass('hide');
+            infoForUser.startTransition('show');
+        } ,
+
+        hideUserCtrl () {
+            const infoForUser = G(this.$refs['info-for-user']);
+            infoForUser.endTransition('show' , () => {
+                infoForUser.addClass('hide');
+            });
+        } ,
+
+        logout () {
+            G.s.del('token');
+            G.s.del('user');
+            window.history.go(0);
+        } ,
+
+        // 初始化用户信息
+        initUser () {
+            const user = G.s.json('user');
+            this.dispatch('user' , user);
+        } ,
+
+        showUserForm (type) {
+            this._val('userFormType' ,type);
+            switch (type)
+            {
+                case 'login':
+                    break;
+                case 'register':
+                    this.captchaForRegister();
+                    break;
+                case 'forget':
+                    break;
+                default:
+                    this.message('不支持的类型');
+            }
+            this.dom.userForm.removeClass('hide');
+            this.dom.userForm.startTransition('show');
+        } ,
+
+        hideUserForm () {
+            if (this.pending('userLogin') || this.pending('userRegister') || this.pending('updateUserPassword')) {
+                this.message('服务正在处理...请耐心等待');
+                return ;
+            }
+            this.dom.userForm.endTransition('show' , () => {
+                this.dom.userForm.addClass('hide');
+            });
+        } ,
+
+        loginMessage (text = '' , classname = '') {
+            this.val.loginMessage.text = text;
+            this.val.loginMessage.class = classname;
+        } ,
+
+        registerMessage (text = '' , classname = '') {
+            this.val.registerMessage.text = text;
+            this.val.registerMessage.class = classname;
+        } ,
+
+        forgetMessage (text = '' , classname = '') {
+            this.val.forgetMessage.text = text;
+            this.val.forgetMessage.class = classname;
+        } ,
+
+        captchaForRegister () {
+            Api.misc.captcha((data , code) => {
+                if (code !== TopContext.code.Success) {
+                    this.val.registerError.captcha_code = data;
+                    return ;
+                }
+                this.val.captchaForRegister = data;
+                this.registerForm.captcha_key = data.key;
+            })
+        } ,
+
+        focusEvent (e) {
+            const tar = G(e.currentTarget);
+            const name = tar.data('name');
+            this.val.focus[name] = true;
+        } ,
+
+        blurEvent (e) {
+            const tar = G(e.currentTarget);
+            const name = tar.data('name');
+            this.val.focus[name] = false;
+        } ,
+
+        resetLoginForm () {
+            this.loginForm = {...loginForm};
+        } ,
+
+        resetForgetForm () {
+            this.forgetForm = {...forgetForm};
+        } ,
+
+        resetRegisterForm () {
+            this.registerForm = {...registerForm};
+        } ,
+
+
+
+        resetLoginError () {
+            this.val.loginError = {...loginError};
+        } ,
+
+        resetForgetError () {
+            this.val.forgetError = {...forgetError};
+        } ,
+
+        resetRegisterError () {
+            this.val.registerError = {...registerError};
+        } ,
+
+        resetLoginMessage () {
+            this.val.loginMessage = {...loginMessage};
+        } ,
+
+        resetRegisterMessage () {
+            this.val.registerMessage = {...registerMessage};
+        } ,
+
+        resetForgetMessage () {
+            this.val.forgetMessage = {...forgetMessage};
+        } ,
+
+        userLogin () {
+            if (this.pending('userLogin')) {
+                this.message('请求中...请耐心等待');
+                return ;
+            }
+            this.pending('userLogin' , true);
+            Api.user.login(this.loginForm , (data , code) => {
+                this.resetLoginError();
+                this.resetLoginMessage();
+                if (code !== TopContext.code.Success) {
+                    this.pending('userLogin' , false);
+                    if (G.isString(data)) {
+                        this.message(data);
+                        return ;
+                    }
+                    this.val.loginError = {...data};
+                    return ;
+                }
+                this.loginMessage('登录成功，获取用户信息中...' , 'run-green');
+                G.s.set('token' , data);
+                // 获取用户信息
+                this.userInfo((keep) => {
+                    this.pending('userLogin' , false);
+                    this.resetLoginForm();
+                    this.resetLoginMessage();
+                    if (!keep) {
+                        this.loginMessage('获取用户信息失败，请稍后重试' , 'run-red');
+                        return ;
+                    }
+                    this.hideUserForm();
+                });
+            });
+        } ,
+
+        userInfo (callback) {
+            this.pending('userInfo' , true);
+            Api.user.info((data , code) => {
+                this.pending('userInfo' , false);
+                if (code !== TopContext.code.Success) {
+                    G.invoke(callback , null , false);
+                    if (code === TopContext.code.AuthFailed) {
+                        return ;
+                    }
+                    this.message(data);
+                    return ;
+                }
+                G.s.json('user' , data);
+                this.initUser();
+                G.invoke(callback , null , true);
+            });
+        } ,
+
+        userRegister () {
+            if (this.pending('userRegister')) {
+                this.message('请求中...请耐心等待');
+                return ;
+            }
+            this.pending('userRegister' , true);
+            Api.user.register(this.registerForm , (data , code) => {
+                this.resetRegisterError();
+                this.resetRegisterMessage();
+                if (code !== TopContext.code.Success) {
+                    this.pending('userRegister' , false);
+                    this.captchaForRegister();
+                    if (G.isString(data)) {
+                        this.message(data);
+                        return ;
+                    }
+                    this.val.registerError = {...data};
+                    return ;
+                }
+                this.registerMessage('注册成功，获取用户信息中...' , 'run-green');
+                G.s.set('token' , data);
+                // 获取用户信息
+                this.userInfo((keep) => {
+                    this.pending('userRegister' , false);
+                    this.resetRegisterForm();
+                    this.resetRegisterMessage();
+                    if (!keep) {
+                        this.registerMessage('获取用户信息失败，请稍后重试' , 'run-red');
+                        return ;
+                    }
+
+                    this.hideUserForm();
+                });
+            });
+        } ,
+
+        updateUserPassword () {
+            if (this.pending('updateUserPassword')) {
+                this.message('请求中...请耐心等待');
+                return ;
+            }
+            this.pending('updateUserPassword' , true);
+            Api.user.updatePassword(this.forgetForm , (data , code) => {
+                this.resetForgetError();
+                this.resetForgetMessage();
+                if (code !== TopContext.code.Success) {
+                    this.pending('updateUserPassword' , false);
+                    if (G.isString(data)) {
+                        this.message(data);
+                        return ;
+                    }
+                    this.val.forgetError = {...data};
+                    return ;
+                }
+                G.s.del('token');
+                G.s.del('user');
+                this.dispatch('user' , null);
+                this.forgetMessage('修改成功！' , 'run-green');
+                window.setTimeout(() => {
+                    this.pending('updateUserPassword' , false);
+                    this.resetForgetMessage();
+                    this.resetForgetForm();
+                    this.showUserForm('login');
+                } , 1000);
+            });
+        } ,
+
+        /**
+         * *****************
+         * 搜索事件
+         * *****************
+         */
+        searchEvent () {
+            switch (this.val.mime.key)
+            {
+                case 'image':
+                    this.push('/image_subject/search');
+                    break;
+            }
+        } ,
 
         initPosition (path) {
             const position = this.getPositionByPath(path);
@@ -98,14 +499,15 @@ export default {
             for (let i = 0; i < data.length; ++i)
             {
                 const cur = data[i];
-                let route = G.getUri(cur.link);
+                // let route = G.getUri(cur.link);
+                let route = cur.link;
                 // 搜索1：完整匹配
                 if (route === path) {
                     res = cur;
                     break;
                 }
                 route = route.replace(/\/:\w+(\/?)/g , '/.+?$1');
-                route = route.replace('/' , '\/');
+                route = route.replace(/(\/|\?)/g , '\$1');
                 if (new RegExp('^' + route + '$').test(path)) {
                     res = cur;
                     break;
@@ -145,14 +547,17 @@ export default {
             this.dom.navMenu = G(this.$refs['nav-menu']);
             this.dom.body = G(this.$refs.body);
             this.dom.toTop = G(this.$refs['to-top']);
+            this.dom.userForm = G(this.$refs.userForm);
+            // debugger
         } ,
 
         initIns () {
             const self = this;
-            const position = this.getNavByPath(this.$route.path);
+            // const position = this.getNavByPath(this.$route.path);
+            const position = this.getNavByPath(this.$route.fullPath);
             this.ins.nav = new Nav(this.dom.navMenu.get(0) , {
                 click (id) {
-                    self.push(id);
+                    // self.push(id);
                 } ,
                 // 是否选中项
                 focus: true ,
@@ -238,6 +643,8 @@ export default {
 
         initEvent () {
             this.dom.win.on('click' , this.hideNavTypeList.bind(this));
+            this.dom.win.on('click' , this.hideHistoryCtrl.bind(this));
+            this.dom.win.on('click' , this.hideUserCtrl.bind(this));
             // this.dom.root.on('scroll' , this.fixedHeader.bind(this));
             this.dom.win.on('scroll' , this.fixedHeader.bind(this));
             this.dom.toTop.on('click' , this.toTopEvent.bind(this));

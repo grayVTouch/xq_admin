@@ -10,28 +10,28 @@ class RelationTagModel extends Model
 {
     protected $table = 'xq_relation_tag';
 
-    public static function getByRelationTableAndRelationId(string $relation_table , int $relation_id): Collection
+    public static function getByRelationTypeAndRelationId(string $relation_type , int $relation_id): Collection
     {
         return self::where([
-                    ['relation_table' , '=' , $relation_table] ,
+                    ['relation_type' , '=' , $relation_type] ,
                     ['relation_id' , '=' , $relation_id] ,
                 ])
                 ->get();
     }
 
-    public static function delByRelationTableAndRelationId(string $relation_table , int $relation_id): int
+    public static function delByRelationTypeAndRelationId(string $relation_type , int $relation_id): int
     {
         return self::where([
-                    ['relation_table' , '=' , $relation_table] ,
+                    ['relation_type' , '=' , $relation_type] ,
                     ['relation_id' , '=' , $relation_id] ,
                 ])
                 ->delete();
     }
 
-    public static function delByRelationTableAndRelationIdAndTagId(string $relation_table , int $relation_id , int $tag_id): int
+    public static function delByRelationTypeAndRelationIdAndTagId(string $relation_type , int $relation_id , int $tag_id): int
     {
         return self::where([
-            ['relation_table' , '=' , $relation_table] ,
+            ['relation_type' , '=' , $relation_type] ,
             ['relation_id' , '=' , $relation_id] ,
             ['tag_id' , '=' , $tag_id] ,
         ])->delete();

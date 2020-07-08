@@ -56,10 +56,12 @@ export default {
                     {
                         title: '名称' ,
                         key: 'name' ,
-                        width: TopContext.table.name ,
+                        width: 250 ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                         resizable: true ,
+                        ellipsis: true ,
+                        tooltip: true ,
                     } ,
                     {
                         title: '封面' ,
@@ -141,7 +143,10 @@ export default {
                         title: '描述' ,
                         key: 'description' ,
                         width: TopContext.table.desc ,
-                        align: TopContext.table.alignCenter
+                        align: TopContext.table.alignCenter ,
+                        resizable: true ,
+                        ellipsis: true ,
+                        tooltip: true ,
                     } ,
 
                     {

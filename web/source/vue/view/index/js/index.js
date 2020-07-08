@@ -46,6 +46,13 @@ export default {
         };
     } ,
 
+    // beforeRouteLeave () {
+    //     console.log('销毁路由');
+    //     // if (this.ins.picPlayTransform instanceof PicPlay_Transform) {
+    //     //     this.ins.picPlayTransform.clearTimer();
+    //     // }
+    // } ,
+
     mounted () {
         this.initDom();
         this.getHomeSlideshow();
@@ -60,6 +67,59 @@ export default {
     } ,
 
     methods: {
+
+        // 图片点赞
+        praiseImageSubjectById (imageSubject) {
+            if (this.pending('praiseImageSubjectById')) {
+                return ;
+            }
+            const self = this;
+            const action = imageSubject.praised ? 0 : 1;
+            this.pending('praiseImageSubjectById' , true);
+            Api.user.praiseHandle({
+                relation_type: 'image_subject' ,
+                relation_id: imageSubject.id ,
+                action ,
+            } , (data , code) => {
+                this.pending('praiseImageSubjectById' , false);
+                if (code !== TopContext.code.Success) {
+                    this.errorHandle(data , code , () => {
+                        this.$parent.showUserForm('login');
+                    });
+                    return ;
+                }
+                this.handleImageSubject(data);
+                for (let i = 0; i <  this.images.length; ++i)
+                {
+                    const cur = this.images[i];
+                    if (cur.id === data.id) {
+                        this.images.splice(i , 1 ,data);
+                        break;
+                    }
+                }
+            })
+        } ,
+
+        findImageSubjectByImageSubjectId (imageSubjectId , callback) {
+            this.pending('findImageSubjectByImageSubjectId' , true);
+            Api.image_subject.show(imageSubjectId , (data , code) => {
+                this.pending('findImageSubjectByImageSubjectId' , false);
+                if (code !== TopContext.code.Success) {
+                    this.message(data);
+                    G.invoke(callback , null , false);
+                    return ;
+                }
+                data.user = data.user ? data.user : {};
+                data.subject = data.subject ? data.subject : {};
+                data.images = data.images ? data.images : [];
+                data.tags = data.tags ? data.tags : [];
+                data.module = data.module ? data.module : [];
+
+                this.$nextTick(() => {
+                    G.invoke(callback , null , true);
+                });
+            });
+        } ,
 
         // 图片-最新图片
         newestInImageSubject () {

@@ -14,9 +14,9 @@ class UserModel extends Model
     public static function search(string $value = '' , int $limit = 20): Collection
     {
         return self::where('id' , $value)
-            ->orWhere('username' , $value)
-            ->orWhere('phone' , $value)
-            ->orWhere('email' , $value)
+            ->orWhere('username' , 'like' , "%{$value}%")
+            ->orWhere('phone' , 'like' ,  "%{$value}%")
+            ->orWhere('email' , 'like' , "%{$value}%")
             ->limit($limit)
             ->get();
     }

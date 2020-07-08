@@ -6,15 +6,72 @@ export default {
                 pending: {} ,
                 error: {} ,
                 selectedIds: [] ,
+                modalForSubject: false ,
+                modalForUser: false ,
             } ,
 
             drawer: false ,
 
             // 用户
-            users: [] ,
+            users: {
+                data: [],
+                field: [
+                    {
+                        title: 'id' ,
+                        key: 'id' ,
+                        center: TopContext.table.alignCenter ,
+                    } ,
+                    {
+                        title: '名称' ,
+                        key: 'username' ,
+                        center: TopContext.table.alignCenter ,
+                    } ,
+                    {
+                        title: '头像' ,
+                        slot: 'avatar' ,
+                        center: TopContext.table.alignCenter ,
+                    } ,
+                    {
+                        title: '创建时间' ,
+                        key: 'create_time' ,
+                        center: TopContext.table.alignCenter ,
+                    } ,
+                ] ,
+                current: {} ,
+            },
 
             // 关联主体
-            subjects: [] ,
+            subjects: {
+                data: [],
+                field: [
+                    {
+                        title: 'id' ,
+                        key: 'id' ,
+                        center: TopContext.table.alignCenter ,
+                    } ,
+                    {
+                        title: '名称' ,
+                        key: 'name' ,
+                        center: TopContext.table.alignCenter ,
+                    } ,
+                    {
+                        title: '模块【id】' ,
+                        slot: 'module_id' ,
+                        center: TopContext.table.alignCenter ,
+                    } ,
+                    {
+                        title: '封面' ,
+                        slot: 'thumb' ,
+                        center: TopContext.table.alignCenter ,
+                    } ,
+                    {
+                        title: '创建时间' ,
+                        key: 'create_time' ,
+                        center: TopContext.table.alignCenter ,
+                    } ,
+                ] ,
+                current: {} ,
+            },
 
             // 标签
             tags: [] ,
@@ -24,10 +81,6 @@ export default {
 
             // 实例
             ins: {} ,
-
-            subject: {
-                name: '琉璃神社' ,
-            } ,
 
             table: {
                 field: [
@@ -175,7 +228,8 @@ export default {
                     this.error({user_id: data});
                     return ;
                 }
-                this.users = data;
+                this.users.data = data;
+                this._val('modalForUser' , true);
             });
         } ,
 
@@ -194,17 +248,39 @@ export default {
                     this.error({subject_id: data});
                     return ;
                 }
-                this.subjects = data;
+                this.subjects.data = data;
+                this._val('modalForSubject' , true);
             });
         } ,
 
-        searchSubjectEvent (e) {
-            const tar = G(e.currentTarget);
-            const value = tar.val();
-            if (!G.isValid(value)) {
+        searchSubjectEvent () {
+            if (!G.isValid(this.subjects.value)) {
                 this.message('warning' , '请提供有效的搜索值');
             }
             // 开始搜索
+            this.searchSubject(this.subjects.value);
+        } ,
+
+        searchUserEvent (e) {
+            if (!G.isValid(this.users.value)) {
+                this.message('error' , '请提供有效的搜索值');
+            }
+            // 开始搜索
+            this.searchUser(this.users.value);
+        } ,
+
+        updateSubjectEvent (row , index) {
+            this.form.subject_id = row.id;
+            this.subjects.current = row;
+            this._val('modalForSubject' , false);
+            this.subjects.data = [];
+        } ,
+
+        updateUserEvent (row , index) {
+            this.form.user_id = row.id;
+            this.users.current = row;
+            this._val('modalForUser' , false);
+            this.users.data = [];
         } ,
 
         selectedTagEvent () {
@@ -223,6 +299,8 @@ export default {
             this.tags = [];
             // 切换回基本的内容
             this._val('tab' , 'base');
+            this.users.value = '';
+            this.subjects.value = '';
         } ,
 
         destroy (id , callback) {
@@ -439,6 +517,8 @@ export default {
         form (form , oldVal) {
             this.table.data = form.images;
             this.ins.thumb.render(form.__thumb__);
+            this.users.current = form.user ? {...form.user} : {};
+            this.subjects.current = form.subject ? {...form.subject} : {};
             this.createTime = form.create_time;
         } ,
     } ,

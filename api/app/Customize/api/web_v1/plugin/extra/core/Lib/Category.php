@@ -116,9 +116,10 @@ class Category {
                     $get($v[$field['id']] , $floor + 1);
                 }
             };
-            $get($id , 1);
+            $get($id , $save_self ? 2 : 1);
             if ($save_self && $cur !== false) {
                 // 保存自身
+                $cur['floor'] = 1;
                 array_unshift($res , $cur);
             }
         } else {
@@ -132,8 +133,9 @@ class Category {
                 }
                 return $children;
             };
-            $res = $get_struct($id , 1);
+            $res = $get_struct($id , $save_self ? 2 : 1);
             if ($save_self && $cur !== false) {
+                $cur['floor'] = 1;
                 $cur['children'] = $res;
                 $res = $cur;
             }

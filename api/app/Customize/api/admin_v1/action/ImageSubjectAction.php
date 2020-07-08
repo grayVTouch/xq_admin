@@ -103,7 +103,6 @@ class ImageSubjectAction extends Action
                 'category_id' ,
                 'type' ,
                 'subject_id' ,
-                'tag' ,
                 'thumb' ,
                 'description' ,
                 'weight' ,
@@ -113,7 +112,7 @@ class ImageSubjectAction extends Action
                 'fail_reason' ,
                 'create_time' ,
             ]));
-            $my_tags = RelationTagModel::getByRelationTableAndRelationId('xq_image_subject' , $image_subject->id);
+            $my_tags = RelationTagModel::getByRelationTypeAndRelationId('image_subject' , $image_subject->id);
             foreach ($tags as $v)
             {
                 foreach ($my_tags as $v1)
@@ -131,7 +130,7 @@ class ImageSubjectAction extends Action
                     return self::error('存在不存在的标签' , 404);
                 }
                 RelationTagModel::insertGetId([
-                    'relation_table' => 'xq_image_subject' ,
+                    'relation_type' => 'image_subject' ,
                     'relation_id' => $image_subject->id ,
                     'tag_id' => $tag->id ,
                     'name' => $tag->name ,
@@ -221,7 +220,6 @@ class ImageSubjectAction extends Action
                 'category_id' ,
                 'type' ,
                 'subject_id' ,
-                'tag' ,
                 'thumb' ,
                 'description' ,
                 'weight' ,
@@ -239,7 +237,7 @@ class ImageSubjectAction extends Action
                     return self::error('存在不存在的标签' , 404);
                 }
                 RelationTagModel::insertGetId([
-                    'relation_table' => 'xq_image_subject' ,
+                    'relation_type' => 'image_subject' ,
                     'relation_id' => $id ,
                     'tag_id' => $tag->id ,
                     'name' => $tag->name ,
@@ -288,7 +286,7 @@ class ImageSubjectAction extends Action
             // 删除图片主题相关评论对应的评论图片
             ImageSubjectCommentImageModel::delByImageSubjectId($id);
             // 删除图片对应的标签
-            RelationTagModel::delByRelationTableAndRelationId('xq_image_subject' , $id);
+            RelationTagModel::delByRelationTypeAndRelationId('image_subject' , $id);
             DB::commit();
             return self::success();
         } catch(Exception $e) {
@@ -312,7 +310,7 @@ class ImageSubjectAction extends Action
                 // 删除图片主题相关评论对应的评论图片
                 ImageSubjectCommentImageModel::delByImageSubjectId($id);
                 // 删除图片对应的标签
-                RelationTagModel::delByRelationTableAndRelationId('xq_image_subject' , $id);
+                RelationTagModel::delByRelationTypeAndRelationId('image_subject' , $id);
             }
             DB::commit();
             return self::success();
@@ -331,7 +329,7 @@ class ImageSubjectAction extends Action
     // 删除单个标签
     public static function destroyTag(Base $context , int $image_subject_id , int $tag_id ,  array $param = []): array
     {
-        $count = RelationTagModel::delByRelationTableAndRelationIdAndTagId('xq_image_subject' , $image_subject_id , $tag_id);
+        $count = RelationTagModel::delByRelationTypeAndRelationIdAndTagId('image_subject' , $image_subject_id , $tag_id);
         return self::success($count);
     }
 }

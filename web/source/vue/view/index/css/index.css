@@ -205,6 +205,7 @@
 .view .content-group > .group .run-action-title > .right > .tags .tag {
     float: left;
     height: 30px;
+    line-height: 30px;
     padding: 0 20px;
     font-size: 12px;
     background-color: #5d5d5d;

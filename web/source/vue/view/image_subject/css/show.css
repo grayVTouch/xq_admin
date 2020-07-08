@@ -89,7 +89,7 @@
     max-width: calc(100% - 250px);
 }
 
-.view > .content .image-subject .subject .tags .run-tags span {
+.view > .content .image-subject .subject .tags .run-tags > * {
     margin-right: 5px;
     margin-bottom: 5px;
 }

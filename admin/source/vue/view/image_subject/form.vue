@@ -33,18 +33,7 @@
                             <tr :class="getClass(val.error.user_id)" id="form-user_id">
                                 <td>所属用户：</td>
                                 <td>
-                                    <i-select
-                                            class="iview-form-select"
-                                            v-model="form.user_id"
-                                            :filterable="true"
-                                            :remote="true"
-                                            :remote-method="searchUser"
-                                            :loading="val.pending.searchUser"
-                                            @on-change="val.error.user_id = ''"
-                                            placeholder="请搜索"
-                                    >
-                                        <i-option v-for="v in users" :value="v.id" :key="v.id">{{ v.username }}</i-option>
-                                    </i-select>
+                                    <input type="text" readonly="readonly" v-model="users.current.username" class="form-text w-150"> 如需重新搜索，请输入（回车键开始搜索）：<my-loading v-if="val.pending.searchUser"></my-loading><input type="text" class="form-text w-150" @input="val.error.user_id = ''" v-model="users.value" @keyup.enter="searchUserEvent">
                                     <span class="need">*</span>
                                     <div class="msg">输入用户id、用户名、手机号码、邮箱可查询用户</div>
                                     <div class="e-msg">{{ val.error.user_id }}</div>
@@ -87,19 +76,7 @@
                             <tr :class="getClass(val.error.subject_id)" id="form-subject_id" v-show="form.type === 'pro'">
                                 <td>关联主体：</td>
                                 <td>
-<!--                                    <i-select-->
-<!--                                            class="iview-form-select"-->
-<!--                                            v-model="form.subject_id"-->
-<!--                                            :filterable="true"-->
-<!--                                            :remote="true"-->
-<!--                                            placeholder="请搜索"-->
-<!--                                            :remote-method="searchSubject"-->
-<!--                                            :loading="val.pending.searchSubject"-->
-<!--                                            @on-change="val.error.subject_id = ''"-->
-<!--                                    >-->
-<!--                                        <i-option v-for="v in subjects" :value="v.id" :key="v.id">{{ v.name }}</i-option>-->
-<!--                                    </i-select>-->
-                                    <input type="text" readonly="readonly" v-model="subject.name" class="form-text w-150">，重新搜索：<input type="text" class="form-text" style="width: 150px;" v-model="form.subject_id" @keyup.enter="searchSubjectEvent">
+                                    <input type="text" readonly="readonly" v-model="subjects.current.name" class="form-text w-150"> 如需重新搜索，请输入（回车键开始搜索）：<my-loading v-if="val.pending.searchSubject"></my-loading><input type="text" class="form-text w-150" v-model="subjects.value" @input="val.error.subject_id = ''" @keyup.enter="searchSubjectEvent">
                                     <span class="need">*</span>
                                     <div class="msg">请务必在选择模块后操作；输入关联主体id、名称可查询</div>
                                     <div class="e-msg">{{ val.error.subject_id }}</div>
@@ -313,7 +290,7 @@
                                     <div class="run-title">
                                         <div class="left">图片列表</div>
                                         <div class="right">
-                                            <my-table-button type="error" :loading="val.pending['destroyAll']" @click="destroyAllEvent">删除选中项</my-table-button>
+                                            <my-table-button type="error" :loading="val.pending['destroyAll']" @click="destroyAllEvent">删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
                                         </div>
                                     </div>
                                     <div>
@@ -329,13 +306,38 @@
                                 </div>
 
                                 <div class="line">
-                                    <my-table-button type="error" :loading="val.pending['destroyAll']" @click="destroyAllEvent">删除选中项</my-table-button>
+                                    <my-table-button type="error" :loading="val.pending['destroyAll']" @click="destroyAllEvent">删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
                                 </div>
                             </div>
                         </div>
                     </TabPane>
                 </Tabs>
             </form>
+
+            <!-- 请选择用户 -->
+            <my-form-modal v-model="val.modalForUser" title="请选择用户" :width="1000">
+                <template slot="footer">
+                    <Button type="error" @click="val.modalForUser=false">取消</Button>
+                </template>
+                <template slot="default">
+                    <Table border :data="users.data" :columns="users.field" @on-row-click="updateUserEvent">
+                        <template v-slot:avatar="{row,index}"><img :src="row.avatar ? row.__avatar__ : $store.state.context.res.notFound" height="40" class="image"></template>
+                    </Table>
+                </template>
+            </my-form-modal>
+
+            <!-- 选择关联主体 -->
+            <my-form-modal v-model="val.modalForSubject" title="请选择关联主体" :width="1000">
+                <template slot="footer">
+                    <Button type="error" @click="val.modalForSubject=false">取消</Button>
+                </template>
+                <template slot="default">
+                    <Table border :data="subjects.data" :columns="subjects.field" @on-row-click="updateSubjectEvent">
+                        <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" height="40" class="image"></template>
+                        <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
+                    </Table>
+                </template>
+            </my-form-modal>
 
         </template>
     </my-form-drawer>

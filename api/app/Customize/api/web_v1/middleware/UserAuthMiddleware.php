@@ -33,11 +33,11 @@ class UserAuthMiddleware
         if (empty($token)) {
             return error('Auth Failed【Token Invalid】' , 401);
         }
-        $admin = UserModel::find($token->user_id);
-        if (empty($admin)) {
+        $user = UserModel::find($token->user_id);
+        if (empty($user)) {
             return error('Auth Failed【User Not Found】' , 401);
         }
-        $admin = UserHandler::handle($admin);
-        app()->instance('user' , $admin);
+        $user = UserHandler::handle($user);
+        app()->instance('user' , $user);
     }
 }

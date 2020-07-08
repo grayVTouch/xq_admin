@@ -16,7 +16,10 @@ class CategoryModel extends Model
 
     public static function getAllByModuleId(int $module_id)
     {
-        return self::where('module_id' , $module_id)
+        return self::where([
+                ['module_id' , '=' , $module_id] ,
+                ['enable' , '=' , 1]
+            ])
             ->orderBy('weight' , 'desc')
             ->orderBy('id' , 'asc')
             ->get();

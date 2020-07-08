@@ -73,7 +73,7 @@ class ImageSubjectModel extends Model
                     ->from('xq_relation_tag as rt')
                     ->where([
                         ['tag_id' , '=' , $tag_id] ,
-                        ['relation_table' , '=' , 'xq_image_subject'] ,
+                        ['relation_type' , '=' , 'image_subject'] ,
                     ])
                     ->whereRaw(DB::Raw('is.id = rt.relation_id'));
             })
@@ -96,7 +96,7 @@ class ImageSubjectModel extends Model
                 $query->select('id')
                     ->from('xq_relation_tag as rt')
                     ->where([
-                        ['relation_table' , '=' , 'xq_image_subject'] ,
+                        ['relation_type' , '=' , 'image_subject'] ,
                     ])
                     ->whereIn('tag_id' , $tag_ids)
                     ->whereRaw('is.id = rt.relation_id');
@@ -120,7 +120,7 @@ class ImageSubjectModel extends Model
                     ->selectRaw('count(id) as total')
                     ->from('xq_relation_tag as rt')
                     ->where([
-                        ['relation_table' , '=' , 'xq_image_subject'] ,
+                        ['relation_type' , '=' , 'image_subject'] ,
                     ])
                     ->whereIn('tag_id' , $tag_ids)
                     ->whereRaw('is.id = rt.relation_id')
@@ -141,5 +141,78 @@ class ImageSubjectModel extends Model
             ->orderBy('create_time' , 'desc')
             ->orderBy('id' , 'asc')
             ->paginate($limit);
+    }
+
+    public static function getWithPagerInStrictByModuleIdAndValueAndCategoryIdsAndSubjectIdsAndTagIdsAndOrderAndLimit(int $module_id , string $value = '' , array $category_ids = [] , array $subject_ids = [] , array $tag_ids = [] , $order = null , int $limit = 20)
+    {
+        $order = $order ?? ['field' => 'create_time' , 'value' => 'desc'];
+        $value = strtolower($value);
+        $where = [
+            ['is.module_id' , '=' , $module_id] ,
+        ];
+        $query = self::from('xq_image_subject as is')
+            ->where($where);
+        if (!empty($category_ids)) {
+            $query->whereIn('category_id' , $category_ids);
+        }
+        if (!empty($subject_ids)) {
+            $query->where('is.type' , 'pro')
+                ->whereIn('is.subject_id' , $subject_ids);
+        }
+        return $query->whereRaw('lower(is.name) like concat("%" , ? , "%")' , $value)
+            ->whereExists(function($query) use($tag_ids){
+                $query->select('id' , DB::raw('count(id) as total'))
+                    ->from('xq_relation_tag')
+                    ->where([
+                        ['relation_type' , '=' , 'image_subject'] ,
+                    ]);
+                if (!empty($tag_ids)) {
+                    $query->whereIn('tag_id' , $tag_ids)
+                        ->groupBy('relation_id')
+                        ->having('total' , '=' , count($tag_ids));
+                }
+                $query->whereRaw('relation_id = is.id');
+            })
+            ->orderBy($order['field'] , $order['value'])
+            ->orderBy('id' , 'desc')
+            ->paginate($limit);
+    }
+
+    public static function getWithPagerInLooseByModuleIdAndValueAndCategoryIdsAndSubjectIdsAndTagIdsAndOrderAndLimit(int $module_id , string $value = '' , array $category_ids = [] , array $subject_ids = [] , array $tag_ids = [] , $order = null , int $limit = 20)
+    {
+        $order = $order ?? ['field' => 'create_time' , 'value' => 'desc'];
+        $value = strtolower($value);
+        $where = [
+            ['is.module_id' , '=' , $module_id] ,
+        ];
+        $query = self::from('xq_image_subject as is')
+            ->where($where);
+        if (!empty($category_ids)) {
+            $query->whereIn('category_id' , $category_ids);
+        }
+        if (!empty($subject_ids)) {
+            $query->where('is.type' , 'pro')
+                ->whereIn('is.subject_id' , $subject_ids);
+        }
+        return $query->whereRaw('lower(is.name) like concat("%" , ? , "%")' , $value)
+            ->whereExists(function($query) use($tag_ids){
+                $query->select('id' , DB::raw('count(id) as total'))
+                    ->from('xq_relation_tag')
+                    ->where([
+                        ['relation_type' , '=' , 'image_subject'] ,
+                    ]);
+                if (!empty($tag_ids)) {
+                    $query->whereIn('tag_id' , $tag_ids);
+                }
+                $query->whereRaw('relation_id = is.id');
+            })
+            ->orderBy($order['field'] , $order['value'])
+            ->orderBy('id' , 'desc')
+            ->paginate($limit);
+    }
+
+    public static function countHandle(int $id , string $field , string $mode = '' , int $step = 1)
+    {
+        return self::where('id' , $id)->$mode($field , $step);
     }
 }

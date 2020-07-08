@@ -269,7 +269,7 @@
 }
 
 /*** 顶部导航栏 top action ***/
-.main > .header .navigation .nav-top > .inner .action {
+.main > .header .navigation .nav-top > .inner > .action {
     position: absolute;
     right: 0;
     top: 0;
@@ -279,11 +279,11 @@
     line-height: normal;
 }
 
-.main > .header .navigation .nav-top > .inner .action .login-layer {
+.login-layer {
 
 }
 
-.main > .header .navigation .nav-top > .inner .action .login-layer button {
+.login-layer button {
     box-sizing: border-box;
     background-color: #5d5d5d;
     color: #fff;
@@ -294,19 +294,351 @@
     margin-right: 15px;
 }
 
-.main > .header .navigation .nav-top > .inner .action .login-layer button:nth-last-of-type(1) {
+.login-layer button:nth-last-of-type(1) {
     margin-right: 0;
 }
 
-.main > .header .navigation .nav-top > .inner .action .login-layer button:hover {
+.login-layer button:hover {
     background-color: #828282;
 }
 
-/**
- * **********************
- * 导航栏：底部
- * **********************
- */
+.logged-layer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+}
+
+.logged-layer > .item {
+    position: relative;
+    margin-right: 20px;
+}
+
+.logged-layer > .item:nth-last-of-type(1) {
+    margin-right: 0;
+}
+
+.logged-layer > .item:hover > .action .button {
+    color: #fff;
+}
+
+.logged-layer > .item > .action {
+
+}
+
+
+.logged-layer > .item > .action .button {
+    color: #cecece;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.logged-layer > .item.history .groups  {
+    width: 370px;
+    position: absolute;
+    left: 50%;
+    bottom: -20px;
+    transform: translate(-50% , calc(100% + 20px)) scale(1,1);
+    background-color: #656565;
+    transition: all 0.3s;
+    opacity: 0;
+}
+
+.logged-layer > .item.history .groups.show {
+    bottom: -20px;
+    opacity: 1;
+    transform: translate(-50% , 100%) scale(1,1);
+}
+
+.logged-layer > .item.history .groups .background {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.logged-layer > .item.history .groups:before {
+    display: block;
+    content: '';
+    width: 0;
+    height: 0;
+    border-bottom: 10px solid #ffffff1f;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50% , -100%);
+}
+
+.logged-layer > .item.history .groups .inner {
+    max-height: 400px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.logged-layer > .item.history .groups .inner .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    border-bottom: 1px solid #797979;
+}
+
+.logged-layer > .item.history .groups .inner .empty {
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    margin: 0 20px;
+    border-bottom: 1px solid #797979;
+}
+
+.logged-layer > .item.history .groups .inner .group {
+
+}
+
+.logged-layer > .item.history .groups .inner .group .title {
+    padding: 12px 20px;
+}
+
+.logged-layer > .item.history .groups .inner .group .list {
+    /*width: 370px;*/
+    /*position: absolute;*/
+    /*left: 50%;*/
+    /*bottom: -20px;*/
+    /*transform: translate(-50% , 100%);*/
+    /*background-color: #656565;*/
+    /*!*border: 1px solid red;*!*/
+}
+
+.logged-layer > .item.history .groups .inner .group .list .item {
+    display: flex;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    padding: 8px 20px;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.logged-layer > .item.history .groups .inner .group .list .item:hover {
+    background-color: grey;
+}
+
+.logged-layer > .item.history .groups .inner .group .list .item > * {
+    margin: 0;
+    flex: 0 0 auto;
+}
+
+.logged-layer > .item.history .groups .inner .group .list .item .thumb {
+    width: 110px;
+    height: 60px;
+    overflow: hidden;
+    position: relative;
+}
+
+.logged-layer > .item.history .groups .inner .group .list .item .thumb .image {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50% , -50%);
+    height: 100%;
+    min-width: 100%;
+    vertical-align: top;
+}
+
+.logged-layer > .item.history .groups .inner .group .list .item .info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: calc(100% - 110px);
+}
+
+.logged-layer > .item.history .groups .inner .group .list .item .info > * {
+    margin: 0;
+    padding-left: 10px;
+    /*font-size: 12px;*/
+}
+
+.logged-layer > .item.history .groups .inner .group .list .item .info .name {
+    max-height: 40px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.logged-layer > .item.history .groups .inner .group .list .item .info .time {
+    font-size: 12px;
+}
+
+.logged-layer > .item.history .groups .inner .load-more {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.logged-layer > .item.history .groups .inner .load-more .more {
+    padding: 0 20px;
+    height: 30px;
+    display: flex;
+    width: 80%;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    background-color: #868686;
+}
+
+
+.logged-layer .item.user {
+
+}
+
+.logged-layer .item.user > .action {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.logged-layer .item.user > .action .image {
+    height: 100%;
+    min-width: 100%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50% , -50%);
+    vertical-align: top;
+}
+
+.logged-layer .item.user > .info {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    background-color: #3a3c3f;
+    min-width: 240px;
+    transition: all 0.3s;
+    transform: translate(-50% , calc(100% + 40px));
+    opacity: 0;
+}
+
+.logged-layer .item.user > .info.show {
+    opacity: 1;
+    transform: translate(-50% , calc(100% + 20px));
+}
+
+.logged-layer .item.user > .info:before {
+    display: block;
+    content: '';
+    width: 0;
+    height: 0;
+    border-bottom: 10px solid #ffffff1f;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50% , -100%);
+}
+
+.logged-layer .item.user > .info .user {
+    display: flex;
+    justify-content: flex-start;
+    background-color: #ffffff1f;
+    padding: 12px 20px;
+    cursor: pointer;
+}
+
+.logged-layer .item.user > .info .user > * {
+    margin: 0;
+}
+
+.logged-layer .item.user > .info .user .avatar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logged-layer .item.user > .info .user .avatar .mask {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+}
+
+.logged-layer .item.user > .info .user .avatar .mask .image {
+    min-width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50% , -50%);
+}
+
+.logged-layer .item.user > .info .user .info {
+    padding-left: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.logged-layer .item.user > .info .user .info > * {
+    margin: 0;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.logged-layer .item.user > .info .user .info .name ,
+.logged-layer .item.user > .info .user .info .desc
+{
+
+}
+
+.logged-layer .item.user > .info .actions {
+
+}
+
+.logged-layer .item.user > .info .actions .action {
+    display: flex;
+    justify-content: flex-start;
+    padding: 0 20px;
+    height: 40px;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.logged-layer .item.user > .info .actions .action:hover {
+    background-color: #ffffff1f;
+}
+
+.logged-layer .item.user > .info .actions .action > * {
+    margin: 0;
+    flex: 0 0 auto;
+}
+.logged-layer .item.user > .info .actions .action .ico {
+    width: 45px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.logged-layer .item.user > .info .actions .action .name {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 13px;
+}
+
+    /**
+     * **********************
+     * 导航栏：底部
+     * **********************
+     */
 .main > .header .navigation .nav-btm {
     display: flex;
     justify-content: space-between;
@@ -390,3 +722,324 @@
     transform: rotateZ(180deg) scale(1,1);
 }
 
+
+/**
+ ***************************************
+ * 登录/注册表单
+ ***************************************
+ */
+.user-form {
+    background-color: rgba(0,0,0,0.5);
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    opacity: 0;
+    transform: scale(1.2 , 1.2);
+    transition: all 0.3s;
+}
+
+.user-form.show {
+    opacity: 1;
+    transform: scale(1,1);
+}
+
+.user-form .user-form-item {
+    width: 350px;
+    padding: 20px 20px 40px;
+    background-color: rgba(0, 0, 0, 0.8);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50% , -50%);
+}
+
+.user-form .user-form-item > * {
+    padding-bottom: 20px;
+    box-sizing: content-box;
+}
+
+.user-form .user-form-item > *:nth-last-of-type(1) {
+    padding-bottom: 0;
+}
+
+.user-form .user-form-item .logo {
+    position: relative;
+}
+
+.user-form .user-form-item .logo .outer {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    /*position: absolute;*/
+    /*left: 50%;*/
+    /*border: 5px solid #ccc;*/
+    overflow: hidden;
+    /*transform: translateX(-50%);*/
+    display: flex;
+    justify-content:center;
+    align-items: center;
+}
+
+.user-form .user-form-item .logo .outer .image {
+    width: 100%;
+    min-height: 100%;
+    vertical-align: top;
+}
+
+.user-form .user-form-item > .title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/*** 提示信息 ***/
+.user-form .user-form-item .message {
+    font-weight: bold;
+    text-align: center;
+    font-size: 12px;
+}
+
+/*** 表单  ***/
+.user-form .user-form-item .form {
+
+}
+
+.user-form .user-form-item .form .form-inner {
+
+}
+
+.user-form .user-form-item .form .form-inner .form-input:focus {
+    /*background-color: red !important;*/
+}
+
+.user-form .user-form-item .form .form-inner .line {
+    margin-bottom: 20px;
+}
+
+.user-form .user-form-item .form .form-inner .line:nth-last-of-type(1) {
+    margin-bottom: 0;
+}
+
+.user-form .user-form-item .form .form-inner .line .top {
+    height: 45px;
+    line-height: 45px;
+    position: relative;
+    background-color: rgba(64, 64, 64, 0.5);
+}
+
+.user-form .user-form-item .form .form-inner .line .top .left {
+    height: 100%;
+    margin-right: 50px;
+    position: relative;
+}
+
+.user-form .user-form-item .form .form-inner .line .top .left .form-input {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border: none;
+    color: #fff;
+}
+
+.user-form .user-form-item .form .form-inner .line .top .left .form-input:focus {
+
+}
+
+.user-form .user-form-item .form .form-inner .line .top .left .form-input:focus {
+    width: 100%;
+}
+
+.user-form .user-form-item .form .form-inner .line .top .right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 50px;
+    text-align: center;
+}
+
+.user-form .user-form-item .form .form-inner .line .top .right .image {
+    width: 24px;
+    height: 24px;
+}
+
+.user-form .user-form-item .form .form-inner .line .btm {
+    padding-top: 2px;
+    font-size: 12px;
+    color: #ccc;
+    position: relative;
+    box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    overflow: hidden;
+}
+
+.user-form .user-form-item .form .form-inner .line .top:before {
+    display: block;
+    content: '';
+    width: 0;
+    height: 2px;
+    background-color: #f3c669;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transition: all 0.2s linear;
+    transform: translate(-50% , 100%);
+}
+
+.user-form .user-form-item .form .form-inner .line .btm {
+    transition: all 0.2s linear;
+    opacity: 0;
+    height: 0;
+}
+
+
+
+.user-form .user-form-item .form .form-inner .password .top .left .preview-password {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 30px;
+    height: 100%;
+    text-align: center;
+}
+
+/*.user-form .user-form-item .form .form-inner .password .top .left .preview-password:hover {*/
+/*    border-radius: inherit;*/
+/*    color: inherit;*/
+/*    content: "";*/
+/*    position: absolute;*/
+/*    left: 0;*/
+/*    top: 0;*/
+/*    height: 100%;*/
+/*    opacity: 0.12;*/
+/*    width: 100%;*/
+/*}*/
+
+.user-form .user-form-item .form .form-inner .password .top .left .preview-password .outer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    transform: translate(-50%,-50%);
+    cursor: pointer;
+    border-radius: 30px;
+    overflow: hidden;
+}
+
+.user-form .user-form-item .form .form-inner .password .top .left .preview-password .outer:before {
+    display: block;
+    content: '';
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    transition: all 0.12s linear;
+}
+
+.user-form .user-form-item .form .form-inner .password .top .left .preview-password .outer .image {
+    width: 20px;
+    height: 20px;
+}
+
+.user-form .user-form-item .form .form-inner .password .top .left .preview-password .outer:hover::before {
+    background-color: #54545480;
+}
+
+.user-form .user-form-item .form .form-inner .password .top .left .preview-password .outer:active::before {
+    background-color: #54545480;
+}
+
+.user-form .user-form-item .form .form-inner .password .top .left .form-input {
+    padding-right: 30px;
+}
+
+/*** 表单错误表现 ***/
+.user-form .user-form-item .form .form-inner .line.focus .top:before , .user-form .user-form-item .form .form-inner .line.error .top:before {
+    width: 100%;
+}
+
+/*.user-form .user-form-item .form .form-inner .line.focus .btm , */
+.user-form .user-form-item .form .form-inner .line.error .btm {
+    opacity: 1;
+    height: 30px;
+    line-height: 30px;
+    color: red;
+}
+
+.user-form .user-form-item .form .form-inner .line.captcha .top .left {
+    margin-right: 120px;
+}
+
+.user-form .user-form-item .form .form-inner .line.captcha .top .right {
+    width: 120px;
+}
+
+.user-form .user-form-item .form .form-inner .line.captcha .top .right .image {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 120px;
+    height: 36px;
+    transform: translateY(-50%);
+}
+
+.user-form .user-form-item .form .line.operation {
+    text-align: center;
+}
+
+.user-form .user-form-item .form .line .button {
+    position: relative;
+    width: 100%;
+    height: 45px;
+    /*background-color: rgba(84,84,84,0.6);*/
+    border-radius: 2px;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s linear;
+    border: 1px solid rgba(147, 148, 150, 0.3);
+}
+
+.user-form .user-form-item .form .line .button:hover {
+    background-color: #b59a44 !important;
+}
+
+.user-form .user-form-item .form .line.submit .button {
+    background-color: #8c713a;
+}
+
+.user-form .user-form-item .form .line.submit button.disabled {
+    position: relative;
+    width: 100%;
+    border-radius: 2px;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s linear;
+    border: 1px solid rgba(147, 148, 150, 0.3);
+    background-color: #ffffff1f;
+    color: hsla(0,0%,100%,0.3)!important
+}
+
+.user-form .user-form-item .form .line.register .title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+}

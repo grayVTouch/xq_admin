@@ -8,6 +8,17 @@
 
 namespace core;
 
+use DateTime;
+use DateTimeZone;
+
+function current_time(DateTimeZone $time_zone = null): string
+{
+    if (empty($time_zone)) {
+        $time_zone = new DateTimeZone('Asia/Shanghai');
+    }
+    $date_time = new DateTime('now' , $time_zone);
+    return $date_time->format('Y-m-d H:i:s');
+}
 
 /**
  * 检查时间

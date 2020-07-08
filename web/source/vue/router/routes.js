@@ -4,7 +4,7 @@ import home from '../view/public/home.vue';
 import index from '../view/index/index.vue';
 import indexForImageSubject from '../view/image_subject/index.vue';
 import showForImageSubject from '../view/image_subject/show.vue';
-import indexForSearch from '../view/search/index.vue';
+import searchForImageSubject from '../view/image_subject/search.vue';
 
 
 
@@ -40,9 +40,8 @@ export default [
                 props: true ,
             } ,
             {
-                name: 'search' ,
-                path: 'search' ,
-                component: indexForSearch ,
+                path: 'image_subject/search' ,
+                component: searchForImageSubject ,
                 props: true ,
             } ,
         ] ,

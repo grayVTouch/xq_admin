@@ -8,14 +8,18 @@
                         <div class="left">{{ data.name }}</div>
                         <div class="right">
 
-                            <button class="praise"><my-icon icon="shoucang2" /> 喜欢 {{ data.praise_count }}</button>
+                            <my-button class="praise" @click="praiseHandle">
+                                <my-loading width="16" height="16" v-if="val.pending.praiseHandle"></my-loading>
+                                <my-icon :class="{'run-red': data.praised }" icon="shoucang2" /> 喜欢 {{ data.praise_count }}
+                            </my-button>
+                            <my-button class="praise" @click="showFavorites"><my-icon icon="shoucang5" :class="{'run-red': data.collected}" /> 收藏 {{ data.collect_count }}</my-button>
                         </div>
                     </div>
 
                     <div class="tags m-b-15">
                         <div class="left run-tags">
                             <span class="ico p-r-5"><my-icon icon="icontag" /></span>
-                            <span class="tag" v-for="v in data.tags">{{ v.name }}</span>
+                            <my-link class="tag" target="_blank" v-for="v in data.tags" :href="`#/image_subject/search?tag_id=${v.tag_id}`">{{ v.name }}</my-link>
                         </div>
                         <div class="right">
                             <span class="number">{{ data.images.length }}P</span>&nbsp;|&nbsp;<span class="view-count"><my-icon icon="chakan" /> {{ data.view_count }}</span>&nbsp;|&nbsp;<span class="create-time"><my-icon icon="shijian" /> {{ data.create_time }}</span>
@@ -24,7 +28,7 @@
 
                     <div class="desc m-b-30">{{ data.description }}</div>
                     <div class="images">
-                        <img v-for="(v,k) in images.data" :src="v.__path__" @click="imageClick(k + 1)" class="image">
+                        <img v-for="(v,k) in data.images" :src="v.__path__" @click="imageClick(k + 1)" class="image">
                     </div>
                 </div>
 
@@ -53,7 +57,7 @@
                         </div>
                     </div>
                     <!-- 关联主题 -->
-                    <div class="subject" v-if="data.subject">
+                    <div class="subject" v-if="data.type === 'pro'" @click="push({path: '/image_subject/search' , query: {subject_id: data.subject_id}})">
                         <div class="info">
                             <div class="thumb">
                                 <div class="mask">
@@ -127,6 +131,53 @@
                     <div class="list">
                         <!--                <div class="item cur"><img src="./res/01.jpg" class="image" alt=""></div>-->
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 收藏夹 -->
+        <div class="my-favorites hide" ref="my-favorites" @click="hideFavorites">
+            <div class="inner" @click.stop>
+                <div class="title">
+                    <span class="text">收藏夹</span>
+                    <my-button class="action close" @click="hideFavorites"><my-icon icon="close" size="12" /></my-button>
+                </div>
+
+                <div class="create">
+                    <div class="title m-b-15 run-weight">创建收藏夹</div>
+                    <div class="content">
+                        收藏夹名称 <input type="text" class="input" placeholder="请输入收藏夹名称" v-model="collectionGroup.name" @keyup.enter="createAndJoinCollectionGroup"> <my-button class="button" @click="createAndJoinCollectionGroup"><my-loading width="16" height="16" v-if="val.pending.createAndJoinCollectionGroup" />&nbsp;创建并添加</my-button>
+                    </div>
+                </div>
+
+                <div class="favorites">
+                    <div class="title m-b-15 run-weight">收藏夹列表</div>
+                    <div class="list">
+
+                        <div class="item" v-for="v in favorites">
+                            <div class="name">
+                                {{ v.name }}
+                                <span class="exists" v-if="v.inside">/已在此列表</span>
+                                <my-button class="button" @click="collectionHandle(v)">
+                                    <my-loading v-if="val.pending['collectionHandle_' + v.id]" width="16" height="16"></my-loading>
+                                    <template v-if="v.inside">移除</template>
+                                    <template v-else>添加</template>
+                                </my-button>
+                            </div>
+                            <div class="info">
+                                <span class="number">{{ v.count }}</span>
+                            </div>
+                        </div>
+
+                        <div class="loading" v-if="val.pending.getFavorites">
+                            <my-loading></my-loading>
+                        </div>
+
+                        <div class="empty" v-if="!val.pending.getFavorites && favorites.length <= 0">暂无数据</div>
+
+
+                    </div>
+
                 </div>
             </div>
         </div>

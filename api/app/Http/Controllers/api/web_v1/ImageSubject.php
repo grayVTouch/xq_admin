@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\web_v1;
 
 
 use App\Customize\api\web_v1\action\ImageSubjectAction;
+use App\Customize\api\web_v1\action\UserAction;
 use function api\web_v1\error;
 use function api\web_v1\success;
 
@@ -104,6 +105,7 @@ class ImageSubject extends Base
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
         $param['limit'] = $param['limit'] ?? '';
+        $param['value'] = $param['value'] ?? '';
         $res = ImageSubjectAction::hotTagsWithPager($this , $param);
         if ($res['code'] !== 0) {
             return error($res['data'], $res['code']);
@@ -116,6 +118,58 @@ class ImageSubject extends Base
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
         $res = ImageSubjectAction::show($this , $id , $param);
+        if ($res['code'] !== 0) {
+            return error($res['data'], $res['code']);
+        }
+        return success($res['data']);
+    }
+
+    // 图片专区分类
+    public function category()
+    {
+        $param = $this->request->query();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $res = ImageSubjectAction::category($this , $param);
+        if ($res['code'] !== 0) {
+            return error($res['data'], $res['code']);
+        }
+        return success($res['data']);
+    }
+
+    // 图片专区分类
+    public function subject()
+    {
+        $param = $this->request->query();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $param['value'] = $param['value'] ?? '';
+        $res = ImageSubjectAction::subject($this , $param);
+        if ($res['code'] !== 0) {
+            return error($res['data'], $res['code']);
+        }
+        return success($res['data']);
+    }
+
+
+    public function index()
+    {
+        $param = $this->request->query();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $param['category_ids'] = $param['category_ids'] ?? '';
+        $param['subject_ids'] = $param['subject_ids'] ?? '';
+        $param['tag_ids'] = $param['tag_ids'] ?? '';
+        $param['order'] = $param['order'] ?? '';
+        $param['value'] = $param['value'] ?? '';
+        $param['mode'] = $param['mode'] ?? '';
+        $res = ImageSubjectAction::index($this , $param);
+        if ($res['code'] !== 0) {
+            return error($res['data'], $res['code']);
+        }
+        return success($res['data']);
+    }
+
+    public function incrementViewCount(int $image_subject_id)
+    {
+        $res = ImageSubjectAction::incrementViewCount($this , $image_subject_id);
         if ($res['code'] !== 0) {
             return error($res['data'], $res['code']);
         }

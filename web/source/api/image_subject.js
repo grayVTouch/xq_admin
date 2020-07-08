@@ -5,6 +5,10 @@ const hotTags = `${TopContext.api}/image_subject/hot_tags`;
 const hotTagsWithPager = `${TopContext.api}/image_subject/hot_tags_with_pager`;
 const getWithPagerByTagIds = `${TopContext.api}/image_subject/get_with_pager_by_tag_ids`;
 const show = `${TopContext.api}/image_subject/{id}`;
+const categories = `${TopContext.api}/image_subject/category`;
+const subjects = `${TopContext.api}/image_subject/subject`;
+const index = `${TopContext.api}/image_subject`;
+const incrementViewCount = `${TopContext.api}/image_subject/{image_subject_id}/increment_view_count`;
 
 export default {
 
@@ -34,5 +38,21 @@ export default {
 
     show (id , success , error) {
         return request(show.replace('{id}' , id) , 'get' , null , success , error);
+    } ,
+
+    categories (success , error) {
+        return request(categories , 'get' , null , success , error);
+    } ,
+
+    subjects (data , success , error) {
+        return request(subjects , 'get' , data , success , error);
+    } ,
+
+    index (data , success , error) {
+        return request(index , 'get' , data , success , error);
+    } ,
+
+    incrementViewCount (id , success , error) {
+        return request(incrementViewCount.replace('{image_subject_id}' , id) , 'patch' , null , success , error);
     } ,
 };

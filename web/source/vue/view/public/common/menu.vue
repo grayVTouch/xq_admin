@@ -2,7 +2,7 @@
 <template>
     <div class='infinite-classification'>
         <div class="list">
-            <v-item v-for="v in list" :item="v" :key="v.id"></v-item>
+            <v-item v-for="v in data" :item="v" :key="v.id"></v-item>
         </div>
     </div>
 </template>
@@ -13,14 +13,14 @@
     export default {
         name: "v-menu" ,
         props: {
-            list: {
+            data: {
                 type: Array ,
                 required: true
             }
         } ,
         components: {
             'v-item': item
-        }
+        } ,
     }
 </script>
 

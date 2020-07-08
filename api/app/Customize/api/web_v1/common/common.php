@@ -3,8 +3,10 @@
 namespace api\web_v1;
 
 
+use App\Customize\api\web_v1\model\UserModel;
 use Illuminate\Contracts\Validation\Validator;
 use Exception;
+use stdClass;
 use function extra\config;
 
 /**
@@ -58,9 +60,13 @@ function get_form_error(Validator $validator)
     return $res;
 }
 
-function user()
+function user(): ?stdClass
 {
-    return app()->make('user');
+    try {
+        return resolve('user');
+    } catch (Exception $e) {
+        return null;
+    }
 }
 
 function parse_order(string $order = '' , $delimiter = '|')
