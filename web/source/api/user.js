@@ -3,74 +3,123 @@ const register = `${TopContext.api}/register`;
 const info = `${TopContext.api}/user_info`;
 const updatePassword = `${TopContext.api}/user/update_password`;
 const lessHistory = `${TopContext.api}/less_history`;
-const histories = `${TopContext.api}/histories`;
+const history = `${TopContext.api}/history`;
 const collectionGroup = `${TopContext.api}/user/collection_group`;
+const collections = `${TopContext.api}/user/collections`;
+const collectionGroupWithJudge = `${TopContext.api}/user/collection_group_with_judge`;
 const createAndJoinCollectionGroup = `${TopContext.api}/user/create_and_join_collection_group`;
+const createCollectionGroup = `${TopContext.api}/user/create_collection_group`;
 const joinCollectionGroup = `${TopContext.api}/user/join_collection_group`;
-const destroyCollectionGroup = `${TopContext.api}/user/{collection_group_id}/destroy_collection_group`;
+const destroyCollectionGroup = `${TopContext.api}/user/destroy_collection_group`;
 const destroyAllCollectionGroup = `${TopContext.api}/user/destroy_all_collection_group`;
 const praiseHandle = `${TopContext.api}/user/praise_handle`;
 const collectionHandle = `${TopContext.api}/user/collection_handle`;
 const record = `${TopContext.api}/user/record`;
+const lessCollectionGroupWithCollection = `${TopContext.api}/less_collection_group_with_collection`;
+const update = `${TopContext.api}/user/update`;
+const updatePasswordInLogged = `${TopContext.api}/user/update_password_in_logged`;
+const destroyHistory = `${TopContext.api}/user/destroy_history`;
+const destroyCollection = `${TopContext.api}/user/destroy_collection`;
+const updateCollectionGroup = `${TopContext.api}/user/update_collection_group`;
 
 export default {
-    login (data , success , error) {
-        return request(login , 'post' , data , success , error);
-    } ,
+    login(data, success, error) {
+        return request(login, 'post', data, success, error);
+    },
 
-    register (data , success , error) {
-        return request(register , 'post' , data , success , error);
-    } ,
+    register(data, success, error) {
+        return request(register, 'post', data, success, error);
+    },
 
-    info (success , error) {
-        return request(info , 'get' , null , success , error);
-    } ,
+    info(success, error) {
+        return request(info, 'get', null, success, error);
+    },
 
-    updatePassword (data , success , error) {
-        return request(updatePassword , 'patch' , data , success , error);
-    } ,
+    updatePassword(data, success, error) {
+        return request(updatePassword, 'patch', data, success, error);
+    },
 
-    lessHistory (data , success , error) {
-        return request(lessHistory , 'get' , data , success , error);
-    } ,
+    lessHistory(data, success, error) {
+        return request(lessHistory, 'get', data, success, error);
+    },
 
-    histories (data , success , error) {
-        return request(histories , 'get' , data , success , error);
-    } ,
+    history(data, success, error) {
+        return request(history, 'get', data, success, error);
+    },
 
-    praiseHandle (data , success , error) {
-        return request(praiseHandle , 'post' , data , success , error);
-    } ,
+    praiseHandle(data, success, error) {
+        return request(praiseHandle, 'post', data, success, error);
+    },
 
-    collectionHandle (data , success , error) {
-        return request(collectionHandle , 'post' , data , success , error);
-    } ,
+    collectionHandle(data, success, error) {
+        return request(collectionHandle, 'post', data, success, error);
+    },
 
-    record (data , success , error) {
-        return request(record , 'post' , data , success , error);
-    } ,
+    record(data, success, error) {
+        return request(record, 'post', data, success, error);
+    },
 
-    createAndJoinCollectionGroup (data , success , error) {
-        return request(createAndJoinCollectionGroup , 'post' , data , success , error);
-    } ,
+    createAndJoinCollectionGroup(data, success, error) {
+        return request(createAndJoinCollectionGroup, 'post', data, success, error);
+    },
 
-    joinCollectionGroup (data , success , error) {
-        return request(joinCollectionGroup , 'post' , data , success , error);
-    } ,
+    joinCollectionGroup(data, success, error) {
+        return request(joinCollectionGroup, 'post', data, success, error);
+    },
 
-    collectionGroup (data , success , error) {
-        return request(collectionGroup , 'get' , data , success , error);
-    } ,
+    collectionGroup(data, success, error) {
+        return request(collectionGroup, 'get', data, success, error);
+    },
 
-    destroyCollectionGroup (collectionGroupId , success , error) {
-        return request(destroyCollectionGroup.replace('' , collectionGroupId) , 'delete' , null , success , error);
-    } ,
+    collectionGroupWithJudge(data, success, error) {
+        return request(collectionGroupWithJudge, 'get', data, success, error);
+    },
 
-    destroyAllCollectionGroup (collectionGroupIds , success , error) {
-        return request(destroyAllCollectionGroup , 'delete' , {
+    destroyCollectionGroup(data, success, error) {
+        return request(destroyCollectionGroup, 'delete', data, success, error);
+    },
+
+    destroyAllCollectionGroup(collectionGroupIds, success, error) {
+        return request(destroyAllCollectionGroup, 'delete', {
             collection_group_ids: G.jsonEncode(collectionGroupIds)
-        } , success , error);
-    } ,
+        }, success, error);
+    },
 
+    lessCollectionGroupWithCollection(data, success, error) {
+        return request(lessCollectionGroupWithCollection, 'get', data, success, error);
+    },
 
+    update(data, success, error) {
+        return request(update, 'put', data, success, error);
+    },
+
+    updatePasswordInLogged(data, success, error) {
+        return request(updatePasswordInLogged, 'patch', data, success, error);
+    },
+
+    destroyHistory(ids, success, error) {
+        return request(destroyHistory, 'delete', {
+            history_ids: G.jsonEncode(ids)
+        }, success, error);
+    },
+
+    collections(data, success, error) {
+        return request(collections, 'get', data, success, error);
+    },
+
+    destroyCollections(data, success, error) {
+        return request(collections, 'delete', data, success, error);
+    },
+
+    createCollectionGroup(data, success, error) {
+        return request(createCollectionGroup, 'post', data, success, error);
+    },
+
+    destroyCollection(data, success, error) {
+        return request(destroyCollection, 'delete', data, success, error);
+    },
+
+    updateCollectionGroup (data, success, error) {
+        return request(updateCollectionGroup, 'patch', data, success, error);
+    },
 };

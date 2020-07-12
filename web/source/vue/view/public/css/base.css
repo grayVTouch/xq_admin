@@ -172,7 +172,6 @@
     font-size: 12px;
     transition: all 0.3s;
     cursor: pointer;
-
     position: absolute;
     right: 20px;
     top: 20px;
@@ -349,6 +348,7 @@
     background-color: rgba(0,0,0,0.5);
     opacity: 0;
     transition: all 0.3s;
+    z-index: 100;
 }
 
 .my-favorites.show {
@@ -462,6 +462,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
+    align-content: flex-start;
     flex-wrap: wrap;
     min-height: 200px;
     max-height: 400px;
@@ -548,5 +549,30 @@
     padding: 2px 12px;
     border-radius: 30%;
     font-size: 12px;
+
+}
+
+/**
+ * ******************
+ * 按钮风格
+ * ******************
+ */
+.my-button {
+    background-color: #5d5d5d;
+    transition: all 0.3s;
+    height: 30px;
+    padding: 0 15px;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.my-button:hover {
+    background-color: #828282;
+}
+
+.my-button.small {
+    height: 24px;
+    font-size:12px;
 
 }

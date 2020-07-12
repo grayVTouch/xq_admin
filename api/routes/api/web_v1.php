@@ -51,8 +51,9 @@ Route::prefix('web_v1')
             Route::post('login' , 'User@login');
             Route::post('register' , 'User@store');
             Route::patch('user/update_password' , 'User@updatePassword');
-
             Route::patch('image_subject/{image_subject_id}/increment_view_count' , 'ImageSubject@incrementViewCount');
+            // 文件上传
+            Route::post('upload' , 'File@upload');
 
         });
 
@@ -63,18 +64,24 @@ Route::prefix('web_v1')
             Route::post('user/collection_handle' , 'User@collectionHandle');
             Route::post('user/praise_handle' , 'User@praiseHandle');
             Route::post('user/record' , 'User@record');
-
             Route::post('user/create_and_join_collection_group' , 'User@createAndJoinCollectionGroup');
+            Route::post('user/create_collection_group' , 'User@createCollectionGroup');
             Route::post('user/join_collection_group' , 'User@joinCollectionGroup');
-            Route::delete('user/{collection_group_id}/destroy_collection_group' , 'User@destroyCollectionGroup');
+            Route::delete('user/destroy_collection_group' , 'User@destroyCollectionGroup');
             Route::delete('user/destroy_all_collection_group' , 'User@destroyAllCollectionGroup');
-
+            Route::delete('user/destroy_collection' , 'User@destroyCollection');
+            Route::delete('user/destroy_history' , 'User@destroyHistory');
+            Route::get('user/collection_group_with_judge' , 'User@collectionGroupWithJudge');
             Route::get('user/collection_group' , 'User@collectionGroup');
-
+            Route::get('user/collections' , 'User@collections');
             Route::get('user_info' , 'User@info');
-
-            Route::get('less_history' , 'User@historyLimit');
+            Route::get('less_history' , 'User@lessHistory');
             Route::get('history' , 'User@histories');
+            Route::get('less_relation_in_collection' , 'User@lessRelationInCollection');
+            Route::get('less_collection_group_with_collection' , 'User@lessCollectionGroupWithCollection');
+            Route::put('user/update' , 'User@update');
+            Route::patch('user/update_password_in_logged' , 'User@updatePasswordInLogged');
+            Route::patch('user/update_collection_group' , 'User@updateCollectionGroup');
 
 
         });

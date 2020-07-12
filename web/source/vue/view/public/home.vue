@@ -1,5 +1,6 @@
 <template>
     <main class="main">
+
         <!-- 头部 -->
         <header class="header">
 
@@ -9,7 +10,7 @@
                     <div class="inner">
                         <my-link class="logo" href="#/welcome">
 
-                            <div class="__logo__"><img src="./res/logo.png" class="image"></div>
+                            <div class="__logo__"><img :src="$store.state.context.res.logo" class="image"></div>
                             <div class="site"><a class="link">兴趣部落</a></div>
 
                         </my-link>
@@ -32,10 +33,10 @@
                             <!-- 登录状态 -->
                             <div class="logged-layer" v-if="$store.state.user">
 
-                                <div class="item history" @click.stop="showHistoryCtrl">
-                                    <div class="action"><my-button class="button history"><my-icon icon="lishijilu" mode="right" />记录</my-button></div>
-                                    <div class="groups hide" ref="groups-for-history" @click.stop>
-<!--                                        <div class="background" @click="hideHistory"></div>-->
+                                <div class="item history" @click.stop>
+                                    <div class="action"><button v-ripple @click="showHistoryCtrl" class="button history"><my-icon icon="lishijilu" mode="right" />记录</button></div>
+                                    <div class="groups hide" ref="groups-for-history">
+
                                         <div class="inner">
 
                                             <div class="loading" v-if="val.pending.getHistories">
@@ -51,11 +52,11 @@
                                                 <div class="list">
                                                     <template v-for="v1 in v.data">
                                                         <a class="item image" v-if="v1.relation_type === 'image_subject'" target="_blank" :href="`#/image_subject/${v1.relation_id}/show`">
-                                                            <div class="thumb"><img :src="v1.image_subject.thumb ? v1.image_subject.__thumb__ : $store.state.context.res.notFound" class="image" alt=""></div>
+                                                            <div class="thumb"><img :src="v1.relation.thumb ? v1.relation.__thumb__ : $store.state.context.res.notFound" class="image" alt=""></div>
                                                             <div class="info">
-                                                                <div class="name f-14">{{ v1.image_subject.name ? (v1.image_subject.name.length > 28 ? v1.image_subject.name.slice(0,28) + '...' : v1.image_subject.name) : '' }}</div>
+                                                                <div class="name f-14">{{ v1.relation.name ?  v1.relation.name : '' }}</div>
                                                                 <div class="time f-12">
-                                                                    <my-icon icon="shijian" mode="right" />{{ v1.image_subject.create_time }}&nbsp;&nbsp;{{ v1.image_subject.user ? v1.image_subject.user.nickname : 'unknow' }}
+                                                                    <my-icon icon="shijian" mode="right" />{{ v1.relation.create_time }}&nbsp;&nbsp;{{ v1.relation.user ? v1.relation.user.nickname : 'unknow' }}
                                                                 </div>
                                                             </div>
                                                         </a>
@@ -64,48 +65,86 @@
                                             </div>
 
                                             <div class="load-more">
-                                                <my-link class="more">加载更多</my-link>
+                                                <my-link class="more" href="#/user/history" @click="hideHistoryCtrl">加载更多</my-link>
                                             </div>
                                         </div>
 
                                     </div>
                                 </div>
 
-                                <div class="item collection">
-                                    <div class="action"><my-button class="button history"><my-icon icon="shoucang6" mode="right" />收藏</my-button></div>
+                                <div class="item favorites" @click.stop>
+                                    <div class="action"><button v-ripple @click="showFavoritesCtrl" class="button favorites"><my-icon icon="shoucang6" mode="right" />收藏</button></div>
+                                    <div class="collection hide" ref="collection">
+                                        <div class="nav">
+                                            <div class="item" v-for="v in favorites.collectionGroups" :key="v.id" v-ripple @click="favorites.collection_group = v">
+                                                <div class="name">{{ v.name }}</div>
+                                                <div class="number">{{ v.count }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="list">
+                                            <template v-for="v in favorites.collection_group.collections">
+                                                <a class="item image" target="_blank" :href="`#/image_subject/${v.relation_id}/show`">
+                                                    <div class="thumb"><img :src="v.relation.thumb ? v.relation.__thumb__ : $store.state.context.res.notFound" class="image" alt=""></div>
+                                                    <div class="info">
+                                                        <div class="name f-14">{{ v.relation.name }}</div>
+                                                        <div class="time f-12">
+                                                            <my-icon icon="shijian" mode="right" />{{ v.relation.create_time }} {{ v.relation.user.nickname }}
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </template>
+
+                                            <div class="empty" v-if="favorites.collection_group.count === 0">
+                                                <span>尚无数据</span>
+                                            </div>
+
+                                            <div class="loaded" v-if="favorites.collection_group.count !== 0 && favorites.collection_group.count === favorites.collection_group.collections.length"><span>到底了</span></div>
+
+                                            <div class="load-more" v-if="!val.pending.getCollectionGroupWithCollection && favorites.collection_group.count > 0 && favorites.collection_group.count !== favorites.collection_group.collections.length">
+                                                <my-link class="more" href="#/user/favorites" @click="hideFavoritesCtrl">加载更多</my-link>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="item user" @click.stop="showUserCtrl">
-                                    <div class="action" v-ripple>
-                                        <img :src="$store.state.user.avatar ? $store.state.user.__avatar__ : $store.state.context.res.avatar" class="image">
+                                <div class="item user" @click.stop>
+                                    <div class="action" @click="showUserCtrl">
+                                        <a class="link" v-ripple><img :src="$store.state.user.avatar ? $store.state.user.__avatar__ : $store.state.context.res.avatar" class="image"></a>
                                     </div>
-                                    <div class="info hide" ref="info-for-user" @click.stop>
-                                        <div class="user m-b-10" v-ripple>
-                                            <div class="avatar">
-                                                <div class="mask">
-                                                    <img :src="$store.state.user.avatar ? $store.state.user.__avatar__ : $store.state.context.res.avatar" class="image">
+                                    <div class="info hide" ref="info-for-user">
+                                        <div class="user m-b-10">
+                                            <a href="#/user/info" v-ripple target="_self" class="link" @click="hideUserCtrl">
+                                                <div class="avatar">
+                                                    <div class="mask">
+                                                        <img :src="$store.state.user.avatar ? $store.state.user.__avatar__ : $store.state.context.res.avatar" class="image">
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="info">
-                                                <div class="name">running</div>
-                                                <div class="desc">你的名字叫做什么？</div>
-                                            </div>
+                                                <div class="info">
+                                                    <div class="name">{{ $store.state.user.nickname }}</div>
+                                                    <div class="desc">{{ $store.state.user.description }}</div>
+                                                </div>
+                                            </a>
                                         </div>
                                         <div class="actions">
-                                            <div class="action" v-ripple>
+                                            <a class="action" v-ripple href="#/user/password" @click="hideUserCtrl">
+                                                <div class="ico"><my-icon icon="privilege" size="16" /></div>
+                                                <div class="name">修改密码</div>
+                                            </a>
+
+                                            <a class="action" v-ripple href="#/user/history" @click="hideUserCtrl">
                                                 <div class="ico"><my-icon icon="lishijilu" size="16" /></div>
                                                 <div class="name">历史记录</div>
-                                            </div>
+                                            </a>
 
-                                            <div class="action" v-ripple>
+                                            <a class="action" v-ripple href="#/user/favorites" @click="hideUserCtrl">
                                                 <div class="ico"><my-icon icon="shoucang6" size="16" /></div>
                                                 <div class="name">我的收藏</div>
-                                            </div>
+                                            </a>
 
-                                            <div class="action" v-ripple @click="logout">
+                                            <a class="action" v-ripple @click.prevent="logout">
                                                 <div class="ico"><my-icon icon="084tuichu" size="16" /></div>
                                                 <div class="name">退出登录</div>
-                                            </div>
+                                            </a>
                                         </div>
                                     </div>
 
@@ -162,7 +201,7 @@
             <div class="login user-form-item" v-if="val.userFormType === 'login'" @click.stop>
                 <div class="logo">
                     <div class="outer">
-                        <img src="./res/logo.png" class="image" alt="">
+                        <img :src="$store.state.context.res.logo" class="image" alt="">
                     </div>
                 </div>
                 <div class="title">用户登录</div>
@@ -172,7 +211,7 @@
                         <div class="line" :class="{error: isValid(val.loginError.username) , focus: val.focus.usernameForLogin}" ref="line-username">
                             <div class="top">
                                 <div class="left"><input type="text" class="form-input" v-model="loginForm.username" @input="val.loginError.username = ''" data-name="usernameForLogin" placeholder="用户名" @focus="focusEvent" @blur="blurEvent"></div>
-                                <div class="right"><img src="./res/username.png" class="image"></div>
+                                <div class="right"><my-icon icon="yonghu2" size="24"></my-icon></div>
                             </div>
                             <div class="btm">
                                 <template v-if="!isValid(val.loginError.username)"></template>
@@ -186,12 +225,12 @@
                                     <input :type="val.showPasswordForLogin ? 'text' : 'password'" class="form-input" ref="input-password" v-model="loginForm.password" @input="val.loginError.password = ''" placeholder="密码" data-name="passwordForLogin" @focus="focusEvent" @blur="blurEvent">
                                     <div class="preview-password">
                                         <div class="outer" @click="val.showPasswordForLogin = !val.showPasswordForLogin">
-                                            <img src="./res/show.png" v-if="val.showPasswordForLogin" class="image">
-                                            <img src="./res/hide.png" v-else class="image">
+                                            <my-icon icon="xianshi" size="18" v-if="val.showPasswordForLogin"></my-icon>
+                                            <my-icon icon="yincang1" size="18" v-else></my-icon>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="right"><img src="./res/password.png" alt="" class="image"></div>
+                                <div class="right"><my-icon size="24" icon="mima"></my-icon></div>
                             </div>
                             <div class="btm">
                                 <template v-if="!isValid(val.loginError.password)"></template>
@@ -213,7 +252,7 @@
                         <div class="line operation register">
                             <div class="title m-b-20">没有账号？现在注册</div>
                             <div class="action">
-                                <my-button class="button" @click="val.userFormType = 'register'">注册</my-button>
+                                <my-button class="button" @click="switchUserForm('register')">注册</my-button>
                             </div>
                         </div>
 
@@ -235,7 +274,7 @@
                         <div class="line" :class="{error: isValid(val.forgetError.username) , focus: val.focus.usernameForForget}" ref="line-username">
                             <div class="top">
                                 <div class="left"><input type="text" class="form-input" v-model="forgetForm.username" @input="val.forgetError.username = ''" data-name="usernameForForget" placeholder="用户名" @focus="focusEvent" @blur="blurEvent"></div>
-                                <div class="right"><img src="./res/username.png" class="image"></div>
+                                <div class="right"><my-icon icon="yonghu2" size="24"></my-icon></div>
                             </div>
                             <div class="btm">
                                 <template v-if="!isValid(val.forgetError.username)"></template>
@@ -249,12 +288,14 @@
                                     <input :type="val.showPasswordForForget ? 'text' : 'password'" class="form-input" ref="input-password" v-model="forgetForm.password" @input="val.forgetError.password = ''" placeholder="密码" data-name="passwordForForget" @focus="focusEvent" @blur="blurEvent">
                                     <div class="preview-password">
                                         <div class="outer" @click="val.showPasswordForForget = !val.showPasswordForForget">
-                                            <img src="./res/show.png" v-if="val.showPasswordForForget" class="image">
-                                            <img src="./res/hide.png" v-else class="image">
+                                            <my-icon icon="xianshi" size="18" v-if="val.showPasswordForForget"></my-icon>
+                                            <my-icon icon="yincang1" size="18" v-else></my-icon>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="right"><img src="./res/password.png" alt="" class="image"></div>
+                                <div class="right">
+                                    <my-icon icon="mima" size="24"></my-icon>
+                                </div>
                             </div>
                             <div class="btm">
                                 <template v-if="!isValid(val.forgetError.password)"></template>
@@ -268,12 +309,14 @@
                                     <input :type="val.showConfirmPasswordForForget ? 'text' : 'password'" class="form-input" ref="input-password" v-model="forgetForm.confirm_password" @input="val.forgetError.confirm_password = ''" placeholder="确认密码" data-name="confirmPasswordForForget" @focus="focusEvent" @blur="blurEvent">
                                     <div class="preview-password">
                                         <div class="outer" @click="val.showConfirmPasswordForForget = !val.showConfirmPasswordForForget">
-                                            <img src="./res/show.png" v-if="val.showConfirmPasswordForForget" class="image">
-                                            <img src="./res/hide.png" v-else class="image">
+                                            <my-icon icon="xianshi" size="18" v-if="val.showConfirmPasswordForForget"></my-icon>
+                                            <my-icon icon="yincang1" size="18" v-else></my-icon>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="right"><img src="./res/password.png" alt="" class="image"></div>
+                                <div class="right">
+                                    <my-icon icon="mima" size="24"></my-icon>
+                                </div>
                             </div>
                             <div class="btm">
                                 <template v-if="!isValid(val.forgetError.confirm_password)"></template>
@@ -291,14 +334,14 @@
                         <div class="line operation register">
                             <div class="title m-b-20">已经有账号？</div>
                             <div class="action">
-                                <my-button class="button" @click="val.userFormType = 'login'">登录</my-button>
+                                <my-button class="button" @click="switchUserForm('login')">登录</my-button>
                             </div>
                         </div>
 
                         <div class="line operation register">
                             <div class="title m-b-20">还没有账号？</div>
                             <div class="action">
-                                <my-button class="button" @click="val.userFormType = 'register'">注册</my-button>
+                                <my-button class="button" @click="switchUserForm('register')">注册</my-button>
                             </div>
                         </div>
 
@@ -310,7 +353,7 @@
             <div class="register user-form-item" v-if="val.userFormType === 'register'" @click.stop>
                 <div class="logo">
                     <div class="outer">
-                        <img src="./res/logo.png" class="image" alt="">
+                        <img :src="$store.state.context.res.logo" class="image" alt="">
                     </div>
                 </div>
                 <div class="title">用户注册</div>
@@ -320,7 +363,9 @@
                         <div class="line" :class="{error: isValid(val.registerError.username) , focus: val.focus.usernameForRegister}" ref="line-username">
                             <div class="top">
                                 <div class="left"><input type="text" class="form-input" v-model="registerForm.username" @input="val.registerError.username = ''" data-name="usernameForRegister" placeholder="用户名" @focus="focusEvent" @blur="blurEvent"></div>
-                                <div class="right"><img src="./res/username.png" class="image"></div>
+                                <div class="right">
+                                    <my-icon icon="yonghu2" size="24"></my-icon>
+                                </div>
                             </div>
                             <div class="btm">
                                 <template v-if="!isValid(val.registerError.username)"></template>
@@ -334,12 +379,14 @@
                                     <input :type="val.showPasswordForRegister ? 'text' : 'password'" class="form-input" ref="input-password" v-model="registerForm.password" @input="val.registerError.password = ''" placeholder="密码" data-name="passwordForRegister" @focus="focusEvent" @blur="blurEvent">
                                     <div class="preview-password">
                                         <div class="outer" @click="val.showPasswordForRegister = !val.showPasswordForRegister">
-                                            <img src="./res/show.png" v-if="val.showPasswordForRegister" class="image">
-                                            <img src="./res/hide.png" v-else class="image">
+                                            <my-icon icon="xianshi" size="18" v-if="val.showPasswordForRegister"></my-icon>
+                                            <my-icon icon="yincang1" size="18" v-else></my-icon>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="right"><img src="./res/password.png" alt="" class="image"></div>
+                                <div class="right">
+                                    <my-icon icon="mima" size="24"></my-icon>
+                                </div>
                             </div>
                             <div class="btm">
                                 <template v-if="!isValid(val.registerError.password)"></template>
@@ -353,12 +400,14 @@
                                     <input :type="val.showConfirmPasswordForRegister ? 'text' : 'password'" class="form-input" ref="input-password" v-model="registerForm.confirm_password" @input="val.registerError.confirm_password = ''" placeholder="确认密码" data-name="confirmPasswordForRegister" @focus="focusEvent" @blur="blurEvent">
                                     <div class="preview-password">
                                         <div class="outer" @click="val.showConfirmPasswordForRegister = !val.showConfirmPasswordForRegister">
-                                            <img src="./res/show.png" v-if="val.showConfirmPasswordForRegister" class="image">
-                                            <img src="./res/hide.png" v-else class="image">
+                                            <my-icon icon="xianshi" size="18" v-if="val.showConfirmPasswordForRegister"></my-icon>
+                                            <my-icon icon="yincang1" size="18" v-else></my-icon>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="right"><img src="./res/password.png" alt="" class="image"></div>
+                                <div class="right">
+                                    <my-icon icon="mima" size="24"></my-icon>
+                                </div>
                             </div>
                             <div class="btm">
                                 <template v-if="!isValid(val.registerError.confirm_password)"></template>
@@ -389,7 +438,7 @@
                         <div class="line operation register">
                             <div class="title m-b-20">已经有账号？</div>
                             <div class="action">
-                                <my-button class="button" @click="val.userFormType = 'login'">登录</my-button>
+                                <my-button class="button" @click="switchUserForm('login')">登录</my-button>
                             </div>
                         </div>
 

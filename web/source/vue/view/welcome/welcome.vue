@@ -4,7 +4,7 @@
 
             <header class="header">
                 <div class="logo">
-                    <div class="inner"><img src="./res/logo1.jpg" class="image" alt=""></div>
+                    <div class="inner"><img :src="$store.state.context.res.logo" class="image" alt=""></div>
                 </div>
                 <div class="site">兴趣部落</div>
             </header>

@@ -112,8 +112,8 @@ export default {
             } , (data , code) => {
                 this.pending('praiseHandle' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandle(data , code , () => {
-                        this.$parent.showUserForm('login');
+                    this.errorHandleAtHomeChildren(data , code , () => {
+                        this.praiseHandle(imageSubject);
                     });
                     return ;
                 }

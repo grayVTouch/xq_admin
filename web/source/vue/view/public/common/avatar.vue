@@ -4,8 +4,7 @@
             <div class="top">{{ topVal }}</div>
             <div class="btm">{{ btmVal }}</div>
         </div>
-        <img :src="src" v-if="src" class="image">
-        <img src="../res/avatar.png" v-else class="image">
+        <img :src="src ? src : $store.state.context.res.avatar" class="image">
     </div>
 </template>
 

@@ -28,6 +28,7 @@
 <style scoped>
     .run-iconfont {
         vertical-align: middle;
+        display: inline-block;
     }
 
     .run-iconfont.padding-left {

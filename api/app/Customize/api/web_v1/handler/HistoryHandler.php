@@ -30,14 +30,16 @@ class HistoryHandler extends Handler
         switch ($res->relation_type)
         {
             case 'image_subject':
-                $image_subject = ImageSubjectModel::find($res->relation_id);
-                $image_subject = ImageSubjectHandler::handle($image_subject);
-                $res->image_subject = $image_subject;
+                $relation = ImageSubjectModel::find($res->relation_id);
+                $relation = ImageSubjectHandler::handle($relation);
                 break;
+            default:
+                $relation = null;
         }
 
         $res->module = $module;
         $res->user = $user;
+        $res->relation = $relation;
 
         return $res;
     }

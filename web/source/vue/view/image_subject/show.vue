@@ -9,20 +9,22 @@
                         <div class="right">
 
                             <my-button class="praise" @click="praiseHandle">
-                                <my-loading width="16" height="16" v-if="val.pending.praiseHandle"></my-loading>
-                                <my-icon :class="{'run-red': data.praised }" icon="shoucang2" /> 喜欢 {{ data.praise_count }}
+                                <my-loading size="16" v-if="val.pending.praiseHandle"></my-loading>
+<!--                                <my-icon :class="{'run-red': data.praised }" icon="shoucang2" /> 喜欢 {{ data.praise_count }}-->
+                                <my-icon :class="{'run-red': data.praised }" icon="shoucang2" /> 喜欢
                             </my-button>
-                            <my-button class="praise" @click="showFavorites"><my-icon icon="shoucang5" :class="{'run-red': data.collected}" /> 收藏 {{ data.collect_count }}</my-button>
+<!--                            <my-button class="praise" @click="showFavorites"><my-icon icon="shoucang5" :class="{'run-red': data.collected}" /> 收藏 {{ data.collect_count }}</my-button>-->
+                            <my-button class="praise" @click="showFavorites"><my-icon icon="shoucang5" :class="{'run-red': data.collected}" /> 收藏</my-button>
                         </div>
                     </div>
 
                     <div class="tags m-b-15">
                         <div class="left run-tags">
                             <span class="ico p-r-5"><my-icon icon="icontag" /></span>
-                            <my-link class="tag" target="_blank" v-for="v in data.tags" :href="`#/image_subject/search?tag_id=${v.tag_id}`">{{ v.name }}</my-link>
+                            <my-link class="tag" target="_blank" v-for="v in data.tags" :key="v.id" :href="`#/image_subject/search?tag_id=${v.tag_id}`">{{ v.name }}</my-link>
                         </div>
                         <div class="right">
-                            <span class="number">{{ data.images.length }}P</span>&nbsp;|&nbsp;<span class="view-count"><my-icon icon="chakan" /> {{ data.view_count }}</span>&nbsp;|&nbsp;<span class="create-time"><my-icon icon="shijian" /> {{ data.create_time }}</span>
+                            <span class="number">{{ data.images.length }}P</span>&nbsp;|&nbsp;<span class="praise"><my-icon icon="shoucang2" class="run-position-relative run-t--1" />{{ data.praise_count }}</span>&nbsp;|&nbsp;<span class="collect"><my-icon icon="shoucang5" class="run-position-relative run-t--1" />{{ data.collect_count }}</span>&nbsp;|&nbsp<span class="view-count"><my-icon icon="chakan" class="run-position-relative run-t--1" /> {{ data.view_count }}</span>&nbsp;|&nbsp;<span class="create-time"><my-icon icon="shijian" class="run-position-relative run-t--1" /> {{ data.create_time }}</span>
                         </div>
                     </div>
 
@@ -36,7 +38,7 @@
             </div>
 
             <!-- 其他 -->
-            <div class="right misc">
+            <div class="right misc" ref="misc">
                 <div class="inner" :class="{fixed: val.fixedMisc}">
                     <!-- 发布者 -->
                     <div class="user">
@@ -52,12 +54,12 @@
                         </div>
                         <div class="desc">个人简介</div>
                         <div class="action">
-                            <button class="focus"><my-icon icon="add" /> 关注</button>
-                            <button class="message">私信</button>
+                            <my-button class="focus"><my-icon icon="add" /> 关注</my-button>
+                            <my-button class="message">私信</my-button>
                         </div>
                     </div>
                     <!-- 关联主题 -->
-                    <div class="subject" v-if="data.type === 'pro'" @click="push({path: '/image_subject/search' , query: {subject_id: data.subject_id}})">
+                    <div class="subject" v-if="data.type === 'pro'" @click="link(`#/image_subject/search?subject_id=${data.subject_id}`)">
                         <div class="info">
                             <div class="thumb">
                                 <div class="mask">
@@ -146,7 +148,7 @@
                 <div class="create">
                     <div class="title m-b-15 run-weight">创建收藏夹</div>
                     <div class="content">
-                        收藏夹名称 <input type="text" class="input" placeholder="请输入收藏夹名称" v-model="collectionGroup.name" @keyup.enter="createAndJoinCollectionGroup"> <my-button class="button" @click="createAndJoinCollectionGroup"><my-loading width="16" height="16" v-if="val.pending.createAndJoinCollectionGroup" />&nbsp;创建并添加</my-button>
+                        收藏夹名称 <input type="text" class="input" placeholder="请输入收藏夹名称" v-model="collectionGroup.name" @keyup.enter="createAndJoinCollectionGroup"> <my-button class="button" @click="createAndJoinCollectionGroup"><my-loading size="16" v-if="val.pending.createAndJoinCollectionGroup" />&nbsp;创建并添加</my-button>
                     </div>
                 </div>
 
@@ -159,7 +161,7 @@
                                 {{ v.name }}
                                 <span class="exists" v-if="v.inside">/已在此列表</span>
                                 <my-button class="button" @click="collectionHandle(v)">
-                                    <my-loading v-if="val.pending['collectionHandle_' + v.id]" width="16" height="16"></my-loading>
+                                    <my-loading v-if="val.pending['collectionHandle_' + v.id]" size="16"></my-loading>
                                     <template v-if="v.inside">移除</template>
                                     <template v-else>添加</template>
                                 </my-button>

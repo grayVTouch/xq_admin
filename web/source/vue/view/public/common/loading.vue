@@ -1,16 +1,12 @@
 <template>
-    <img src="../res/loading.png" :width="width" :height="height" class="image">
+    <my-icon icon="jiazai_dan" class="image" :size="size"></my-icon>
 </template>
 
 <script>
     export default {
         name: "loading" ,
         props: {
-            width: {
-                type: [String,Number] ,
-                default: 30 ,
-            } ,
-            height: {
+            size: {
                 type: [String,Number] ,
                 default: 30
             } ,

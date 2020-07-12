@@ -71,8 +71,8 @@ export default {
             } , (data , code) => {
                 this.pending('praiseHandle' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandle(data , code , () => {
-                        this.$parent.showUserForm('login');
+                    this.errorHandleAtHomeChildren(data , code , () => {
+                        this.praiseHandle(imageSubject);
                     });
                     return ;
                 }
@@ -221,6 +221,9 @@ export default {
                 this.images.maxPage = data.last_page;
                 this.images.total = data.total;
                 this.images.end = this.images.page === this.images.maxPage;
+
+                // console.log('获取到的新增数据' , data.data);
+
                 if (override) {
                     this.images.data = data.data;
                 } else {
@@ -366,7 +369,7 @@ export default {
             this._val('tagSelectorInSlidebar' , docY < 0);
             if (docY < 0) {
                 this.dom.tagSelectorInSlidebar.removeClass('hide');
-                this.dom.tagSelectorInSlidebar.addClass('show');
+                this.dom.tagSelectorInSlidebar.startTransition('show');
             } else {
                 this.dom.tagSelectorInSlidebar.endTransition('show' , () => {
                     this.dom.tagSelectorInSlidebar.addClass('hide');

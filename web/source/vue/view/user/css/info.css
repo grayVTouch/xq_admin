@@ -1,0 +1,18 @@
+form {
+    padding: 0 20px 20px 20px;
+}
+
+.submit-button {
+    box-sizing: border-box;
+    background-color: #5d5d5d;
+    color: #fff;
+    height: 35px;
+    padding: 0 25px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-right: 15px;
+}
+
+.submit-button:hover {
+    background-color: #828282;
+}

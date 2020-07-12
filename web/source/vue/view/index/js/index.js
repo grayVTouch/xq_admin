@@ -46,11 +46,11 @@ export default {
         };
     } ,
 
-    // beforeRouteLeave () {
-    //     console.log('销毁路由');
-    //     // if (this.ins.picPlayTransform instanceof PicPlay_Transform) {
-    //     //     this.ins.picPlayTransform.clearTimer();
-    //     // }
+    // beforeRouteLeave (to , from , next) {
+    //     if (this.ins.picPlayTransform instanceof PicPlay_Transform) {
+    //         this.ins.picPlayTransform.clearTimer();
+    //     }
+    //     next();
     // } ,
 
     mounted () {
@@ -69,22 +69,22 @@ export default {
     methods: {
 
         // 图片点赞
-        praiseImageSubjectById (imageSubject) {
-            if (this.pending('praiseImageSubjectById')) {
+        praiseImageSubjectByImageSubject (imageSubject) {
+            if (this.pending('praiseImageSubjectByImageSubject')) {
                 return ;
             }
             const self = this;
             const action = imageSubject.praised ? 0 : 1;
-            this.pending('praiseImageSubjectById' , true);
+            this.pending('praiseImageSubjectByImageSubject' , true);
             Api.user.praiseHandle({
                 relation_type: 'image_subject' ,
                 relation_id: imageSubject.id ,
                 action ,
             } , (data , code) => {
-                this.pending('praiseImageSubjectById' , false);
+                this.pending('praiseImageSubjectByImageSubject' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandle(data , code , () => {
-                        this.$parent.showUserForm('login');
+                    this.errorHandleAtHomeChildren(data , code , () => {
+                        this.praiseImageSubjectByImageSubject(imageSubject)
                     });
                     return ;
                 }
@@ -244,6 +244,7 @@ export default {
                 time: 400,
                 // 定时器时间
                 duration: this.background.duration ,
+                timer: false ,
             })
         } ,
 

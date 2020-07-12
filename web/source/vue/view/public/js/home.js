@@ -44,6 +44,12 @@ const loginMessage = {
 const registerMessage = {...loginMessage};
 const forgetMessage = {...loginMessage};
 
+const userFormCallback = {
+    login: [] ,
+    register: [] ,
+    forget: [] ,
+};
+
 export default {
     name: "home" ,
 
@@ -123,7 +129,26 @@ export default {
             registerForm: {...registerForm} ,
             forgetForm: {...forgetForm} ,
             histories:[] ,
+            favorites:{
+                total_collection_group: 0 ,
+                collectionGroups: [] ,
+                collection_group: {
+                    collections: [] ,
+                } ,
+            } ,
+            // 用户回调
+            userFormCallback: {...userFormCallback} ,
         };
+    } ,
+
+    beforeRouteEnter (to , from , next) {
+        if (from.path === '/welcome') {
+            next(() => {
+                window.history.go(0);
+            });
+            return ;
+        }
+        next();
     } ,
 
     beforeRouteUpdate (to , from , next) {
@@ -152,8 +177,6 @@ export default {
             // 用户如果已经登录，则获取用户信息
             this.userInfo();
         }
-
-        // this.captcha();
     } ,
 
     computed: {
@@ -170,46 +193,93 @@ export default {
             } , (data , code) => {
                 this.pending('getHistories' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandle(data , code , (login) => {
-                        if (!login) {
-                            return ;
-                        }
-                        this.showUserForm();
-                    });
+                    this.errorHandleAtHomeChildren(data , code);
                     return ;
                 }
-                data.image_subject ? data.image_subject : {};
+                data.forEach((v) => {
+                    v.relation = v.relation ? v.relation : {};
+                    v.relation.user = v.relation.user ? v.relation.user : {};
+                    v.relation.module = v.relation.module ? v.relation.module : {};
+                });
                 this.histories = data;
-            })
+            });
         } ,
 
 
         showHistoryCtrl () {
-            const groupsForHistory = G(this.$refs['groups-for-history']);
-            groupsForHistory.removeClass('hide');
-            groupsForHistory.startTransition('show');
+            this.dom.groupsForHistory = G(this.$refs['groups-for-history']);
+            this.dom.groupsForHistory.removeClass('hide');
+            this.dom.groupsForHistory.startTransition('show');
             if (this.histories.length <= 0) {
                 this.getHistories();
             }
         } ,
 
         hideHistoryCtrl () {
-            const groupsForHistory = G(this.$refs['groups-for-history']);
-            groupsForHistory.endTransition('show' , () => {
-                groupsForHistory.addClass('hide');
+            this.dom.groupsForHistory = G(this.$refs['groups-for-history']);
+            this.dom.groupsForHistory.endTransition('show' , () => {
+                this.dom.groupsForHistory.addClass('hide');
             });
         } ,
 
         showUserCtrl () {
-            const infoForUser = G(this.$refs['info-for-user']);
-            infoForUser.removeClass('hide');
-            infoForUser.startTransition('show');
+            this.dom.infoForUser = G(this.$refs['info-for-user']);
+            this.dom.infoForUser.removeClass('hide');
+            this.dom.infoForUser.startTransition('show');
         } ,
 
         hideUserCtrl () {
-            const infoForUser = G(this.$refs['info-for-user']);
-            infoForUser.endTransition('show' , () => {
-                infoForUser.addClass('hide');
+            this.dom.infoForUser = G(this.$refs['info-for-user']);
+            this.dom.infoForUser.endTransition('show' , () => {
+                this.dom.infoForUser.addClass('hide');
+            });
+        } ,
+
+        // 获取收藏夹内容
+        showFavoritesCtrl () {
+            this.dom.collection = G(this.$refs['collection']);
+            this.dom.collection.removeClass('hide');
+            this.dom.collection.startTransition('show');
+            if (this.favorites.collectionGroups.length <= 0) {
+                this.getCollectionGroupWithCollection();
+            }
+        } ,
+
+        hideFavoritesCtrl () {
+            this.dom.collection = G(this.$refs['collection']);
+            this.dom.collection.endTransition('show' , () => {
+                this.dom.collection.addClass('hide');
+            });
+        } ,
+
+        getCollectionGroupWithCollection () {
+            this.pending('getCollectionGroupWithCollection' , true);
+            Api.user.lessCollectionGroupWithCollection({
+                // limit: TopContext.limit
+            } , (data , code) => {
+                this.pending('getCollectionGroupWithCollection' , false);
+                if (code !== TopContext.code.Success) {
+                    this.errorHandleAtHomeChildren(data , code);
+                    return ;
+                }
+                data.collection_groups = data.collection_groups ? data.collection_groups : [];
+                data.collection_groups.forEach((v) => {
+                    v.user = v.user ? v.user : {};
+                    v.module = v.module ? v.module : {};
+                    v.collections = v.collections ? v.collections : [];
+                    v.collections.forEach((v1) => {
+                        v1.relation = v1.relation ? v1.relation : {};
+                        v1.relation.user = v1.relation.user ? v1.relation.user : {};
+                        v1.relation.module = v1.relation.module ? v1.relation.module : {};
+                        v1.relation.collection_group = v1.relation.collection_group ? v1.relation.collection_group : {};
+                        v1.relation.relation = v1.relation.relation ? v1.relation.relation : {};
+                    });
+                });
+                this.favorites.total_collection_group = data.total_collection_group;
+                this.favorites.collectionGroups = data.collection_groups;
+                this.favorites.collection_group = data.collection_groups.length > 0 ? data.collection_groups[0] : {
+                    collections: []
+                };
             });
         } ,
 
@@ -225,7 +295,7 @@ export default {
             this.dispatch('user' , user);
         } ,
 
-        showUserForm (type) {
+        showUserForm (type , callback) {
             this._val('userFormType' ,type);
             switch (type)
             {
@@ -241,6 +311,23 @@ export default {
             }
             this.dom.userForm.removeClass('hide');
             this.dom.userForm.startTransition('show');
+            this.userFormCallback[type].push(callback);
+        } ,
+
+        switchUserForm (type) {
+            this._val('userFormType' ,type);
+            switch (type)
+            {
+                case 'login':
+                    break;
+                case 'register':
+                    this.captchaForRegister();
+                    break;
+                case 'forget':
+                    break;
+                default:
+                    this.message('不支持的类型');
+            }
         } ,
 
         hideUserForm () {
@@ -251,6 +338,7 @@ export default {
             this.dom.userForm.endTransition('show' , () => {
                 this.dom.userForm.addClass('hide');
             });
+            this.userFormCallback = {...userFormCallback};
         } ,
 
         loginMessage (text = '' , classname = '') {
@@ -357,6 +445,11 @@ export default {
                     if (!keep) {
                         this.loginMessage('获取用户信息失败，请稍后重试' , 'run-red');
                         return ;
+                    }
+                    while (this.userFormCallback.login.length > 0)
+                    {
+                        const callback = this.userFormCallback.login.pop();
+                        G.invoke(callback);
                     }
                     this.hideUserForm();
                 });
@@ -548,6 +641,7 @@ export default {
             this.dom.body = G(this.$refs.body);
             this.dom.toTop = G(this.$refs['to-top']);
             this.dom.userForm = G(this.$refs.userForm);
+
             // debugger
         } ,
 
@@ -643,9 +737,12 @@ export default {
 
         initEvent () {
             this.dom.win.on('click' , this.hideNavTypeList.bind(this));
+
             this.dom.win.on('click' , this.hideHistoryCtrl.bind(this));
             this.dom.win.on('click' , this.hideUserCtrl.bind(this));
-            // this.dom.root.on('scroll' , this.fixedHeader.bind(this));
+            this.dom.win.on('click' , this.hideFavoritesCtrl.bind(this));
+            this.dom.root.on('scroll' , this.fixedHeader.bind(this));
+
             this.dom.win.on('scroll' , this.fixedHeader.bind(this));
             this.dom.toTop.on('click' , this.toTopEvent.bind(this));
             this.dom.win.on('scroll' , this.initToTop.bind(this));

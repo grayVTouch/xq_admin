@@ -333,7 +333,12 @@
     cursor: pointer;
 }
 
-.logged-layer > .item.history .groups  {
+/**
+ * *********************
+ * 历史记录
+ * *********************
+ */
+.logged-layer > .history .groups  {
     width: 370px;
     position: absolute;
     left: 50%;
@@ -344,13 +349,13 @@
     opacity: 0;
 }
 
-.logged-layer > .item.history .groups.show {
+.logged-layer > .history .groups.show {
     bottom: -20px;
     opacity: 1;
     transform: translate(-50% , 100%) scale(1,1);
 }
 
-.logged-layer > .item.history .groups .background {
+.logged-layer > .history .groups .background {
     position: fixed;
     left: 0;
     top: 0;
@@ -358,7 +363,7 @@
     height: 100%;
 }
 
-.logged-layer > .item.history .groups:before {
+.logged-layer > .history .groups:before {
     display: block;
     content: '';
     width: 0;
@@ -372,13 +377,13 @@
     transform: translate(-50% , -100%);
 }
 
-.logged-layer > .item.history .groups .inner {
+.logged-layer > .history .groups .inner {
     max-height: 400px;
     overflow: hidden;
     overflow-y: auto;
 }
 
-.logged-layer > .item.history .groups .inner .loading {
+.logged-layer > .history .groups .inner .loading {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -386,7 +391,7 @@
     border-bottom: 1px solid #797979;
 }
 
-.logged-layer > .item.history .groups .inner .empty {
+.logged-layer > .history .groups .inner .empty {
     font-size: 14px;
     display: flex;
     justify-content: center;
@@ -396,15 +401,15 @@
     border-bottom: 1px solid #797979;
 }
 
-.logged-layer > .item.history .groups .inner .group {
+.logged-layer > .history .groups .inner .group {
 
 }
 
-.logged-layer > .item.history .groups .inner .group .title {
+.logged-layer > .history .groups .inner .group .title {
     padding: 12px 20px;
 }
 
-.logged-layer > .item.history .groups .inner .group .list {
+.logged-layer > .history .groups .inner .group .list {
     /*width: 370px;*/
     /*position: absolute;*/
     /*left: 50%;*/
@@ -414,7 +419,7 @@
     /*!*border: 1px solid red;*!*/
 }
 
-.logged-layer > .item.history .groups .inner .group .list .item {
+.logged-layer > .history .groups .inner .group .list .item {
     display: flex;
     justify-content: flex-start;
     box-sizing: border-box;
@@ -423,23 +428,23 @@
     cursor: pointer;
 }
 
-.logged-layer > .item.history .groups .inner .group .list .item:hover {
+.logged-layer > .history .groups .inner .group .list .item:hover {
     background-color: grey;
 }
 
-.logged-layer > .item.history .groups .inner .group .list .item > * {
+.logged-layer > .history .groups .inner .group .list .item > * {
     margin: 0;
     flex: 0 0 auto;
 }
 
-.logged-layer > .item.history .groups .inner .group .list .item .thumb {
+.logged-layer > .history .groups .inner .group .list .item .thumb {
     width: 110px;
     height: 60px;
     overflow: hidden;
     position: relative;
 }
 
-.logged-layer > .item.history .groups .inner .group .list .item .thumb .image {
+.logged-layer > .history .groups .inner .group .list .item .thumb .image {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -449,7 +454,7 @@
     vertical-align: top;
 }
 
-.logged-layer > .item.history .groups .inner .group .list .item .info {
+.logged-layer > .history .groups .inner .group .list .item .info {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -457,29 +462,33 @@
     width: calc(100% - 110px);
 }
 
-.logged-layer > .item.history .groups .inner .group .list .item .info > * {
+.logged-layer > .history .groups .inner .group .list .item .info > * {
     margin: 0;
     padding-left: 10px;
     /*font-size: 12px;*/
 }
 
-.logged-layer > .item.history .groups .inner .group .list .item .info .name {
+.logged-layer > .history .groups .inner .group .list .item .info .name {
     max-height: 40px;
     width: 100%;
     overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    text-overflow: ellipsis;
 }
 
-.logged-layer > .item.history .groups .inner .group .list .item .info .time {
+.logged-layer > .history .groups .inner .group .list .item .info .time {
     font-size: 12px;
 }
 
-.logged-layer > .item.history .groups .inner .load-more {
+.logged-layer > .history .groups .inner .load-more {
     display: flex;
     justify-content: center;
     padding: 20px;
 }
 
-.logged-layer > .item.history .groups .inner .load-more .more {
+.logged-layer > .history .groups .inner .load-more .more {
     padding: 0 20px;
     height: 30px;
     display: flex;
@@ -491,46 +500,53 @@
 }
 
 
-.logged-layer .item.user {
-
-}
-
-.logged-layer .item.user > .action {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-}
-
-.logged-layer .item.user > .action .image {
-    height: 100%;
-    min-width: 100%;
+/**
+ * *********************
+ * 收藏记录
+ * *********************
+ */
+.logged-layer > .favorites .collection {
+    width: 520px;
     position: absolute;
     left: 50%;
-    top: 50%;
-    transform: translate(-50% , -50%);
-    vertical-align: top;
-}
-
-.logged-layer .item.user > .info {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    background-color: #3a3c3f;
-    min-width: 240px;
-    transition: all 0.3s;
-    transform: translate(-50% , calc(100% + 40px));
+    bottom: -20px;
+    transform: translate(-50% , calc(100% + 20px)) scale(1,1);
+    background-color: #656565;
+    transition: all 0.3s 0.2s;
     opacity: 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
 }
 
-.logged-layer .item.user > .info.show {
+.logged-layer > .favorites .collection.show {
     opacity: 1;
-    transform: translate(-50% , calc(100% + 20px));
+    transform: translate(-50% , 100%) scale(1,1);
 }
 
-.logged-layer .item.user > .info:before {
+.logged-layer > .favorites .collection:after {
+    display: block;
+    width: 1px;
+    height: 100%;
+    background-color: #808080;
+    content: '';
+    position: absolute;
+    left: 150px;
+    top: 0;
+    z-index: 1;
+}
+
+.logged-layer > .favorites .collection > * {
+    margin: 0;
+    height: 100%;
+    flex: 0 0 auto;
+    padding-top: 12px;
+    box-sizing: border-box;
+    max-height:520px;
+    overflow-y: auto;
+}
+
+.logged-layer > .favorites .collection:before {
     display: block;
     content: '';
     width: 0;
@@ -544,7 +560,225 @@
     transform: translate(-50% , -100%);
 }
 
-.logged-layer .item.user > .info .user {
+.logged-layer > .favorites .collection > .nav {
+    width: 150px;
+    font-size: 14px;
+}
+
+.logged-layer > .favorites .collection > .nav .item {
+    height: 46px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.logged-layer > .favorites .collection > .nav .item:hover {
+    background-color: grey;
+}
+
+.logged-layer > .favorites .collection > .nav .item > * {
+    margin: 0;
+}
+
+.logged-layer > .favorites .collection > .nav .item .name {
+    max-width: 100px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.logged-layer > .favorites .collection > .list {
+    width: calc(100% - 150px);
+    box-sizing: border-box;
+    overflow-y: auto;
+    position: relative;
+    min-height: 200px;
+}
+
+.logged-layer > .favorites .collection > .list .item {
+    display: flex;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    padding: 8px 20px;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.logged-layer > .favorites .collection > .list .item:hover {
+    background-color: grey;
+}
+
+.logged-layer > .favorites .collection > .list .item > * {
+    margin: 0;
+    flex: 0 0 auto;
+}
+
+.logged-layer > .favorites .collection > .list .item .thumb {
+    width: 110px;
+    height: 60px;
+    overflow: hidden;
+    position: relative;
+}
+
+.logged-layer > .favorites .collection > .list .item .thumb .image {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50% , -50%);
+    height: 100%;
+    min-width: 100%;
+    vertical-align: top;
+}
+
+.logged-layer > .favorites .collection > .list .item .info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: calc(100% - 110px);
+}
+
+.logged-layer > .favorites .collection > .list .item .info > * {
+    margin: 0;
+    padding-left: 10px;
+    /*font-size: 12px;*/
+}
+
+.logged-layer > .favorites .collection > .list .item .info .name {
+    max-height: 40px;
+    width: 100%;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    text-overflow: ellipsis;
+}
+
+.logged-layer > .favorites .collection > .list .item .info .time {
+    font-size: 12px;
+}
+
+.logged-layer > .favorites .collection .list .loaded {
+    padding: 0 20px;
+    margin-top: 15px;
+    text-align: center;
+    font-size: 12px;
+    position: relative;
+}
+
+.logged-layer > .favorites .collection .list .loaded:before {
+    display: block;
+    content: '';
+    width: 100px;
+    height: 1px;
+    background-color: #fff;
+    position:absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50% , -50%);
+    z-index: 0;
+}
+
+.logged-layer > .favorites .collection .list .loaded span {
+    z-index: 1;
+    position: relative;
+    background-color: #656565;
+    padding: 0 10px;
+}
+
+.logged-layer > .favorites .collection > .list .empty {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+}
+
+.logged-layer > .favorites .collection > .list .load-more {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.logged-layer > .favorites .collection > .list .load-more .more {
+    padding: 0 20px;
+    height: 30px;
+    display: flex;
+    width: 80%;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    background-color: #868686;
+}
+
+
+
+/**
+ ***********************************
+ * 用户信息
+ ***********************************
+ */
+.logged-layer> .user {
+
+}
+
+.logged-layer> .user > .action .link {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    display: block;
+}
+
+.logged-layer> .user > .action .link .image {
+    height: 100%;
+    min-width: 100%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50% , -50%);
+    vertical-align: top;
+}
+
+.logged-layer> .user > .info {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    background-color: #3a3c3f;
+    width: 240px;
+    transition: all 0.3s;
+    transform: translate(-50% , calc(100% + 40px));
+    opacity: 0;
+}
+
+.logged-layer> .user > .info.show {
+    opacity: 1;
+    transform: translate(-50% , calc(100% + 20px));
+}
+
+.logged-layer> .user > .info:before {
+    display: block;
+    content: '';
+    width: 0;
+    height: 0;
+    border-bottom: 10px solid #ffffff1f;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50% , -100%);
+}
+
+.logged-layer> .user > .info .user .link {
     display: flex;
     justify-content: flex-start;
     background-color: #ffffff1f;
@@ -552,17 +786,17 @@
     cursor: pointer;
 }
 
-.logged-layer .item.user > .info .user > * {
+.logged-layer> .user > .info .user .link > * {
     margin: 0;
 }
 
-.logged-layer .item.user > .info .user .avatar {
+.logged-layer> .user > .info .user .link .avatar {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.logged-layer .item.user > .info .user .avatar .mask {
+.logged-layer> .user > .info .user .link .avatar .mask {
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -570,7 +804,7 @@
     position: relative;
 }
 
-.logged-layer .item.user > .info .user .avatar .mask .image {
+.logged-layer> .user > .info .user .link .avatar .mask .image {
     min-width: 100%;
     height: 100%;
     position: absolute;
@@ -579,7 +813,7 @@
     transform: translate(-50% , -50%);
 }
 
-.logged-layer .item.user > .info .user .info {
+.logged-layer> .user > .info .user .link .info {
     padding-left: 10px;
     display: flex;
     flex-direction: column;
@@ -587,23 +821,26 @@
     align-items: flex-start;
 }
 
-.logged-layer .item.user > .info .user .info > * {
+.logged-layer> .user > .info .user .link .info > * {
     margin: 0;
     font-size: 12px;
     white-space: nowrap;
 }
 
-.logged-layer .item.user > .info .user .info .name ,
-.logged-layer .item.user > .info .user .info .desc
+.logged-layer> .user > .info .user .link .info .name ,
+.logged-layer> .user > .info .user .link .info .desc
 {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.logged-layer> .user > .info .actions {
 
 }
 
-.logged-layer .item.user > .info .actions {
-
-}
-
-.logged-layer .item.user > .info .actions .action {
+.logged-layer> .user > .info .actions .action {
     display: flex;
     justify-content: flex-start;
     padding: 0 20px;
@@ -612,22 +849,22 @@
     cursor: pointer;
 }
 
-.logged-layer .item.user > .info .actions .action:hover {
+.logged-layer> .user > .info .actions .action:hover {
     background-color: #ffffff1f;
 }
 
-.logged-layer .item.user > .info .actions .action > * {
+.logged-layer> .user > .info .actions .action > * {
     margin: 0;
     flex: 0 0 auto;
 }
-.logged-layer .item.user > .info .actions .action .ico {
+.logged-layer> .user > .info .actions .action .ico {
     width: 45px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
 }
 
-.logged-layer .item.user > .info .actions .action .name {
+.logged-layer> .user > .info .actions .action .name {
     display: flex;
     justify-content: flex-start;
     align-items: center;

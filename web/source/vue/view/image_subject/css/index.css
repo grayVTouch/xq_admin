@@ -37,7 +37,7 @@
     width: 100%;
     height: 100%;
     z-index: 0;
-    background-image: url(../res/background.jpeg);
+    /*background-image: url(../res/background.jpeg);*/
     background-repeat: no-repeat;
     background-size: cover;
     opacity: 0.2;
@@ -57,7 +57,7 @@
 
 .view .focus-bar > .content > div {
     width: 630px;
-    height: 540px;
+    height: 400px;
     box-sizing: border-box;
 }
 
@@ -71,6 +71,25 @@
     overflow: hidden;
     width: inherit;
     height: inherit;
+    display: block;
+}
+
+.view .focus-bar > .content > .big-image .mask:before {
+    display: block;
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    transition: all 0.3s;
+    opacity: 0;
+    z-index: 1;
+}
+
+.view .focus-bar > .content > .big-image:hover .mask::before {
+    opacity: 1;
 }
 
 .view .focus-bar > .content > .big-image .mask .image {
@@ -81,7 +100,6 @@
     left: 50%;
     top: 50%;
     transform: translate(-50% , -50%);
-
 }
 
 .view .focus-bar > .content > .small-image {
@@ -97,12 +115,30 @@
 .view .focus-bar > .content > .small-image .mask {
     float: left;
     width: 305px;
-    height: 260px;
+    height: 190px;
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
     margin-right: 20px;
     margin-bottom: 20px;
+}
+
+.view .focus-bar > .content > .small-image .mask:before {
+    display: block;
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    transition: all 0.3s;
+    opacity: 0;
+    z-index: 1;
+}
+
+.view .focus-bar > .content > .small-image .mask:hover::before {
+    opacity: 1;
 }
 
 .view .focus-bar > .content > .small-image .mask:nth-of-type(2n) {

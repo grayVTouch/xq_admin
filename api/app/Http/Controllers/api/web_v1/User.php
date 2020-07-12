@@ -14,9 +14,12 @@ class User extends Base
 {
 
     // 删除收藏夹
-    public function destroyCollectionGroup($collection_group_id)
+    public function destroyCollectionGroup()
     {
-        $res = UserAction::destroyCollectionGroup($this , $collection_group_id);
+        $param = $this->request->post();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $param['collection_group_id'] = $param['collection_group_id'] ?? '';
+        $res = UserAction::destroyCollectionGroup($this , $param);
         if ($res['code'] !== 0) {
             return error($res['data'], $res['code']);
         }
@@ -26,8 +29,10 @@ class User extends Base
     // 删除收藏夹
     public function destroyAllCollectionGroup()
     {
-        $collection_group_ids = $this->request->post('collection_group_ids' , []);
-        $res = UserAction::destroyAllCollectionGroup($this , $collection_group_ids);
+        $param = $this->request->post();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $param['collection_group_ids'] = $param['collection_group_ids'] ?? '';
+        $res = UserAction::destroyAllCollectionGroup($this , $param);
         if ($res['code'] !== 0) {
             return error($res['data'], $res['code']);
         }
@@ -84,12 +89,12 @@ class User extends Base
         return success($res['data']);
     }
 
-    public function historyLimit()
+    public function lessHistory()
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
         $param['limit'] = $param['limit'] ?? '';
-        $res = UserAction::historyLimit($this , $param);
+        $res = UserAction::lessHistory($this , $param);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
         }
@@ -102,25 +107,42 @@ class User extends Base
         $param['module_id'] = $param['module_id'] ?? '';
         $param['relation_type'] = $param['relation_type'] ?? '';
         $param['value'] = $param['value'] ?? '';
-        $res = UserAction::histories($this , '' , $param);
+        $param['limit'] = $param['limit'] ?? '';
+        $res = UserAction::histories($this , $param);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
         }
         return success($res['data']);
     }
 
-    public function collectionGroup()
+    // 收藏夹列表-带有判断（判断某个事物是否存在于此）
+    public function collectionGroupWithJudge()
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
         $param['relation_type'] = $param['relation_type'] ?? '';
         $param['relation_id'] = $param['relation_id'] ?? '';
+        $res = UserAction::collectionGroupWithJudge($this , $param);
+        if ($res['code'] != 0) {
+            return error($res['data'] , $res['code']);
+        }
+        return success($res['data']);
+    }
+
+    // 收藏夹列表-带搜索
+    public function collectionGroup()
+    {
+        $param = $this->request->query();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $param['relation_type'] = $param['relation_type'] ?? '';
+        $param['value'] = $param['value'] ?? '';
         $res = UserAction::collectionGroup($this , $param);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
         }
         return success($res['data']);
     }
+
 
     // 收藏 & 取消收藏
     public function collectionHandle()
@@ -181,6 +203,19 @@ class User extends Base
         return success($res['data']);
     }
 
+    // 仅创建收藏夹
+    public function createCollectionGroup()
+    {
+        $param = $this->request->post();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $param['name'] = $param['name'] ?? '';
+        $res = UserAction::createCollectionGroup($this , $param);
+        if ($res['code'] !== 0) {
+            return error($res['data'], $res['code']);
+        }
+        return success($res['data']);
+    }
+
     // 仅加入收藏夹
     public function joinCollectionGroup()
     {
@@ -190,6 +225,115 @@ class User extends Base
         $param['relation_type']    = $param['relation_type'] ?? '';
         $param['relation_id']    = $param['relation_id'] ?? '';
         $res = UserAction::joinCollectionGroup($this , $param);
+        if ($res['code'] !== 0) {
+            return error($res['data'], $res['code']);
+        }
+        return success($res['data']);
+    }
+
+
+    // 收藏夹列表
+    public function lessRelationInCollection()
+    {
+        $param = $this->request->post();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $param['collection_group_id'] = $param['collection_group_id'] ?? '';
+        $param['limit'] = $param['limit'] ?? '';
+        $res = UserAction::lessRelationInCollection($this , $param);
+        if ($res['code'] !== 0) {
+            return error($res['data'], $res['code']);
+        }
+        return success($res['data']);
+    }
+
+    public function lessCollectionGroupWithCollection()
+    {
+        $param = $this->request->post();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $param['collection_limit'] = $param['collection_limit'] ?? '';
+        $param['relation_limit'] = $param['relation_limit'] ?? '';
+        $res = UserAction::lessCollectionGroupWithCollection($this , $param);
+
+        if ($res['code'] !== 0) {
+            return error($res['data'], $res['code']);
+        }
+        return success($res['data']);
+    }
+
+    public function update()
+    {
+        $param = $this->request->post();
+        $param['nickname'] = $param['nickname'] ?? '';
+        $param['avatar'] = $param['avatar'] ?? '';
+        $param['sex'] = $param['sex'] ?? '';
+        $param['phone'] = $param['phone'] ?? '';
+        $param['email'] = $param['email'] ?? '';
+        $param['birthday'] = $param['birthday'] ?? '';
+        $param['description'] = $param['description'] ?? '';
+        $res = UserAction::update($this , $param);
+        if ($res['code'] !== 0) {
+            return error($res['data'], $res['code']);
+        }
+        return success($res['data']);
+    }
+
+    public function updatePasswordInLogged()
+    {
+        $param = $this->request->post();
+        $param['old_password'] = $param['old_password'] ?? '';
+        $param['password'] = $param['password'] ?? '';
+        $param['confirm_password'] = $param['confirm_password'] ?? '';
+        $res = UserAction::updatePasswordInLogged($this , $param);
+        if ($res['code'] !== 0) {
+            return error($res['data'], $res['code']);
+        }
+        return success($res['data']);
+    }
+
+    public function destroyHistory()
+    {
+        $param = $this->request->post();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $param['history_ids'] = $param['history_ids'] ?? '';
+        $res = UserAction::destroyHistory($this , $param);
+        if ($res['code'] !== 0) {
+            return error($res['data'], $res['code']);
+        }
+        return success($res['data']);
+    }
+
+    public function collections()
+    {
+        $param = $this->request->post();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $param['relation_type'] = $param['relation_type'] ?? '';
+        $param['limit'] = $param['limit'] ?? '';
+        $res = UserAction::collections($this , $param);
+        if ($res['code'] !== 0) {
+            return error($res['data'], $res['code']);
+        }
+        return success($res['data']);
+    }
+
+    public function destroyCollection()
+    {
+        $param = $this->request->post();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $param['collection_id'] = $param['collection_id'] ?? '';
+        $res = UserAction::destroyCollection($this , $param);
+        if ($res['code'] !== 0) {
+            return error($res['data'], $res['code']);
+        }
+        return success($res['data']);
+    }
+
+    public function updateCollectionGroup()
+    {
+        $param = $this->request->post();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $param['collection_group_id'] = $param['collection_group_id'] ?? '';
+        $param['name'] = $param['name'] ?? '';
+        $res = UserAction::updateCollectionGroup($this , $param);
         if ($res['code'] !== 0) {
             return error($res['data'], $res['code']);
         }

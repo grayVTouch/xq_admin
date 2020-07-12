@@ -33,20 +33,18 @@ class HistoryModel extends Model
             $where[] = ['h.relation_type' , '=' , $relation_type];
         }
         if (!empty($value)) {
-            $where[] = ['' , '=' , $relation_type];
+            $where[] = ['is.name' , 'like' , "%{$value}%"];
         }
-        return self::select('h.*' , 'is.name as name_for_image_subject')
+        return self::select('h.*')
             ->from('xq_history as h')
             ->leftJoin('xq_image_subject as is' , function($join){
                 // $join->on 会把内容当成是字段
                 // $join->where 仅把值当成是值
-                $join->where([
-                    ['h.relation_id' , '=' , 'is.id'] ,
-                    ['h.relation_type' , '=' , 'image_subject']
-                ]);
+                $join->on('h.relation_id' , '=' , 'is.id')
+                    ->where('h.relation_type' , '=' , 'image_subject');
             })
             ->where($where)
-            ->having('name_for_image_subject' , 'like' , "%{$value}%")
+            ->orderBy('h.create_time' , 'desc')
             ->paginate($limit);
     }
 
@@ -59,5 +57,14 @@ class HistoryModel extends Model
                 ['date' , '=' , $date] ,
             ])
             ->first();
+    }
+
+    public static function getByModuleIdAndUserIdAndIds(int $module_id , int $user_id , array $ids = [])
+    {
+        return self::where([
+                ['module_id' , '=' , $module_id] ,
+                ['user_id' , '=' , $user_id] ,
+            ])
+            ->whereIn('id' , $ids)->get();
     }
 }

@@ -1,0 +1,19 @@
+/**
+ * ***********************
+ * input-table 样式改造
+ * ***********************
+ */
+.input-table tbody tr td {
+    border-color: #7d7d7d;
+}
+.input-table .form-text ,
+.input-table .form-textarea
+{
+    background-color: transparent;
+    color: #fff;
+    border-color: #7d7d7d;
+}
+
+.input-table .form-text:focus {
+
+}

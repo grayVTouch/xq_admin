@@ -4,8 +4,10 @@
 namespace App\Customize\api\web_v1\action;
 
 use App\Customize\api\web_v1\handler\CollectionGroupHandler;
+use App\Customize\api\web_v1\handler\CollectionHandler;
 use App\Customize\api\web_v1\handler\HistoryHandler;
 use App\Customize\api\web_v1\handler\ImageSubjectHandler;
+use App\Customize\api\web_v1\handler\UserHandler;
 use App\Customize\api\web_v1\model\CollectionGroupModel;
 use App\Customize\api\web_v1\model\CollectionModel;
 use App\Customize\api\web_v1\model\HistoryModel;
@@ -25,25 +27,68 @@ use Mews\Captcha\Facades\Captcha;
 use function api\web_v1\get_form_error;
 use function api\web_v1\my_config;
 use function api\web_v1\user;
+use function core\array_unit;
 use function core\current_time;
 use function core\random;
 
 class UserAction extends Action
 {
 
-    public static function destroyCollectionGroup(Base $context , int $id , array $param = [])
+    public static function destroyCollectionGroup(Base $context , array $param = []): array
     {
-        $count = CollectionGroupModel::destroy($id);
-        return self::success($count);
+        $param['collection_group_ids'] = [$param['collection_group_id']];
+        return self::destroyAllCollectionGroup($context , $param);
     }
 
-    public static function destroyAllCollectionGroup(Base $context , array $ids , array $param = [])
+    public static function destroyAllCollectionGroup(Base $context , array $param = []): array
     {
-        $count = CollectionGroupModel::destroy($ids);
-        return self::success($count);
+        $validator = Validator::make($param , [
+            'module_id' => 'required|integer' ,
+            'collection_group_ids' => 'required' ,
+        ]);
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first());
+        }
+        $module = ModuleModel::find($param['module_id']);
+        if (empty($module)) {
+            return self::error('模块不存在');
+        }
+        $collection_group_ids = empty($param['collection_group_ids']) ? [] : json_decode($param['collection_group_ids'] , true);
+        if (empty($collection_group_ids)) {
+            return self::error('请提供待删除的收藏夹');
+        }
+        $user = user();
+        try {
+            DB::beginTransaction();
+            CollectionGroupModel::delByModuleIdAndUserIdAndIds($module->id , $user->id , $collection_group_ids);
+            CollectionModel::delByModuleIdAndUserIdAndCollectionGroupIds($module->id , $user->id , $collection_group_ids);
+            DB::commit();
+            return self::success();
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
-    public static function store(Base $context , array $param = [])
+    public static function destroyCollection(Base $context , array $param = []): array
+    {
+        $validator = Validator::make($param , [
+            'module_id' => 'required|integer' ,
+            'collection_id' => 'required' ,
+        ]);
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first());
+        }
+        $module = ModuleModel::find($param['module_id']);
+        if (empty($module)) {
+            return self::error('模块不存在');
+        }
+        $user = user();
+        $res = CollectionModel::delByModuleIdAndUserIdAndId($module->id , $user->id , $param['collection_id']);
+        return self::success($res);
+    }
+
+    public static function store(Base $context , array $param = []): array
     {
         $validator = Validator::make($param , [
             'username' => 'required|min:6' ,
@@ -96,7 +141,7 @@ class UserAction extends Action
         }
     }
 
-    public static function login(Base $context , array $param = [])
+    public static function login(Base $context , array $param = []): array
     {
         $validator = Validator::make($param , [
             'username' => 'required|min:6' ,
@@ -173,7 +218,7 @@ class UserAction extends Action
         return self::success();
     }
 
-    public static function historyLimit(Base $context , array $param = [])
+    public static function lessHistory(Base $context , array $param = [])
     {
         $validator = Validator::make($param , [
             'module_id'             => 'required|integer' ,
@@ -246,11 +291,49 @@ class UserAction extends Action
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = HistoryModel::getByModuleIdAndUserIdAndRelationTypeAndValueAndLimit($module->id , $user->id , $param['relation_type'] , $param['value'] ,$limit);
         $res = HistoryHandler::handlePaginator($res);
+        // 对时间进行分组
+        $date = date('Y-m-d');
+        $yesterday = date_create('yesterday')->format('Y-m-d');
+        $groups = [];
+        $findIndex = function($name) use(&$groups): int
+        {
+            foreach ($groups as $k => $v)
+            {
+                if ($v['name'] === $name) {
+                    return $k;
+                }
+            }
+            return -1;
+        };
+        foreach ($res->data as $v)
+        {
+            switch ($v->date)
+            {
+                case $date:
+                    $name = '今天';
+                    break;
+                case $yesterday:
+                    $name = '昨天';
+                    break;
+                default:
+                    $name = $v->date;
+            }
+            $index = $findIndex($name);
+            if ($index < 0) {
+                $groups[] = [
+                    'name' => $name ,
+                    'data' => [] ,
+                ];
+                $index = count($groups) - 1;
+            }
+            $groups[$index]['data'][] = $v;
+        }
+        $res->data = $groups;
         return self::success($res);
     }
 
 
-    public static function collectionGroup(Base $context , array $param = []): array
+    public static function collectionGroupWithJudge(Base $context , array $param = []): array
     {
         $relation_type_range = array_keys(my_config('business.relation_type_for_collection'));
         $validator = Validator::make($param , [
@@ -286,6 +369,25 @@ class UserAction extends Action
         return self::success($res);
     }
 
+    public static function collectionGroup(Base $context , array $param = []): array
+    {
+        $relation_type_range = array_keys(my_config('business.relation_type_for_collection'));
+        $validator = Validator::make($param , [
+            'module_id' => 'required|integer' ,
+            'relation_type' => ['sometimes' , Rule::in($relation_type_range)] ,
+        ]);
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first());
+        }
+        $module = ModuleModel::find($param['module_id']);
+        if (empty($module)) {
+            return self::error('模块不存在');
+        }
+        $user = user();
+        $res = CollectionGroupModel::getByModuleIdAndUserIdAndRelationTypeAndValue($module->id , $user->id , $param['relation_type'] ,  $param['value']);
+        $res = CollectionGroupHandler::handleAll($res);
+        return self::success($res);
+    }
 
     public static function collectionHandle(Base $context , array $param = [])
     {
@@ -485,6 +587,33 @@ class UserAction extends Action
         }
     }
 
+    public static function createCollectionGroup(Base $context , array $param = [])
+    {
+        $validator = Validator::make($param , [
+            'module_id' => 'required|integer' ,
+            'name'      => 'required' ,
+        ]);
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first());
+        }
+        $module = ModuleModel::find($param['module_id']);
+        if (empty($module)) {
+            return self::error('模块不存在');
+        }
+        $user = user();
+        $collection_group = CollectionGroupModel::findByModuleIdAndUserIdAndName($module->id , $user->id , $param['name']);
+        if (!empty($collection_group)) {
+            return self::error('收藏夹已经存在');
+        }
+        $res = CollectionGroupModel::insertGetId([
+            'module_id' => $module->id ,
+            'user_id' => $user->id ,
+            'name' => $param['name'] ,
+            'create_time' => current_time() ,
+        ]);
+        return self::success($res);
+    }
+
     public static function joinCollectionGroup(Base $context , array $param = [])
     {
         $relation_type_range = array_keys(my_config('business.relation_type_for_collection'));
@@ -529,4 +658,193 @@ class UserAction extends Action
         CollectionGroupUtil::handle($collection_group , $param['relation_type'] , $relation->id);
         return self::success($collection_group);
     }
+
+    public static function lessRelationInCollection(Base $context , array $param = [])
+    {
+        $validator = Validator::make($param , [
+            'module_id' => 'required|integer' ,
+            'collection_group_id' => 'required|integer' ,
+        ]);
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first());
+        }
+        $module = ModuleModel::find($param['module_id']);
+        if (empty($module)) {
+            return self::error('模块不存在');
+        }
+        $collection_group = CollectionGroupModel::find($param['collection_group_id']);
+        if (empty($collection_group)) {
+            return self::error('收藏夹不存在' , 404);
+        }
+        $limit = $param['limit'] ? $param['limit'] : my_config('app.limit');
+        $user = user();
+        $res = CollectionModel::getByModuleIdAndUserIdAndCollectionGroupIdAndLimit($module->id , $user->id , $collection_group->id , $limit);
+        $res = CollectionHandler::handleAll($res);
+        return self::success($res);
+    }
+
+    public static function lessCollectionGroupWithCollection(Base $context , array $param = [])
+    {
+        $validator = Validator::make($param , [
+            'module_id' => 'required|integer' ,
+        ]);
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first());
+        }
+        $module = ModuleModel::find($param['module_id']);
+        if (empty($module)) {
+            return self::error('模块不存在');
+        }
+        $collection_limit = $param['collection_limit'] ? $param['collection_limit'] : my_config('app.limit');
+        $relation_limit = $param['relation_limit'] ? $param['relation_limit'] : my_config('app.limit');
+        $user = user();
+        $total_collection_group = CollectionGroupModel::countByModuleIdAndUserId($module->id , $user->id);
+        $collection_group = CollectionGroupModel::getByModuleIdAndUserIdAndLimit($module->id , $user->id , $collection_limit);
+        $collection_group = CollectionGroupHandler::handleAll($collection_group);
+        foreach ($collection_group as $v)
+        {
+            $collections = CollectionModel::getByModuleIdAndUserIdAndCollectionGroupIdAndLimit($module->id , $user->id , $v->id , $relation_limit);
+            $collections = CollectionHandler::handleAll($collections);
+            $v->collections = $collections;
+        }
+        return self::success([
+            'total_collection_group' => $total_collection_group ,
+            'collection_groups' => $collection_group ,
+        ]);
+    }
+
+    public static function update(Base $context , array $param = [])
+    {
+        $sex_range = array_keys(my_config('business.sex_for_user'));
+        $validator = Validator::make($param , [
+            'sex' => ['required' , Rule::in($sex_range)] ,
+        ]);
+        if ($validator->fails()) {
+            return self::error(get_form_error($validator));
+        }
+        $user = user();
+        $param['birthday'] = empty($param['birthday']) ? $user->birthday : $param['birthday'];
+        UserModel::updateById($user->id , array_unit($param , [
+            'nickname' ,
+            'sex' ,
+            'avatar' ,
+            'phone' ,
+            'email' ,
+            'description' ,
+            'birthday' ,
+        ]));
+        $user = UserModel::find($user->id);
+        $user = UserHandler::handle($user);
+        return self::success($user);
+    }
+
+
+    public static function updatePasswordInLogged(Base $context , array $param = [])
+    {
+        $validator = Validator::make($param , [
+            'old_password' => 'required' ,
+            'password'      => 'required|min:6' ,
+            'confirm_password' => 'required|min:6' ,
+        ]);
+        if ($validator->fails()) {
+            return self::error(get_form_error($validator));
+        }
+        $user = user();
+        if (!Hash::check($param['old_password'] , $user->password)) {
+            return self::error([
+                'old_password' => '原密码错误'
+            ]);
+        }
+        if ($param['password'] !== $param['confirm_password']) {
+            return self::error('两次输入的密码不一致');
+        }
+        $password = Hash::make($param['password']);
+        UserModel::updateById($user->id , [
+            'password' => $password
+        ]);
+        return self::success();
+    }
+
+    public static function destroyHistory(Base $context , array $param = []): array
+    {
+        $validator = Validator::make($param , [
+            'module_id' => 'required' ,
+            'history_ids'      => 'required' ,
+        ]);
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first());
+        }
+        $module = ModuleModel::find($param['module_id']);
+        if (empty($module)) {
+            return self::error('模块不存在');
+        }
+        $history_ids = empty($param['history_ids']) ? [] : json_decode($param['history_ids'] , true);
+        if (empty($history_ids)) {
+            return self::error('请提供待删除的项');
+        }
+        $user = user();
+        $histories = HistoryModel::getByModuleIdAndUserIdAndIds($module->id , $user->id , $history_ids);
+        if (count($history_ids) !== count($histories)) {
+            return self::error('存在无效记录，请重新选择');
+        }
+        // 检查记录是否是当前登录用户
+        $count = HistoryModel::destroy($history_ids);
+        return self::success($count);
+    }
+
+    public static function collections(Base $context , array $param = []): array
+    {
+        $relation_type_range = array_keys(my_config('business.relation_type_for_collection'));
+        $validator = Validator::make($param , [
+            'module_id' => 'required' ,
+            'collection_group_id' => 'required' ,
+            'relation_type' => ['sometimes' , Rule::in($relation_type_range)] ,
+        ]);
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first());
+        }
+        $module = ModuleModel::find($param['module_id']);
+        if (empty($module)) {
+            return self::error('模块不存在');
+        }
+        $collection_group = CollectionGroupModel::find($param['collection_group_id']);
+        if (empty($collection_group)) {
+            return self::error('收藏夹不存在' , 404);
+        }
+        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
+        $user = user();
+        $res = CollectionModel::getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndLimit($module->id , $user->id , $collection_group->id , $param['relation_type'] , $limit);
+        $res = CollectionHandler::handlePaginator($res);
+        return self::success($res);
+    }
+
+    public static function updateCollectionGroup(Base $context , array $param = []): array
+    {
+        $validator = Validator::make($param , [
+            'module_id' => 'required|integer' ,
+            'collection_group_id' => 'required' ,
+        ]);
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first());
+        }
+        $module = ModuleModel::find($param['module_id']);
+        if (empty($module)) {
+            return self::error('模块不存在');
+        }
+        $collection_group = CollectionGroupModel::find($param['collection_group_id']);
+        if (empty($collection_group)) {
+            return self::error('收藏夹不存在');
+        }
+        $user = user();
+        if (!empty(CollectionGroupModel::findByModuleIdAndUserIdAndNameExcludeIds($module->id , $user->id , $param['name'] , [$collection_group->id]))) {
+            return self::error('名称已经被使用');
+        }
+        CollectionGroupModel::updateById($collection_group->id , [
+            'name' => $param['name']
+        ]);
+        $res = CollectionGroupModel::find($collection_group->id);
+        $res = CollectionGroupHandler::handle($res);
+        return self::success($res);
+    }
+
 }

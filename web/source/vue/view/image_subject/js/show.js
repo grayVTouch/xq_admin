@@ -76,8 +76,8 @@ export default {
             } , (data , code) => {
                 this.pending('praiseHandle' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandle(data , code , () => {
-                        this.$parent.showUserForm('login');
+                    this.errorHandleAtHomeChildren(data , code , () => {
+                        this.praiseHandle();
                     });
                     return ;
                 }
@@ -100,17 +100,14 @@ export default {
         // 获取我的收藏夹
         getFavorites () {
             this.pending('getFavorites' , true);
-            Api.user.collectionGroup({
+            Api.user.collectionGroupWithJudge({
                 relation_type: 'image_subject' ,
                 relation_id: this.id ,
             } , (data , code) => {
                 this.pending('getFavorites' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandle(data , code , (showLogin) => {
-                        if (!showLogin) {
-                            return ;
-                        }
-                        this.$parent.showUserForm();
+                    this.errorHandleAtHomeChildren(data , code , () => {
+                        this.getFavorites();
                     });
                     return ;
                 }
@@ -127,11 +124,14 @@ export default {
             Api.user.createAndJoinCollectionGroup(this.collectionGroup , (data , code) => {
                 this.pending('createAndJoinCollectionGroup' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtHomeChildren(data, code);
+                    this.errorHandleAtHomeChildren(data, code , () => {
+                        this.createAndJoinCollectionGroup();
+                    });
                     return ;
                 }
                 // 刷新列表
                 this.getFavorites();
+                this.getData();
             });
         } ,
 
@@ -150,7 +150,9 @@ export default {
             } , (data , code) => {
                 this.pending(pending , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtHomeChildren(data , code);
+                    this.errorHandleAtHomeChildren(data , code , () => {
+                        this.collectionHandle(collectionGroup);
+                    });
                     return ;
                 }
                 for (let i = 0; i < this.favorites.length; ++i)
@@ -164,7 +166,6 @@ export default {
                 this.getData();
             });
         } ,
-
 
         getData () {
             this.pending('getData' , true);
@@ -215,6 +216,7 @@ export default {
             this.dom.imageSubject = G(this.$refs['image-subject']);
             this.dom.picPreviewContainer = G(this.$refs['pic-preview-container']);
             this.dom.myFavorites = G(this.$refs['my-favorites']);
+            this.dom.misc = G(this.$refs['misc']);
         },
 
         scrollEvent (e) {
@@ -234,8 +236,8 @@ export default {
         } ,
 
         scrollWithMiscEvent () {
-            const y = window.pageYOffset;
-            if (y < 62) {
+            const scrollTop = this.dom.misc.getWindowOffsetVal('top');
+            if (scrollTop >= 0) {
                 this._val('fixedMisc' , false);
             } else {
                 this._val('fixedMisc' , true);

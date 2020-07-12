@@ -7,18 +7,13 @@
 
             <div class="content">
                 <div class="big-image">
-                    <div class="mask"><img :src="imageSubject.length > 0 ? imageSubject[0].__path__ : './res/big.jpg'" alt="" class="image"></div>
+                    <a class="mask" :href="imageSubject.length > 0 ? imageSubject[0].link : 'javascript:;'"><img :src="imageSubject.length > 0 ? imageSubject[0].__path__ : $store.state.context.notFound" alt="" class="image"></a>
                 </div>
                 <div class="small-image">
-                    <div class="mask"><img :src="imageSubject.length > 1 ? imageSubject[1].__path__ : './res/01.jpg'" alt="" class="image"></div>
-                    <div class="mask"><img :src="imageSubject.length > 2 ? imageSubject[2].__path__ : './res/02.jpg'" alt="" class="image"></div>
-                    <div class="mask"><img :src="imageSubject.length > 3 ? imageSubject[3].__path__ : './res/03.jpg'" alt="" class="image"></div>
-                    <div class="mask"><img :src="imageSubject.length > 4 ? imageSubject[4].__path__ : './res/04.jpg'" alt="" class="image"></div>
-
-<!--                    <div class="mask"><img src="./res/01.jpg" alt="" class="image"></div>-->
-<!--                    <div class="mask"><img src="./res/02.jpg" alt="" class="image"></div>-->
-<!--                    <div class="mask"><img src="./res/03.jpg" alt="" class="image"></div>-->
-<!--                    <div class="mask"><img src="./res/04.jpg" alt="" class="image"></div>-->
+                    <a class="mask" :href="imageSubject.length > 1 ? imageSubject[1].link : 'javascript:;'"><img :src="imageSubject.length > 1 ? imageSubject[1].__path__ : $store.state.context.notFound" alt="" class="image"></a>
+                    <a class="mask" :href="imageSubject.length > 2 ? imageSubject[2].link : 'javascript:;'"><img :src="imageSubject.length > 2 ? imageSubject[2].__path__ : $store.state.context.notFound" alt="" class="image"></a>
+                    <a class="mask" :href="imageSubject.length > 3 ? imageSubject[3].link : 'javascript:;'"><img :src="imageSubject.length > 3 ? imageSubject[3].__path__ : $store.state.context.notFound" alt="" class="image"></a>
+                    <a class="mask" :href="imageSubject.length > 4 ? imageSubject[4].link : 'javascript:;'"><img :src="imageSubject.length > 4 ? imageSubject[4].__path__ : $store.state.context.notFound" alt="" class="image"></a>
                 </div>
             </div>
         </div>
@@ -58,7 +53,7 @@
                                         <div class="type" v-if="v.type === 'pro'"><my-icon icon="zhuanyerenzheng" size="35" /></div>
 
                                         <div class="praise" v-ripple @click.prevent="praiseHandle(v)">
-                                            <my-loading width="16" height="16" v-if="val.pending.praiseHandle"></my-loading>
+                                            <my-loading size="16" v-if="val.pending.praiseHandle"></my-loading>
                                             <my-icon icon="shoucang2" :class="{'run-red': v.praised }" /> 喜欢
                                         </div>
                                     </div>
@@ -74,7 +69,7 @@
                             <div class="tags">
                                 <span class="ico"><my-icon icon="icontag" size="18" /></span>
 
-                                <a class="tag" v-for="tag in v.tags" :key="v.id" :href="`#/image_subject/search?tag_id=${tag.tag_id}`">{{ tag.name }}</a>
+                                <a class="tag" v-for="tag in v.tags" :key="tag.id" :href="`#/image_subject/search?tag_id=${tag.tag_id}`">{{ tag.name }}</a>
                             </div>
                             <!-- 标题 -->
                             <div class="title"><a class="link" target="_blank" :href="`#/image_subject/${v.id}/show`">{{ v.name }}</a></div>

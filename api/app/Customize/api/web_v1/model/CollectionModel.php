@@ -4,6 +4,9 @@
 namespace App\Customize\api\web_v1\model;
 
 
+use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Collection;
+
 class CollectionModel extends Model
 {
     protected $table = 'xq_collection';
@@ -17,6 +20,25 @@ class CollectionModel extends Model
             ['relation_type' , '=' , $relation_type] ,
             ['relation_id' , '=' , $relation_id] ,
         ])->delete();
+    }
+
+    public static function delByModuleIdAndUserIdAndId(int $module_id , int $user_id , int $id)
+    {
+        return self::where([
+            ['module_id' , '=' , $module_id] ,
+            ['user_id' , '=' , $user_id] ,
+            ['id' , '=' , $id] ,
+        ])->delete();
+    }
+
+    public static function delByModuleIdAndUserIdAndCollectionGroupIds(int $module_id , int $user_id , array $collection_group_ids)
+    {
+        return self::where([
+                ['module_id' , '=' , $module_id] ,
+                ['user_id' , '=' , $user_id] ,
+            ])
+            ->whereIn('collection_group_id' , $collection_group_ids)
+            ->delete();
     }
 
     public static function findByModuleIdAndUserIdAndRelationTypeAndRelationId(int $module_id , int $user_id , string $relation_type , int $relation_id): ?CollectionModel
@@ -56,5 +78,31 @@ class CollectionModel extends Model
             ['relation_type' , '=' , $relation_type] ,
             ['relation_id' , '=' , $relation_id] ,
         ])->count();
+    }
+
+    public static function getByModuleIdAndUserIdAndCollectionGroupIdAndLimit(int $module_id , string $user_id , int $collection_group_id , int $limit = 20): Collection
+    {
+        return self::where([
+                ['module_id' , '=' , $module_id] ,
+                ['user_id' , '=' , $user_id] ,
+                ['collection_group_id' , '=' , $collection_group_id] ,
+            ])
+            ->limit($limit)
+            ->get();
+    }
+
+    public static function getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndLimit(int $module_id , int $user_id , int $collection_group_id , string $relation_type = '' , int $limit = 20): Paginator
+    {
+        $where = [
+            ['module_id' , '=' , $module_id] ,
+            ['user_id' , '=' , $user_id] ,
+            ['collection_group_id' , '=' , $collection_group_id] ,
+        ];
+        if (!empty($relation_type)) {
+            $where[] = ['relation_type' , '=' , $relation_type];
+        }
+        return self::where($where)
+            ->orderBy('create_time' , 'desc')
+            ->paginate($limit);
     }
 }

@@ -33,7 +33,7 @@
                             <tr :class="getClass(val.error.user_id)" id="form-user_id">
                                 <td>所属用户：</td>
                                 <td>
-                                    <input type="text" readonly="readonly" v-model="users.current.username" class="form-text w-150"> 如需重新搜索，请输入（回车键开始搜索）：<my-loading v-if="val.pending.searchUser"></my-loading><input type="text" class="form-text w-150" @input="val.error.user_id = ''" v-model="users.value" @keyup.enter="searchUserEvent">
+                                    <input type="text" readonly="readonly" v-model="users.current.username" class="form-text w-150"> 如需重新搜索，请输入（回车键开始搜索）：<my-loading v-if="val.pending.searchUser"></my-loading><input type="text" class="form-text w-150" @input="val.error.user_id = ''" v-model="users.value" @keyup.enter.prevent="searchUserEvent">
                                     <span class="need">*</span>
                                     <div class="msg">输入用户id、用户名、手机号码、邮箱可查询用户</div>
                                     <div class="e-msg">{{ val.error.user_id }}</div>
@@ -232,6 +232,12 @@
                                     <div class="e-msg">{{ val.error.create_time }}</div>
                                 </td>
                             </tr>
+
+<!--                            <tr class="hide">-->
+<!--                                <td colspan="2">-->
+<!--                                    <button class="run-button run-button-submit" type="submit"><my-icon icon="tijiao" />提交</button>-->
+<!--                                </td>-->
+<!--                            </tr>-->
 
                             </tbody>
                         </table>

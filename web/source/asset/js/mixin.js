@@ -28,13 +28,14 @@ Vue.mixin({
 
         push (location , onComplete , onAbort) {
             if (G.isString(location)) {
-                console.log('导航地址：' , location , this.$route.path);
                 if (location === this.$route.path) {
                     return ;
                 }
             } else {
-                console.log('导航地址：' , location.path , this.$route.path);
-                if (location.name === this.$route.name || location.path === this.$route.path) {
+                if (
+                    (location.name && location.name === this.$route.name) ||
+                    (location.path && location.path === this.$route.path)
+                ) {
                     return ;
                 }
             }
@@ -82,6 +83,7 @@ Vue.mixin({
             }
             this.val = {...this.val , ...{[key]: val}};
         } ,
+
         errorHandle (data , code , callback) {
             if (code === TopContext.code.AuthFailed) {
                 this.message('您尚未登录，请登录后操作？' , {
@@ -104,33 +106,24 @@ Vue.mixin({
                 });
                 return ;
             }
-            this.message(data);
-        } ,
-
-        errorHandleAtHomeChildren (data , code) {
-            const self = this;
-            if (code === TopContext.code.AuthFailed) {
-                this.message('您尚未登录，请登录后操作？' , {
-                    closeBtn: false ,
-                    btn: [
-                        {
-                            name: '确定' ,
-                            callback () {
-                                self.showUserForm('login');
-                                this.hide();
-                            } ,
-                        } ,
-                        {
-                            name: '取消' ,
-                            callback () {
-                                this.hide();
-                            } ,
-                        } ,
-                    ] ,
-                });
+            if (G.isString(data)) {
+                this.message(data);
                 return ;
             }
-            this.message(data);
+            this.message('发生错误，请检查');
+            this.error(data);
+        } ,
+
+        errorHandleAtUserChildren (data , code , loggedCallback) {
+            var self = this;
+            this.errorHandle(data , code , () => {
+                self.$parent.$parent.showUserForm('login' , loggedCallback);
+            });
+        } ,
+        errorHandleAtHomeChildren (data , code , loggedCallback) {
+            this.errorHandle(data , code , () => {
+                this.$parent.showUserForm('login' , loggedCallback);
+            });
         } ,
 
         successHandle (callback) {
@@ -159,5 +152,9 @@ Vue.mixin({
             data.tags    = data.tags ? data.tags : [];
             data.module  = data.module ? data.module : [];
         } ,
-    }
+
+        key () {
+            return G.randomArr('64' , 'mixed' , true);
+        } ,
+    } ,
 });

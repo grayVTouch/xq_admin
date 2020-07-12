@@ -9,10 +9,13 @@ const path = require('path');
 // 目前猜测是因为没有默认导出，允许自定义接收
 // 自己需要的部分
 // const CleanWebpackPlugin = require('clean-webpack-plugin');
+
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const TerserJSPlugin = require('terser-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -21,7 +24,11 @@ module.exports = {
         app: ['@babel/polyfill' , './source/app.js'] ,
         // app: ['@babel/polyfill' , './source/index.js'] ,
     },
+    optimization: {
+        minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
+    },
     plugins: [
+
         // 这个用法错了
         // new CleanWebpackPlugin(['compiled']),
         new CleanWebpackPlugin({
@@ -35,9 +42,9 @@ module.exports = {
         }) ,
         new VueLoaderPlugin() ,
         new MiniCssExtractPlugin({
-            filename: "[name].css",
-            chunkFilename: "[id].css"
-        })
+            filename: '[name].css',
+            chunkFilename: '[id].css',
+        }),
     ],
     output: {
         filename: 'js/[name].js',
@@ -81,7 +88,7 @@ module.exports = {
                     {
                         loader: 'css-loader' ,
                         options: {
-                            sourceMap: true
+                            sourceMap: true ,
                         }
                     } ,
                 ],

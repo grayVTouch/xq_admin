@@ -86,7 +86,7 @@
 
 .view > .content .image-subject .subject .tags .left {
     float: left;
-    max-width: calc(100% - 250px);
+    max-width: calc(100% - 400px);
 }
 
 .view > .content .image-subject .subject .tags .run-tags > * {
@@ -96,7 +96,7 @@
 
 .view > .content .image-subject .subject .tags .right {
     float: right;
-    max-width: 250px;
+    max-width: 400px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

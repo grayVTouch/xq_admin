@@ -86,7 +86,7 @@
                                         <div class="type" v-if="v.type === 'pro'"><my-icon icon="zhuanyerenzheng" size="35" /></div>
 
                                         <div class="praise" v-ripple @click.prevent="praiseHandle(v)">
-                                            <my-loading width="16" height="16" v-if="val.pending.praiseHandle"></my-loading>
+                                            <my-loading size="16" v-if="val.pending.praiseHandle"></my-loading>
                                             <my-icon icon="shoucang2" :class="{'run-red': v.praised }" /> 喜欢
                                         </div>
                                     </div>
@@ -283,7 +283,7 @@
                     <div class="line" v-if="tags.selected.length > 0">
                         <div class="title m-b-15 f-14 weight">当前选择标签</div>
                         <div class="run-tags horizontal">
-                            <my-button class="tag" v-for="v in tags.selected" @click="delTag(v.tag_id)">{{ v.name }}</my-button>
+                            <my-button class="tag" v-for="v in tags.selected" :key="v.id" @click="delTag(v.tag_id)">{{ v.name }}</my-button>
                         </div>
                     </div>
                     <div class="line mode-swith">

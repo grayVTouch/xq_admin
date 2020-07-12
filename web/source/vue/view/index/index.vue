@@ -17,7 +17,7 @@
 
                     <div class="pic-play-transform">
                         <div class="images">
-                            <a class="link" v-for="v in homeSlideshow" :href='v.link'><img :src="v.__path__" alt="" class="image"></a>
+                            <a class="link" v-for="v in homeSlideshow" :key="v.id" :href='v.link'><img :src="v.__path__" alt="" class="image"></a>
                         </div>
                         <div class="index"></div>
                         <div class="action prev"><i class="run-iconfont run-iconfont-prev01"></i></div>
@@ -29,13 +29,13 @@
                 <div class="box">
                     <div class="inner">
 
-                        <div class="item" v-for="(v,k) in hotImages" v-if="k < 6">
+                        <a class="item" v-for="(v,k) in hotImages" :key="v.id" v-if="k < 6" target="_blank" :href="`#/image_subject/${v.id}/show`">
                             <img :src="v.thumb ? v.__thumb__ : $store.state.context.res.notFound" alt="" class="image">
                             <div class="info">
                                 <h5 class="title">{{ v.name  }}</h5>
                                 <p class="desc">{{ v.desc }}</p>
                             </div>
-                        </div>
+                        </a>
 
                     </div>
                 </div>
@@ -68,7 +68,7 @@
                 <div class="list" ref="list-for-image">
                     <div class="loading" v-if="val.pending.images"><my-loading width="50" height="50"></my-loading></div>
                     <div class="inner" ref="inner-for-image">
-                        <div class="item card-box" v-for="v in images">
+                        <div class="item card-box" v-for="v in images" :key="v.id">
                             <!-- 封面 -->
                             <div class="thumb">
                                 <a class="link" target="_blank" :href="`#/image_subject/${v.id}/show`">
@@ -76,8 +76,8 @@
                                     <div class="mask">
                                         <div class="top">
                                             <div class="type" v-if="v.type === 'pro'"><my-icon icon="zhuanyerenzheng" size="35" /></div>
-                                            <div class="praise" v-ripple @click.prevent="praiseImageSubjectById(v)">
-                                                <my-loading width="16" height="16" v-if="val.pending.praiseImageSubjectById"></my-loading>
+                                            <div class="praise" v-ripple @click.prevent="praiseImageSubjectByImageSubject(v)">
+                                                <my-loading size="16" v-if="val.pending.praiseImageSubjectByImageSubject"></my-loading>
                                                 <my-icon icon="shoucang2" :class="{'run-red': v.praised }" /> 喜欢
                                             </div>
                                         </div>

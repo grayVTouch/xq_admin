@@ -109,18 +109,18 @@
                         </template>
 
                         <template v-slot:images="{row,index}">
-                            <Poptip placement="right" width="400" title="图片列表" :transfer="true" trigger="hover">
+<!--                            <Poptip placement="right" width="400" title="图片列表" :transfer="true" trigger="hover">-->
                                 <Button>{{ row.images.length }}P</Button>
-                                <div slot="content">
-                                    <table class="line-table">
-                                        <tbody>
-                                        <tr v-for="v in row.images" :key="v.id">
-                                            <td><img :src="v.path ? v.__path__ : $store.state.context.res.notFound" @click="link(v.__path__ , '__blank')" class="image"></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </Poptip>
+<!--                                <div slot="content">-->
+<!--                                    <table class="line-table">-->
+<!--                                        <tbody>-->
+<!--                                        <tr v-for="v in row.images" :key="v.id">-->
+<!--                                            <td><img :src="v.path ? v.__path__ : $store.state.context.res.notFound" @click="link(v.__path__ , '__blank')" class="image"></td>-->
+<!--                                        </tr>-->
+<!--                                        </tbody>-->
+<!--                                    </table>-->
+<!--                                </div>-->
+<!--                            </Poptip>-->
                         </template>
 
                         <template v-slot:tag="{row,index}">
