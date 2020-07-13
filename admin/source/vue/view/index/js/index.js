@@ -184,8 +184,6 @@ export default {
                 // 如果需要关闭动画，那么把时间调整成 0 试试
                 time: 150 ,
                 ico: TopContext.res.logo ,
-                draggable: false ,
-                saveFirst: true ,
                 created (id) {
                     // 路由参数
                     let param = this.attr(id , 'param');
@@ -424,19 +422,19 @@ export default {
             // G.scrollTo(0 , 'y' , 0 , 0);
 
             // 这个仅适用于 动态导入的组件
-            // component().then((module) => {
-            //     // 注意 module.default ！
-            //     // 具体原因请查看 import 语法解释
-            //     // 我知道为什么是 default 了！！
-            //     // 请查看组件的具体导出 js
-            //     // 你会看到 export default {} 这样的字样
-            //     // 所以，这边使用 default 来获取组件
-            //     let component = this.newComponent(module.default , route , param , id);
-            //     new component().$mount(container);
-            // });
-            component = this.newComponent(component , route , param , id);
-            component = new component();
-            component.$mount(container);
+            component().then((module) => {
+                // 注意 module.default ！
+                // 具体原因请查看 import 语法解释
+                // 我知道为什么是 default 了！！
+                // 请查看组件的具体导出 js
+                // 你会看到 export default {} 这样的字样
+                // 所以，这边使用 default 来获取组件
+                let component = this.newComponent(module.default , route , param , id);
+                new component().$mount(container);
+            });
+            // component = this.newComponent(component , route , param , id);
+            // component = new component();
+            // component.$mount(container);
         } ,
 
         // 重新渲染

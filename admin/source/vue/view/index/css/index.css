@@ -385,6 +385,7 @@
 
 .main > .content > .inner > .nav > .toolbar > .right > .user {
     position: relative;
+    font-size: 14px;
 }
 
 .main > .content > .inner > .nav > .toolbar > .right > .user:hover .ctrl {

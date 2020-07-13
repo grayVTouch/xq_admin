@@ -133,6 +133,7 @@ export default {
                 total_collection_group: 0 ,
                 collectionGroups: [] ,
                 collection_group: {
+                    count: 0 ,
                     collections: [] ,
                 } ,
             } ,

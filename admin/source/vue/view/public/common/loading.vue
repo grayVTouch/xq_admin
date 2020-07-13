@@ -1,15 +1,22 @@
 <template>
-    <img src="../res/loading.png" class="image">
+    <my-icon :size="size" icon="jiazai_dan" class="image"></my-icon>
 </template>
 
 <script>
     export default {
-        name: "loading"
+        name: "loading" ,
+        props: {
+            size: {
+                type: [String , Number] ,
+                default: 30 ,
+            } ,
+        } ,
     }
 </script>
 
 <style scoped>
     .image {
+        display: inline-block;
         width: 30px;
         height: 30px;
         animation: loading 0.6s infinite linear;

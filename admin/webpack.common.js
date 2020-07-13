@@ -9,6 +9,7 @@ const path = require('path');
 // 目前猜测是因为没有默认导出，允许自定义接收
 // 自己需要的部分
 // const CleanWebpackPlugin = require('clean-webpack-plugin');
+
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');

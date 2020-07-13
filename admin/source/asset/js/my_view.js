@@ -9,6 +9,7 @@ import tableButton from '../../vue/view/public/common/table_button.vue';
 import formModal from '../../vue/view/public/common/form_modal.vue';
 import icon from '../../vue/view/public/common/icon.vue';
 import myLoading from '../../vue/view/public/common/my_loading.vue';
+import page from '../../vue/view/public/common/page.vue';
 
 Vue.component('my-loading' , loading);
 Vue.component('my-avatar' , avatar);
@@ -21,4 +22,5 @@ Vue.component('my-table-button' , tableButton);
 Vue.component('my-form-modal' , formModal);
 Vue.component('my-icon' , icon);
 Vue.component('my-loading' , myLoading);
+Vue.component('my-page' , page);
 

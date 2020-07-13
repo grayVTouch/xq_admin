@@ -8,8 +8,8 @@
             <div class="run-action-title">
                 <div class="left">{{ title }}</div>
                 <div class="right">
-                    <Button type="primary" :loading="val.pending.submit" @click="submitEvent">提交</Button>
-                    <Button type="error" @click="closeFormDrawer">关闭</Button>
+                    <Button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent">提交</Button>
+                    <Button v-ripple type="error" @click="closeFormDrawer">关闭</Button>
                 </div>
             </div>
         </template>

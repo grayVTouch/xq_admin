@@ -22,7 +22,7 @@
                     <div class="option">
                         <div class="field"></div>
                         <div class="value">
-                            <Button type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
+                            <Button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
                         </div>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
                     <div class="option">
                         <div class="field"></div>
                         <div class="value">
-                            <Button type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
+                            <Button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
                         </div>
                     </div>
 
@@ -112,7 +112,7 @@
 
             <my-form-modal v-model="val.modal" :title="title" :loading="val.pending.submit" @on-ok="submitEvent" @on-cancel="closeFormModal">
                 <template slot="default">
-                    <form class="form" @submit.prevent>
+                    <form class="form" @submit.prevent="submitEvent">
                         <table class="input-table">
                             <tbody>
 
@@ -214,13 +214,19 @@
                                 </td>
                             </tr>
 
+                            <tr v-show="false">
+                                <td colspan="2">
+                                    <button type="submit"></button>
+                                </td>
+                            </tr>
+
                             </tbody>
                         </table>
                     </form>
                 </template>
                 <template slot="footer">
-                    <Button type="primary" :loading="val.pending.submit" @click="submitEvent">确认</Button>
-                    <Button type="error" @click="closeFormModal">关闭</Button>
+                    <Button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent">确认</Button>
+                    <Button v-ripple type="error" @click="closeFormModal">关闭</Button>
                 </template>
             </my-form-modal>
 

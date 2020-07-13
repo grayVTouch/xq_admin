@@ -253,9 +253,10 @@ export default {
             });
         } ,
 
-        searchSubjectEvent () {
+        searchSubjectEvent (e) {
             if (!G.isValid(this.subjects.value)) {
                 this.message('warning' , '请提供有效的搜索值');
+                return ;
             }
             // 开始搜索
             this.searchSubject(this.subjects.value);
@@ -264,6 +265,7 @@ export default {
         searchUserEvent (e) {
             if (!G.isValid(this.users.value)) {
                 this.message('error' , '请提供有效的搜索值');
+                return ;
             }
             // 开始搜索
             this.searchUser(this.users.value);

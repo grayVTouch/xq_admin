@@ -4,9 +4,9 @@
             <div class="inner" ref="menu-inner">
                 <div class="line logo" ref="logo">
                     <div class="c-left image-outer">
-                        <div class="inner"><img src="./res/logo.jpg" class="image"></div>
+                        <div class="inner"><img :src="$store.state.context.res.logo" class="image"></div>
                     </div>
-                    <div class="c-right text-outer">兴趣部落管理后台</div>
+                    <div class="c-right text-outer">{{ $store.state.context.os.name }}</div>
                 </div>
 
                 <div class="line avatar" ref="avatar">
@@ -47,7 +47,7 @@
                     <my-menu :list="$store.state.permissionWithStructure"></my-menu>
                 </div>
 
-                <div class="line desc" ref="desc">兴趣部落管理后台</div>
+                <div class="line desc" ref="desc">{{ $store.state.context.os.name }}</div>
             </div>
         </div>
 
@@ -85,7 +85,7 @@
                                 </div>
                                 <div class="functions hide" ref="functions-for-user">
                                     <div class="function" @click="logout">
-                                        <div class="left"><img src="./res/logout.png" class="image"></div>
+                                        <div class="left"><my-icon icon="084tuichu"></my-icon></div>
                                         <div class="right">注销</div>
                                     </div>
                                 </div>
@@ -107,7 +107,7 @@
                     <div class="inner" ref="tab-items"></div>
                 </div>
 
-                <div class="line info hide" ref="info">兴趣部落管理后台</div>
+                <div class="line info hide" ref="info">{{ $store.state.context.os.name }}</div>
             </div>
         </div>
     </div>

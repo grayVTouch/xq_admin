@@ -6,8 +6,8 @@
             <div class="run-action-title">
                 <div class="left">{{ title }}</div>
                 <div class="right">
-                    <Button type="primary" :loading="val.pending.submit" @click="submitEvent"><my-icon icon="tijiao" />提交</Button>
-                    <Button type="error" @click="closeFormDrawer"><my-icon icon="guanbi" />关闭</Button>
+                    <Button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent"><my-icon icon="tijiao" />提交</Button>
+                    <Button v-ripple type="error" @click="closeFormDrawer"><my-icon icon="guanbi" />关闭</Button>
                 </div>
             </div>
 
@@ -15,8 +15,12 @@
 
         <template slot="default">
             <form @submit.prevent="submitEvent" class="form">
-                <Tabs v-model="val.tab">
-                    <TabPane label="基本信息" name="base">
+                <div class="menu">
+                    <div class="menu-item" :class="{cur: val.tab === 'base'}" @click="val.tab = 'base'">基本信息</div>
+                    <div class="menu-item" :class="{cur: val.tab === 'image'}" @click="val.tab = 'image'">图片信息</div>
+                </div>
+                <div class="menu-mapping-content">
+                    <div class="" v-show="val.tab === 'base'">
                         <table class="input-table">
                             <tbody>
 
@@ -33,7 +37,11 @@
                             <tr :class="getClass(val.error.user_id)" id="form-user_id">
                                 <td>所属用户：</td>
                                 <td>
-                                    <input type="text" readonly="readonly" v-model="users.current.username" class="form-text w-150"> 如需重新搜索，请输入（回车键开始搜索）：<my-loading v-if="val.pending.searchUser"></my-loading><input type="text" class="form-text w-150" @input="val.error.user_id = ''" v-model="users.value" @keyup.enter.prevent="searchUserEvent">
+                                    <input type="text" readonly="readonly" v-model="users.current.username" class="form-text w-150">
+                                    如需重新搜索，请输入：
+                                    <my-loading v-if="val.pending.searchUser"></my-loading>
+                                    <input type="text" class="form-text w-150" @input="val.error.user_id = ''" v-model="users.value">
+                                    <Button @click="searchUserEvent">搜索</Button>
                                     <span class="need">*</span>
                                     <div class="msg">输入用户id、用户名、手机号码、邮箱可查询用户</div>
                                     <div class="e-msg">{{ val.error.user_id }}</div>
@@ -76,7 +84,10 @@
                             <tr :class="getClass(val.error.subject_id)" id="form-subject_id" v-show="form.type === 'pro'">
                                 <td>关联主体：</td>
                                 <td>
-                                    <input type="text" readonly="readonly" v-model="subjects.current.name" class="form-text w-150"> 如需重新搜索，请输入（回车键开始搜索）：<my-loading v-if="val.pending.searchSubject"></my-loading><input type="text" class="form-text w-150" v-model="subjects.value" @input="val.error.subject_id = ''" @keyup.enter="searchSubjectEvent">
+                                    <input type="text" readonly="readonly" v-model="subjects.current.name" class="form-text w-150">
+                                    如需重新搜索，请输入：<my-loading v-if="val.pending.searchSubject"></my-loading>
+                                    <input type="text" class="form-text w-150" v-model="subjects.value" @input="val.error.subject_id = ''">
+                                    <Button @click="searchSubjectEvent">搜索</Button>
                                     <span class="need">*</span>
                                     <div class="msg">请务必在选择模块后操作；输入关联主体id、名称可查询</div>
                                     <div class="e-msg">{{ val.error.subject_id }}</div>
@@ -115,7 +126,7 @@
                                             <h5 class="title">推荐标签（选择模块后该列表会更新）</h5>
                                             <div class="__tags__">
                                                 <span class="tag run-action-feedback" v-for="v in topTags" @click="appendTag(v)">{{ v.name }}</span>
-<!--                                                <span class="tag run-action-feedback">发放</span>-->
+                                                <!--                                                <span class="tag run-action-feedback">发放</span>-->
                                             </div>
                                         </div>
                                     </div>
@@ -233,16 +244,17 @@
                                 </td>
                             </tr>
 
-<!--                            <tr class="hide">-->
-<!--                                <td colspan="2">-->
-<!--                                    <button class="run-button run-button-submit" type="submit"><my-icon icon="tijiao" />提交</button>-->
-<!--                                </td>-->
-<!--                            </tr>-->
+                            <tr>
+                                <td colspan="2">
+                                    <button class="hide" type="submit"><my-icon icon="tijiao" />提交</button>
+                                    <Button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent"><my-icon icon="tijiao" />提交</Button>
+                                </td>
+                            </tr>
 
                             </tbody>
                         </table>
-                    </TabPane>
-                    <TabPane label="图片信息" name="image">
+                    </div>
+                    <div class="" v-show="val.tab === 'image'">
                         <div class="image-info">
                             <div class="line upload">
                                 <div class="run-title">
@@ -316,14 +328,14 @@
                                 </div>
                             </div>
                         </div>
-                    </TabPane>
-                </Tabs>
+                    </div>
+                </div>
             </form>
 
             <!-- 请选择用户 -->
             <my-form-modal v-model="val.modalForUser" title="请选择用户" :width="1000">
                 <template slot="footer">
-                    <Button type="error" @click="val.modalForUser=false">取消</Button>
+                    <Button v-ripple type="error" @click="val.modalForUser=false">取消</Button>
                 </template>
                 <template slot="default">
                     <Table border :data="users.data" :columns="users.field" @on-row-click="updateUserEvent">
@@ -335,7 +347,7 @@
             <!-- 选择关联主体 -->
             <my-form-modal v-model="val.modalForSubject" title="请选择关联主体" :width="1000">
                 <template slot="footer">
-                    <Button type="error" @click="val.modalForSubject=false">取消</Button>
+                    <Button v-ripple type="error" @click="val.modalForSubject=false">取消</Button>
                 </template>
                 <template slot="default">
                     <Table border :data="subjects.data" :columns="subjects.field" @on-row-click="updateSubjectEvent">

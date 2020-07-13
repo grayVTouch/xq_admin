@@ -1,5 +1,5 @@
 <template>
-    <Button :type="type" :size="size" :icon="icon" :shape="shape" :loading="loading" @click="clickEvent">
+    <Button v-ripple :type="type" :size="size" :icon="icon" :shape="shape" :loading="loading" @click="clickEvent">
         <slot></slot>
     </Button>
 </template>

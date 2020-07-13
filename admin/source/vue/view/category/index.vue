@@ -114,8 +114,8 @@
                     </form>
                 </template>
                 <template slot="footer">
-                    <Button type="primary" :loading="val.pending.submit" @click="submitEvent">确认</Button>
-                    <Button type="error" @click="closeFormModal">关闭</Button>
+                    <Button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent">确认</Button>
+                    <Button v-ripple type="error" @click="closeFormModal">关闭</Button>
                 </template>
             </my-form-modal>
         </div>

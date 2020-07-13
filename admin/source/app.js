@@ -1,4 +1,5 @@
 
+import './asset/css/base.css';
 import './asset/css/iview.css';
 
 /**
@@ -12,6 +13,7 @@ import './asset/js/api.js';
 
 import './asset/js/vue.js';
 import './asset/js/mixin.js';
+import './asset/js/directive.js';
 import './asset/js/iview.js';
 
 import './asset/js/my_view.js';
@@ -27,6 +29,7 @@ Vue.config.debug = debug;
 Vue.config.devtools = debug;
 
 Vue.config.productionTip = debug;
+
 
 /**
  * ****************

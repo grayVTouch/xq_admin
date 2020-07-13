@@ -22,7 +22,7 @@
                     <div class="option">
                         <div class="field"></div>
                         <div class="value">
-                            <Button type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
+                            <Button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
                         </div>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
                     <div class="option">
                         <div class="field"></div>
                         <div class="value">
-                            <Button type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
+                            <Button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
                         </div>
                     </div>
 
@@ -73,7 +73,7 @@
                         <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
                     </div>
                     <div class="right">
-                        <Page :total="table.total" :page-size="$store.state.context.limit" :current="table.page" :show-total="true" :show-sizer="false" :show-elevator="true"  @on-change="pageEvent" />
+                        <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
                     </div>
                 </div>
             </div>
@@ -87,7 +87,7 @@
 
                 <div class="table">
 
-                    <Table border :page-size="$store.state.context.limit" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent">
+                    <Table border :page-size="$store.state.context.limit" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
                         <template v-slot:role_id="{row,index}">{{ row.role ? `${row.role.name}【${row.role.id}】` : `unknow【${row.role_id}】` }}</template>
                         <template v-slot:avatar="{row,index}">
                             <img :src="row.avatar ? row.__avatar__ : $store.state.context.res.notFound" @click="link(row.__avatar__ , '__blank')" height="40" class="image">
@@ -111,12 +111,12 @@
             </div>
 
             <div class="line page">
-                <Page :total="table.total" :page-size="$store.state.context.limit" :current="table.page" :show-total="true" :show-sizer="false" :show-elevator="true"  @on-change="pageEvent" />
+                <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
             </div>
 
             <my-form-modal v-model="val.modal" :title="title" :loading="val.pending.submit" @on-ok="submitEvent" @on-cancel="closeFormModal">
                 <template slot="default">
-                    <form class="form" @submit.prevent>
+                    <form class="form" @submit.prevent="submitEvent">
                         <table class="input-table">
                             <tbody>
 
@@ -228,13 +228,19 @@
                                 </td>
                             </tr>
 
+                            <tr v-show="false">
+                                <td colspan="2">
+                                    <button type="submit"></button>
+                                </td>
+                            </tr>
+
                             </tbody>
                         </table>
                     </form>
                 </template>
                 <template slot="footer">
-                    <Button type="primary" :loading="val.pending.submit" @click="submitEvent">确认</Button>
-                    <Button type="error" @click="closeFormModal">关闭</Button>
+                    <Button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent">确认</Button>
+                    <Button v-ripple type="error" @click="closeFormModal">关闭</Button>
                 </template>
             </my-form-modal>
 

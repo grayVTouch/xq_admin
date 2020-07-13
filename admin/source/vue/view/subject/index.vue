@@ -22,7 +22,7 @@
                     <div class="option">
                         <div class="field"></div>
                         <div class="value">
-                            <Button type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
+                            <Button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
                         </div>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
                     <div class="option">
                         <div class="field"></div>
                         <div class="value">
-                            <Button type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
+                            <Button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
                         </div>
                     </div>
 
@@ -129,12 +129,12 @@
                 <div class="run-action-title" slot="header">
                     <div class="left">{{ title }}</div>
                     <div class="right">
-                        <Button type="primary" :loading="val.pending.submit" @click="submitEvent"><my-icon icon="tijiao" />提交</Button>
-                        <Button type="error" @click="closeFormDrawer"><my-icon icon="guanbi" />关闭</Button>
+                        <Button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent"><my-icon icon="tijiao" />提交</Button>
+                        <Button v-ripple type="error" @click="closeFormDrawer"><my-icon icon="guanbi" />关闭</Button>
                     </div>
                 </div>
 
-                <form class="form subject-form" @submit.prevent slot="default">
+                <form class="form subject-form" @submit.prevent="submitEvent" slot="default">
                     <table class="input-table">
                         <tbody>
 
@@ -242,6 +242,13 @@
                                 <span class="need"></span>
                                 <div class="msg">仅允许整数</div>
                                 <div class="e-msg">{{ val.error.thumb }}</div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2">
+                                <Button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent"><my-icon icon="tijiao" />提交</Button>
+                                <button v-show="false" type="submit"></button>
                             </td>
                         </tr>
 
