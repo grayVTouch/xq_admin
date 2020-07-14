@@ -289,7 +289,7 @@ create table if not exists `xq_position` (
      value varchar(255) default '' comment '值' ,
      name varchar(255) default '' comment '名称' ,
      description varchar(1000) default '' comment '位置描述' ,
-     module_id bigint unsigned default 0 comment 'xq_module.id' ,
+     platform varchar(255) default '' comment '平台：当前预备的有 app|android|ios|web|mobile 等，后期可扩充' ,
      create_time datetime default current_timestamp ,
      primary key (id)
 ) comment '位置';
@@ -299,6 +299,7 @@ drop table if exists `xq_image_at_position`;
 create table if not exists `xq_image_at_position` (
    id bigint unsigned not null auto_increment ,
    position_id bigint unsigned default 0 comment '放置位置' ,
+   platform varchar(255) default '' comment '缓存字段,xq_position.platform' ,
    name varchar(255) default '' comment '名称' ,
    mime varchar(50) default '' comment 'mime' ,
    path varchar(1000) default '' comment '路径' ,
@@ -323,7 +324,7 @@ drop table if exists `xq_nav`;
 create table if not exists `xq_nav` (
     id bigint unsigned not null auto_increment ,
     name varchar(255) default '' comment '菜单名称' ,
-    link varchar(500) default '' comment '链接' ,
+    value varchar(500) default '' comment '菜单 value' ,
     p_id bigint unsigned default 0 comment 'xq_nav.id' ,
     is_menu tinyint default 0 comment '菜单？0-否 1-是' ,
     enable tinyint default 0 comment '启用？0-否 1-是' ,

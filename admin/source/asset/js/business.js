@@ -31,4 +31,12 @@ export default {
             shemale: '人妖' ,
         } ,
     } ,
+
+    platform: {
+        web: 'web端' ,
+        app: 'app' ,
+        android: 'android' ,
+        ios: 'ios' ,
+        mobile: '移动端' ,
+    } ,
 };

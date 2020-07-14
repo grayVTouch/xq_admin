@@ -26,8 +26,9 @@ class ImageAtPosition extends Base
     public function update($id)
     {
         $param = $this->request->post();
-        $param['name']          = $param['name'] ?? '';
+        $param['module_id']   = $param['module_id'] ?? '';
         $param['position_id']   = $param['position_id'] ?? '';
+        $param['name']          = $param['name'] ?? '';
         $param['mime']          = $param['mime'] ?? '';
         $param['path']          = $param['path'] ?? '';
         $param['link']          = $param['link'] ?? '';
@@ -41,8 +42,9 @@ class ImageAtPosition extends Base
     public function store()
     {
         $param = $this->request->post();
-        $param['name']          = $param['name'] ?? '';
+        $param['module_id']   = $param['module_id'] ?? '';
         $param['position_id']   = $param['position_id'] ?? '';
+        $param['name']          = $param['name'] ?? '';
         $param['mime']          = $param['mime'] ?? '';
         $param['path']          = $param['path'] ?? '';
         $param['link']          = $param['link'] ?? '';

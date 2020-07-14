@@ -1,5 +1,6 @@
 
 const form = {
+    module_id: 0 ,
     position_id: 0 ,
 };
 
@@ -22,6 +23,7 @@ export default {
                 selectedIds: [] ,
 
             } ,
+            modules: [] ,
             table: {
                 field: [
                     {
@@ -37,6 +39,11 @@ export default {
                     {
                         title: '位置' ,
                         slot: 'position_id' ,
+                        align: TopContext.table.alignCenter
+                    } ,
+                    {
+                        title: '模块【id】' ,
+                        slot: 'module_id' ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
@@ -74,7 +81,8 @@ export default {
                 page: 1 ,
                 data: [] ,
             } ,
-            position: [] ,
+            // 这个属于保护字段！！不允许使用
+            positions: [] ,
             search: {
                 limit: this.$store.state.context.limit
             } ,
@@ -115,6 +123,18 @@ export default {
             });
         } ,
 
+        getModule () {
+            this.pending('getModule' , true);
+            Api.module.all((data , code) => {
+                if (code !== TopContext.code.Success) {
+                    this.error('error' , data);
+                    return ;
+                }
+                this.modules = data;
+            });
+            this.pending('getModule' , false);
+        } ,
+
 
         initIns () {
             const self = this;
@@ -137,11 +157,9 @@ export default {
         } ,
 
         getData () {
-            this.$refs.base.show();
             this.pending('getData' , true);
             Api.image_at_position.index(this.search , (data , code) => {
                 this.pending('getData' , false);
-                this.$refs.base.hide();
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     return ;
@@ -221,6 +239,7 @@ export default {
             this.error();
             this.form = {...record};
             this.getPositionData();
+            this.getModule();
         } ,
 
         addEvent () {
@@ -229,6 +248,7 @@ export default {
             this.error();
             this.form = {...form};
             this.getPositionData();
+            this.getModule();
         } ,
 
         submitEvent () {

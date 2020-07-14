@@ -73,7 +73,7 @@
                         <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
                     </div>
                     <div class="right">
-                        <Page :total="table.total" :page-size="$store.state.context.limit" :current="table.page" :show-total="true" :show-sizer="false" :show-elevator="true"  @on-change="pageEvent" />
+                        <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
                     </div>
                 </div>
             </div>
@@ -87,9 +87,10 @@
 
                 <div class="table">
 
-                    <Table border :columns="table.field" :data="table.data" @on-selection-change="selectedEvent">
-                        <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
-                        <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" class="image" height="40" @click.stop="link(row.thumb)"></template>
+                    <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
+                        <template v-slot:name="{row,index}">{{ row.name + `【${row.module ? row.module.name : 'unknow'}】` }}</template>
+<!--                        <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>-->
+                        <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" class="image" :height="$store.state.context.table.imageH" @click.stop="link(row.__thumb__)"></template>
                         <template v-slot:attr="{row,index}">
                             <Poptip placement="right" width="400" title="关联主体属性" :transfer="true" trigger="hover">
                                 <Button>悬浮可查看详情</Button>
@@ -121,7 +122,7 @@
             </div>
 
             <div class="line page">
-                <Page :total="table.total" :page-size="$store.state.context.limit" :current="table.page" :show-total="true" :show-sizer="false" :show-elevator="true"  @on-change="pageEvent" />
+                <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
             </div>
 
             <my-form-drawer v-model="val.drawer" :title="title" :loading="val.pending.submit" @on-ok="submitEvent" @on-cancel="closeFormDrawer">
@@ -138,17 +139,17 @@
                     <table class="input-table">
                         <tbody>
 
-                        <tr :class="getClass(val.error.name)" id="form-name">
+                        <tr :class="{error: val.error.name}" id="form-name">
                             <td>名称</td>
                             <td>
                                 <input type="text" v-model="form.name" @input="val.error.name=''" class="form-text">
                                 <span class="need">*</span>
                                 <div class="msg"></div>
-                                <div class="e-msg"></div>
+                                <div class="e-msg">{{ val.error.name }}</div>
                             </td>
                         </tr>
 
-                        <tr :class="getClass(val.error.module_id)" id="form-module_id">
+                        <tr :class="{error: val.error.module_id}" id="form-module_id">
                             <td>所属模块</td>
                             <td>
                                 <my-select :data="modules" v-model="form.module_id"></my-select>
@@ -158,7 +159,7 @@
                             </td>
                         </tr>
 
-                        <tr :class="getClass(val.error.thumb)" id="form-thumb">
+                        <tr :class="{error: val.error.thumb}" id="form-thumb">
                             <td>封面</td>
                             <td>
                                 <div ref="thumb">
@@ -194,7 +195,7 @@
                             </td>
                         </tr>
 
-                        <tr :class="getClass(val.error.attr)" id="form-attr">
+                        <tr :class="{error: val.error.attr}" id="form-attr">
                             <td>属性</td>
                             <td>
                                 <div class="attr">
@@ -225,7 +226,7 @@
                             </td>
                         </tr>
 
-                        <tr :class="getClass(val.error.description)" id="form-description">
+                        <tr :class="{error: val.error.description}" id="form-description">
                             <td>描述</td>
                             <td>
                                 <textarea v-model="form.description" @input="val.error.description=''" class="form-textarea"></textarea>
@@ -235,7 +236,7 @@
                             </td>
                         </tr>
 
-                        <tr :class="getClass(val.error.weight)" id="form-weight">
+                        <tr :class="{error: val.error.weight}" id="form-weight">
                             <td>权重</td>
                             <td>
                                 <input type="number" v-model="form.weight" @input="val.error.weight = ''" class="form-text">

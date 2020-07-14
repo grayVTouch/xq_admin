@@ -1,6 +1,7 @@
 const index = genUrl('module');
 const store = genUrl('module');
 const update = genUrl('module/{id}');
+const localUpdate = genUrl('module/{id}');
 const show = genUrl('module/{id}');
 const destroy = genUrl('module/{id}');
 const destroyAll = genUrl('destroy_all_module');

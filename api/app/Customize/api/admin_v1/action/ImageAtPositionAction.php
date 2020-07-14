@@ -5,6 +5,7 @@ namespace App\Customize\api\admin_v1\action;
 
 use App\Customize\api\admin_v1\handler\ImageAtPositionHandler;
 use App\Customize\api\admin_v1\model\ImageAtPositionModel;
+use App\Customize\api\admin_v1\model\ModuleModel;
 use App\Customize\api\admin_v1\model\PositionModel;
 use App\Http\Controllers\api\admin_v1\Base;
 use Illuminate\Support\Facades\Validator;
@@ -27,6 +28,7 @@ class ImageAtPositionAction extends Action
     public static function update(Base $context , $id , array $param = [])
     {
         $validator = Validator::make($param , [
+            'module_id' => 'required' ,
             'position_id' => 'required' ,
             'path' => 'required' ,
         ]);
@@ -37,15 +39,19 @@ class ImageAtPositionAction extends Action
         if (empty($res)) {
             return self::error('id对应记录不存在' , 404);
         }
+        $module = ModuleModel::find($param['module_id']);
+        if (empty($module)) {
+            return self::error('模块不存在' , 404);
+        }
         $position = PositionModel::find($param['position_id']);
         if (empty($position)) {
-            return self::error([
-                'position_id' => '位置id对应记录不存在' ,
-            ] , 404);
+            return self::error('位置不存在' , 404);
         }
-        $param['module_id'] = $position->module_id;
+        $param['module_id'] = $module->id;
+        $param['platform'] = $position->platform;
         ImageAtPositionModel::updateById($res->id , array_unit($param , [
             'position_id' ,
+            'platform' ,
             'name' ,
             'mime' ,
             'path' ,
@@ -59,20 +65,25 @@ class ImageAtPositionAction extends Action
     {
         $validator = Validator::make($param , [
             'position_id' => 'required' ,
+            'module_id' => 'required' ,
             'path' => 'required' ,
         ]);
         if ($validator->fails()) {
             return self::error(get_form_error($validator));
         }
+        $module = ModuleModel::find($param['module_id']);
+        if (empty($module)) {
+            return self::error('模块不存在' , 404);
+        }
         $position = PositionModel::find($param['position_id']);
         if (empty($position)) {
-            return self::error([
-                'position_id' => '位置id对应记录不存在' ,
-            ] , 404);
+            return self::error('位置不存在' , 404);
         }
-        $param['module_id'] = $position->module_id;
+        $param['module_id'] = $module->id;
+        $param['platform'] = $position->platform;
         $id = ImageAtPositionModel::insertGetId(array_unit($param , [
             'position_id' ,
+            'platform' ,
             'name' ,
             'mime' ,
             'path' ,

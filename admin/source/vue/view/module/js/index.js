@@ -46,7 +46,7 @@ export default {
                     } ,
                     {
                         title: '启用？' ,
-                        key: 'enable' ,
+                        slot: 'enable' ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
@@ -108,12 +108,27 @@ export default {
 
         } ,
 
+        updateBoolValEvent (val , extra) {
+            const oVal = val > 0 ? 0 : 1;
+            const pendingKey = `${extra.field}_${extra.data.id}`;
+            this.pending(pendingKey , true);
+            Api.module.localUpdate(extra.data.id , {
+                [extra.field]: val
+            } , (data , code) => {
+                this.pending(pendingKey , false);
+                if (code !== TopContext.code.Success) {
+                    extra.data[extra.field] = oVal;
+                    this.message('error' , data);
+                    return ;
+                }
+                this.message('success' , '操作成功');
+            });
+        } ,
+
         getData () {
-            this.$refs.base.show();
             this.pending('getData' , true);
             Api.module.index(this.search , (data , code) => {
                 this.pending('getData' , false);
-                this.$refs.base.hide();
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     return ;

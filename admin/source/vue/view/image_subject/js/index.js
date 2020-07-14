@@ -255,11 +255,9 @@ export default {
         } ,
 
         getData () {
-            this.$refs.base.show();
             this.pending('getData' , true);
             Api.image_subject.index(this.search , (data , code) => {
                 this.pending('getData' , false);
-                this.$refs.base.hide();
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     return ;

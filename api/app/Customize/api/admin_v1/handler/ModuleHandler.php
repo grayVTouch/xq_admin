@@ -6,6 +6,7 @@ namespace App\Customize\api\admin_v1\handler;
 
 use App\Customize\api\admin_v1\model\ModuleModel;
 use stdClass;
+use function api\admin_v1\get_value;
 use function core\convert_obj;
 
 class ModuleHandler extends Handler
@@ -16,6 +17,9 @@ class ModuleHandler extends Handler
             return null;
         }
         $res = convert_obj($model);
+
+        $res->__enable__ = get_value('business.bool_for_int' , $res->enable);
+
         return $res;
     }
 

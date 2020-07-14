@@ -77,4 +77,12 @@ return [
         'video_subject' => '视频专题' ,
         'article_subject' => '文章专题' ,
     ] ,
+
+    'platform' => [
+        'web' =>'web端' ,
+        'app' => 'app' ,
+        'android' => 'android' ,
+        'ios' => 'ios' ,
+        'mobile' => '移动端' ,
+    ] ,
 ];

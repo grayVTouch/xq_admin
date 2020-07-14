@@ -13,6 +13,7 @@ const indexForUser = () => import('../view/user/index.vue');
 const indexForAdmin = () => import('../view/admin/index.vue');
 const indexForPosition = () => import('../view/position/index.vue');
 const indexForImageAtPosition = () => import('../view/image_at_position/index.vue');
+const indexForNav = () => import('../view/nav/index.vue');
 
 
 export default [
@@ -87,6 +88,11 @@ export default [
     {
         path: '/image_at_position/index' ,
         component: indexForImageAtPosition
+    } ,
+
+    {
+        path: '/nav/index' ,
+        component: indexForNav
     } ,
 
 ];

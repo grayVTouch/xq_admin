@@ -28,8 +28,23 @@ class Module extends Base
         $param = $this->request->post();
         $param['name']          = $param['name'] ?? '';
         $param['description']   = $param['description'] ?? '';
+        $param['enable']        = $param['enable'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
         $res = ModuleAction::update($this , $id ,$param);
+        if ($res['code'] != 0) {
+            return error($res['data'] , $res['code']);
+        }
+        return success($res['data']);
+    }
+
+    public function localUpdate($id)
+    {
+        $param = $this->request->post();
+        $param['name']          = $param['name'] ?? '';
+        $param['description']   = $param['description'] ?? '';
+        $param['enable']        = $param['enable'] ?? '';
+        $param['weight']        = $param['weight'] ?? '';
+        $res = ModuleAction::localUpdate($this , $id ,$param);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
         }
@@ -41,6 +56,7 @@ class Module extends Base
         $param = $this->request->post();
         $param['name']          = $param['name'] ?? '';
         $param['description']   = $param['description'] ?? '';
+        $param['enable']        = $param['enable'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
         $res = ModuleAction::store($this ,$param);
         if ($res['code'] != 0) {

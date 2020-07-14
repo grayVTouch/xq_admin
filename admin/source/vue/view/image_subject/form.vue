@@ -24,7 +24,7 @@
                         <table class="input-table">
                             <tbody>
 
-                            <tr :class="getClass(val.error.name)" id="form-name">
+                            <tr :class="{error: val.error.name}" id="form-name">
                                 <td>专题名称：</td>
                                 <td>
                                     <input type="text" class="form-text" v-model="form.name" @input="val.error.name = ''">
@@ -34,7 +34,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.user_id)" id="form-user_id">
+                            <tr :class="{error: val.error.user_id}" id="form-user_id">
                                 <td>所属用户：</td>
                                 <td>
                                     <input type="text" readonly="readonly" v-model="users.current.username" class="form-text w-150">
@@ -48,7 +48,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.module_id)" id="form-module_id">
+                            <tr :class="{error: val.error.module_id}" id="form-module_id">
                                 <td>所属模块：</td>
                                 <td>
 
@@ -59,7 +59,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.category_id)" id="form-category_id">
+                            <tr :class="{error: val.error.category_id}" id="form-category_id">
                                 <td>所属分类：</td>
                                 <td>
                                     <my-deep-select :data="categories" v-model="form.category_id" @on-change="val.error.category_id = ''" :has="false"></my-deep-select>
@@ -69,7 +69,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.type)" id="form-type">
+                            <tr :class="{error: val.error.type}" id="form-type">
                                 <td>类型：</td>
                                 <td>
                                     <RadioGroup v-model="form.type">
@@ -81,7 +81,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.subject_id)" id="form-subject_id" v-show="form.type === 'pro'">
+                            <tr :class="{error: val.error.subject_id}" id="form-subject_id" v-show="form.type === 'pro'">
                                 <td>关联主体：</td>
                                 <td>
                                     <input type="text" readonly="readonly" v-model="subjects.current.name" class="form-text w-150">
@@ -94,7 +94,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.tags)" id="form-tags">
+                            <tr :class="{error: val.error.tags}" id="form-tags">
                                 <td>标签：</td>
                                 <td>
                                     <div class="tags">
@@ -136,7 +136,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.thumb)" id="form-thumb">
+                            <tr :class="{error: val.error.thumb}" id="form-thumb">
                                 <td>封面</td>
                                 <td>
                                     <div ref="thumb">
@@ -172,7 +172,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.weight)" id="form-weight">
+                            <tr :class="{error: val.error.weight}" id="form-weight">
                                 <td>权重</td>
                                 <td>
                                     <input type="number" v-model="form.weight" @input="val.error.weight = ''" class="form-text">
@@ -182,7 +182,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.view_count)" id="form-view_count">
+                            <tr :class="{error: val.error.view_count}" id="form-view_count">
                                 <td>浏览次数</td>
                                 <td>
                                     <input type="number" v-model="form.view_count" @input="val.error.view_count = ''" class="form-text">
@@ -192,7 +192,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.praise_count)" id="form-praise_count">
+                            <tr :class="{error: val.error.praise_count}" id="form-praise_count">
                                 <td>获赞次数</td>
                                 <td>
                                     <input type="number" v-model="form.praise_count" @input="val.error.praise_count = ''" class="form-text">
@@ -202,7 +202,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.status)" id="form-status">
+                            <tr :class="{error: val.error.status}" id="form-status">
                                 <td>状态</td>
                                 <td>
                                     <RadioGroup v-model="form.status">
@@ -214,7 +214,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.fail_reason)" v-show="form.status === -1" id="form-fail_reason">
+                            <tr :class="{error: val.error.fail_reason}" v-show="form.status === -1" id="form-fail_reason">
                                 <td>失败原因</td>
                                 <td>
                                     <textarea v-model="form.fail_reason" class="form-textarea"></textarea>
@@ -224,7 +224,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.description)" id="form-description">
+                            <tr :class="{error: val.error.description}" id="form-description">
                                 <td>描述</td>
                                 <td>
                                     <textarea v-model="form.description" class="form-textarea"></textarea>
@@ -234,7 +234,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.create_time)" id="form-create_time">
+                            <tr :class="{error: val.error.create_time}" id="form-create_time">
                                 <td>创建时间</td>
                                 <td>
                                     <DatePicker type="datetime" v-model="createTime" format="yyyy-MM-dd HH:mm:ss" @on-change="setDatetimeEvent" class="iview-form-input"></DatePicker>
@@ -264,7 +264,7 @@
                                 <div>
                                     <table class="input-table">
                                         <tbody>
-                                        <tr :class="getClass(val.error.images)" id="form-images">
+                                        <tr :class="{error: val.error.images}" id="form-images">
                                             <td>
                                                 <div ref="images">
                                                     <!-- 上传图片组件 -->
@@ -314,7 +314,7 @@
                                     <div>
                                         <Table border :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" style="width: 100%;">
                                             <template v-slot:path="{row,index}">
-                                                <img :src="row.path ? row.__path__ : $store.state.context.res.notFound" height="40" class="image" @click.stop="link(row.__path__)">
+                                                <img :src="row.path ? row.__path__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image" @click.stop="link(row.__path__)">
                                             </template>
                                             <template v-slot:action="{row,index}">
                                                 <my-table-button :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)">删除</my-table-button>
@@ -339,7 +339,7 @@
                 </template>
                 <template slot="default">
                     <Table border :data="users.data" :columns="users.field" @on-row-click="updateUserEvent">
-                        <template v-slot:avatar="{row,index}"><img :src="row.avatar ? row.__avatar__ : $store.state.context.res.notFound" height="40" class="image"></template>
+                        <template v-slot:avatar="{row,index}"><img :src="row.avatar ? row.__avatar__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
                     </Table>
                 </template>
             </my-form-modal>
@@ -351,7 +351,7 @@
                 </template>
                 <template slot="default">
                     <Table border :data="subjects.data" :columns="subjects.field" @on-row-click="updateSubjectEvent">
-                        <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" height="40" class="image"></template>
+                        <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
                         <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
                     </Table>
                 </template>

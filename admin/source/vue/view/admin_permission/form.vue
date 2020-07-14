@@ -15,10 +15,10 @@
         </template>
 
         <template slot="default">
-            <form class="form" @submit.prevent ref="form">
+            <form class="form" @submit.prevent="submitEvent" ref="form">
                 <table class="input-table">
                     <tbody>
-                    <tr :class="getClass(val.error.cn)" id="form_cn">
+                    <tr :class="{error: val.error.cn}" id="form_cn">
                         <td>中文名称</td>
                         <td>
                             <input type="text" v-model="form.cn"  @input="val.error.cn = ''" class="form-text">
@@ -27,7 +27,7 @@
                             <span class="e-msg">{{ val.error.cn }}</span>
                         </td>
                     </tr>
-                    <tr :class="getClass(val.error.en)" id="form_en">
+                    <tr :class="{error: val.error.en}" id="form_en">
                         <td>英文名称</td>
                         <td>
                             <input type="text" v-model="form.en"  @input="val.error.en = ''" class="form-text">
@@ -36,7 +36,7 @@
                             <span class="e-msg">{{ val.error.en }}</span>
                         </td>
                     </tr>
-                    <tr :class="getClass(val.error.value)" id="form_value">
+                    <tr :class="{error: val.error.value}" id="form_value">
                         <td>权限</td>
                         <td>
                             <input type="text" class="form-text"  @input="val.error.value = ''" v-model="form.value">
@@ -45,7 +45,7 @@
                             <span class="e-msg">{{ val.error.value }}</span>
                         </td>
                     </tr>
-                    <tr :class="getClass(val.error.p_id)" id="form_p_id">
+                    <tr :class="{error: val.error.p_id}" id="form_p_id">
                         <td>上级权限</td>
                         <td>
                             <my-deep-select :data="permission" v-model="form.p_id" :has="true" :attr="val.attr"  @change="val.error.p_id = ''"></my-deep-select>
@@ -54,7 +54,7 @@
                             <span class="e-msg">{{ val.error.p_id }}</span>
                         </td>
                     </tr>
-                    <tr :class="getClass(val.error.description)" id="form_description">
+                    <tr :class="{error: val.error.description}" id="form_description">
                         <td>描述</td>
                         <td>
                             <textarea v-model="form.description" class="form-textarea" @input="val.error.description = ''"></textarea>
@@ -63,7 +63,7 @@
                             <span class="e-msg">{{ val.error.description }}</span>
                         </td>
                     </tr>
-                    <tr :class="getClass(val.error.type)" id="form_type">
+                    <tr :class="{error: val.error.type}" id="form_type">
                         <td>类型</td>
                         <td>
                             <RadioGroup v-model="form.type" @on-change="val.error.type = ''">
@@ -74,7 +74,7 @@
                             <span class="e-msg">{{ val.error.type }}</span>
                         </td>
                     </tr>
-                    <tr :class="getClass(val.error.is_menu)" id="form_is_menu">
+                    <tr :class="{error: val.error.is_menu}" id="form_is_menu">
                         <td>菜单？</td>
                         <td>
                             <RadioGroup v-model="form.is_menu"  @on-change="val.error.is_menu = ''">
@@ -85,7 +85,7 @@
                             <span class="e-msg">{{ val.error.is_menu }}</span>
                         </td>
                     </tr>
-                    <tr :class="getClass(val.error.is_view)" id="form_is_view">
+                    <tr :class="{error: val.error.is_view}" id="form_is_view">
                         <td>视图？</td>
                         <td>
                             <RadioGroup v-model="form.is_view"  @on-change="val.error.is_view = ''">
@@ -96,7 +96,7 @@
                             <span class="e-msg">{{ val.error.is_view }}</span>
                         </td>
                     </tr>
-                    <tr :class="getClass(val.error.enable)" id="form_enable">
+                    <tr :class="{error: val.error.enable}" id="form_enable">
                         <td>启用？</td>
                         <td>
                             <RadioGroup v-model="form.enable"  @input="val.error.enable = ''">
@@ -108,7 +108,7 @@
                         </td>
                     </tr>
 
-                    <tr :class="getClass(val.error.b_ico)" id="b_ico">
+                    <tr :class="{error: val.error.b_ico}" id="b_ico">
                         <td>大图标</td>
                         <td>
                             <div ref="b-ico">
@@ -144,7 +144,7 @@
                         </td>
                     </tr>
 
-                    <tr :class="getClass(val.error.s_ico)" id="s_ico">
+                    <tr :class="{error: val.error.s_ico}" id="s_ico">
                         <td>小图标</td>
                         <td>
                             <div ref="s-ico">
@@ -180,13 +180,20 @@
                         </td>
                     </tr>
 
-                    <tr :class="getClass(val.error.weight)" id="form_weight">
+                    <tr :class="{error: val.error.weight}" id="form_weight">
                         <td>权重</td>
                         <td>
                             <input type="number" class="form-text"  @input="val.error.weight = ''" v-model="form.weight">
                             <span class="msg">请提供整数</span>
                             <span class="need"></span>
                             <span class="e-msg">{{ val.error.weight }}</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2">
+                            <Button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent">提交</Button>
+                            <button v-show="false" type="submit"></button>
                         </td>
                     </tr>
 

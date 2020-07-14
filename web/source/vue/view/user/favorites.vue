@@ -114,7 +114,7 @@
                             <div class="inner">
                                 <my-icon icon="search" class="ico v-a-t"></my-icon>
                                 <input type="text" class="input" v-model="search.value" @keyup.enter="getCollectionGroup" placeholder="搜索收藏夹">
-                                <my-loading class="pending" v-if="val.pending.getCollectionGroup"></my-loading>
+                                <my-loading class="pending" size="16" v-if="val.pending.getCollectionGroup"></my-loading>
                             </div>
                         </div>
 

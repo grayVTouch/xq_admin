@@ -18,13 +18,13 @@
 
                 <div class="table">
 
-                    <Table border width="100%" height="600" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent">
+                    <Table border width="100%" height="630" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
                         <template v-slot:cn="{row,index}">
                             <template v-if="row.floor > 1">{{ '|' + '_'.repeat(row.floor * 2) + row.cn }}</template>
                             <template v-else>{{ row.cn }}</template>
                         </template>
-                        <template v-slot:s_ico="{row,index}"><img :src="row.s_ico ? row.__s_ico__ : $store.state.context.res.notFound" class="image" height="40" @click.stop="link(row.__s_ico__)"></template>
-                        <template v-slot:b_ico="{row,index}"><img :src="row.b_ico ? row.__b_ico__ : $store.state.context.res.notFound" class="image" height="40" @click.stop="link(row.__b_ico__)"></template>
+                        <template v-slot:s_ico="{row,index}"><img :src="row.s_ico ? row.__s_ico__ : $store.state.context.res.notFound" class="image" :height="$store.state.context.table.imageH" @click.stop="link(row.__s_ico__)"></template>
+                        <template v-slot:b_ico="{row,index}"><img :src="row.b_ico ? row.__b_ico__ : $store.state.context.res.notFound" class="image" :height="$store.state.context.table.imageH" @click.stop="link(row.__b_ico__)"></template>
                         <template v-slot:is_menu="{row,index}"><my-switch v-model="row.is_menu" :loading="val.pending['is_menu_' + row.id]" :extra="{id: row.id , field: 'is_menu'}" @on-change="updateBoolValEvent" /></template>
                         <template v-slot:is_view="{row,index}"><my-switch v-model="row.is_view" :loading="val.pending['is_view_' + row.id]" :extra="{id: row.id , field: 'is_view'}" @on-change="updateBoolValEvent" /></template>
                         <template v-slot:enable="{row,index}"><my-switch v-model="row.enable" :loading="val.pending['enable_' + row.id]" :extra="{id: row.id , field: 'enable'}" @on-change="updateBoolValEvent" /></template>

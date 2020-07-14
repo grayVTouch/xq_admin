@@ -1,6 +1,10 @@
 
 const form = {
+    p_id: 0 ,
+    module_id: 0 ,
+    enable: 1 ,
     weight: 0 ,
+    platform: '' ,
 };
 
 export default {
@@ -16,17 +20,10 @@ export default {
             val: {
                 pending: {} ,
                 modal: false ,
-                attr: {
-                    id: 'id',
-                    p_id: 'p_id',
-                } ,
                 error: {} ,
                 // edit-编辑 add-添加
                 mode: '' ,
                 selectedIds: [] ,
-                // 抽屉
-                drawer: false ,
-
             } ,
             table: {
                 field: [
@@ -34,58 +31,88 @@ export default {
                         type: 'selection',
                         width: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
                     },
                     {
                         title: 'id' ,
                         key: 'id' ,
+                        width: TopContext.table.id ,
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
+                    } ,
+                    {
+                        title: '名称【模块】' ,
+                        slot: 'name' ,
+                        width: 600 ,
+                        fixed: 'left' ,
+                    } ,
+                    {
+                        title: '模块id',
+                        key: 'module_id',
+                        width: TopContext.table.name ,
+                        align: TopContext.table.alignCenter,
+                    },
+                    {
+                        title: '上级id' ,
+                        key: 'p_id' ,
+                        width: TopContext.table.name ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
-                        title: '名称' ,
-                        key: 'name' ,
-                        align: TopContext.table.alignCenter
+                        title: 'value' ,
+                        key: 'value' ,
+                        width: TopContext.table.link ,
+                        align: TopContext.table.alignLeft ,
+                    } ,
+                    {
+                        title: '所属平台' ,
+                        key: '__platform__' ,
+                        width: TopContext.table.status ,
+                        align: TopContext.table.alignCenter ,
+                    } ,
+                    {
+                        title: '启用?' ,
+                        slot: 'enable' ,
+                        width: TopContext.table.status ,
+                        align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '权重' ,
                         key: 'weight' ,
+                        width: TopContext.table.weight ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '创建时间' ,
                         key: 'create_time' ,
+                        width: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '操作' ,
                         slot: 'action' ,
+                        width: TopContext.table.action ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
                     } ,
                 ] ,
-                total: 0 ,
-                page: 1 ,
                 data: [] ,
             } ,
-            // 角色权限
-            permission: [] ,
-            // 所有权限
-            permissions: [] ,
-            // 选中的权限
-            rolePermission: [] ,
-            search: {
-                limit: this.$store.state.context.limit
-            } ,
             form: {...form}  ,
-            role: {} ,
+            category: [] ,
+            modules: [] ,
         };
     } ,
 
     mounted () {
-        this.init();
+        this.initDom();
+        this.initIns();
+        this.getData();
     } ,
 
     computed: {
         title () {
-            return this.val.mode === 'edit' ? '编辑' : '添加';
+            return this.val.mode === 'edit' ? '编辑分类' : '添加分类';
         } ,
 
         showDestroyAllBtn () {
@@ -95,15 +122,32 @@ export default {
 
     methods: {
 
-        init () {
-            this.initDom();
-            this.initIns();
-            this.getPermission();
-            this.getData();
+        getModuleData () {
+            Api.module.all((data , code) => {
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , data);
+                    return ;
+                }
+                this.modules = data;
+            });
+        } ,
+
+        moduleChangedEvent (moduleId) {
+            moduleId = parseInt(moduleId);
+            this.val.error.module_id = '';
+            this.form.p_id = 0;
+            let category;
+            if (this.val.mode === 'edit') {
+                category = this.getCategoryExcludeSelfAndChildrenByIdAndModuleId(this.form.id , moduleId);
+            } else {
+                category = this.getCategoryByModuleId(moduleId);
+            }
+            this.category = category;
         } ,
 
 
         initDom () {
+
         } ,
 
 
@@ -112,40 +156,23 @@ export default {
 
         } ,
 
-        getPermission () {
-            Api.admin_permission.index((data , code) => {
-                if (code !== TopContext.code.Success) {
-                    this.errorHandle(data);
-                    return ;
-                }
-                data.forEach((v) => {
-                    // 展开
-                    v.expand = true;
-                    v.title = v.cn;
-                });
-                this.permissions = data;
-            });
-        } ,
-
         getData () {
             this.pending('getData' , true);
-            Api.role.index(this.search , (data , code) => {
+            Api.nav.index((data , code) => {
                 this.pending('getData' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     return ;
                 }
-                this.table.total = data.total;
-                this.table.page = data.current_page;
-                this.handleData(data.data);
-                this.table.data = data.data;
+                this.handleData(data);
+                this.table.data = data;
             });
         } ,
 
         handleData (data) {
             data.forEach((v) => {
+                this.pending(`enable_${v.id}` , false);
                 this.pending(`delete_${v.id}` , false);
-                this.select(`select_${v.id}` , false);
             });
         } ,
 
@@ -164,19 +191,19 @@ export default {
             this.destroyAll([id] , callback);
         } ,
 
-        destroyAll (idList , callback) {
-            if (idList.length < 1) {
+        destroyAll (ids , callback) {
+            if (ids.length < 1) {
                 this.message('warning' ,'请选择待删除的项');
                 G.invoke(callback , this , false);
                 return ;
             }
             const self = this;
-            this.confirmModal('你确定删除吗？'  , (res) => {
+            this.confirmModal('将会连同子类一并删除，确定操作吗？' , (res) => {
                 if (!res) {
-                    G.invoke(callback , this , false);
+                    G.invoke(callback , self , false);
                     return ;
                 }
-                Api.role.destroyAll(idList , (data , code) => {
+                Api.nav.destroyAll(ids , (data , code) => {
                     if (code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
                         this.message('error' , data);
@@ -195,16 +222,16 @@ export default {
             const record = this.findRecordById(extra.id);
             this.pending(pendingKey , true);
 
-            Api.role.localUpdate(record.id , {
+            Api.nav.localUpdate(record.id , {
                 [extra.field]: val
             } , (data , code) => {
                 this.pending(pendingKey , false);
                 if (code !== TopContext.code.Success) {
                     record[extra.field] = oVal;
-                    this.notice(data);
+                    this.message('error' , data);
                     return ;
                 }
-                this.notice('操作成功');
+                this.message('success' , '操作成功');
             });
         } ,
 
@@ -213,7 +240,7 @@ export default {
             data.forEach((v) => {
                 ids.push(v.id);
             });
-            this.val.selectedIds = ids;
+            this._val('selectedIds' , ids);
         } ,
 
         destroyEvent (index , record) {
@@ -227,19 +254,51 @@ export default {
 
         destroyAllEvent () {
             this.pending('destroyAll' , true);
-            this.destroyAll(this.val.selectedIds , (success) => {
+            this.destroyAll(this._val('selectedIds') , (success) => {
                 this.pending('destroyAll' , false);
                 if (success) {
-                    this.val.selectedIds = [];
+                    this._val('selectedIds' , []);
                 }
             });
         } ,
 
-        editEvent (record) {
+        getCategoryExcludeSelfAndChildrenByIdAndModuleId (id , moduleId) {
+            const selfAndChildren = G.t.childrens(id , this.table.data , null , true , false);
+            const selfAndChildrenIds = [];
+            selfAndChildren.forEach((v) => {
+                selfAndChildrenIds.push(v.id);
+            });
+            const res = [];
+            this.table.data.forEach((v) => {
+                if (G.contain(v.id , selfAndChildrenIds)) {
+                    return ;
+                }
+                if (v.module_id !== moduleId) {
+                    return ;
+                }
+                res.push(v);
+            });
+            return res;
+        } ,
+
+        getCategoryByModuleId (moduleId) {
+            const res = [];
+            this.table.data.forEach((v) => {
+                if (v.module_id !== moduleId) {
+                    return ;
+                }
+                res.push(v);
+            });
+            return res;
+        } ,
+
+        editEvent (v) {
             this._val('modal' , true);
             this._val('mode' , 'edit');
             this.error();
-            this.form = {...record};
+            this.form = {...v};
+            this.getModuleData();
+            this.category = this.getCategoryExcludeSelfAndChildrenByIdAndModuleId(v.id , this.form.module_id);
         } ,
 
         addEvent () {
@@ -247,11 +306,12 @@ export default {
             this._val('mode' , 'add');
             this.error();
             this.form = {...form};
+            this.getModuleData();
         } ,
+
 
         submitEvent () {
             const self = this;
-            this.pending('submit' , true);
             const callback = (data , code) => {
                 this.pending('submit' , false);
                 this.error();
@@ -260,108 +320,27 @@ export default {
                     return ;
                 }
                 this.successHandle((keep) => {
-                    self.getData();
-                    if (keep) {
-                        return ;
+                    this.getData();
+                    if (!keep) {
+                        self.closeFormModal();
                     }
-                    self.closeFormModal();
                 });
             };
+            this.pending('submit' , true);
             if (this.val.mode === 'edit') {
-                Api.role.update(this.form.id , this.form , callback);
+                Api.nav.update(this.form.id , this.form ,callback);
                 return ;
             }
-            Api.role.store(this.form , callback);
+            Api.nav.store(this.form , callback);
         } ,
 
         closeFormModal () {
             if (this.pending('submit')) {
-                this.message('warning' , '请求中...请耐心等待');
-                return;
-            }
-            this.val.modal = false;
-
-        } ,
-
-        searchEvent () {
-            this.search.page = 1;
-            this.getData();
-        } ,
-
-        pageEvent (page) {
-            this.search.page = page;
-            this.getData();
-        } ,
-
-        allocateEvent (record) {
-            this.role = {...record};
-            this._val('drawer' , true);
-            Api.role.permission(record.id , (data , code) => {
-                if (code !== TopContext.code.Success) {
-                    this.errorHandle(data);
-                    return ;
-                }
-                const permissions = [...this.permissions];
-                permissions.forEach((v) => {
-                    for (let i = 0; i < data.length; ++i)
-                    {
-                        const cur = data[i];
-                        if (cur.id === v.id) {
-                            v.checked = true;
-                            v.selected = true;
-                            return ;
-                        }
-                    }
-                    v.checked = false;
-                    v.selected = false;
-                });
-                const permission = G.t.childrens(0 , permissions , this.val.attr , false , true);
-                this.permission = permission;
-                this.rolePermission = data;
-            });
-        } ,
-
-        closeFormDrawer() {
-            if (this.pending('allocatePermission')) {
-                this.message('请求中...请耐心等待');
+                this.message('warning' ,'请求中...请耐心等待');
                 return ;
             }
-            this._val('drawer' , false);
-            this.rolePermission = [];
+            this._val('modal' , false);
         } ,
 
-        allocatePermission () {
-            this.pending('allocatePermission' , true);
-            const ids = [];
-            this.rolePermission.forEach((v) => {
-                ids.push(v.id);
-            });
-            Api.role.allocatePermission(this.role.id , {
-                permission: G.jsonEncode(ids)
-            } , (data , code) => {
-                this.pending('allocatePermission' , false);
-                if (code !== TopContext.code.Success) {
-                    this.errorHandle(data);
-                    return ;
-                }
-                this.successHandle((keep) => {
-                    this.getData();
-                    if (keep) {
-                        return ;
-                    }
-                    this.closeFormDrawer();
-                });
-            });
-        } ,
-
-        permissionCheckedEvent (data ,cur) {
-            cur.selected = cur.checked;
-            this.rolePermission = data;
-        } ,
-
-        permissionSelectedEvent (data , cur) {
-            cur.checked = cur.selected;
-            this.rolePermission = data;
-        } ,
     } ,
 }

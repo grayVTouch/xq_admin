@@ -180,9 +180,9 @@ export default {
         } ,
 
         getData () {
-            this.$refs.base.show();
+            this.pending('getData' , true);
             Api.admin_permission.index((data , code) => {
-                this.$refs.base.hide();
+                this.pending('getData' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     return ;

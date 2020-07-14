@@ -58,8 +58,8 @@
 
                         <div class="left">
                             <!-- 测试范例：翻译 -->
-                            <div class="translate hide" title="这是用来生成常用中英文对照字典，加快前端展示的功能，请再更新数据后不定时调用此功能，以保证前端中英文流畅切换">
-                                <img src="./res/translate.png" class="image">
+                            <div class="translate" title="刷新页面" v-ripple @click="reloadChildPage">
+                                <my-icon icon="reset"></my-icon>
                             </div>
                         </div>
 

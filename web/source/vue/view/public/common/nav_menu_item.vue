@@ -1,6 +1,6 @@
 <template>
-    <div class="item" :data-id="item.link" v-if="item.is_menu">
-        <a class="action" :href="`#${item.link}`" v-ripple>
+    <div class="item" :data-id="item.value" v-if="item.is_menu">
+        <a class="action" :href="`#${item.value}`" v-ripple>
             <div class="text">{{ item.name }}</div>
             <div class="ico hide"><i class="icon run-iconfont run-iconfont-arrow"></i></div>
         </a>

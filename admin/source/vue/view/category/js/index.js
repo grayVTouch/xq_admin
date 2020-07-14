@@ -40,14 +40,14 @@ export default {
                         fixed: 'left' ,
                     } ,
                     {
-                        title: '名称' ,
+                        title: '名称【模块】' ,
                         slot: 'name' ,
                         width: 600 ,
                         fixed: 'left' ,
                     } ,
                     {
-                        title: '模块【id】',
-                        slot: 'module_id',
+                        title: '模块id',
+                        key: 'module_id',
                         width: TopContext.table.name ,
                         align: TopContext.table.alignCenter,
                     },
@@ -149,9 +149,9 @@ export default {
         } ,
 
         getData () {
-            this.$refs.base.show();
+            this.pending('getData' , true);
             Api.category.index((data , code) => {
-                this.$refs.base.hide();
+                this.pending('getData' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     return ;

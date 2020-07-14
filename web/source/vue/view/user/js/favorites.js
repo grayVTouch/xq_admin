@@ -29,9 +29,9 @@ export default {
 
             relationType: {
                 image_subject: '图片专题',
-                video_subject: '视图专题',
-                article_subject: '文章专题',
-                bbs_subject: '论坛帖子',
+                // video_subject: '视图专题',
+                // article_subject: '文章专题',
+                // bbs_subject: '论坛帖子',
             },
 
             favorites: [],

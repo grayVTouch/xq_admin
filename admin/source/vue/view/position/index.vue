@@ -73,7 +73,7 @@
                         <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
                     </div>
                     <div class="right">
-                        <Page :total="table.total" :page-size="$store.state.context.limit" :current="table.page" :show-total="true" :show-sizer="false" :show-elevator="true"  @on-change="pageEvent" />
+                        <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
                     </div>
                 </div>
             </div>
@@ -87,7 +87,7 @@
 
                 <div class="table">
 
-                    <Table border :columns="table.field" :data="table.data" @on-selection-change="selectedEvent">
+                    <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
                         <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
@@ -105,15 +105,15 @@
             </div>
 
             <div class="line page">
-                <Page :total="table.total" :page-size="$store.state.context.limit" :current="table.page" :show-total="true" :show-sizer="false" :show-elevator="true"  @on-change="pageEvent" />
+                <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
             </div>
 
             <my-form-modal v-model="val.modal" :title="title" :loading="val.pending.submit" @on-ok="submitEvent" @on-cancel="closeFormModal">
                 <template slot="default">
-                    <form class="form" @submit.prevent>
+                    <form class="form" @submit.prevent="submitEvent">
                         <table class="input-table">
                             <tbody>
-                            <tr :class="getClass(val.error.value)" id="form-value">
+                            <tr :class="{error: val.error.value}" id="form-value">
                                 <td>位置</td>
                                 <td>
                                     <input type="text" v-model="form.value" @input="val.error.value=''" class="form-text">
@@ -122,7 +122,7 @@
                                     <div class="e-msg">{{ val.error.value }}</div>
                                 </td>
                             </tr>
-                            <tr :class="getClass(val.error.name)" id="form-name">
+                            <tr :class="{error: val.error.name}" id="form-name">
                                 <td>名称</td>
                                 <td>
                                     <input type="text" v-model="form.name" @input="val.error.name=''" class="form-text">
@@ -131,16 +131,19 @@
                                     <div class="e-msg">{{ val.error.name }}</div>
                                 </td>
                             </tr>
-                            <tr :class="getClass(val.error.module_id)" id="form-module_id">
-                                <td>所属模块</td>
+                            <tr :class="{error: val.error.platform}" id="form-platform">
+                                <td>所属平台</td>
                                 <td>
-                                    <my-select :data="modules" v-model="form.module_id"></my-select>
+                                    <select v-model="form.platform" class="form-select">
+                                        <option value="">请选择...</option>
+                                        <option v-for="(v,k) in $store.state.business.platform" :key="k" :value="k">{{ v }}</option>
+                                    </select>
                                     <span class="need">*</span>
                                     <div class="msg"></div>
-                                    <div class="e-msg">{{ val.error.module_id }}</div>
+                                    <div class="e-msg">{{ val.error.platform }}</div>
                                 </td>
                             </tr>
-                            <tr :class="getClass(val.error.description)" id="form-description">
+                            <tr :class="{error: val.error.description}" id="form-description">
                                 <td>描述</td>
                                 <td>
                                     <textarea v-model="form.description" class="form-textarea" @input="val.error.description = ''"></textarea>
@@ -149,6 +152,13 @@
                                     <div class="e-msg">{{ val.error.description }}</div>
                                 </td>
                             </tr>
+
+                            <tr v-show="false">
+                                <td colspan="2">
+                                    <button type="submit"></button>
+                                </td>
+                            </tr>
+
                             </tbody>
                         </table>
                     </form>

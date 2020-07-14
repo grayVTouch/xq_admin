@@ -17,6 +17,7 @@ export default {
     email: 130 ,
     ip: 180 ,
     action: 200 ,
+    link: 300 ,
 
     w_160: 160 ,
     w_200: 200 ,
@@ -24,5 +25,7 @@ export default {
     alignCenter: 'center' ,
     alignLeft: 'left' ,
 
+    height: 330 ,
 
+    imageH: 40 ,
 };

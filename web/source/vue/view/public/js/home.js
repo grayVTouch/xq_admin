@@ -118,9 +118,9 @@ export default {
             } ,
             mimeRange: {
                 image: '图片' ,
-                video: '视频' ,
-                article: '资讯' ,
-                bbs: '论坛' ,
+                // video: '视频' ,
+                // article: '资讯' ,
+                // bbs: '论坛' ,
             } ,
             nav: [] ,
             keepalive: true ,
@@ -594,7 +594,7 @@ export default {
             {
                 const cur = data[i];
                 // let route = G.getUri(cur.link);
-                let route = cur.link;
+                let route = cur.value;
                 // 搜索1：完整匹配
                 if (route === path) {
                     res = cur;

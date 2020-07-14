@@ -87,10 +87,10 @@
 
                 <div class="table">
 
-                    <Table border :page-size="$store.state.context.limit" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
+                    <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
                         <template v-slot:role_id="{row,index}">{{ row.role ? `${row.role.name}【${row.role.id}】` : `unknow【${row.role_id}】` }}</template>
                         <template v-slot:avatar="{row,index}">
-                            <img :src="row.avatar ? row.__avatar__ : $store.state.context.res.notFound" @click="link(row.__avatar__ , '__blank')" height="40" class="image">
+                            <img :src="row.avatar ? row.__avatar__ : $store.state.context.res.notFound" @click="link(row.__avatar__ , '__blank')" :height="$store.state.context.table.imageH" class="image">
                         </template>
                         <template v-slot:is_root="{row,index}">
                             <b :class="{green: row.is_root === 1 , red: row.is_root === 0}">{{ row.__is_root__ }}</b>
@@ -120,7 +120,7 @@
                         <table class="input-table">
                             <tbody>
 
-                            <tr :class="getClass(val.error.username)" id="form-name">
+                            <tr :class="{error: val.error.username}" id="form-name">
                                 <td>名称</td>
                                 <td>
                                     <input type="text" v-model="form.username" @input="val.error.username=''" class="form-text">
@@ -130,7 +130,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.password)" id="form-password">
+                            <tr :class="{error: val.error.password}" id="form-password">
                                 <td>密码</td>
                                 <td>
                                     <input type="text" v-model="form.password" @input="val.error.password=''" class="form-text">
@@ -140,7 +140,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.role_id)" id="form-role_id">
+                            <tr :class="{error: val.error.role_id}" id="form-role_id">
                                 <td>角色</td>
                                 <td>
                                     <my-select :data="role" v-model="form.role_id"></my-select>
@@ -150,7 +150,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.avatar)" id="form-avatar">
+                            <tr :class="{error: val.error.avatar}" id="form-avatar">
                                 <td>封面</td>
                                 <td>
                                     <div ref="avatar">
@@ -186,7 +186,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.sex)" id="form-sex">
+                            <tr :class="{error: val.error.sex}" id="form-sex">
                                 <td>性别</td>
                                 <td>
                                     <RadioGroup v-model="form.sex">
@@ -198,7 +198,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.birthday)" id="form-birthday">
+                            <tr :class="{error: val.error.birthday}" id="form-birthday">
                                 <td>生日</td>
                                 <td>
                                     <DatePicker v-model="val.birthday" format="yyyy-MM-dd" class="iview-form-input" @on-change="setDate"></DatePicker>
@@ -208,7 +208,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.phone)" id="form-phone">
+                            <tr :class="{error: val.error.phone}" id="form-phone">
                                 <td>手机号码</td>
                                 <td>
                                     <input type="text" v-model="form.phone" @input="val.error.phone=''" class="form-text">
@@ -218,7 +218,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.email)" id="form-email">
+                            <tr :class="{error: val.error.email}" id="form-email">
                                 <td>电子邮件</td>
                                 <td>
                                     <input type="text" v-model="form.email" @input="val.error.email=''" class="form-text">

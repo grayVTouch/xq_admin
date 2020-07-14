@@ -39,12 +39,12 @@ export default {
                     } ,
                     {
                         title: '名称' ,
-                        key: 'name' ,
+                        slot: 'name' ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
-                        title: '模块【id】',
-                        slot: 'module_id',
+                        title: '模块id',
+                        key: 'module_id',
                         align: TopContext.table.alignCenter,
                     },
                     {
@@ -119,11 +119,9 @@ export default {
         } ,
 
         getData () {
-            this.$refs.base.show();
             this.pending('getData' , true);
             Api.tag.index(this.search , (data , code) => {
                 this.pending('getData' , false);
-                this.$refs.base.hide();
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     return ;

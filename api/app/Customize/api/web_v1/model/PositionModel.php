@@ -10,10 +10,10 @@ class PositionModel extends Model
 {
     protected $table = 'xq_position';
 
-    public static function getByModuleAndValue(int $module_id , string $value): ?PositionModel
+    public static function getByPlatformAndValue(string $platform , string $value): ?PositionModel
     {
         return self::where([
-                ['module_id' , '=' , $module_id] ,
+                ['platform' , '=' , $platform] ,
                 ['value' , '=' , $value] ,
             ])
             ->first();

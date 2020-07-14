@@ -1,6 +1,6 @@
 
 const form = {
-    module_id: 0 ,
+    platform: '' ,
     weight: 0 ,
 };
 
@@ -48,8 +48,8 @@ export default {
                         align: TopContext.table.alignCenter
                     } ,
                     {
-                        title: '模块【id】',
-                        slot: 'module_id',
+                        title: '平台',
+                        key: '__platform__',
                         align: TopContext.table.alignCenter,
                     },
                     {
@@ -119,11 +119,9 @@ export default {
         } ,
 
         getData () {
-            this.$refs.base.show();
             this.pending('getData' , true);
             Api.position.index(this.search , (data , code) => {
                 this.pending('getData' , false);
-                this.$refs.base.hide();
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     return ;

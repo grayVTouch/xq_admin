@@ -207,6 +207,18 @@ Route::prefix('admin_v1')
             Route::delete('destroy_all_image_at_position' , 'ImageAtPosition@destroyAll');
             Route::delete('image_at_position/{id}' , 'ImageAtPosition@destroy');
 
+            /**
+             * 导航菜单
+             */
+            Route::get('nav' , 'Nav@index');
+            Route::get('nav/{id}' , 'Nav@show');
+            Route::patch('nav/{id}' , 'Nav@localUpdate');
+            Route::put('nav/{id}' , 'Nav@update');
+            Route::post('nav' , 'Nav@store');
+            // 特别注意，这边这个顺序不能更换
+            // 如果更换会导致 路由匹配出现不是期望的现象
+            Route::delete('destroy_all_nav/' , 'Nav@destroyAll');
+            Route::delete('nav/{id}' , 'Nav@destroy');
 
         });
     });

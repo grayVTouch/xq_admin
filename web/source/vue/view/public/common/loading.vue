@@ -16,6 +16,7 @@
 
 <style scoped>
     .image {
+        color: #fff;
         animation: loading 0.6s infinite linear;
         -webkit-animation: loading 0.6s infinite linear;
         -moz-animation: loading 0.6s infinite linear;

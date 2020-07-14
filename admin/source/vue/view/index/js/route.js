@@ -46,7 +46,7 @@ export default {
 
         // 获取当前位置
         position (id) {
-            let route = this.$store.state.permission;
+            const route = this.$store.state.permission;
             return G.t.parents(id , route , this.field , true , false);
         } ,
     }

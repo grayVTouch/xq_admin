@@ -1,13 +1,13 @@
 <?php
 
 
-namespace App\Customize\api\web_v1\handler;
+namespace App\Customize\api\admin_v1\handler;
 
 
-use App\Customize\api\web_v1\model\NavModel;
+use App\Customize\api\admin_v1\model\NavModel;
+use App\Customize\api\admin_v1\model\ModuleModel;
 use stdClass;
-use Traversable;
-use function api\web_v1\get_value;
+use function api\admin_v1\get_value;
 use function core\convert_obj;
 
 class NavHandler extends Handler
@@ -24,10 +24,16 @@ class NavHandler extends Handler
         } else {
             $nav = null;
         }
+        $module = ModuleModel::find($res->module_id);
+        ModuleHandler::handle($module);
+
+        $res->module = $module;
         $res->nav = $nav;
 
         $res->__platform__ = get_value('business.platform' , $res->platform);
 
         return $res;
     }
+
+
 }

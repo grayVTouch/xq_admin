@@ -77,13 +77,13 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.description}" id="form_description">
-                                <td>描述</td>
+                            <tr :class="{error: val.error.value}" id="form_description">
+                                <td>value</td>
                                 <td>
-                                    <textarea v-model="form.description" class="form-textarea" @input="val.error.description = ''"></textarea>
-                                    <span class="msg"></span>
+                                    <input type="text" v-model="form.value" class="form-text" @input="val.error.value = ''">
                                     <span class="need"></span>
-                                    <span class="e-msg">{{ val.error.description }}</span>
+                                    <div class="msg"></div>
+                                    <div class="e-msg">{{ val.error.value }}</div>
                                 </td>
                             </tr>
 
@@ -93,9 +93,22 @@
                                     <RadioGroup v-model="form.enable"  @input="val.error.enable = ''">
                                         <Radio v-for="(v,k) in $store.state.business.bool_for_int" :key="k" :label="parseInt(k)">{{ v }}</Radio>
                                     </RadioGroup>
-                                    <span class="msg">默认：开启</span>
                                     <span class="need">*</span>
-                                    <span class="e-msg">{{ val.error.enable }}</span>
+                                    <div class="msg">默认：开启</div>
+                                    <div class="e-msg">{{ val.error.enable }}</div>
+                                </td>
+                            </tr>
+
+                            <tr :class="{error: val.error.platform}" id="form-platform">
+                                <td>所属平台</td>
+                                <td>
+                                    <select v-model="form.platform" class="form-select">
+                                        <option value="">请选择...</option>
+                                        <option v-for="(v,k) in $store.state.business.platform" :key="k" :value="k">{{ v }}</option>
+                                    </select>
+                                    <span class="need">*</span>
+                                    <div class="msg"></div>
+                                    <div class="e-msg">{{ val.error.platform }}</div>
                                 </td>
                             </tr>
 
@@ -103,9 +116,9 @@
                                 <td>权重</td>
                                 <td>
                                     <input type="number" class="form-text"  @input="val.error.weight = ''" v-model="form.weight">
-                                    <span class="msg">请提供整数</span>
                                     <span class="need"></span>
-                                    <span class="e-msg">{{ val.error.weight }}</span>
+                                    <div class="msg">请提供整数</div>
+                                    <div class="e-msg">{{ val.error.weight }}</div>
                                 </td>
                             </tr>
 

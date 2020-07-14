@@ -8,14 +8,15 @@
                 <span class="delimiter">/</span>
                 <span class="en">{{ topRoute.en }}</span>
                 &nbsp;&nbsp;
-                <button class="run-button run-button-blue" @click.prevent="reload()">
-                    <i class="run-iconfont run-reset"></i>标签页刷新
-                </button>
+<!--                <button v-ripple class="run-button run-button-blue" @click.prevent="reload()">-->
+<!--                    <i class="run-iconfont run-reset"></i>标签页刷新-->
+<!--                </button>-->
+
             </div>
             <div class="right">
                 <!-- 面包屑 -->
                 <template v-for="(v,k) in position">
-                    <span class="text" @click="open(v)">{{ v.cn }}</span>
+                    <span v-ripple class="text" @click="open(v)">{{ v.cn }}</span>
                     <span class="delimiter" v-if="!(k == position.length - 1)">/</span>
                 </template>
             </div>

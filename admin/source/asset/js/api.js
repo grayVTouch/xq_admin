@@ -11,6 +11,7 @@ import image_subject from '../../api/image_subject.js';
 import admin from '../../api/admin.js';
 import position from '../../api/position.js';
 import image_at_position from '../../api/image_at_position.js';
+import nav from '../../api/nav.js';
 
 window.Api = {
     login ,
@@ -26,4 +27,5 @@ window.Api = {
     admin ,
     position ,
     image_at_position ,
+    nav ,
 };

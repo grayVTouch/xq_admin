@@ -16,6 +16,8 @@ export default {
                 // 标签页
                 tab: [] ,
                 duration: null ,
+                // 当前标签 id
+                tabId: '' ,
             } ,
         };
     } ,
@@ -120,8 +122,12 @@ export default {
                 time: 200 ,
                 // 次要的图标类型，new || number || switch
                 icon: 'switch' ,
+
+
                 // id: [1] ,
                 // id: [4] ,
+                // id: [19] ,
+
                 // 初始状态，spread || shrink
                 status: 'shrink' ,
                 // 层级视觉显示效果
@@ -192,9 +198,14 @@ export default {
                 } ,
                 deleted (id , tab) {
                     self.deleteTab(id , tab);
+                    if (id === self._val('tabId')) {
+                        self._val('tabId' , '');
+                    }
                 } ,
-                click (id) {
+                focus (id) {
                     self.switchTabItemByTabId(id);
+                    self._val('tabId' , id);
+
                 } ,
             });
         } ,
@@ -207,7 +218,7 @@ export default {
             this.dom.avatar.removeClass('shrink');
             this.dom.menu.removeClass('shrink');
             this.dom.content.removeClass('spread');
-            this.ins.ic.icon('none');
+            this.ins.ic.icon('switch');
             //
             // // 菜单展开
             // this.dom.menu.animate({
@@ -464,7 +475,8 @@ export default {
             let self = this;
             route = this.findRouteByRoute(route);
             let topRoute = this.topRoute(route.id);
-            let position = self.position(route.id);
+            let position = this.position(route.id);
+            console.log('position' , position);
             let mixins = {
                 store: this.$store ,
                 data () {
@@ -532,6 +544,16 @@ export default {
             return Vue.extend({
                 ...component
             });
+        } ,
+
+        // 重新加载子页面
+        reloadChildPage () {
+            const tabId = this._val('tabId');
+            if (!G.isValid(tabId)) {
+                return ;
+            }
+            const route = this.ins.tab.attr(tabId , 'route');
+            this.reRender(tabId , route);
         } ,
     } ,
 };

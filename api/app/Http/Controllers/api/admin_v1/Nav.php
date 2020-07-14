@@ -4,20 +4,34 @@
 namespace App\Http\Controllers\api\admin_v1;
 
 
-use App\Customize\api\admin_v1\action\PositionAction;
+use App\Customize\api\admin_v1\action\NavAction;
 use function api\admin_v1\error;
 use function api\admin_v1\success;
 
-class Position extends Base
+class Nav extends Base
 {
     public function index()
     {
         $param = $this->request->query();
+        $res = NavAction::index($this , $param);
+        if ($res['code'] != 0) {
+            return error($res['data'] , $res['code']);
+        }
+        return success($res['data']);
+    }
+
+    public function localUpdate($id)
+    {
+        $param = $this->request->post();
+        $param['p_id']        = $param['p_id'] ?? '';
+        $param['name']        = $param['name'] ?? '';
         $param['value'] = $param['value'] ?? '';
-        $param['order'] = $param['order'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
-        $res = PositionAction::index($this , $param);
-        if ($res['code'] !== 0) {
+        $param['platform'] = $param['platform'] ?? '';
+        $param['enable']    = $param['enable'] ?? '';
+        $param['weight']    = $param['weight'] ?? '';
+        $param['module_id']        = $param['module_id'] ?? '';
+        $res = NavAction::localUpdate($this , $id ,$param);
+        if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
         }
         return success($res['data']);
@@ -26,11 +40,14 @@ class Position extends Base
     public function update($id)
     {
         $param = $this->request->post();
-        $param['value']          = $param['value'] ?? '';
+        $param['p_id']        = $param['p_id'] ?? '';
         $param['name']        = $param['name'] ?? '';
-        $param['description']        = $param['description'] ?? '';
+        $param['value'] = $param['value'] ?? '';
+        $param['enable']    = $param['enable'] ?? '';
+        $param['weight']    = $param['weight'] ?? '';
+        $param['module_id']        = $param['module_id'] ?? '';
         $param['platform']        = $param['platform'] ?? '';
-        $res = PositionAction::update($this , $id ,$param);
+        $res = NavAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
         }
@@ -40,11 +57,14 @@ class Position extends Base
     public function store()
     {
         $param = $this->request->post();
-        $param['value']        = $param['value'] ?? '';
+        $param['p_id']        = $param['p_id'] ?? '';
         $param['name']        = $param['name'] ?? '';
-        $param['description']        = $param['description'] ?? '';
+        $param['value'] = $param['value'] ?? '';
+        $param['enable']    = $param['enable'] ?? '';
+        $param['weight']    = $param['weight'] ?? '';
+        $param['module_id']        = $param['module_id'] ?? '';
         $param['platform']        = $param['platform'] ?? '';
-        $res = PositionAction::store($this ,$param);
+        $res = NavAction::store($this ,$param);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
         }
@@ -53,7 +73,7 @@ class Position extends Base
 
     public function show($id)
     {
-        $res = PositionAction::show($this , $id);
+        $res = NavAction::show($this , $id);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
         }
@@ -62,7 +82,7 @@ class Position extends Base
 
     public function destroy($id)
     {
-        $res = PositionAction::destroy($this , $id);
+        $res = NavAction::destroy($this , $id);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
         }
@@ -73,26 +93,7 @@ class Position extends Base
     {
         $ids = $this->request->input('ids' , '[]');
         $ids = json_decode($ids , true);
-        $res = PositionAction::destroyAll($this , $ids);
-        if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
-        }
-        return success($res['data']);
-    }
-
-    public function search()
-    {
-        $value = $this->request->get('value' , '');
-        $res = PositionAction::search($this , $value);
-        if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
-        }
-        return success($res['data']);
-    }
-
-    public function all()
-    {
-        $res = PositionAction::all($this);
+        $res = NavAction::destroyAll($this , $ids);
         if ($res['code'] != 0) {
             return error($res['data'] , $res['code']);
         }

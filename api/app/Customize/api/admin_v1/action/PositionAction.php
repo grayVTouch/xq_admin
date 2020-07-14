@@ -8,6 +8,7 @@ use App\Customize\api\admin_v1\model\ModuleModel;
 use App\Customize\api\admin_v1\model\PositionModel;
 use App\Http\Controllers\api\admin_v1\Base;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use function api\admin_v1\get_form_error;
 use function api\admin_v1\my_config;
 use function api\admin_v1\parse_order;
@@ -26,42 +27,40 @@ class PositionAction extends Action
 
     public static function update(Base $context , $id , array $param = [])
     {
+        $platform_range = array_keys(my_config('business.platform'));
         $validator = Validator::make($param , [
             'name' => 'required' ,
             'value' => 'required' ,
-            'module_id' => 'required' ,
+            'platform' => ['required' , Rule::in($platform_range)] ,
         ]);
         if ($validator->fails()) {
             return self::error(get_form_error($validator));
         }
-        $role = PositionModel::find($id);
-        if (empty($role)) {
+        $res = PositionModel::find($id);
+        if (empty($res)) {
             return self::error('位置不存在' , 404);
         }
-        PositionModel::updateById($role->id , array_unit($param , [
+        PositionModel::updateById($res->id , array_unit($param , [
             'value' ,
             'name' ,
             'description' ,
-            'module_id' ,
+            'platform' ,
         ]));
         return self::success();
     }
 
     public static function store(Base $context , array $param = [])
     {
+        $platform_range = array_keys(my_config('business.platform'));
         $validator = Validator::make($param , [
             'name' => 'required' ,
             'value' => 'required' ,
-            'module_id' => 'required' ,
+            'platform' => ['required' , Rule::in($platform_range)] ,
         ]);
         if ($validator->fails()) {
             return self::error(get_form_error($validator));
         }
-        $module = ModuleModel::find($param['module_id']);
-        if (empty($module)) {
-            return self::error('模块不存在');
-        }
-        $tag = PositionModel::getByModuleIdAndValue($module->id , $param['value']);
+        $res = PositionModel::getByPlatformAndValue($param['platform'] , $param['value']);
         if (!empty($tag)) {
             return self::error('位置已经存在');
         }
@@ -69,7 +68,7 @@ class PositionAction extends Action
             'value' ,
             'name' ,
             'description' ,
-            'module_id' ,
+            'platform' ,
         ]));
         return self::success($id);
     }

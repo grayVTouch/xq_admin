@@ -64,9 +64,9 @@
                 }
                 page = parseInt(page);
                 page = Math.max(this.minPage , Math.min(page , this.maxPage));
-                // if (this.pageCopy === page) {
-                //     return ;
-                // }
+                if (this.pageCopy === page) {
+                    return ;
+                }
                 this.pageCopy = page;
                 this.$emit('on-change' , this.pageCopy);
             } ,

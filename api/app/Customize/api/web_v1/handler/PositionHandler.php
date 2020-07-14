@@ -1,12 +1,12 @@
 <?php
 
 
-namespace App\Customize\api\admin_v1\handler;
+namespace App\Customize\api\web_v1\handler;
 
 
-use App\Customize\api\admin_v1\model\PositionModel;
+use App\Customize\api\web_v1\model\PositionModel;
 use stdClass;
-use function api\admin_v1\get_value;
+use function api\web_v1\get_value;
 use function core\convert_obj;
 
 class PositionHandler extends Handler

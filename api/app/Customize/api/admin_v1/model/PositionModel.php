@@ -36,11 +36,12 @@ class PositionModel extends Model
             ->get();
     }
 
-    public static function getByModuleIdAndValue(int $module_id , string $value = ''): ?PositionModel
+    public static function getByPlatformAndValue(string $platform , string $value = ''): ?PositionModel
     {
         return self::where([
-            ['module_id' , '=' , $module_id] ,
-            ['value' , '=' , $value] ,
-        ])->first();
+                    ['platform' , '=' , $platform] ,
+                    ['value' , '=' , $value] ,
+                ])
+                ->first();
     }
 }

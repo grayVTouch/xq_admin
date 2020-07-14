@@ -73,7 +73,7 @@
                         <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
                     </div>
                     <div class="right">
-                        <Page :total="table.total" :page-size="$store.state.context.limit" :current="table.page" :show-total="true" :show-sizer="false" :show-elevator="true"  @on-change="pageEvent" />
+                        <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
                     </div>
                 </div>
             </div>
@@ -87,9 +87,9 @@
 
                 <div class="table">
 
-                    <Table border :columns="table.field" :data="table.data" @on-selection-change="selectedEvent">
+                    <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
                         <template v-slot:avatar="{row,index}">
-                            <img :src="row.avatar ? row.__avatar__ : $store.state.context.res.notFound" @click="link(row.__avatar__ , '__blank')" height="40" class="image">
+                            <img :src="row.avatar ? row.__avatar__ : $store.state.context.res.notFound" @click="link(row.__avatar__ , '__blank')" :height="$store.state.context.table.imageH" class="image">
                         </template>
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
@@ -107,7 +107,7 @@
             </div>
 
             <div class="line page">
-                <Page :total="table.total" :page-size="$store.state.context.limit" :current="table.page" :show-total="true" :show-sizer="false" :show-elevator="true"  @on-change="pageEvent" />
+                <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
             </div>
 
             <my-form-modal v-model="val.modal" :title="title" :loading="val.pending.submit" @on-ok="submitEvent" @on-cancel="closeFormModal">
@@ -116,7 +116,7 @@
                         <table class="input-table">
                             <tbody>
 
-                            <tr :class="getClass(val.error.username)" id="form-name">
+                            <tr :class="{error: val.error.username}" id="form-name">
                                 <td>名称</td>
                                 <td>
                                     <input type="text" v-model="form.username" @input="val.error.username=''" class="form-text">
@@ -126,7 +126,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.password)" id="form-password">
+                            <tr :class="{error: val.error.password}" id="form-password">
                                 <td>密码</td>
                                 <td>
                                     <input type="text" v-model="form.password" @input="val.error.password=''" class="form-text">
@@ -136,7 +136,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.avatar)" id="form-avatar">
+                            <tr :class="{error: val.error.avatar}" id="form-avatar">
                                 <td>封面</td>
                                 <td>
                                     <div ref="avatar">
@@ -172,7 +172,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.sex)" id="form-sex">
+                            <tr :class="{error: val.error.sex}" id="form-sex">
                                 <td>性别</td>
                                 <td>
                                     <RadioGroup v-model="form.sex">
@@ -184,7 +184,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.birthday)" id="form-birthday">
+                            <tr :class="{error: val.error.birthday}" id="form-birthday">
                                 <td>生日</td>
                                 <td>
                                     <DatePicker v-model="val.birthday" format="yyyy-MM-dd" class="iview-form-input" @on-change="setDate"></DatePicker>
@@ -194,7 +194,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.phone)" id="form-phone">
+                            <tr :class="{error: val.error.phone}" id="form-phone">
                                 <td>手机号码</td>
                                 <td>
                                     <input type="text" v-model="form.phone" @input="val.error.phone=''" class="form-text">
@@ -204,7 +204,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="getClass(val.error.email)" id="form-email">
+                            <tr :class="{error: val.error.email}" id="form-email">
                                 <td>电子邮件</td>
                                 <td>
                                     <input type="text" v-model="form.email" @input="val.error.email=''" class="form-text">

@@ -7,10 +7,12 @@ use App\Customize\api\admin_v1\handler\ModuleHandler;
 use App\Customize\api\admin_v1\model\ModuleModel;
 use App\Http\Controllers\api\admin_v1\Base;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use function api\admin_v1\get_form_error;
 use function api\admin_v1\my_config;
 use function api\admin_v1\parse_order;
 use function core\array_unit;
+use function core\current_time;
 
 class ModuleAction extends Action
 {
@@ -25,48 +27,80 @@ class ModuleAction extends Action
 
     public static function update(Base $context , $id , array $param = [])
     {
+        $bool_for_int = array_keys(my_config('business.bool_for_int'));
         $validator = Validator::make($param , [
             'name' => 'required' ,
+            'enable' => ['required' , Rule::in($bool_for_int)] ,
         ]);
         if ($validator->fails()) {
             return self::error(get_form_error($validator));
         }
-        $role = ModuleModel::find($id);
-        if (empty($role)) {
-            return self::error('角色不存在' , 404);
+        $res = ModuleModel::find($id);
+        if (empty($res)) {
+            return self::error('模块不存在' , 404);
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
-        ModuleModel::updateById($role->id , array_unit($param , [
+        ModuleModel::updateById($res->id , array_unit($param , [
             'name' ,
             'weight' ,
+            'enable' ,
+        ]));
+        return self::success();
+    }
+
+    public static function localUpdate(Base $context , $id , array $param = [])
+    {
+        $bool_for_int = array_keys(my_config('business.bool_for_int'));
+        $validator = Validator::make($param , [
+            'enable' => ['sometimes' , Rule::in($bool_for_int)] ,
+        ]);
+        if ($validator->fails()) {
+            return self::error(get_form_error($validator));
+        }
+        $res = ModuleModel::find($id);
+        if (empty($res)) {
+            return self::error('模块不存在' , 404);
+        }
+        $param['name'] = $param['name'] === '' ? $res->name : $param['name'];
+        $param['weight'] = $param['weight'] === '' ? $res->weight : $param['weight'];
+        $param['enable'] = $param['enable'] === '' ? $res->enable : $param['enable'];
+        ModuleModel::updateById($res->id , array_unit($param , [
+            'name' ,
+            'weight' ,
+            'enable' ,
         ]));
         return self::success();
     }
 
     public static function store(Base $context , array $param = [])
     {
+        $bool_for_int = array_keys(my_config('business.bool_for_int'));
         $validator = Validator::make($param , [
             'name' => 'required' ,
+            'enable' => ['required' , Rule::in($bool_for_int)] ,
         ]);
         if ($validator->fails()) {
             return self::error(get_form_error($validator));
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
+        $param['create_time'] = current_time();
         $id = ModuleModel::insertGetId(array_unit($param , [
             'name' ,
             'weight' ,
+            'enable' ,
+            'create_time'
         ]));
         return self::success($id);
     }
 
     public static function show(Base $context , $id , array $param = [])
     {
-        $role = ModuleModel::find($id);
-        if (empty($role)) {
-            return self::error('角色不存在' , 404);
+        $res = ModuleModel::find($id);
+        if (empty($res)) {
+            return self::error('模块不存在' , 404);
         }
-        $role = ModuleModel::handle($role);
-        return self::success($role);
+        $res = ModuleModel::handle($res);
+        return self::success($res);
     }
 
     public static function destroy(Base $context , $id , array $param = [])
