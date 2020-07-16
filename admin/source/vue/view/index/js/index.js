@@ -64,9 +64,10 @@ export default {
         } ,
 
         initData () {
-            Api.admin.info((data , code) => {
+            Api.admin.info((msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    Prompt.alert(data);
+                    // Prompt.alert(data);
+                    this.message('error' , msg);
                     return ;
                 }
                 // 数据预处理

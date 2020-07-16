@@ -31,4 +31,12 @@ export default {
             shemale: '人妖' ,
         } ,
     } ,
+
+    // 关联事物类型
+    relationType: {
+        image_subject: '图片' ,
+        // video_subject: '视图专题' ,
+        // article_subject: '文章专题' ,
+        // bbs_subject: '论坛帖子' ,
+    } ,
 };

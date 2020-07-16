@@ -78,10 +78,10 @@
 
             getModuleData () {
                 this.pending('loading' , true);
-                Api.welcome.module((data , code) => {
+                Api.welcome.module((msg , data , code) => {
                     this.pending('loading' , false);
                     if (code !== TopContext.code.Success) {
-                        this.message(data);
+                        this.message(msg);
                         return ;
                     }
                     this.module = data;

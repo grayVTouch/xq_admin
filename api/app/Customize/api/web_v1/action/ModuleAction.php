@@ -13,6 +13,6 @@ class ModuleAction extends Action
     {
         $res = ModuleModel::getAll();
         $res = ModuleHandler::handleAll($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 }

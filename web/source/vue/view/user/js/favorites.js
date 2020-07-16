@@ -78,7 +78,7 @@ export default {
 
         scrollEvent () {
             const scrollTop = this.dom.filter.getWindowOffsetVal('top');
-            this.val.fixed = scrollTop < 0;
+            this.val.fixed = scrollTop < TopContext.val.fixedTop;
         } ,
 
         initEvent () {
@@ -87,11 +87,11 @@ export default {
 
         getCollectionGroup (callback) {
             this.pending('getCollectionGroup' , true);
-            Api.user.collectionGroup(this.search , (data , code) => {
+            Api.user.collectionGroup(this.search , (msg , data , code) => {
                 this.pending('getCollectionGroup' , false);
                 if (code !== TopContext.code.Success) {
                     G.invoke(callback , null , false);
-                    this.errorHandleAtUserChildren(data , code , () => {
+                    this.errorHandleAtUserChildren(msg , data , code , () => {
                         this.getCollectionGroup();
                     });
                     return ;
@@ -108,11 +108,11 @@ export default {
                 return ;
             }
             this.pending(pending , true);
-            Api.user.destroyAllCollectionGroup([collectionGroup.id] , (data , code) => {
+            Api.user.destroyAllCollectionGroup([collectionGroup.id] , (msg , data , code) => {
                 this.pending(pending , false);
                 if (code !== TopContext.code.Success) {
                     G.invoke(callback , null , false);
-                    this.errorHandleAtUserChildren(data , code , () => {
+                    this.errorHandleAtUserChildren(msg , data , code , () => {
                         this.destroyHistory(collectionGroup);
                     });
                     return ;
@@ -142,10 +142,10 @@ export default {
                 page: this.collections.page ,
                 collection_group_id: collectionGroup.id ,
                 relation_type: this.search.relation_type ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('getCollections' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtUserChildren(data , code , () => {
+                    this.errorHandleAtUserChildren(msg , data , code , () => {
                         this.getCollections(collectionGroup);
                     });
                     return ;
@@ -200,10 +200,10 @@ export default {
                 return ;
             }
             this.pending('createCollectionGroup' , true);
-            Api.user.createCollectionGroup(this.collectionGroupForm , (data , code) => {
+            Api.user.createCollectionGroup(this.collectionGroupForm , (msg , data , code) => {
                 this.pending('createCollectionGroup' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtUserChildren(data , code , () => {
+                    this.errorHandleAtUserChildren(msg , data , code , () => {
                         this.createCollectionGroup();
                     });
                     return ;
@@ -222,10 +222,10 @@ export default {
             this.pending(pending , true);
             Api.user.destroyCollection({
                 collection_id: collection.id ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending(pending , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtUserChildren(data , code , () => {
+                    this.errorHandleAtUserChildren(msg , data , code , () => {
                         this.createCollectionGroup();
                     });
                     return ;
@@ -270,10 +270,10 @@ export default {
                 return ;
             }
             this.pending(pending , true);
-            Api.user.updateCollectionGroup(this.updateCollectionGroupForm , (data , code) => {
+            Api.user.updateCollectionGroup(this.updateCollectionGroupForm , (msg , data , code) => {
                 this.pending(pending , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtUserChildren(data , code , () => {
+                    this.errorHandleAtUserChildren(msg , data , code , () => {
                         this.createCollectionGroup();
                     });
                     return ;

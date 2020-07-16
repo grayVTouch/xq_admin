@@ -160,7 +160,7 @@ export default {
         getData () {
             this.$refs.base.show();
             this.pending('getData' , true);
-            Api.user.index(this.search , (data , code) => {
+            Api.user.index(this.search , (msg , data , code) => {
                 this.pending('getData' , false);
                 this.$refs.base.hide();
                 if (code !== TopContext.code.Success) {
@@ -198,7 +198,7 @@ export default {
                     G.invoke(callback , this , false);
                     return ;
                 }
-                Api.user.destroyAll(idList , (data , code) => {
+                Api.user.destroyAll(idList , (msg , data , code) => {
                     if (code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
                         this.message('error' , data);
@@ -255,11 +255,11 @@ export default {
         submitEvent () {
             const self = this;
             this.pending('submit' , true);
-            const callback = (data , code) => {
+            const callback = (msg , data , code) => {
                 this.pending('submit' , false);
                 this.error();
                 if (code !== TopContext.code.Success) {
-                    this.errorHandle(data);
+                    this.errorHandle(msg , data , code);
                     return ;
                 }
                 this.successHandle((keep) => {

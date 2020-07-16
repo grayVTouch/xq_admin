@@ -18,9 +18,9 @@ class Position extends Base
         $param['limit'] = $param['limit'] ?? '';
         $res = PositionAction::index($this , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function update($id)
@@ -32,9 +32,9 @@ class Position extends Base
         $param['platform']        = $param['platform'] ?? '';
         $res = PositionAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function store()
@@ -46,27 +46,27 @@ class Position extends Base
         $param['platform']        = $param['platform'] ?? '';
         $res = PositionAction::store($this ,$param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function show($id)
     {
         $res = PositionAction::show($this , $id);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function destroy($id)
     {
         $res = PositionAction::destroy($this , $id);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function destroyAll()
@@ -75,9 +75,9 @@ class Position extends Base
         $ids = json_decode($ids , true);
         $res = PositionAction::destroyAll($this , $ids);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function search()
@@ -85,17 +85,17 @@ class Position extends Base
         $value = $this->request->get('value' , '');
         $res = PositionAction::search($this , $value);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function all()
     {
         $res = PositionAction::all($this);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 }

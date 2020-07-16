@@ -16,7 +16,7 @@ window.request = function(url , method , data , success , error)
                 return ;
             }
             if (G.isFunction(success)) {
-                success(data , code);
+                success(data.message , data.data , code);
             }
         } ,
         error ,

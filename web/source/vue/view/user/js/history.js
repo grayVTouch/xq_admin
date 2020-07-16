@@ -54,7 +54,7 @@ export default {
 
         scrollEvent () {
             const scrollTop = this.dom.filter.getWindowOffsetVal('top');
-            this.val.fixed = scrollTop < 0;
+            this.val.fixed = scrollTop < TopContext.val.fixedTop;
         } ,
 
         initEvent () {
@@ -67,10 +67,10 @@ export default {
                 limit: this.history.limit ,
                 page: this.history.page ,
                 ...this.search ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('getHistory' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtUserChildren(data , code , () => {
+                    this.errorHandleAtUserChildren(msg , data , code , () => {
                         this.getHistory();
                     });
                     return ;
@@ -100,10 +100,10 @@ export default {
                 return ;
             }
             this.pending(pending , true);
-            Api.user.destroyHistory([history.id] , (data , code) => {
+            Api.user.destroyHistory([history.id] , (msg , data , code) => {
                 this.pending(pending , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtUserChildren(data , code , () => {
+                    this.errorHandleAtUserChildren(msg , data , code , () => {
                         this.destroyHistory(history);
                     });
                     return ;

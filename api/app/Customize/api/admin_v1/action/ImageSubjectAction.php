@@ -32,7 +32,7 @@ class ImageSubjectAction extends Action
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
         $paginator = ImageSubjectModel::index($param , $order , $limit);
         $paginator = ImageSubjectHandler::handlePaginator($paginator);
-        return self::success($paginator);
+        return self::success('' , $paginator);
     }
 
     public static function update(Base $context , $id , array $param = []): array
@@ -52,27 +52,27 @@ class ImageSubjectAction extends Action
             'status'        => ['required' , 'integer' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $image_subject = ImageSubjectModel::find($id);
         if (empty($image_subject)) {
-            return self::error('图片专题不存在' , 404);
+            return self::error('图片专题不存在' , '' , 404);
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error([
+            return self::error('' , [
                 'module_id' => '模块不存在'
             ]);
         }
         $category = CategoryModel::find($param['category_id']);
         if (empty($category)) {
-            return self::error([
+            return self::error('' , [
                 'category_id' => '分类不存在' ,
             ]);
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error([
+            return self::error('' , [
                 'user_id' => '用户不存在'
             ]);
         }
@@ -80,13 +80,13 @@ class ImageSubjectAction extends Action
         if ($param['type'] === 'pro') {
             $subject = SubjectModel::find($param['subject_id']);
             if (empty($subject)) {
-                return self::error([
+                return self::error('' , [
                     'subject_id' => '专题不存在' ,
                 ]);
             }
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error([
+            return self::error('' , [
                 'fail_reason' => '请提供失败原因' ,
             ]);
         }
@@ -119,7 +119,7 @@ class ImageSubjectAction extends Action
                 {
                     if ($v1->tag_id === $v) {
                         DB::rollBack();
-                        return self::error([
+                        return self::error('' , [
                             'tags' => '存在重复标签: name: ' . $v1->name . '; id: ' . $v1->tag_id ,
                         ]);
                     }
@@ -127,7 +127,7 @@ class ImageSubjectAction extends Action
                 $tag = TagModel::find($v);
                 if (empty($tag)) {
                     DB::rollBack();
-                    return self::error('存在不存在的标签' , 404);
+                    return self::error('存在不存在的标签' , '' , 404);
                 }
                 RelationTagModel::insertGetId([
                     'relation_type' => 'image_subject' ,
@@ -173,23 +173,23 @@ class ImageSubjectAction extends Action
             'status'        => ['required' , 'integer' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error([
+            return self::error('' , [
                 'module_id' => '模块不存在'
             ]);
         }
         $category = CategoryModel::find($param['category_id']);
         if (empty($category)) {
-            return self::error([
+            return self::error('' , [
                 'category_id' => '分类不存在' ,
             ]);
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error([
+            return self::error('' , [
                 'user_id' => '用户不存在'
             ]);
         }
@@ -197,13 +197,13 @@ class ImageSubjectAction extends Action
         if ($param['type'] === 'pro') {
             $subject = SubjectModel::find($param['subject_id']);
             if (empty($subject)) {
-                return self::error([
+                return self::error('' , [
                     'subject_id' => '专题不存在' ,
                 ]);
             }
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error([
+            return self::error('' , [
                 'fail_reason' => '请提供失败原因' ,
             ]);
         }
@@ -234,7 +234,7 @@ class ImageSubjectAction extends Action
                 $tag = TagModel::find($v);
                 if (empty($tag)) {
                     DB::rollBack();
-                    return self::error('存在不存在的标签' , 404);
+                    return self::error('存在不存在的标签' , '' , 404);
                 }
                 RelationTagModel::insertGetId([
                     'relation_type' => 'image_subject' ,
@@ -267,10 +267,10 @@ class ImageSubjectAction extends Action
     {
         $res = ImageSubjectModel::find($id);
         if (empty($res)) {
-            return self::error('图片专题不存在' , 404);
+            return self::error('图片专题不存在' , '' , 404);
         }
         $res = ImageSubjectHandler::handle($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function destroy(Base $context , $id , array $param = []): array
@@ -323,13 +323,13 @@ class ImageSubjectAction extends Action
     public static function destroyImages(Base $context , array $ids , array $param = []): array
     {
         $count = ImageModel::delByIds($ids);
-        return self::success($count);
+        return self::success('' , $count);
     }
 
     // 删除单个标签
     public static function destroyTag(Base $context , int $image_subject_id , int $tag_id ,  array $param = []): array
     {
         $count = RelationTagModel::delByRelationTypeAndRelationIdAndTagId('image_subject' , $image_subject_id , $tag_id);
-        return self::success($count);
+        return self::success('' , $count);
     }
 }

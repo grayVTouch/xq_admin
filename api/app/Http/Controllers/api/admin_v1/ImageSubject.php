@@ -18,9 +18,9 @@ class ImageSubject extends Base
         $param['limit'] = $param['limit'] ?? '';
         $res = ImageSubjectAction::index($this , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function update($id)
@@ -44,9 +44,9 @@ class ImageSubject extends Base
         $param['create_time']   = $param['create_time'] ?? '';
         $res = ImageSubjectAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function store()
@@ -70,27 +70,27 @@ class ImageSubject extends Base
         $param['create_time']   = $param['create_time'] ?? '';
         $res = ImageSubjectAction::store($this ,$param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function show($id)
     {
         $res = ImageSubjectAction::show($this , $id);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function destroy($id)
     {
         $res = ImageSubjectAction::destroy($this , $id);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function destroyAll()
@@ -99,9 +99,9 @@ class ImageSubject extends Base
         $ids = json_decode($ids , true);
         $res = ImageSubjectAction::destroyAll($this , $ids);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function destroyImages()
@@ -110,17 +110,17 @@ class ImageSubject extends Base
         $ids = json_decode($ids , true);
         $res = ImageSubjectAction::destroyImages($this , $ids);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function destroyTag($image_subject_id , $tag_id)
     {
         $res = ImageSubjectAction::destroyTag($this , $image_subject_id , $tag_id);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 }

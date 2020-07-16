@@ -18,9 +18,9 @@ class ImageAtPosition extends Base
         $param['limit'] = $param['limit'] ?? '';
         $res = ImageAtPositionAction::index($this , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function update($id)
@@ -34,9 +34,9 @@ class ImageAtPosition extends Base
         $param['link']          = $param['link'] ?? '';
         $res = ImageAtPositionAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function store()
@@ -50,27 +50,27 @@ class ImageAtPosition extends Base
         $param['link']          = $param['link'] ?? '';
         $res = ImageAtPositionAction::store($this ,$param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function show($id)
     {
         $res = ImageAtPositionAction::show($this , $id);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function destroy($id)
     {
         $res = ImageAtPositionAction::destroy($this , $id);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function destroyAll()
@@ -79,9 +79,9 @@ class ImageAtPosition extends Base
         $ids = json_decode($ids , true);
         $res = ImageAtPositionAction::destroyAll($this , $ids);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function search()
@@ -89,17 +89,17 @@ class ImageAtPosition extends Base
         $value = $this->request->get('value' , '');
         $res = ImageAtPositionAction::search($this , $value);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function all()
     {
         $res = ImageAtPositionAction::all($this);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 }

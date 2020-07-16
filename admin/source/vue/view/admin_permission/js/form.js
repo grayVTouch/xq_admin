@@ -104,12 +104,12 @@ export default {
 
         submitEvent () {
             const self = this;
-            const callback = (data , code) => {
+            const callback = (msg , data , code) => {
                 this.pending('submit' , false);
                 this.error();
                 if (code !== TopContext.code.Success) {
                     this.$emit('on-error');
-                    this.errorHandle(data);
+                    this.errorHandle(msg , data , code);
                     return ;
                 }
                 this.successHandle((keep) => {

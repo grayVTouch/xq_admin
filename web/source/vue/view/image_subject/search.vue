@@ -79,8 +79,8 @@
                     <div class="item card-box" v-for="v in images.data">
                         <!-- 封面 -->
                         <div class="thumb">
-                            <a class="link" :href="`#/image_subject/${v.id}/show`" target="_blank">
-                                <img :src="v.__thumb__" class="image">
+                            <a class="link" :href="genUrl(`/image_subject/${v.id}/show`)" target="_blank">
+                                <img :src="v.__thumb__" class="image judge-img-size" v-judge-img-size>
                                 <div class="mask">
                                     <div class="top">
                                         <div class="type" v-if="v.type === 'pro'"><my-icon icon="zhuanyerenzheng" size="35" /></div>
@@ -118,9 +118,9 @@
                             <div class="info">
                                 <div class="left"><my-icon icon="shijian" class="ico" mode="right" /> {{ v.create_time }}</div>
                                 <div class="right">
-                                    <span><my-icon icon="chakan" mode="right" />{{ v.view_count }}</span>
-                                    <span><my-icon icon="shoucang2" mode="right" />{{ v.praise_count }}</span>
-                                    <span><my-icon icon="shoucang6" mode="right" />{{ v.collect_count }}</span>
+                                    <span class="view-count"><my-icon icon="chakan" mode="right" />{{ v.view_count }}</span>
+                                    <span class="praise-count"><my-icon icon="shoucang2" mode="right" />{{ v.praise_count }}</span>
+                                    <span class="collect-count" v-if="$store.state.user"><my-icon icon="shoucang6" mode="right" />{{ v.collect_count }}</span>
                                 </div>
                             </div>
                         </div>

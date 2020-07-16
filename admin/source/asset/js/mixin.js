@@ -95,13 +95,13 @@ Vue.mixin({
             this.val.select = {...this.val.select , ...{[key]: val}};
         } ,
 
-        errorHandle (data) {
-            if (G.isString(data)) {
+        errorHandle (msg , data , code) {
+            if (code !== TopContext.code.FormValidateFail) {
                 this.error();
-                this.message('error' , data);
+                this.message('error' , msg);
                 return ;
             }
-            this.message('error' , '操作失败，请检查');
+            this.message('error' , '表单错误，请检查');
             this.error(data);
         } ,
 

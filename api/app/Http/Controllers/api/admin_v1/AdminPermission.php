@@ -15,18 +15,18 @@ class AdminPermission extends Base
     {
         $res = AdminPermissionAction::index($this);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function allExcludeSelfAndChildren($id)
     {
         $res = AdminPermissionAction::allExcludeSelfAndChildren($this , $id);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function localUpdate($id)
@@ -46,9 +46,9 @@ class AdminPermission extends Base
         $param['b_ico']     = $param['b_ico'] ?? '';
         $res = AdminPermissionAction::localUpdate($this , $id ,$param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function update($id)
@@ -68,9 +68,9 @@ class AdminPermission extends Base
         $param['b_ico']     = $param['b_ico'] ?? '';
         $res = AdminPermissionAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function store()
@@ -90,27 +90,27 @@ class AdminPermission extends Base
         $param['b_ico']     = $param['b_ico'] ?? '';
         $res = AdminPermissionAction::store($this ,$param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function show($id)
     {
         $res = AdminPermissionAction::show($this , $id);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function destroy($id)
     {
         $res = AdminPermissionAction::destroy($this , $id);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function destroyAll()
@@ -119,9 +119,9 @@ class AdminPermission extends Base
         $ids = json_decode($ids , true);
         $res = AdminPermissionAction::destroyAll($this , $ids);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
 }

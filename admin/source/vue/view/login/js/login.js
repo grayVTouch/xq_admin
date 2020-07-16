@@ -60,9 +60,10 @@ export default {
         } ,
 
         captcha () {
-            Api.misc.captcha((data , code) => {
+            Api.misc.captcha((msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.error({captcha_code: '获取图形验证码失败，请稍后重新点击验证码再次尝试'} , false);
+                    this.errorHandle(msg , data , code);
+                    // this.error({captcha_code: '获取图形验证码失败，请稍后重新点击验证码再次尝试'} , false);
                     return ;
                 }
                 this.val.captcha = data;
@@ -84,7 +85,7 @@ export default {
 
         usernameInputEvent () {
             this.error({username: ''} , false);
-            Api.login.avatar({username: this.form.username} , (data , code) => {
+            Api.login.avatar({username: this.form.username} , (msg , data , code) => {
                 this.val.avatar = '';
                 if (code !== TopContext.code.Success) {
                     return ;
@@ -98,13 +99,13 @@ export default {
                 return ;
             }
             this.pending('submit' , true);
-            Api.login.login(this.form , (data , code) => {
+            Api.login.login(this.form , (msg , data , code) => {
                 this.pending('submit' , false);
                 this.error();
                 this.topMessage();
                 this.captcha();
                 if (code !== TopContext.code.Success) {
-                    this.errorHandle(data);
+                    this.errorHandle(msg , data , code);
                     return ;
                 }
                 this.request('submit' , false);

@@ -1,6 +1,6 @@
 <template>
     <user-base>
-        <template slot="title">我的信息 <my-loading v-if="val.pending.user" width="24" height="24"></my-loading></template>
+        <template slot="title">我的信息 <my-loading v-if="val.pending.user" size="16"></my-loading></template>
         <template slot="action"></template>
         <form @submit.prevent="submit" slot="content">
             <table class="input-table">
@@ -8,7 +8,7 @@
                 <tr :class="{error: val.error.username}">
                     <td>用户名</td>
                     <td>
-                        <input type="text" class="form-text" @input="val.error.username = ''" v-model="form.username" readonly>
+                        <input type="text" class="form-text run-cursor-not-allow" @input="val.error.username = ''" v-model="form.username" readonly>
                         <span class="need"></span>
                         <div class="msg">禁止修改</div>
                         <div class="e-msg">{{ val.error.username }}</div>
@@ -40,7 +40,7 @@
 
                                         <div class="line icon">
                                             <div class="ico">
-                                                <div class="feedback run-action-feedback-round"><i class="iconfont run-iconfont run-iconfont-shangchuan"></i></div>
+                                                <div class="feedback run-action-feedback-round"><i class="iconfont run-iconfont run-iconfont-shangchuan run-white"></i></div>
                                                 <div class="clear run-action-feedback-round" title="清空"><i class="iconfont run-iconfont run-iconfont-qingkong"></i></div>
                                             </div>
                                             <div class="text">请选择要上传的文件</div>

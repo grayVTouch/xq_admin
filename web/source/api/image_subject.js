@@ -9,6 +9,9 @@ const categories = `${TopContext.api}/image_subject/category`;
 const subjects = `${TopContext.api}/image_subject/subject`;
 const index = `${TopContext.api}/image_subject`;
 const incrementViewCount = `${TopContext.api}/image_subject/{image_subject_id}/increment_view_count`;
+const recommend = `${TopContext.api}/image_subject/{image_subject_id}/recommend`;
+const newest = `${TopContext.api}/image_subject/newest`;
+const hot = `${TopContext.api}/image_subject/hot`;
 
 export default {
 
@@ -55,4 +58,18 @@ export default {
     incrementViewCount (id , success , error) {
         return request(incrementViewCount.replace('{image_subject_id}' , id) , 'patch' , null , success , error);
     } ,
+
+    recommend (id , data , success , error) {
+        return request(recommend.replace('{image_subject_id}' , id) , 'get' , data , success , error);
+    } ,
+
+    newest (data , success , error) {
+        return request(newest , 'get' , data , success , error);
+    } ,
+
+    hot (data , success , error) {
+        return request(hot , 'get' , data , success , error);
+    } ,
+
+
 };

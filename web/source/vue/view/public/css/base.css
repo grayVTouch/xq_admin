@@ -119,9 +119,6 @@
 }
 
 .card-box .thumb .link > .image {
-    min-width: 100%;
-    height: 100%;
-    vertical-align: top;
     position: absolute;
     left: 50%;
     top: 0;
@@ -318,6 +315,10 @@
 
 .card-box .introduction .info .right span:nth-last-of-type(1) {
     margin-right: 0;
+}
+
+.card-box .introduction .info .right .collect-count .run-iconfont {
+    margin-top: -2px;
 }
 
 .card-box .actions {

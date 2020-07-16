@@ -38,7 +38,7 @@ class ImageSubjectAction extends Action
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = ImageSubjectModel::getNewestByModuleIdAndLimit($param['module_id'] , $limit);
         $res = ImageSubjectHandler::handleAll($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     // 热门
@@ -50,7 +50,7 @@ class ImageSubjectAction extends Action
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = ImageSubjectModel::getHotByModuleIdAndLimit($param['module_id'] , $limit);
         $res = ImageSubjectHandler::handleAll($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function hotWithPager(Base $context , array $param = [])
@@ -61,7 +61,7 @@ class ImageSubjectAction extends Action
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = ImageSubjectModel::getHotWithPagerByModuleIdAndLimit($param['module_id'] , $limit);
         $res = ImageSubjectHandler::handlePaginator($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function getByTagId(Base $context , $tag_id , array $param = [])
@@ -79,7 +79,7 @@ class ImageSubjectAction extends Action
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = ImageSubjectModel::getByModuleIdAndTagIdAndLimit($param['module_id'] , $tag->id , $limit);
         $res = ImageSubjectHandler::handleAll($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function getWithPagerByTagIds(Base $context , array $param = [])
@@ -95,7 +95,7 @@ class ImageSubjectAction extends Action
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , 404);
+            return self::error('模块不存在' , '' , 404);
         }
         $tag_ids = empty($param['tag_ids']) ? [] : json_decode($param['tag_ids'] , true);
         if (empty($tag_ids)) {
@@ -118,7 +118,7 @@ class ImageSubjectAction extends Action
                 return self::error('不支持的 mode ，当前受支持的 mode 有：' . implode(' , ' , $mode_range));
         }
         $res = ImageSubjectHandler::handlePaginator($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
 
@@ -130,7 +130,7 @@ class ImageSubjectAction extends Action
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = RelationTagModel::hotTagsByModuleIdAndRelationTypeAndLimit($param['module_id'] , 'image_subject' , $limit);
         $res = RelationTagHandler::handleAll($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function hotTagsWithPager(Base $context , array $param = [])
@@ -151,7 +151,7 @@ class ImageSubjectAction extends Action
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = RelationTagModel::hotTagsWithPagerByValueAndModuleIdAndRelationTypeAndLimit($param['value'] , $module->id , 'image_subject' , $limit);
         $res = RelationTagHandler::handlePaginator($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function newestWithPager(Base $context , array $param = [])
@@ -162,7 +162,7 @@ class ImageSubjectAction extends Action
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = ImageSubjectModel::getNewestWithPagerByModuleIdAndLimit($param['module_id'] , $limit);
         $res = ImageSubjectHandler::handlePaginator($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function show(Base $context , $id , array $param = [])
@@ -175,11 +175,14 @@ class ImageSubjectAction extends Action
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , 404);
+            return self::error('模块不存在' , '' , 404);
         }
         $image_subject = ImageSubjectModel::find($id);
+        if (empty($image_subject)) {
+            return self::error('图片专题不存在' , '' , 404);
+        }
         $image_subject = ImageSubjectHandler::handle($image_subject);
-        return self::success($image_subject);
+        return self::success('' , $image_subject);
     }
 
     public static function category(Base $context , array $param = [])
@@ -192,7 +195,7 @@ class ImageSubjectAction extends Action
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , 404);
+            return self::error('模块不存在' , '' , 404);
         }
         $all_categories = CategoryModel::getAllByModuleId($module->id);
         // 图片分类 id ，请比对数据库中的数据，指定具体的 id
@@ -212,7 +215,7 @@ class ImageSubjectAction extends Action
         }
         $all_categories = obj_to_array($all_categories);
         $categories = Category::childrens($image_subject_top_category_id , $all_categories , null , true , false);
-        return self::success($categories);
+        return self::success('' , $categories);
     }
 
     public static function subject(Base $context , array $param = [])
@@ -225,12 +228,12 @@ class ImageSubjectAction extends Action
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , 404);
+            return self::error('模块不存在' , '' , 404);
         }
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = SubjectModel::getWithPagerInImageSubjectByModuleIdAndValueAndLimit($module->id , $param['value'] , $limit);
         $res = SubjectHandler::handlePaginator($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function index(Base $context , array $param = [])
@@ -245,7 +248,7 @@ class ImageSubjectAction extends Action
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , 404);
+            return self::error('模块不存在' , '' , 404);
         }
         $category_ids = $param['category_ids'] === '' ? [] : json_decode($param['category_ids'] , true);
         $subject_ids = $param['subject_ids'] === '' ? [] : json_decode($param['subject_ids'] , true);
@@ -265,7 +268,7 @@ class ImageSubjectAction extends Action
                 return self::error('不支持的搜索模式，当前支持的模式有：' . implode(' , ' , $mode_range));
         }
         $res = ImageSubjectHandler::handlePaginator($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function incrementViewCount(Base $context , int $image_subject_id , array $param = [])
@@ -276,5 +279,18 @@ class ImageSubjectAction extends Action
         }
         ImageSubjectModel::countHandle($image_subject->id , 'view_count' , 'increment' , 1);
         return self::success();
+    }
+
+    // 推荐数据
+    public static function recommend(Base $context , int $image_subject_id , array $param = [])
+    {
+        $image_subject = ImageSubjectModel::find($image_subject_id);
+        if (empty($image_subject)) {
+            return self::error('图片专题未找到' , null , 404);
+        }
+        $limit = $param['limit'] ? $param['limit'] : my_config('app.limit');
+        $res = ImageSubjectModel::recommendExcludeSelfByModuleIdAndCategoryIdAndSubjectIdAndLimit($image_subject->id , $image_subject->module_id , $image_subject->category_id , $image_subject->subject_id , $limit);
+        $res = ImageSubjectHandler::handleAll($res);
+        return self::success('' , $res);
     }
 }

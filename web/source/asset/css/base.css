@@ -14,3 +14,28 @@
 {
     background-color: #ffffff4d;
 }
+
+.horizontal-for-img {
+    height: 100% !important;
+    min-width: 100% !important;
+    vertical-align: top;
+}
+
+.vertical-for-img {
+    min-width: auto !important;
+    height: auto !important;
+    width: 100% !important;
+    min-height: 100% !important;
+    vertical-align: top;
+}
+
+.judge-img-size {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 0;
+    transform: translate(-50% , -50%);
+    height: 100%;
+    min-width: 100%;
+    vertical-align: top;
+}

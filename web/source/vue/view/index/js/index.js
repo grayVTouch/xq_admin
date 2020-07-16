@@ -80,10 +80,10 @@ export default {
                 relation_type: 'image_subject' ,
                 relation_id: imageSubject.id ,
                 action ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('praiseImageSubjectByImageSubject' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtHomeChildren(data , code , () => {
+                    this.errorHandleAtHomeChildren(msg , data , code , () => {
                         this.praiseImageSubjectByImageSubject(imageSubject)
                     });
                     return ;
@@ -102,10 +102,10 @@ export default {
 
         findImageSubjectByImageSubjectId (imageSubjectId , callback) {
             this.pending('findImageSubjectByImageSubjectId' , true);
-            Api.image_subject.show(imageSubjectId , (data , code) => {
+            Api.image_subject.show(imageSubjectId , (msg , data , code) => {
                 this.pending('findImageSubjectByImageSubjectId' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(data);
+                    this.message(msg);
                     G.invoke(callback , null , false);
                     return ;
                 }
@@ -127,10 +127,10 @@ export default {
             this.group.image.curTag = 'newest';
             Api.index.newestInImageSubject({
                 limit: this.val.limit
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('images' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 this.newestImages = data;
@@ -145,10 +145,10 @@ export default {
         hotInImageSubject (callback) {
             Api.index.hotInImageSubject({
                 limit: this.val.limit
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 if (code !== TopContext.code.Success) {
                     G.invoke(callback , this , false , data);
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 G.invoke(callback , this , true , data);
@@ -176,10 +176,10 @@ export default {
             this.group.image.curTag = 'tag_' + tagId;
             Api.index.getImageByTagId(tagId , {
                 limit: this.val.limit
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('images' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 this.images = data;
@@ -193,9 +193,9 @@ export default {
         hotTags () {
             Api.index.hotTags({
                 limit: 5 ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 this.group.image.tag = data;
@@ -204,9 +204,9 @@ export default {
 
         // 首页幻灯片
         getHomeSlideshow () {
-            Api.index.homeSlideshow((data , code) => {
+            Api.index.homeSlideshow((msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 this.homeSlideshow = data;

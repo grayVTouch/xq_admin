@@ -27,7 +27,7 @@ class NavAction extends Action
             'id'    => 'id' ,
             'p_id'  => 'p_id' ,
         ] , false , false);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function localUpdate(Base $context , $id , array $param = [])
@@ -47,7 +47,7 @@ class NavAction extends Action
         }
         $nav = NavModel::find($id);
         if (empty($nav)) {
-            return self::error('分类不存在' , 404);
+            return self::error('分类不存在' , '' , 404);
         }
         $param['name']     = $param['name'] === '' ? $nav->name : $param['name'];
         $param['enable']   = $param['enable'] === '' ? $nav->enable : $param['enable'];
@@ -83,11 +83,11 @@ class NavAction extends Action
             'platform' => ['required' , Rule::in($platform_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $nav = NavModel::find($id);
         if (empty($nav)) {
-            return self::error('分类不存在' , 404);
+            return self::error('分类不存在' , '' , 404);
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         NavModel::updateById($nav->id , array_unit($param , [
@@ -116,7 +116,7 @@ class NavAction extends Action
             'platform' => ['required' , Rule::in($platform_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $id = NavModel::insertGetId(array_unit($param , [
@@ -128,17 +128,17 @@ class NavAction extends Action
             'value' ,
             'platform' ,
         ]));
-        return self::success($id);
+        return self::success('' , $id);
     }
 
     public static function show(Base $context , $id , array $param = [])
     {
         $nav = NavModel::find($id);
         if (empty($nav)) {
-            return self::error('分类不存在' , 404);
+            return self::error('分类不存在' , '' , 404);
         }
         $nav = NavHandler::handle($nav);
-        return self::success($nav);
+        return self::success('' , $nav);
     }
 
     public static function destroy(Base $context , $id , array $param = [])
@@ -148,7 +148,7 @@ class NavAction extends Action
         $data = Category::childrens($id , $data , null , true , false);
         $ids = array_column($data , 'id');
         $count = NavModel::delByIds($ids);
-        return self::success($count);
+        return self::success('' , $count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
@@ -185,7 +185,7 @@ class NavAction extends Action
             'id'    => 'id' ,
             'p_id'  => 'p_id' ,
         ] , false , false);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
 }

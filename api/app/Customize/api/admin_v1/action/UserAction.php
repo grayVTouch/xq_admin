@@ -26,7 +26,7 @@ class UserAction extends Action
         }
         $res = UserModel::search($value , 20);
         $res = UserHandler::handleAll($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function index(Base $context , array $param = [])
@@ -35,7 +35,7 @@ class UserAction extends Action
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
         $paginator = UserModel::index($param , $order , $limit);
         $paginator = UserHandler::handlePaginator($paginator);
-        return self::success($paginator);
+        return self::success('' , $paginator);
     }
 
     public static function update(Base $context , $id , array $param = [])
@@ -46,12 +46,12 @@ class UserAction extends Action
             'sex' => ['required' , Rule::in($sex_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         // 检查用户名是否已经存在
         $res = UserModel::find($id);
         if (empty($res)) {
-            return self::error('用户不存在' , 404);
+            return self::error('用户不存在' , '' , 404);
         }
         if ($res->username !== $param['username'] && UserModel::findByUsername($param['username'])) {
             return self::error('用户名已经被使用');
@@ -80,7 +80,7 @@ class UserAction extends Action
             'sex' => ['required' , Rule::in($sex_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $res = UserModel::findByUsername($param['username']);
         if (!empty($res)) {
@@ -98,28 +98,28 @@ class UserAction extends Action
             'email' ,
             'user_group_id' ,
         ]));
-        return self::success($id);
+        return self::success('' , $id);
     }
 
     public static function show(Base $context , $id , array $param = [])
     {
         $res = UserModel::find($id);
         if (empty($res)) {
-            return self::error('用户不存在' , 404);
+            return self::error('用户不存在' , '' , 404);
         }
         $res = UserHandler::handle($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function destroy(Base $context , $id , array $param = [])
     {
         $count = UserModel::delById($id);
-        return self::success($count);
+        return self::success('' , $count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
         $count = UserModel::delByIds($ids);
-        return self::success($count);
+        return self::success('' , $count);
     }
 }

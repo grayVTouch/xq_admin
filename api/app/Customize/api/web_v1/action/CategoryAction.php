@@ -22,7 +22,7 @@ class CategoryAction extends Action
         $res = CategoryHandler::handleAll($res);
         $res = obj_to_array($res);
         $res = Category::childrens(0 , $res , null , false ,false);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function show(Base $context , $id , array $param = [])
@@ -35,10 +35,10 @@ class CategoryAction extends Action
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , 404);
+            return self::error('模块不存在' , '' , 404);
         }
         $category = CategoryModel::find($id);
         $category = CategoryHandler::handle($category);
-        return self::success($category);
+        return self::success('' , $category);
     }
 }

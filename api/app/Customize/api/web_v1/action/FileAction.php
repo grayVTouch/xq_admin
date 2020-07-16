@@ -17,6 +17,6 @@ class FileAction extends Action
         }
         $dir    = date('Ymd');
         $path   = Storage::put($dir , $file);
-        return self::success($path);
+        return self::success('' , $path);
     }
 }

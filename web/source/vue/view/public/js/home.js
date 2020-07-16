@@ -3,14 +3,18 @@ const loginForm = {
     password: '' ,
 };
 const forgetForm = {
-    username: '' ,
+    email: '' ,
+    email_code: '' ,
     password: '' ,
     confirm_password: '' ,
 };
 
 const registerForm = {
-    username: '' ,
+    email: '' ,
+    nickname: '' ,
     password: '' ,
+    confirm_password: '' ,
+    email_code: '' ,
     captcha_code: '' ,
     captcha_key: '' ,
 };
@@ -21,8 +25,9 @@ const loginError = {
 };
 
 const forgetError = {
-    username: '' ,
+    email: '' ,
     password: '' ,
+    email_code: '' ,
     confirm_password: '' ,
     captcha_code: '' ,
     captcha_key: '' ,
@@ -48,6 +53,12 @@ const userFormCallback = {
     login: [] ,
     register: [] ,
     forget: [] ,
+};
+
+const collectionGroup = {
+    count: 0 ,
+    collections: []
+
 };
 
 export default {
@@ -84,19 +95,23 @@ export default {
                     userLogin: false ,
                     userRegister: false ,
                     updateUserPassword: false ,
+                    sendEmailCodeForPassword: false ,
+                    sendEmailCodeForRegister: false ,
                 } ,
                 focus: {
                     usernameForLogin: false ,
                     passwordForLogin: false ,
 
-                    usernameForRegister: false ,
+                    emailForRegister: false ,
                     passwordForRegister: false ,
                     confirmPasswordForRegister: false ,
                     captchaCodeForRegister: false ,
+                    emailCodeForRegister: false ,
 
-                    usernameForForget: false ,
+                    emailForForget: false ,
                     passwordForForget: false ,
                     confirmPasswordForForget: false ,
+                    emailCodeForForget: false ,
                 } ,
                 captchaForRegister: {} ,
                 /**
@@ -105,6 +120,16 @@ export default {
                  * register
                  */
                 userFormType: 'login' ,
+                // 相关步骤
+                step: {
+                    // 1. email - 发送电子邮箱
+                    // 2. password - 修改密码
+                    password: 'email' ,
+                } ,
+                timer: {
+                    password: 0 ,
+                    register: 0 ,
+                } ,
             } ,
             dom: {} ,
             ins: {} ,
@@ -132,10 +157,7 @@ export default {
             favorites:{
                 total_collection_group: 0 ,
                 collectionGroups: [] ,
-                collection_group: {
-                    count: 0 ,
-                    collections: [] ,
-                } ,
+                collection_group: {...collectionGroup} ,
             } ,
             // 用户回调
             userFormCallback: {...userFormCallback} ,
@@ -158,8 +180,8 @@ export default {
         const position = this.getNavByPath(to.fullPath);
         // const position = this.getNavByPath(to.path);
         if (position.length > 0) {
-            // console.log(to.path , position , position[position.length - 1].link);
-            this.ins.nav.focusById(position[position.length - 1].link);
+            // console.log(to.path , position , position[position.length - 1].value);
+            this.ins.nav.focusById(position[position.length - 1].value);
         } else {
             // 没有选中项
             this.ins.nav.blur();
@@ -191,10 +213,10 @@ export default {
             this.pending('getHistories' , true);
             Api.user.lessHistory({
                 limit: TopContext.limit
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('getHistories' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtHomeChildren(data , code);
+                    this.errorHandleAtHomeChildren(msg , data , code);
                     return ;
                 }
                 data.forEach((v) => {
@@ -208,6 +230,8 @@ export default {
 
 
         showHistoryCtrl () {
+            this.hideFavoritesCtrl();
+            this.hideUserCtrl();
             this.dom.groupsForHistory = G(this.$refs['groups-for-history']);
             this.dom.groupsForHistory.removeClass('hide');
             this.dom.groupsForHistory.startTransition('show');
@@ -224,6 +248,8 @@ export default {
         } ,
 
         showUserCtrl () {
+            this.hideFavoritesCtrl();
+            this.hideHistoryCtrl();
             this.dom.infoForUser = G(this.$refs['info-for-user']);
             this.dom.infoForUser.removeClass('hide');
             this.dom.infoForUser.startTransition('show');
@@ -238,6 +264,8 @@ export default {
 
         // 获取收藏夹内容
         showFavoritesCtrl () {
+            this.hideUserCtrl();
+            this.hideHistoryCtrl();
             this.dom.collection = G(this.$refs['collection']);
             this.dom.collection.removeClass('hide');
             this.dom.collection.startTransition('show');
@@ -257,10 +285,10 @@ export default {
             this.pending('getCollectionGroupWithCollection' , true);
             Api.user.lessCollectionGroupWithCollection({
                 // limit: TopContext.limit
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('getCollectionGroupWithCollection' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtHomeChildren(data , code);
+                    this.errorHandleAtHomeChildren(msg , data , code);
                     return ;
                 }
                 data.collection_groups = data.collection_groups ? data.collection_groups : [];
@@ -278,9 +306,7 @@ export default {
                 });
                 this.favorites.total_collection_group = data.total_collection_group;
                 this.favorites.collectionGroups = data.collection_groups;
-                this.favorites.collection_group = data.collection_groups.length > 0 ? data.collection_groups[0] : {
-                    collections: []
-                };
+                this.favorites.collection_group = data.collection_groups.length > 0 ? {...data.collection_groups[0]} : {...collectionGroup};
             });
         } ,
 
@@ -358,7 +384,7 @@ export default {
         } ,
 
         captchaForRegister () {
-            Api.misc.captcha((data , code) => {
+            Api.misc.captcha((msg , data , code) => {
                 if (code !== TopContext.code.Success) {
                     this.val.registerError.captcha_code = data;
                     return ;
@@ -424,16 +450,16 @@ export default {
                 return ;
             }
             this.pending('userLogin' , true);
-            Api.user.login(this.loginForm , (data , code) => {
+            Api.user.login(this.loginForm , (msg , data , code) => {
                 this.resetLoginError();
                 this.resetLoginMessage();
                 if (code !== TopContext.code.Success) {
                     this.pending('userLogin' , false);
-                    if (G.isString(data)) {
-                        this.message(data);
-                        return ;
+                    if (code !== TopContext.code.FormValidateFail) {
+                        this.message(msg);
+                    } else {
+                        this.val.loginError = {...data};
                     }
-                    this.val.loginError = {...data};
                     return ;
                 }
                 this.loginMessage('登录成功，获取用户信息中...' , 'run-green');
@@ -459,14 +485,14 @@ export default {
 
         userInfo (callback) {
             this.pending('userInfo' , true);
-            Api.user.info((data , code) => {
+            Api.user.info((msg , data , code) => {
                 this.pending('userInfo' , false);
                 if (code !== TopContext.code.Success) {
                     G.invoke(callback , null , false);
                     if (code === TopContext.code.AuthFailed) {
                         return ;
                     }
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 G.s.json('user' , data);
@@ -481,14 +507,14 @@ export default {
                 return ;
             }
             this.pending('userRegister' , true);
-            Api.user.register(this.registerForm , (data , code) => {
+            Api.user.register(this.registerForm , (msg , data , code) => {
                 this.resetRegisterError();
                 this.resetRegisterMessage();
                 if (code !== TopContext.code.Success) {
                     this.pending('userRegister' , false);
                     this.captchaForRegister();
                     if (G.isString(data)) {
-                        this.message(data);
+                        this.message(msg);
                         return ;
                     }
                     this.val.registerError = {...data};
@@ -511,19 +537,74 @@ export default {
             });
         } ,
 
+        sendEmailCodeForPassword () {
+            if (this.val.timer.password > 0) {
+                return ;
+            }
+            // 发送验证码
+            this.pending('sendEmailCodeForPassword' , true);
+            Api.misc.sendEmailCodeForPassword(this.forgetForm.email , (msg , data , code) => {
+                this.pending('sendEmailCodeForPassword' , false);
+                if (code !== TopContext.code.Success) {
+                    if (code !== TopContext.code.FormValidateFail) {
+                        this.message(msg);
+                        return ;
+                    }
+                    this.val.forgetError = {...data};
+                    return ;
+                }
+                // 密码
+                this.val.step.password = 'password';
+                this.forgetMessage('邮箱验证码发送成功' , 'run-green');
+                window.setTimeout(() => {
+                    this.resetForgetMessage();
+                } , 3000);
+                G.timeCount(60 , 1 , (v) => {
+                    this.val.timer.password = v;
+                });
+            });
+        } ,
+
+        sendEmailCodeForRegister () {
+            if (this.val.timer.register > 0) {
+                return ;
+            }
+            // 发送验证码
+            this.pending('sendEmailCodeForRegister' , true);
+            Api.misc.sendEmailCodeForRegister(this.registerForm.email , (msg , data , code) => {
+                this.pending('sendEmailCodeForRegister' , false);
+                if (code !== TopContext.code.Success) {
+                    if (code !== TopContext.code.FormValidateFail) {
+                        this.message(msg);
+                        return ;
+                    }
+                    this.val.registerError = {...data};
+                    return ;
+                }
+                // 密码
+                this.forgetMessage('邮箱验证码发送成功' , 'run-green');
+                window.setTimeout(() => {
+                    this.resetRegisterMessage();
+                } , 3000);
+                G.timeCount(60 , 1 , (v) => {
+                    this.val.timer.register = v;
+                });
+            });
+        } ,
+
         updateUserPassword () {
             if (this.pending('updateUserPassword')) {
                 this.message('请求中...请耐心等待');
                 return ;
             }
             this.pending('updateUserPassword' , true);
-            Api.user.updatePassword(this.forgetForm , (data , code) => {
+            Api.user.updatePassword(this.forgetForm , (msg , data , code) => {
                 this.resetForgetError();
                 this.resetForgetMessage();
                 if (code !== TopContext.code.Success) {
                     this.pending('updateUserPassword' , false);
                     if (G.isString(data)) {
-                        this.message(data);
+                        this.message(msg);
                         return ;
                     }
                     this.val.forgetError = {...data};
@@ -534,6 +615,7 @@ export default {
                 this.dispatch('user' , null);
                 this.forgetMessage('修改成功！' , 'run-green');
                 window.setTimeout(() => {
+                    this.val.password = 'email';
                     this.pending('updateUserPassword' , false);
                     this.resetForgetMessage();
                     this.resetForgetForm();
@@ -659,7 +741,7 @@ export default {
                 // 是否选中顶级项
                 topFocus: true ,
                 // 初始选中的项
-                ids: position.length > 0 ? [position[position.length - 1].link] : [] ,
+                ids: position.length > 0 ? [position[position.length - 1].value] : [] ,
             });
         } ,
 
@@ -677,9 +759,9 @@ export default {
         } ,
 
         initNavData () {
-            Api.home.nav((data , code) => {
+            Api.home.nav((msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 const nav = G.tree.childrens(0 , data , null , false , true);

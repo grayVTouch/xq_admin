@@ -18,9 +18,9 @@ class Subject extends Base
         $param['limit'] = $param['limit'] ?? '';
         $res = SubjectAction::index($this , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function update($id)
@@ -34,9 +34,9 @@ class Subject extends Base
         $param['module_id']        = $param['module_id'] ?? '';
         $res = SubjectAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function store()
@@ -50,27 +50,27 @@ class Subject extends Base
         $param['module_id']        = $param['module_id'] ?? '';
         $res = SubjectAction::store($this ,$param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function show($id)
     {
         $res = SubjectAction::show($this , $id);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function destroy($id)
     {
         $res = SubjectAction::destroy($this , $id);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function destroyAll()
@@ -79,9 +79,9 @@ class Subject extends Base
         $ids = json_decode($ids , true);
         $res = SubjectAction::destroyAll($this , $ids);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function search()
@@ -92,8 +92,8 @@ class Subject extends Base
 
         $res = SubjectAction::search($this , $param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 }

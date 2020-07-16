@@ -43,4 +43,21 @@ class UserModel extends Model
         return self::where('username' , $username)->first();
     }
 
+    public static function findByValueInUsernameOrEmailOrPhone(string $value = '')
+    {
+        return self::where('username' , $value)
+            ->orWhere('email' , $value)
+            ->orWhere('phone' , $value)
+            ->first();
+    }
+
+
+
+    public static function findByEmail(string $email = ''): ?UserModel
+    {
+        return self::where('email' , $email)->first();
+    }
+
+
+
 }

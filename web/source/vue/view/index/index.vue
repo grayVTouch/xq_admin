@@ -17,7 +17,7 @@
 
                     <div class="pic-play-transform">
                         <div class="images">
-                            <a class="link" v-for="v in homeSlideshow" :key="v.id" :href='v.link'><img :src="v.__path__" alt="" class="image"></a>
+                            <a class="link" v-for="v in homeSlideshow" :key="v.id" :href='v.link'><img :src="v.__path__" alt="" v-judge-img-size class="image judge-img-size"></a>
                         </div>
                         <div class="index"></div>
                         <div class="action prev"><i class="run-iconfont run-iconfont-prev01"></i></div>
@@ -30,10 +30,10 @@
                     <div class="inner">
 
                         <a class="item" v-for="(v,k) in hotImages" :key="v.id" v-if="k < 6" target="_blank" :href="`#/image_subject/${v.id}/show`">
-                            <img :src="v.thumb ? v.__thumb__ : $store.state.context.res.notFound" alt="" class="image">
+                            <img :src="v.thumb ? v.__thumb__ : $store.state.context.res.notFound" alt="" v-judge-img-size class="image judge-img-size">
                             <div class="info">
                                 <h5 class="title">{{ v.name  }}</h5>
-                                <p class="desc">{{ v.desc }}</p>
+                                <p class="desc">{{ v.description }}</p>
                             </div>
                         </a>
 
@@ -72,7 +72,7 @@
                             <!-- 封面 -->
                             <div class="thumb">
                                 <a class="link" target="_blank" :href="`#/image_subject/${v.id}/show`">
-                                    <img :src="v.thumb ? v.__thumb__ : $store.state.context.res.notFound" class="image">
+                                    <img :src="v.thumb ? v.__thumb__ : $store.state.context.res.notFound" v-judge-img-size class="image judge-img-size">
                                     <div class="mask">
                                         <div class="top">
                                             <div class="type" v-if="v.type === 'pro'"><my-icon icon="zhuanyerenzheng" size="35" /></div>
@@ -109,9 +109,9 @@
                                 <div class="info">
                                     <div class="left"><my-icon icon="shijian" class="ico" mode="right" /> {{ v.create_time }}</div>
                                     <div class="right">
-                                        <span><my-icon icon="chakan" mode="right" />{{ v.view_count }}</span>
-                                        <span><my-icon icon="shoucang2" mode="right" />{{ v.praise_count }}</span>
-                                        <span><my-icon icon="shoucang6" mode="right" />{{ v.collect_count }}</span>
+                                        <span class="view-count"><my-icon icon="chakan" mode="right" />{{ v.view_count }}</span>
+                                        <span class="praise-count"><my-icon icon="shoucang2" mode="right" />{{ v.praise_count }}</span>
+                                        <span class="collect-count" v-if="$store.state.user"><my-icon icon="shoucang6" mode="right" />{{ v.collect_count }}</span>
                                     </div>
                                 </div>
                             </div>

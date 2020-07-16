@@ -23,10 +23,10 @@ class TagAction extends Action
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , 404);
+            return self::error('模块不存在' , '' , 404);
         }
         $subject = TagModel::find($id);
         $subject = TagHandler::handle($subject);
-        return self::success($subject);
+        return self::success('' , $subject);
     }
 }

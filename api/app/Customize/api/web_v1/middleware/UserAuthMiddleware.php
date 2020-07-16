@@ -8,8 +8,8 @@ use App\Customize\api\web_v1\handler\UserHandler;
 use App\Customize\api\web_v1\model\UserModel;
 use App\Customize\api\web_v1\model\UserTokenModel;
 use Closure;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use function api\web_v1\error;
 
 class UserAuthMiddleware
@@ -17,7 +17,7 @@ class UserAuthMiddleware
     public function handle(Request $request , Closure $next)
     {
         $res = $this->auth($request);
-        if ($res instanceof Response) {
+        if ($res instanceof JsonResponse) {
             return $res;
         }
         return $next($request);
@@ -27,15 +27,15 @@ class UserAuthMiddleware
     {
         $token = $request->header('Authorization');
         if (empty($token)) {
-            return error('Auth Failed【Empty Authorization Header】' , 401);
+            return error('Auth Failed【Empty Authorization Header】' , '' ,401);
         }
         $token = UserTokenModel::findByToken($token);
         if (empty($token)) {
-            return error('Auth Failed【Token Invalid】' , 401);
+            return error('Auth Failed【Token Invalid】' , '' ,401);
         }
         $user = UserModel::find($token->user_id);
         if (empty($user)) {
-            return error('Auth Failed【User Not Found】' , 401);
+            return error('Auth Failed【User Not Found】' , '' ,401);
         }
         $user = UserHandler::handle($user);
         app()->instance('user' , $user);

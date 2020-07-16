@@ -21,7 +21,7 @@ class TagAction extends Action
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
         $paginator = TagModel::index($param , $order , $limit);
         $paginator = TagHandler::handlePaginator($paginator);
-        return self::success($paginator);
+        return self::success('' , $paginator);
     }
 
     public static function update(Base $context , $id , array $param = [])
@@ -31,15 +31,15 @@ class TagAction extends Action
             'module_id' => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $res = TagModel::find($id);
         if (empty($res)) {
-            return self::error('标签不存在' , 404);
+            return self::error('标签不存在' , '' , 404);
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , 404);
+            return self::error('模块不存在' , '' , 404);
         }
         $tag = TagModel::findByModuleIdAndNameExcludeSelf($res->id , $module->id , $param['name']);
         if (!empty($tag)) {
@@ -61,11 +61,11 @@ class TagAction extends Action
             'module_id' => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , 404);
+            return self::error('模块不存在' , '' , 404);
         }
         $tag = TagModel::findByModuleIdAndName($module->id , $param['name']);
         if (!empty($tag)) {
@@ -77,7 +77,7 @@ class TagAction extends Action
             'weight' ,
             'module_id' ,
         ]));
-        return self::success($id);
+        return self::success('' , $id);
     }
 
     public static function findOrCreate(Base $context , array $param = [])
@@ -87,15 +87,15 @@ class TagAction extends Action
             'module_id' => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , 404);
+            return self::error('模块不存在' , '' , 404);
         }
         $tag = TagModel::findByModuleIdAndName($module->id , $param['name']);
         if (!empty($tag)) {
-            return self::success($tag);
+            return self::success('' , $tag);
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $id = TagModel::insertGetId(array_unit($param , [
@@ -105,7 +105,7 @@ class TagAction extends Action
         ]));
         $tag = TagModel::find($id);
         TagHandler::handle($tag);
-        return self::success($tag);
+        return self::success('' , $tag);
     }
 
 
@@ -113,22 +113,22 @@ class TagAction extends Action
     {
         $role = TagModel::find($id);
         if (empty($role)) {
-            return self::error('标签不存在' , 404);
+            return self::error('标签不存在' , '' , 404);
         }
         $role = TagModel::handle($role);
-        return self::success($role);
+        return self::success('' , $role);
     }
 
     public static function destroy(Base $context , $id , array $param = [])
     {
         $count = TagModel::delById($id);
-        return self::success($count);
+        return self::success('' , $count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
         $count = TagModel::delByIds($ids);
-        return self::success($count);
+        return self::success('' , $count);
     }
 
     public static function search(Base $context , $value , array $param = [])
@@ -138,17 +138,17 @@ class TagAction extends Action
         }
         $res = TagModel::search($value);
         $res = TagHandler::handleAll($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function topByModuleId(Base $context , $module_id , array $param = [])
     {
         if (empty($module_id)) {
-            return self::success([]);
+            return self::success('' , []);
         }
         $limit = 10;
         $res = TagModel::topByModuleId($module_id , $limit);
         $res = TagHandler::handleAll($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 }

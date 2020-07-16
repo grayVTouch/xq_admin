@@ -15,8 +15,8 @@ class Misc extends Base
     {
         $res = MiscAction::captcha($this);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 }

@@ -6,7 +6,6 @@ namespace api\admin_v1;
 use Illuminate\Contracts\Validation\Validator;
 use Exception;
 use function extra\config;
-
 /**
  * @param string $data
  * @param int $code
@@ -14,9 +13,9 @@ use function extra\config;
  *@author running
  *
  */
-function success($data = '' , $code = 200)
+function success($message = '' , $data = '' , $code = 200)
 {
-    return json($data , $code);
+    return json($message , $data , $code);
 }
 
 /**
@@ -26,9 +25,9 @@ function success($data = '' , $code = 200)
  * @param int $code
  * @return \Illuminate\Http\JsonResponse
  */
-function error($data = '' , $code = 400)
+function error($message = '' , $data = '' , $code = 400)
 {
-    return json($data , $code);
+    return json($message , $data , $code);
 }
 
 /**
@@ -38,14 +37,13 @@ function error($data = '' , $code = 400)
  * @param $code
  * @return \Illuminate\Http\JsonResponse
  */
-function json($data , $code)
+function json($message , $data , $code)
 {
-    if (is_scalar($data) || is_null($data)) {
-        return response($data , $code);
-    }
-    return response()->json($data , $code);
+    return response()->json([
+        'message'  => $message ,
+        'data' => $data
+    ] , $code);
 }
-
 
 function get_form_error(Validator $validator)
 {

@@ -11,17 +11,14 @@ export default {
                 tags: [] ,
             } ,
             images: {
-                page: 1 ,
-                maxPage: 1 ,
                 data: [] ,
-                total: 0 ,
                 limit: 5 ,
             } ,
 
             dom: {} ,
             ins: {} ,
             val: {
-                fixedMisc: false ,
+                fixed: false ,
             } ,
             // 收藏夹列表
             favorites: [] ,
@@ -31,6 +28,17 @@ export default {
                 relation_type: 'image_subject' ,
                 relation_id: this.id ,
                 name: '' ,
+            } ,
+
+            // 推荐数据
+            recommend: {
+                limit: 5 ,
+                data: [] ,
+            } ,
+
+            newest: {
+                limit: 5 ,
+                data: [] ,
             } ,
         };
     } ,
@@ -45,19 +53,9 @@ export default {
         this.getData();
         this.incrementViewCount();
         this.record();
+        this.getNewestData();
+        this.getRecommendData();
     } ,
-    //
-    // beforeRouteUpdate (to , from , next) {
-    //     console.log('hello');
-    // } ,
-    //
-    // beforeRouteEnter (to , from , next) {
-    //     console.log('route enter');
-    //     next((vm) => {
-    //         vm.getData();
-    //
-    //     });
-    // } ,
 
     methods: {
 
@@ -73,10 +71,10 @@ export default {
                 relation_type: 'image_subject' ,
                 relation_id: this.data.id ,
                 action ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('praiseHandle' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtHomeChildren(data , code , () => {
+                    this.errorHandleAtHomeChildren(msg , data , code , () => {
                         this.praiseHandle();
                     });
                     return ;
@@ -103,10 +101,10 @@ export default {
             Api.user.collectionGroupWithJudge({
                 relation_type: 'image_subject' ,
                 relation_id: this.id ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('getFavorites' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtHomeChildren(data , code , () => {
+                    this.errorHandleAtHomeChildren(msg , data , code , () => {
                         this.getFavorites();
                     });
                     return ;
@@ -121,10 +119,10 @@ export default {
                 return ;
             }
             this.pending('createAndJoinCollectionGroup' , true);
-            Api.user.createAndJoinCollectionGroup(this.collectionGroup , (data , code) => {
+            Api.user.createAndJoinCollectionGroup(this.collectionGroup , (msg , data , code) => {
                 this.pending('createAndJoinCollectionGroup' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtHomeChildren(data, code , () => {
+                    this.errorHandleAtHomeChildren(msg , data, code , () => {
                         this.createAndJoinCollectionGroup();
                     });
                     return ;
@@ -147,10 +145,10 @@ export default {
                 relation_id: this.id ,
                 action ,
                 collection_group_id: collectionGroup.id ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending(pending , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtHomeChildren(data , code , () => {
+                    this.errorHandleAtHomeChildren(msg , data , code , () => {
                         this.collectionHandle(collectionGroup);
                     });
                     return ;
@@ -169,19 +167,16 @@ export default {
 
         getData () {
             this.pending('getData' , true);
-            Api.image_subject.show(this.id , (data , code) => {
+            Api.image_subject.show(this.id , (msg , data , code) => {
                 if (code !== TopContext.code.Success) {
                     this.pending('getData' , false);
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
-                data.user = data.user ? data.user : {};
-                data.subject = data.subject ? data.subject : {};
-                data.images = data.images ? data.images : [];
-                data.tags = data.tags ? data.tags : [];
-                data.module = data.module ? data.module : [];
-
+                this.handleImageSubject(data);
                 this.data = {...data};
+                // 加载首页图片
+                this.images.data = data.images.slice(0 , this.images.limit);
                 this.$nextTick(() => {
                     this.pending('getData' , false);
                     this.initPicPreview();
@@ -201,52 +196,98 @@ export default {
         } ,
 
         initPicPreview () {
-            this.ins.picPreview = new PicPreview(this.dom.picPreviewContainer.get(0) , {
-
+            var images = [];
+            this.data.images.forEach((v) => {
+                images.push(v.__path__);
+            });
+            this.ins.picPreviewAsync = new PicPreview_Async(this.dom.picPreviewAsyncContainer.get(0) , {
+                index: 1 ,
+                images ,
             });
         },
 
         imageClick (index) {
-            this.ins.picPreview.show(parseInt(index));
+            this.ins.picPreviewAsync.show(parseInt(index));
         } ,
 
         initDom () {
             this.dom.win = G(window);
             this.dom.html = G(document.documentElement);
-            this.dom.imageSubject = G(this.$refs['image-subject']);
-            this.dom.picPreviewContainer = G(this.$refs['pic-preview-container']);
+            this.dom.images = G(this.$refs.images);
+            this.dom.picPreviewAsyncContainer = G(this.$refs['pic-preview-async-container']);
             this.dom.myFavorites = G(this.$refs['my-favorites']);
             this.dom.misc = G(this.$refs['misc']);
+            this.dom.newest = G(this.$refs.newest);
         },
 
-        scrollEvent (e) {
-            const y = window.pageYOffset;
+        // 图片分段加载
+        scrollLoadImageEvent (e) {
+            // const y = window.pageYOffset;
+            const scrollTop = this.dom.images.getWindowOffsetVal('top');
+            const imagesH = this.dom.images.height();
             const clientH = this.dom.html.clientHeight();
-            const maxHeight = 122 + this.dom.imageSubject.scrollHeight();
-            if (y + clientH < maxHeight) {
+            const extraH = clientH - TopContext.val.footerH;
+
+            if (Math.abs(scrollTop) + extraH < imagesH) {
                 return ;
             }
-            if (this.images.page >= this.images.maxPage) {
+            const imagesDataLen = this.images.data.length;
+            const dataImagesLen = this.data.images.length;
+            if (imagesDataLen >= dataImagesLen) {
                 return ;
             }
-            this.images.page++;
-            const start = (this.images.page - 1) * this.images.limit;
-            const end = start + this.images.limit;
-            this.images.data = this.images.data.concat(this.data.images.slice(start , end));
+            this.images.data = this.images.data.concat(this.data.images.slice(imagesDataLen , imagesDataLen + this.images.limit));
         } ,
 
         scrollWithMiscEvent () {
-            const scrollTop = this.dom.misc.getWindowOffsetVal('top');
-            if (scrollTop >= 0) {
-                this._val('fixedMisc' , false);
+            const scrollTop = this.dom.newest.getWindowOffsetVal('top');
+            // const scrollTop = this.dom.misc.getWindowOffsetVal('top');
+            if (scrollTop >= TopContext.val.fixedTop) {
+                this._val('fixed' , false);
             } else {
-                this._val('fixedMisc' , true);
+                this._val('fixed' , true);
             }
         } ,
 
         initEvent () {
-            this.dom.win.on('scroll' , this.scrollEvent.bind(this));
+            this.dom.win.on('scroll' , this.scrollLoadImageEvent.bind(this));
             this.dom.win.on('scroll' , this.scrollWithMiscEvent.bind(this));
+        } ,
+
+        // 获取推荐数据
+        getNewestData (){
+            this.pending('getNewestData' , true);
+            Api.image_subject.newest({
+                limit: this.newest.limit
+            } ,  (msg , data , code) => {
+                this.pending('getNewestData' , false);
+                if (code !== TopContext.code.Success) {
+                    this.message(msg);
+                    return ;
+                }
+                this.newest.data = data;
+            });
+        } ,
+
+        // 获取推荐数据
+        getRecommendData (){
+            this.pending('getRecommendData' , true);
+            Api.image_subject.recommend(this.id , {
+                limit: this.recommend.limit
+            } ,  (msg , data , code) => {
+                this.pending('getRecommendData' , false);
+                if (code !== TopContext.code.Success) {
+                    this.message(msg);
+                    return ;
+                }
+                this.recommend.data = data;
+            });
+        } ,
+
+        linkToImageSubject (imageSubject) {
+            const link = this.genUrl(`/image_subject/${imageSubject.id}/show`);
+            this.link(link , '_self');
+            window.history.go(0);
         } ,
     } ,
 }

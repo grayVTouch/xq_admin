@@ -21,9 +21,9 @@ class User extends Base
         $param['collection_group_id'] = $param['collection_group_id'] ?? '';
         $res = UserAction::destroyCollectionGroup($this , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'], $res['code']);
+            return error($res['message'] , $res['data'], $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     // 删除收藏夹
@@ -34,33 +34,34 @@ class User extends Base
         $param['collection_group_ids'] = $param['collection_group_ids'] ?? '';
         $res = UserAction::destroyAllCollectionGroup($this , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'], $res['code']);
+            return error($res['message'] , $res['data'], $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function store()
     {
         $param = $this->request->post();
-        $param['username']      = $param['username'] ?? '';
+        $param['email']      = $param['email'] ?? '';
+        $param['email_code']      = $param['email_code'] ?? '';
         $param['password']      = $param['password'] ?? '';
         $param['confirm_password']      = $param['confirm_password'] ?? '';
         $param['captcha_key']    = $param['captcha_key'] ?? '';
         $param['captcha_code']   = $param['captcha_code'] ?? '';
         $res = UserAction::store($this , $param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function info()
     {
         $res = UserAction::info($this);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function login()
@@ -70,23 +71,24 @@ class User extends Base
         $param['password']      = $param['password'] ?? '';
         $res = UserAction::login($this , $param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     // 更改密码
     public function updatePassword()
     {
         $param = $this->request->post();
-        $param['username']      = $param['username'] ?? '';
+        $param['email']         = $param['email'] ?? '';
+        $param['email_code']    = $param['email_code'] ?? '';
         $param['password']      = $param['password'] ?? '';
         $param['confirm_password']      = $param['confirm_password'] ?? '';
         $res = UserAction::updatePassword($this , $param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function lessHistory()
@@ -96,9 +98,9 @@ class User extends Base
         $param['limit'] = $param['limit'] ?? '';
         $res = UserAction::lessHistory($this , $param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function histories()
@@ -110,9 +112,9 @@ class User extends Base
         $param['limit'] = $param['limit'] ?? '';
         $res = UserAction::histories($this , $param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     // 收藏夹列表-带有判断（判断某个事物是否存在于此）
@@ -124,9 +126,9 @@ class User extends Base
         $param['relation_id'] = $param['relation_id'] ?? '';
         $res = UserAction::collectionGroupWithJudge($this , $param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     // 收藏夹列表-带搜索
@@ -138,9 +140,9 @@ class User extends Base
         $param['value'] = $param['value'] ?? '';
         $res = UserAction::collectionGroup($this , $param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
 
@@ -155,9 +157,9 @@ class User extends Base
         $param['collection_group_id'] = $param['collection_group_id'] ?? '';
         $res = UserAction::collectionHandle($this , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'], $res['code']);
+            return error($res['message'] , $res['data'], $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     // 点赞 & 取消点赞
@@ -170,9 +172,9 @@ class User extends Base
         $param['action']    = $param['action'] ?? '';
         $res = UserAction::praiseHandle($this , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'], $res['code']);
+            return error($res['message'] , $res['data'], $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function record()
@@ -183,9 +185,9 @@ class User extends Base
         $param['relation_id']    = $param['relation_id'] ?? '';
         $res = UserAction::record($this , $param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     // 创建并加入收藏夹
@@ -198,9 +200,9 @@ class User extends Base
         $param['relation_id']    = $param['relation_id'] ?? '';
         $res = UserAction::createAndJoinCollectionGroup($this , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'], $res['code']);
+            return error($res['message'] , $res['data'], $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     // 仅创建收藏夹
@@ -211,9 +213,9 @@ class User extends Base
         $param['name'] = $param['name'] ?? '';
         $res = UserAction::createCollectionGroup($this , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'], $res['code']);
+            return error($res['message'] , $res['data'], $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     // 仅加入收藏夹
@@ -226,9 +228,9 @@ class User extends Base
         $param['relation_id']    = $param['relation_id'] ?? '';
         $res = UserAction::joinCollectionGroup($this , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'], $res['code']);
+            return error($res['message'] , $res['data'], $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
 
@@ -241,9 +243,9 @@ class User extends Base
         $param['limit'] = $param['limit'] ?? '';
         $res = UserAction::lessRelationInCollection($this , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'], $res['code']);
+            return error($res['message'] , $res['data'], $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function lessCollectionGroupWithCollection()
@@ -255,9 +257,9 @@ class User extends Base
         $res = UserAction::lessCollectionGroupWithCollection($this , $param);
 
         if ($res['code'] !== 0) {
-            return error($res['data'], $res['code']);
+            return error($res['message'] , $res['data'], $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function update()
@@ -272,9 +274,9 @@ class User extends Base
         $param['description'] = $param['description'] ?? '';
         $res = UserAction::update($this , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'], $res['code']);
+            return error($res['message'] , $res['data'], $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function updatePasswordInLogged()
@@ -285,9 +287,9 @@ class User extends Base
         $param['confirm_password'] = $param['confirm_password'] ?? '';
         $res = UserAction::updatePasswordInLogged($this , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'], $res['code']);
+            return error($res['message'] , $res['data'], $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function destroyHistory()
@@ -297,9 +299,9 @@ class User extends Base
         $param['history_ids'] = $param['history_ids'] ?? '';
         $res = UserAction::destroyHistory($this , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'], $res['code']);
+            return error($res['message'] , $res['data'], $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function collections()
@@ -310,9 +312,9 @@ class User extends Base
         $param['limit'] = $param['limit'] ?? '';
         $res = UserAction::collections($this , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'], $res['code']);
+            return error($res['message'] , $res['data'], $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function destroyCollection()
@@ -322,9 +324,9 @@ class User extends Base
         $param['collection_id'] = $param['collection_id'] ?? '';
         $res = UserAction::destroyCollection($this , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'], $res['code']);
+            return error($res['message'] , $res['data'], $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function updateCollectionGroup()
@@ -335,8 +337,8 @@ class User extends Base
         $param['name'] = $param['name'] ?? '';
         $res = UserAction::updateCollectionGroup($this , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'], $res['code']);
+            return error($res['message'] , $res['data'], $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 }

@@ -3,9 +3,9 @@
 namespace api\web_v1;
 
 
-use App\Customize\api\web_v1\model\UserModel;
 use Illuminate\Contracts\Validation\Validator;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use stdClass;
 use function extra\config;
 
@@ -16,9 +16,9 @@ use function extra\config;
  *@author running
  *
  */
-function success($data = '' , $code = 200)
+function success($message = '' , $data = '' , $code = 200): JsonResponse
 {
-    return json($data , $code);
+    return json($message , $data , $code);
 }
 
 /**
@@ -28,9 +28,9 @@ function success($data = '' , $code = 200)
  * @param int $code
  * @return \Illuminate\Http\JsonResponse
  */
-function error($data = '' , $code = 400)
+function error($message = '' , $data = '' , $code = 400): JsonResponse
 {
-    return json($data , $code);
+    return json($message , $data , $code);
 }
 
 /**
@@ -40,12 +40,12 @@ function error($data = '' , $code = 400)
  * @param $code
  * @return \Illuminate\Http\JsonResponse
  */
-function json($data , $code)
+function json($message , $data , $code): JsonResponse
 {
-    if (is_scalar($data) || is_null($data)) {
-        return response($data , $code);
-    }
-    return response()->json($data , $code);
+    return response()->json([
+        'message'  => $message ,
+        'data' => $data
+    ] , $code);
 }
 
 

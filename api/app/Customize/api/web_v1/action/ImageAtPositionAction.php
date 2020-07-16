@@ -22,14 +22,14 @@ class ImageAtPositionAction extends Action
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , 404);
+            return self::error('模块不存在' , '' , 404);
         }
         $position = PositionModel::getByPlatformAndValue('web' , $position);
         if (empty($position)) {
-            return self::error('位置不存在' , 404);
+            return self::error('位置不存在' , '' , 404);
         }
         $res = ImageAtPositionModel::getByModuleIdAndPositionId($module->id , $position->id);
         $res = ImageAtPositionHandler::handleAll($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 }

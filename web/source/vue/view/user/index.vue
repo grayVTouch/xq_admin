@@ -44,7 +44,7 @@
 
             scrollEvent () {
                 const scrollTop = this.dom.menu.getWindowOffsetVal('top');
-                this.fixedMenu = scrollTop < 0;
+                this.fixedMenu = scrollTop < TopContext.val.fixedTop;
             } ,
 
             initEvent () {
@@ -94,7 +94,7 @@
 
     .view > .menu.fixed .inner {
         position: fixed;
-        top: 42px;
+        top: var(--fixed-top);
     }
 
     .view > .menu > .inner .link {

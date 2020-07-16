@@ -113,9 +113,9 @@ export default {
         } ,
 
         getPermission () {
-            Api.admin_permission.index((data , code) => {
+            Api.admin_permission.index((msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.errorHandle(data);
+                    this.errorHandle(msg , data , code);
                     return ;
                 }
                 data.forEach((v) => {
@@ -129,7 +129,7 @@ export default {
 
         getData () {
             this.pending('getData' , true);
-            Api.role.index(this.search , (data , code) => {
+            Api.role.index(this.search , (msg , data , code) => {
                 this.pending('getData' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
@@ -176,7 +176,7 @@ export default {
                     G.invoke(callback , this , false);
                     return ;
                 }
-                Api.role.destroyAll(idList , (data , code) => {
+                Api.role.destroyAll(idList , (msg , data , code) => {
                     if (code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
                         this.message('error' , data);
@@ -197,7 +197,7 @@ export default {
 
             Api.role.localUpdate(record.id , {
                 [extra.field]: val
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending(pendingKey , false);
                 if (code !== TopContext.code.Success) {
                     record[extra.field] = oVal;
@@ -252,11 +252,11 @@ export default {
         submitEvent () {
             const self = this;
             this.pending('submit' , true);
-            const callback = (data , code) => {
+            const callback = (msg , data , code) => {
                 this.pending('submit' , false);
                 this.error();
                 if (code !== TopContext.code.Success) {
-                    this.errorHandle(data);
+                    this.errorHandle(msg , data , code);
                     return ;
                 }
                 this.successHandle((keep) => {
@@ -296,9 +296,9 @@ export default {
         allocateEvent (record) {
             this.role = {...record};
             this._val('drawer' , true);
-            Api.role.permission(record.id , (data , code) => {
+            Api.role.permission(record.id , (msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.errorHandle(data);
+                    this.errorHandle(msg , data , code);
                     return ;
                 }
                 const permissions = [...this.permissions];
@@ -338,10 +338,10 @@ export default {
             });
             Api.role.allocatePermission(this.role.id , {
                 permission: G.jsonEncode(ids)
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('allocatePermission' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandle(data);
+                    this.errorHandle(msg , data , code);
                     return ;
                 }
                 this.successHandle((keep) => {

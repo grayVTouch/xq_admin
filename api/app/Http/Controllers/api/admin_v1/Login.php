@@ -19,9 +19,9 @@ class Login extends Base
         $param['captcha_code']   = $param['captcha_code'] ?? '';
         $res = LoginAction::login($this , $param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 
     public function avatar()
@@ -30,8 +30,8 @@ class Login extends Base
         $param['username'] = $param['username'] ?? '';
         $res = LoginAction::avatar($this , $param);
         if ($res['code'] != 0) {
-            return error($res['data'] , $res['code']);
+            return error($res['message'] , $res['data'] , $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 }

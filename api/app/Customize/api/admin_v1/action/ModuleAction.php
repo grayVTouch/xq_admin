@@ -22,7 +22,7 @@ class ModuleAction extends Action
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
         $paginator = ModuleModel::index($param , $order , $limit);
         $paginator = ModuleHandler::handlePaginator($paginator);
-        return self::success($paginator);
+        return self::success('' , $paginator);
     }
 
     public static function update(Base $context , $id , array $param = [])
@@ -33,11 +33,11 @@ class ModuleAction extends Action
             'enable' => ['required' , Rule::in($bool_for_int)] ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $res = ModuleModel::find($id);
         if (empty($res)) {
-            return self::error('模块不存在' , 404);
+            return self::error('模块不存在' , '' , 404);
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         ModuleModel::updateById($res->id , array_unit($param , [
@@ -55,11 +55,11 @@ class ModuleAction extends Action
             'enable' => ['sometimes' , Rule::in($bool_for_int)] ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $res = ModuleModel::find($id);
         if (empty($res)) {
-            return self::error('模块不存在' , 404);
+            return self::error('模块不存在' , '' , 404);
         }
         $param['name'] = $param['name'] === '' ? $res->name : $param['name'];
         $param['weight'] = $param['weight'] === '' ? $res->weight : $param['weight'];
@@ -80,7 +80,7 @@ class ModuleAction extends Action
             'enable' => ['required' , Rule::in($bool_for_int)] ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $param['create_time'] = current_time();
@@ -90,35 +90,35 @@ class ModuleAction extends Action
             'enable' ,
             'create_time'
         ]));
-        return self::success($id);
+        return self::success('' , $id);
     }
 
     public static function show(Base $context , $id , array $param = [])
     {
         $res = ModuleModel::find($id);
         if (empty($res)) {
-            return self::error('模块不存在' , 404);
+            return self::error('模块不存在' , '' , 404);
         }
         $res = ModuleModel::handle($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function destroy(Base $context , $id , array $param = [])
     {
         $count = ModuleModel::delById($id);
-        return self::success($count);
+        return self::success('' , $count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
         $count = ModuleModel::delByIds($ids);
-        return self::success($count);
+        return self::success('' , $count);
     }
 
     public static function all(Base $context , array $param = [])
     {
         $res = ModuleModel::get();
         $res = ModuleHandler::handleAll($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 }

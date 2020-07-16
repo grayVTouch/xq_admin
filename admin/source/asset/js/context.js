@@ -15,7 +15,8 @@ window.TopContext = {
     fileApi: 'http://api.xq.test/api/admin_v1/upload' ,
     code: {
         Success: 200 ,
-        AuthFailed: 401
+        AuthFailed: 401 ,
+        FormValidateFail: 400 ,
     } ,
     res: {
         logo: 'http://192.168.3.200:10001/upload/20200712/phjK4tBEQWX8BiIb0ue3kdpfcEwBOGQNCODkpbUK.png' ,

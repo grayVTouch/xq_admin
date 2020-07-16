@@ -217,7 +217,7 @@ export default {
         } ,
 
         getCategoriesData (moduleId , callback) {
-            Api.category.searchByModuleId(moduleId , (data , code) => {
+            Api.category.searchByModuleId(moduleId , (msg , data , code) => {
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     G.invoke(callback , null , false);
@@ -231,7 +231,7 @@ export default {
         } ,
 
         getModulesData (callback) {
-            Api.module.all((data , code) => {
+            Api.module.all((msg , data , code) => {
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     G.invoke(callback , null , false);
@@ -245,7 +245,7 @@ export default {
         } ,
 
         getTopTags (moduleId) {
-            Api.tag.topByModule(moduleId , (data , code) => {
+            Api.tag.topByModule(moduleId , (msg , data , code) => {
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     return ;
@@ -256,7 +256,7 @@ export default {
 
         getData () {
             this.pending('getData' , true);
-            Api.image_subject.index(this.search , (data , code) => {
+            Api.image_subject.index(this.search , (msg , data , code) => {
                 this.pending('getData' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
@@ -288,7 +288,7 @@ export default {
             const self = this;
             this.confirmModal('你确定删除吗？'  , (res) => {
                 if (res) {
-                    Api.image_subject.destroyAll(idList , (data , code) => {
+                    Api.image_subject.destroyAll(idList , (msg , data , code) => {
                         if (code !== TopContext.code.Success) {
                             G.invoke(callback , this , false);
                             this.message('error' , data);
@@ -352,10 +352,10 @@ export default {
         submitEvent () {
             const self = this;
             this.pending('submit' , true);
-            const callback = (data , code) => {
+            const callback = (msg , data , code) => {
                 this.pending('submit' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandle(data);
+                    this.errorHandle(msg , data , code);
                     return ;
                 }
                 this.successHandle((keep) => {

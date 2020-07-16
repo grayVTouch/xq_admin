@@ -1,5 +1,6 @@
 
 import './asset/css/base.css';
+import './asset/css/vars.css';
 
 /**
  * **************************

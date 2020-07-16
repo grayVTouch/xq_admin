@@ -31,7 +31,7 @@ class RoleAction extends Action
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
         $paginator = RoleModel::index($param , $order , $limit);
         $paginator = RoleHandler::handlePaginator($paginator);
-        return self::success($paginator);
+        return self::success('' , $paginator);
     }
 
     public static function update(Base $context , $id , array $param = [])
@@ -40,11 +40,11 @@ class RoleAction extends Action
             'name' => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $role = RoleModel::find($id);
         if (empty($role)) {
-            return self::error('角色不存在' , 404);
+            return self::error('角色不存在' , '' , 404);
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         RoleModel::updateById($role->id , array_unit($param , [
@@ -60,24 +60,24 @@ class RoleAction extends Action
             'name' => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $id = RoleModel::insertGetId(array_unit($param , [
             'name' ,
             'weight' ,
         ]));
-        return self::success($id);
+        return self::success('' , $id);
     }
 
     public static function show(Base $context , $id , array $param = [])
     {
         $role = RoleModel::find($id);
         if (empty($role)) {
-            return self::error('角色不存在' , 404);
+            return self::error('角色不存在' , '' , 404);
         }
         $role = RoleModel::handle($role);
-        return self::success($role);
+        return self::success('' , $role);
     }
 
     public static function destroy(Base $context , $id , array $param = [])
@@ -114,11 +114,11 @@ class RoleAction extends Action
             'permission' => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $role = RoleModel::find($id);
         if (empty($role)) {
-            return self::error('角色不存在' , 404);
+            return self::error('角色不存在' , '' , 404);
         }
         $permission = json_decode($param['permission'] , true);
         try {
@@ -143,18 +143,18 @@ class RoleAction extends Action
     {
         $role = RoleModel::find($id);
         if (empty($role)) {
-            return self::error('角色不存在' , 404);
+            return self::error('角色不存在' , '' , 404);
         }
         $admin_permission_ids = RolePermissionPivot::getPermissionIdsByRoleId($role->id);
         $permission = AdminPermissionModel::getByIds($admin_permission_ids);
         $permission = AdminPermissionHandler::handleAll($permission);
-        return self::success($permission);
+        return self::success('' , $permission);
     }
 
     public static function all(Base $context , array $param = [])
     {
         $res = RoleModel::get();
         $res = RoleHandler::handleAll($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 }

@@ -31,7 +31,7 @@ class AdminPermissionAction extends Action
             'id'    => 'id' ,
             'p_id'  => 'p_id' ,
         ] , false , false);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function localUpdate(Base $context , $id , array $param = [])
@@ -50,7 +50,7 @@ class AdminPermissionAction extends Action
         }
         $permission = AdminPermissionModel::find($id);
         if (empty($permission)) {
-            return self::error('权限不存在' , 404);
+            return self::error('权限不存在' , '' , 404);
         }
         $param['value']     = $param['value'] === '' ? $permission->value : $param['value'];
         $param['cn']        = $param['cn'] === '' ?  $permission->cn : $param['cn'];
@@ -96,11 +96,11 @@ class AdminPermissionAction extends Action
             'weight'    => 'sometimes|integer',
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $permission = AdminPermissionModel::find($id);
         if (empty($permission)) {
-            return self::error('权限不存在' , 404);
+            return self::error('权限不存在' , '' , 404);
         }
         $param['weight']     = $param['weight'] === '' ? 0 : $param['weight'];
         AdminPermissionModel::updateById($permission->id , array_unit($param , [
@@ -134,7 +134,7 @@ class AdminPermissionAction extends Action
             'p_id'    => 'required|integer',
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $id = AdminPermissionModel::insertGetId(array_unit($param , [
@@ -151,17 +151,17 @@ class AdminPermissionAction extends Action
             'b_ico' ,
             'p_id' ,
         ]));
-        return self::success($id);
+        return self::success('' , $id);
     }
 
     public static function show(Base $context , $id , array $param = [])
     {
         $permission = AdminPermissionModel::find($id);
         if (empty($permission)) {
-            return self::error('权限不存在' , 404);
+            return self::error('权限不存在' , '' , 404);
         }
         $permission = AdminPermissionHandler::handle($permission);
-        return self::success($permission);
+        return self::success('' , $permission);
     }
 
     public static function destroy(Base $context , $id , array $param = [])
@@ -171,7 +171,7 @@ class AdminPermissionAction extends Action
         $data = Category::childrens($id , $data , null , true , false);
         $ids = array_column($data , 'id');
         $count = AdminPermissionModel::delByIds($ids);
-        return self::success($count);
+        return self::success('' , $count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
@@ -208,7 +208,7 @@ class AdminPermissionAction extends Action
             'id'    => 'id' ,
             'p_id'  => 'p_id' ,
         ] , false , false);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
 }

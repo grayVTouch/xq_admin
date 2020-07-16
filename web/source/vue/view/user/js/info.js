@@ -33,10 +33,10 @@ export default {
 
         user () {
             this.pending('user' , true);
-            Api.user.info((data , code) => {
+            Api.user.info((msg , data , code) => {
                 this.pending('user' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtUserChildren(data , code , () => {
+                    this.errorHandleAtUserChildren(msg , data , code , () => {
                         this.user();
                     });
                     return ;
@@ -93,11 +93,11 @@ export default {
             }
             const self = this;
             this.pending('submit' , true);
-            Api.user.update(this.form , (data , code) => {
+            Api.user.update(this.form , (msg , data , code) => {
                 this.pending('submit' , false);
                 this.error();
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtUserChildren(data , code);
+                    this.errorHandleAtUserChildren(msg , data , code);
                     return ;
                 }
                 this.message('操作成功');

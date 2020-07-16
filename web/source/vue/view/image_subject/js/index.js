@@ -68,10 +68,10 @@ export default {
                 relation_type: 'image_subject' ,
                 relation_id: imageSubject.id ,
                 action ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('praiseHandle' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtHomeChildren(data , code , () => {
+                    this.errorHandleAtHomeChildren(msg , data , code , () => {
                         this.praiseHandle(imageSubject);
                     });
                     return ;
@@ -189,9 +189,9 @@ export default {
         } ,
 
         getImageSubject () {
-            Api.image_subject.imageSubject((data , code) => {
+            Api.image_subject.imageSubject((msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 this.imageSubject = data;
@@ -210,11 +210,11 @@ export default {
             Api.image_subject.newestWithPager({
                 limit: this.images.limit ,
                 page:  this.images.page ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('switchImages' , false);
                 if (code !== TopContext.code.Success) {
                     this.pending('images' , false);
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 this.images.page = data.current_page;
@@ -246,11 +246,11 @@ export default {
             Api.image_subject.hotWithPager({
                 limit: this.images.limit ,
                 page:  this.images.page ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('switchImages' , false);
                 if (code !== TopContext.code.Success) {
                     this.pending('images' , false);
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 this.images.page = data.current_page;
@@ -272,9 +272,9 @@ export default {
         hotTags () {
             Api.image_subject.hotTags({
                 limit: 10 ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 this.partHotTags = data;
@@ -298,11 +298,11 @@ export default {
                 tag_ids: G.jsonEncode(tagIds) ,
                 limit: this.images.limit ,
                 page: this.images.page ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('switchImages' , false);
                 if (code !== TopContext.code.Success) {
                     this.pending('images' , false);
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 this.images.page = data.current_page;
@@ -338,10 +338,10 @@ export default {
                 limit: this.allHotTags.limit ,
                 page:  this.allHotTags.page ,
                 value: this.allHotTags.value ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('hotTagsWithPager' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 this.allHotTags.page = data.current_page;

@@ -1,0 +1,22 @@
+/**
+ * ***********************
+ * 全局变量
+ * ***********************
+ */
+:root {
+    --border-color: dimgrey;
+    --fixed-top: 105px;
+    --fixed-top-with-extra: 125px;
+    --button-background-color: #5d5d5d;
+    --button-background-color-hover: #828282;
+    --button-color: #fff;
+    --box-background-color: #464646;
+    --box-background-color-hover: #585858;
+
+    --card-box-background-color: #383838;
+    --card-box-background-color-hover: #424242;
+
+    --image-subject-index-background: url(http://192.168.3.200:10001/upload/20200716/SuiqSdbWqJl6kK3TnNUbr8un86BxJxYVoVZKKZgV.png);
+    --background:  url(http://192.168.3.200:10001/upload/20200712/ixdTRcttkZq0JaUt5WYowOWuW0Q9ShfpEKXjakSF.jpeg);
+    --image-subject-index-ico-background:  url(http://192.168.3.200:10001/upload/20200717/426h1DUu19DyimtQ16HR1laaND8k5F0K2RBfz2nI.jpeg);
+}

@@ -85,4 +85,9 @@ return [
         'ios' => 'ios' ,
         'mobile' => '移动端' ,
     ] ,
+
+    'email_code_type' => [
+        'password' => '修改密码' ,
+        'register' => '用户注册' ,
+    ] ,
 ];

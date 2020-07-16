@@ -72,6 +72,8 @@ class ImageSubjectHandler extends Handler
             $res->collect_count = CollectionModel::countByModuleIdAndRelationTypeAndRelationId($res->module_id , 'image_subject' , $res->id);
         }
 
+        $res->format_time = date('Y-m-d H:i' , strtotime($res->create_time));
+
         return $res;
     }
 

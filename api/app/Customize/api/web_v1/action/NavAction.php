@@ -20,6 +20,6 @@ class NavAction extends Action
         $res = NavHandler::handleAll($res);
         $res = obj_to_array($res);
         $res = Category::childrens(0 , $res , null , false ,false);
-        return self::success($res);
+        return self::success('' , $res);
     }
 }

@@ -16,8 +16,8 @@ class Tag extends Base
         $param['module_id'] = $param['module_id'] ?? '';
         $res = TagAction::show($this , $id , $param);
         if ($res['code'] !== 0) {
-            return error($res['data'], $res['code']);
+            return error($res['message'] , $res['data'], $res['code']);
         }
-        return success($res['data']);
+        return success($res['message'] , $res['data']);
     }
 }

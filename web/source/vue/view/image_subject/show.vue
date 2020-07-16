@@ -29,41 +29,66 @@
                     </div>
 
                     <div class="desc m-b-30">{{ data.description }}</div>
-                    <div class="images">
-                        <img v-for="(v,k) in data.images" :src="v.__path__" @click="imageClick(k + 1)" class="image">
+                    <div class="images" ref="images">
+                        <img v-for="(v,k) in images.data" :src="v.__path__" @click="imageClick(k + 1)" class="image">
                     </div>
                 </div>
 
                 <div class="comment"></div>
+                <!-- 相关推荐 -->
+                <div class="recommend">
+                    <div class="inner">
+                        <div class="title">相关推荐</div>
+                        <div class="list">
+
+                            <a class="item" v-for="v in recommend.data" :key="v.id" :href="genUrl(`/image_subject/${v.id}/show`)" @click.prevent="linkToImageSubject(v)">
+                                <div class="thumb">
+                                    <div class="mask"><img :src="v.thumb ? v.__thumb__ : $store.state.context.res.notFound" v-judge-img-size class="image judge-img-size"></div>
+                                </div>
+                                <div class="info">
+                                    <div class="title">{{ v.name }}</div>
+                                    <div class="time hide">{{ v.format_time }}</div>
+                                </div>
+                            </a>
+
+                            <div class="empty" v-if="!val.pending.getRecommendData && recommend.data.length <= 0">暂无数据</div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- 其他 -->
             <div class="right misc" ref="misc">
-                <div class="inner" :class="{fixed: val.fixedMisc}">
+                <div class="inner" :class="{fixed: val.fixed}">
+
                     <!-- 发布者 -->
                     <div class="user">
-                        <div class="avatar">
-                            <div class="mask">
-                                <img :src="data.user ? data.user.__avatar__ : $store.state.context.res.notFound" class="image" alt="">
+                        <div class="inner" :class="{fixed: val.fixed}">
+                            <div class="avatar">
+                                <div class="mask">
+                                    <img :src="data.user ? data.user.__avatar__ : $store.state.context.res.notFound" v-judge-img-size class="image judge-img-size" alt="">
+                                </div>
+                            </div>
+                            <div class="name">{{ data.user ? data.user.username : '' }}</div>
+                            <div class="data">
+                                <div class="left">关注 1</div>
+                                <div class="right">粉丝 4106</div>
+                            </div>
+                            <div class="desc">个人简介</div>
+                            <div class="action">
+                                <my-button class="focus"><my-icon icon="add" /> 关注</my-button>
+                                <my-button class="message">私信</my-button>
                             </div>
                         </div>
-                        <div class="name">{{ data.user ? data.user.username : '' }}</div>
-                        <div class="data">
-                            <div class="left">关注 1</div>
-                            <div class="right">粉丝 4106</div>
-                        </div>
-                        <div class="desc">个人简介</div>
-                        <div class="action">
-                            <my-button class="focus"><my-icon icon="add" /> 关注</my-button>
-                            <my-button class="message">私信</my-button>
-                        </div>
                     </div>
+
                     <!-- 关联主题 -->
                     <div class="subject" v-if="data.type === 'pro'" @click="link(`#/image_subject/search?subject_id=${data.subject_id}`)">
                         <div class="info">
                             <div class="thumb">
                                 <div class="mask">
-                                    <img :src="data.subject ? data.subject.__thumb__ : $store.state.context.res.notFound" class="image" alt="">
+                                    <img :src="data.subject ? data.subject.__thumb__ : $store.state.context.res.notFound" v-judge-img-size class="image judge-img-size" alt="">
                                 </div>
                             </div>
                             <div class="name">{{ data.subject.name }}</div>
@@ -83,9 +108,29 @@
                         <!--                    </div>-->
 
                     </div>
-                    <!-- 推荐 -->
-                    <div class="comment"></div>
-                    <!-- 移动端 -->
+                    <!-- 最新发布 -->
+                    <div class="newest" ref="newest">
+                        <div class="inner" :class="{fixed: val.fixed}">
+                            <div class="title">最新发布</div>
+                            <div class="list">
+
+                                <a class="item" v-for="v in newest.data" :Key="v.id" :href="genUrl(`/image_subject/${v.id}/show`)" @click.prevent="linkToImageSubject(v)">
+                                    <div class="thumb">
+                                        <div class="mask"><img :src="v.thumb ? v.__thumb__ : $store.state.context.res.notFound" v-judge-img-size class="image judge-img-size"></div>
+                                    </div>
+                                    <div class="info">
+                                        <div class="title">{{ v.name }}</div>
+                                        <div class="time">{{ v.format_time }}</div>
+                                    </div>
+                                </a>
+
+                                <div class="empty" v-if="!val.pending.getNewestData && newest.data.length <= 0">暂无数据</div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- app 下载 -->
                     <div class="mobile"></div>
                 </div>
             </div>
@@ -96,12 +141,12 @@
         </div>
 
         <!-- 图片预览 -->
-        <div class="pic-preview-container" ref="pic-preview-container">
-            <div class="pic-preview">
+        <div class="pic-preview-async-container" ref="pic-preview-async-container">
+            <div class="pic-preview-async">
                 <div class="preview">
 
                     <div class="header">
-                        <div class="info">1 / 25</div>
+                        <div class="info"></div>
                         <div class="action">
                             <button class="origin"><i class="run-iconfont run-iconfont-huanyuan"></i></button>
                             <button class="shrink"><i class="run-iconfont run-iconfont-suoxiao"></i></button>
@@ -116,7 +161,7 @@
 
                     <div class="content">
                         <div class="b-images">
-                            <div class="item" v-for="v in data.images"><img :src="v.__path__" class="image" alt=""></div>
+<!--                            <div class="item" v-for="v in data.images"><img :src="v.__path__" class="image" alt=""></div>-->
                         </div>
                         <div class="action prev"><i class="run-iconfont run-iconfont-houtui"></i></div>
                         <div class="action next"><i class="run-iconfont run-iconfont-qianjin"></i></div>

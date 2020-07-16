@@ -20,10 +20,10 @@ class FileAction extends Action
 //        $ext        = $file->extension();
 //        $filename   = $file->getClientOriginalName();
 //        if (!in_array($ext , $ext_range)) {
-//            return self::error('不支持的文件类型，当前支持的文件类型有：' . implode(',' , $ext_range));
+//            return self::error('不支持的文件类型，当前支持的文件类型有：' . implode(',' , '' , $ext_range));
 //        }
         $dir    = date('Ymd');
         $path   = Storage::put($dir , $file);
-        return self::success($path);
+        return self::success('' , $path);
     }
 }

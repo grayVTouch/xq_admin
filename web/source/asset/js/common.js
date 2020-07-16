@@ -19,7 +19,7 @@ window.request = function(url , method , data = {} , success , error) {
                 // window.history.go(0);
             }
             if (G.isFunction(success)) {
-                success(data , code);
+                success(data.message , data.data , code);
             }
         } ,
         error ,

@@ -14,7 +14,7 @@
                                     <!-- 图片专题 -->
                                     <a class="item" target="_blank" :href="`#/image_subject/${v.relation_id}/show`">
                                         <div class="thumb">
-                                            <div class="mask"><img :src="v.relation.thumb ? v.relation.__thumb__ : $store.state.context.res.notFound" class="image"></div>
+                                            <div class="mask"><img :src="v.relation.thumb ? v.relation.__thumb__ : $store.state.context.res.notFound" v-judge-img-size class="image judge-img-size"></div>
                                         </div>
                                         <div class="info">
                                             <div class="title">
@@ -26,7 +26,7 @@
                                                     </my-button>
                                                 </div>
                                             </div>
-                                            <div class="info">{{ v.relation.user.name }} · {{ v.relation.view_count }}次观看 · {{ v.relation.collect_count }}次收藏 · {{ v.relation.praise_count }}次点赞 {{ v.create_time }}</div>
+                                            <div class="info">{{ getUsername(v.relation.user.username , v.relation.user.nickname) }} · {{ v.relation.view_count }}次观看 · {{ v.relation.collect_count }}次收藏 · {{ v.relation.praise_count }}次点赞 {{ v.create_time }}</div>
                                             <div class="desc">{{ v.relation.description }}</div>
                                         </div>
                                     </a>
@@ -56,7 +56,7 @@
                         </div>
 
                         <div class="relation-type">
-                            <label class="item" v-ripple  v-for="(v,k) in relationType" :key="k">
+                            <label class="item" v-ripple  v-for="(v,k) in $store.state.context.business.relationType" :key="k">
                                 <span class="name">{{ v }}</span>
                                 <input type="radio" name="relation_type" :value="k" @change="searchHistory" v-model="search.relation_type">
                             </label>

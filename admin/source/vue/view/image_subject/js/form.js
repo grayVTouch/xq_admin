@@ -222,7 +222,7 @@ export default {
 
         searchUser (value) {
             this.pending('searchUser' , true);
-            Api.user.search(value , (data , code) => {
+            Api.user.search(value , (msg , data , code) => {
                 this.pending('searchUser' , false);
                 if (code !== TopContext.code.Success) {
                     this.error({user_id: data});
@@ -242,7 +242,7 @@ export default {
             Api.subject.search({
                 module_id: this.form.module_id ,
                 value: value ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('searchSubject' , false);
                 if (code !== TopContext.code.Success) {
                     this.error({subject_id: data});
@@ -318,7 +318,7 @@ export default {
             const self = this;
             this.confirmModal('你确定删除吗？'  , (res) => {
                 if (res) {
-                    Api.image_subject.destroyAllImageForImageSubject(ids , (data , code) => {
+                    Api.image_subject.destroyAllImageForImageSubject(ids , (msg , data , code) => {
                         G.invoke(callback , this , true);
                         this.message('success' , '操作成功' , '影响的记录数：' + data);
                         for (let i = 0; i < this.table.data.length; ++i)
@@ -415,7 +415,7 @@ export default {
             }
             // 编辑模式
             this.pending('destroy_tag_' + tagId , true);
-            Api.image_subject.destroyTag(this.form.id , tagId , (data , code) => {
+            Api.image_subject.destroyTag(this.form.id , tagId , (msg , data , code) => {
                 this.pending('destroy_tag_' + tagId , false);
                 if (code !== TopContext.code.Success) {
                     this.error({tags: data});
@@ -449,7 +449,7 @@ export default {
             Api.tag.findOrCreateTag({
                 name ,
                 module_id: this.form.module_id ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.dom.tagInputOuter.removeClass('disabled');
                 if (code !== TopContext.code.Success) {
                     this.error({tags: data});
@@ -465,11 +465,11 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return ;
             }
-            const callback = (data , code) => {
+            const callback = (msg , data , code) => {
                 this.pending('submit' , false);
                 this.error();
                 if (code !== TopContext.code.Success) {
-                    this.errorHandle(data);
+                    this.errorHandle(msg , data , code);
                     return ;
                 }
                 this.successHandle((keep) => {

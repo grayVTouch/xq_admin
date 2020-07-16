@@ -7,6 +7,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
+    padding-bottom: 20px;
 }
 
 .content-mask > * {
@@ -490,7 +491,7 @@
 
 .content-mask .filter.fixed > .inner {
     position: fixed;
-    top: 82px;
+    top: var(--fixed-top-with-extra);
     margin-left: 20px;
 }
 

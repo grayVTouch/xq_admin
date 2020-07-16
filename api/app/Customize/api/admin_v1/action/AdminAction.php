@@ -22,7 +22,7 @@ class AdminAction extends Action
     public static function info(Base $context , array $param)
     {
         $user = user();
-        return self::success([
+        return self::success('' , [
             'user' => $user
         ]);
     }
@@ -34,7 +34,7 @@ class AdminAction extends Action
         }
         $res = AdminModel::search($value);
         $res = AdminHandler::handleAll($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function index(Base $context , array $param = [])
@@ -43,7 +43,7 @@ class AdminAction extends Action
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
         $paginator = AdminModel::index($param , $order , $limit);
         $paginator = AdminHandler::handlePaginator($paginator);
-        return self::success($paginator);
+        return self::success('' , $paginator);
     }
 
     public static function update(Base $context , $id , array $param = [])
@@ -55,19 +55,19 @@ class AdminAction extends Action
             'role_id' => 'required|integer' ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         // 检查用户名是否已经存在
         $res = AdminModel::find($id);
         if (empty($res)) {
-            return self::error('用户不存在' , 404);
+            return self::error('用户不存在' , '' , 404);
         }
         if ($res->username !== $param['username'] && AdminModel::findByUsername($param['username'])) {
             return self::error('用户名已经被使用');
         }
         if ($res->is_root && $res->id != user()->id) {
             // 超级管理员
-            return self::error('超级管理员仅不允许他人操作！' , 403);
+            return self::error('超级管理员仅不允许他人操作！' , '' , 403);
         }
         $param['birthday']      = in_array($param['birthday'] , ['' , 'null']) ? null : $param['birthday'];
         $param['password']      = $param['password'] === '' ? $res->password : Hash::make($param['password']);
@@ -93,7 +93,7 @@ class AdminAction extends Action
             'role_id' => 'required|integer' ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $res = AdminModel::findByUsername($param['username']);
         if (!empty($res)) {
@@ -110,30 +110,30 @@ class AdminAction extends Action
             'email' ,
             'role_id' ,
         ]));
-        return self::success($id);
+        return self::success('' , $id);
     }
 
     public static function show(Base $context , $id , array $param = [])
     {
         $res = AdminModel::find($id);
         if (empty($res)) {
-            return self::error('用户不存在' , 404);
+            return self::error('用户不存在' , '' , 404);
         }
         $res = AdminHandler::handle($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function destroy(Base $context , $id , array $param = [])
     {
         $res = AdminModel::find($id);
         if (empty($res)) {
-            return self::error('用户不存在' , 404);
+            return self::error('用户不存在' , '' , 404);
         }
         if ($res->is_root) {
-            return self::error('禁止对超级管理员操作' , 403);
+            return self::error('禁止对超级管理员操作' , '' , 403);
         }
         $count = AdminModel::delById($id);
-        return self::success($count);
+        return self::success('' , $count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
@@ -142,10 +142,10 @@ class AdminAction extends Action
         foreach ($res as $v)
         {
             if ($v->is_root) {
-                return self::error('包含超级管理员，禁止操作' , 403);
+                return self::error('包含超级管理员，禁止操作' , '' , 403);
             }
         }
         $count = AdminModel::delByIds($ids);
-        return self::success($count);
+        return self::success('' , $count);
     }
 }

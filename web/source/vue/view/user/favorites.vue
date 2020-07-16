@@ -77,7 +77,7 @@
                                 </div>
 
                                 <div class="thumb">
-                                    <div class="mask"><img :src="v.relation.thumb ? v.relation.__thumb__ : $store.state.context.res.notFound" alt="" class="image"></div>
+                                    <div class="mask"><img :src="v.relation.thumb ? v.relation.__thumb__ : $store.state.context.res.notFound" alt="" v-judge-img-size class="image judge-img-size"></div>
                                 </div>
                                 <div class="info">
                                     <div class="title">
@@ -119,7 +119,7 @@
                         </div>
 
                         <div class="relation-type">
-                            <label class="item" v-ripple  v-for="(v,k) in relationType" :key="k">
+                            <label class="item" v-ripple  v-for="(v,k) in $store.state.context.business.relationType" :key="k">
                                 <span class="name">{{ v }}</span>
                                 <input type="radio" name="relation_type" :value="k" @change="getCollectionGroup" v-model="search.relation_type">
                             </label>

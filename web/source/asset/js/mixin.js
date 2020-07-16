@@ -84,7 +84,7 @@ Vue.mixin({
             this.val = {...this.val , ...{[key]: val}};
         } ,
 
-        errorHandle (data , code , callback) {
+        errorHandle (msg , data , code , callback) {
             if (code === TopContext.code.AuthFailed) {
                 this.message('您尚未登录，请登录后操作？' , {
                     closeBtn: false ,
@@ -106,22 +106,26 @@ Vue.mixin({
                 });
                 return ;
             }
-            if (G.isString(data)) {
-                this.message(data);
+            if (code !== TopContext.code.FormValidateFail) {
+                this.message(msg);
                 return ;
             }
-            this.message('发生错误，请检查');
+            if (!G.isArray(data)) {
+                this.message(msg);
+                return ;
+            }
+            this.message('表单发生错误，请检查');
             this.error(data);
         } ,
 
-        errorHandleAtUserChildren (data , code , loggedCallback) {
+        errorHandleAtUserChildren (msg , data , code , loggedCallback) {
             var self = this;
-            this.errorHandle(data , code , () => {
+            this.errorHandle(msg , data , code , () => {
                 self.$parent.$parent.showUserForm('login' , loggedCallback);
             });
         } ,
-        errorHandleAtHomeChildren (data , code , loggedCallback) {
-            this.errorHandle(data , code , () => {
+        errorHandleAtHomeChildren (msg , data , code , loggedCallback) {
+            this.errorHandle(msg , data , code , () => {
                 this.$parent.showUserForm('login' , loggedCallback);
             });
         } ,
@@ -155,6 +159,14 @@ Vue.mixin({
 
         key () {
             return G.randomArr('64' , 'mixed' , true);
+        } ,
+
+        getUsername (username , nickname) {
+            return nickname ? nickname : username;
+        } ,
+
+        genUrl (route) {
+            return '#' + route;
         } ,
     } ,
 });

@@ -22,7 +22,7 @@ class PositionAction extends Action
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
         $paginator = PositionModel::index($param , $order , $limit);
         $paginator = PositionHandler::handlePaginator($paginator);
-        return self::success($paginator);
+        return self::success('' , $paginator);
     }
 
     public static function update(Base $context , $id , array $param = [])
@@ -34,11 +34,11 @@ class PositionAction extends Action
             'platform' => ['required' , Rule::in($platform_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $res = PositionModel::find($id);
         if (empty($res)) {
-            return self::error('位置不存在' , 404);
+            return self::error('位置不存在' , '' , 404);
         }
         PositionModel::updateById($res->id , array_unit($param , [
             'value' ,
@@ -58,7 +58,7 @@ class PositionAction extends Action
             'platform' => ['required' , Rule::in($platform_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $res = PositionModel::getByPlatformAndValue($param['platform'] , $param['value']);
         if (!empty($tag)) {
@@ -70,29 +70,29 @@ class PositionAction extends Action
             'description' ,
             'platform' ,
         ]));
-        return self::success($id);
+        return self::success('' , $id);
     }
 
     public static function show(Base $context , $id , array $param = [])
     {
         $role = PositionModel::find($id);
         if (empty($role)) {
-            return self::error('位置不存在' , 404);
+            return self::error('位置不存在' , '' , 404);
         }
         $role = PositionModel::handle($role);
-        return self::success($role);
+        return self::success('' , $role);
     }
 
     public static function destroy(Base $context , $id , array $param = [])
     {
         $count = PositionModel::delById($id);
-        return self::success($count);
+        return self::success('' , $count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
         $count = PositionModel::delByIds($ids);
-        return self::success($count);
+        return self::success('' , $count);
     }
 
     public static function search(Base $context , $value , array $param = [])
@@ -102,13 +102,13 @@ class PositionAction extends Action
         }
         $res = PositionModel::search($value);
         $res = PositionHandler::handleAll($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function all(Base $context , array $param = [])
     {
         $res = PositionModel::all();
         $res = PositionHandler::handleAll($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 }

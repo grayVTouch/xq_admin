@@ -335,7 +335,6 @@ create table if not exists `xq_nav` (
     primary key (id)
 ) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '菜单表-区分不同平台';
 
-
 drop table if exists `xq_history`;
 create table if not exists `xq_history` (
     id bigint unsigned not null auto_increment ,
@@ -384,6 +383,20 @@ create table if not exists `xq_praise` (
     unique key `unique` (user_id , relation_type , relation_id , module_id)
 ) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '点赞表';
 
+drop table if exists `xq_email_code`;
+create table if not exists `xq_email_code` (
+    id bigint unsigned not null auto_increment ,
+    email varchar(30) default '' comment '邮箱' ,
+    code varchar(30) default '' comment '邮箱验证码' ,
+    type varchar(50) default '' comment '类型，比如：login-登录验证码 register-注册验证码 password-修改密码验证码 等' ,
+    used tinyint default 0 comment '是否被使用过: 0-否 1-是' ,
+    send_time datetime default null comment '发送时间' ,
+    update_time datetime default null comment '更新时间' ,
+    create_time datetime default null ,
+    primary key (id) ,
+    unique key `email` (`email` , `type`)
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '邮箱验证码';
+
 alter table xq_tag add module_id bigint unsigned default 0 comment 'xq_module.id';
 alter table xq_category add module_id bigint unsigned default 0 comment 'xq_module.id';
 alter table xq_subject add module_id bigint unsigned default 0 comment 'xq_module.id';
@@ -399,7 +412,7 @@ alter table xq_module add enable tinyint default 1 comment '启用？0-否 1-是
 -- 新增菜单
 delete from xq_nav;
 alter table xq_nav auto_increment=1;
-insert into `xq_nav` (id , name , link , p_id , is_menu , enable , module_id , platform , create_time) values
+insert into `xq_nav` (id , name , value , p_id , is_menu , enable , module_id , platform , create_time) values
 (1 , '首页' , '/index' , 0 , 1 , 1 , 3 , 'web' , current_time()) ,
 (2 , '图片专区' , '/image_subject/index' , 0 , 1 , 1 , 3 , 'web' , current_time()) ,
 (3 , '二次元' , '/image_subject/search?category_id=37' , 2 , 1 , 1 , 3 , 'web' , current_time()) ,

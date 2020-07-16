@@ -27,11 +27,11 @@ export default {
             }
             const self = this;
             this.pending('submit' , true);
-            Api.user.updatePasswordInLogged(this.form , (data , code) => {
+            Api.user.updatePasswordInLogged(this.form , (msg , data , code) => {
                 this.pending('submit' , false);
                 this.error();
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtUserChildren(data , code);
+                    this.errorHandleAtUserChildren(msg , data , code);
                     return ;
                 }
                 this.message('操作成功');

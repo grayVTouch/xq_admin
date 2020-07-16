@@ -12,6 +12,6 @@ class MiscAction extends Action
     public static function captcha(Base $context , array $param = [])
     {
         $res = Captcha::create('default' , true);
-        return self::success($res);
+        return self::success('' , $res);
     }
 }

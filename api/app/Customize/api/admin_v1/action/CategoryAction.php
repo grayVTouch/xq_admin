@@ -27,13 +27,13 @@ class CategoryAction extends Action
             'id'    => 'id' ,
             'p_id'  => 'p_id' ,
         ] , false , false);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function searchByModuleId(Base $context , $module_id , array $param = [])
     {
         if (empty($module_id)) {
-            return self::success([]);
+            return self::success('' , []);
         }
         $res = CategoryModel::getAllByModuleId($module_id);
         $res = CategoryHandler::handleAll($res);
@@ -42,7 +42,7 @@ class CategoryAction extends Action
             'id'    => 'id' ,
             'p_id'  => 'p_id' ,
         ] , false , false);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function localUpdate(Base $context , $id , array $param = [])
@@ -59,7 +59,7 @@ class CategoryAction extends Action
         }
         $category = CategoryModel::find($id);
         if (empty($category)) {
-            return self::error('分类不存在' , 404);
+            return self::error('分类不存在' , '' , 404);
         }
         $param['name']     = $param['name'] === '' ? $category->name : $param['name'];
         $param['description'] = $param['description'] === '' ? $category->description : $param['description'];
@@ -90,11 +90,11 @@ class CategoryAction extends Action
             'module_id'    => 'required|integer',
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $category = CategoryModel::find($id);
         if (empty($category)) {
-            return self::error('分类不存在' , 404);
+            return self::error('分类不存在' , '' , 404);
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         CategoryModel::updateById($category->id , array_unit($param , [
@@ -119,7 +119,7 @@ class CategoryAction extends Action
             'module_id'  => 'required|integer',
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $id = CategoryModel::insertGetId(array_unit($param , [
@@ -130,17 +130,17 @@ class CategoryAction extends Action
             'p_id' ,
             'module_id' ,
         ]));
-        return self::success($id);
+        return self::success('' , $id);
     }
 
     public static function show(Base $context , $id , array $param = [])
     {
         $category = CategoryModel::find($id);
         if (empty($category)) {
-            return self::error('分类不存在' , 404);
+            return self::error('分类不存在' , '' , 404);
         }
         $category = CategoryHandler::handle($category);
-        return self::success($category);
+        return self::success('' , $category);
     }
 
     public static function destroy(Base $context , $id , array $param = [])
@@ -150,7 +150,7 @@ class CategoryAction extends Action
         $data = Category::childrens($id , $data , null , true , false);
         $ids = array_column($data , 'id');
         $count = CategoryModel::delByIds($ids);
-        return self::success($count);
+        return self::success('' , $count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
@@ -187,7 +187,7 @@ class CategoryAction extends Action
             'id'    => 'id' ,
             'p_id'  => 'p_id' ,
         ] , false , false);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
 }

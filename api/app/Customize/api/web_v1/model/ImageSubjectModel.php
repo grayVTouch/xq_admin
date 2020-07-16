@@ -215,4 +215,22 @@ class ImageSubjectModel extends Model
     {
         return self::where('id' , $id)->$mode($field , $step);
     }
+
+    public static function recommendExcludeSelfByModuleIdAndCategoryIdAndSubjectIdAndLimit(int $image_subject_id , int $module_id , int $category_id , int $subject_id , int $limit = 20): Collection
+    {
+        $where = [
+            ['id' , '!=' , $image_subject_id] ,
+            ['module_id' , '=' , $module_id] ,
+            ['category_id' , '=' , $category_id] ,
+        ];
+        if (empty($subject_id)) {
+            $where[] = ['subject_id' , '=' , $subject_id];
+        }
+        return self::where($where)
+            ->orderBy('view_count' , 'desc')
+            ->orderBy('praise_count' , 'desc')
+            ->orderBy('create_time' , 'desc')
+            ->limit($limit)
+            ->get();
+    }
 }

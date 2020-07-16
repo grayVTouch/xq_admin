@@ -109,10 +109,10 @@ export default {
                 relation_type: 'image_subject' ,
                 relation_id: imageSubject.id ,
                 action ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('praiseHandle' , false);
                 if (code !== TopContext.code.Success) {
-                    this.errorHandleAtHomeChildren(data , code , () => {
+                    this.errorHandleAtHomeChildren(msg , data , code , () => {
                         this.praiseHandle(imageSubject);
                     });
                     return ;
@@ -146,9 +146,9 @@ export default {
 
         focusCategoryByCategoryId (categoryId) {
             categoryId = parseInt(categoryId);
-            Api.category.show(categoryId , (data , code) => {
+            Api.category.show(categoryId , (msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 if (this.categories.selectedIds.indexOf(categoryId) >= 0) {
@@ -163,9 +163,9 @@ export default {
 
         focusSubjectBySubjectId (subjectId) {
             subjectId = parseInt(subjectId);
-            Api.subject.show(subjectId , (data , code) => {
+            Api.subject.show(subjectId , (msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 if (this.subjects.selectedIds.indexOf(subjectId) >= 0) {
@@ -180,9 +180,9 @@ export default {
 
         focusTagByTagId (tagId) {
             tagId = parseInt(tagId);
-            Api.tag.show(tagId , (data , code) => {
+            Api.tag.show(tagId , (msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 if (this.tags.selectedIds.indexOf(tagId) >= 0) {
@@ -449,10 +449,10 @@ export default {
                 limit: this.tags.limit ,
                 page:  this.tags.page ,
                 value: this.tags.value ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('getTags' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 this.tags.page = data.current_page;
@@ -464,10 +464,10 @@ export default {
         // 获取分类数据
         getCategories () {
             this.pending('getCategories' , true);
-            Api.image_subject.categories((data , code) => {
+            Api.image_subject.categories((msg , data , code) => {
                 this.pending('getCategories' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 this.categories.data = data;
@@ -481,10 +481,10 @@ export default {
                 page: this.subjects.page ,
                 limit: this.subjects.limit ,
                 value: this.subjects.value ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('getSubjects' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(data);
+                    this.message(msg);
                     return ;
                 }
                 this.subjects.total = data.total;
@@ -520,10 +520,10 @@ export default {
                 tag_ids: G.jsonEncode(this.tags.selectedIds) ,
                 value: this.images.value ,
                 order: this.images.order ,
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending('getWithPager' , false);
                 if (code !== TopContext.code.Success) {
-                    return this.message(data);
+                    return this.message(msg);
                     return ;
                 }
                 this.images.page = data.current_page;

@@ -37,6 +37,9 @@ Route::prefix('web_v1')
             Route::get('image_subject/hot_tags' , 'ImageSubject@hotTags');
             Route::get('image_subject/hot_tags_with_pager' , 'ImageSubject@hotTagsWithPager');
             Route::get('image_subject/category' , 'ImageSubject@category');
+
+            Route::get('image_subject/{image_subject_id}/recommend' , 'ImageSubject@recommend');
+
             // 特别注意，下面这个路由仅允许放置到最后一个，否则，符合条件的路由都会被导向到这个路由里面去
             // 这种情况下，就会出现定义的具体路由不生效的情况
             Route::get('image_subject/subject' , 'ImageSubject@subject');
@@ -55,6 +58,8 @@ Route::prefix('web_v1')
             // 文件上传
             Route::post('upload' , 'File@upload');
 
+            Route::post('send_email_code_for_password' , 'Misc@sendEmailCodeForPassword');
+            Route::post('send_email_code_for_register' , 'Misc@sendEmailCodeForRegister');
         });
 
         Route::middleware([

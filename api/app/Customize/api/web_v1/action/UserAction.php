@@ -10,6 +10,7 @@ use App\Customize\api\web_v1\handler\ImageSubjectHandler;
 use App\Customize\api\web_v1\handler\UserHandler;
 use App\Customize\api\web_v1\model\CollectionGroupModel;
 use App\Customize\api\web_v1\model\CollectionModel;
+use App\Customize\api\web_v1\model\EmailCodeModel;
 use App\Customize\api\web_v1\model\HistoryModel;
 use App\Customize\api\web_v1\model\ImageSubjectModel;
 use App\Customize\api\web_v1\model\ModuleModel;
@@ -85,37 +86,56 @@ class UserAction extends Action
         }
         $user = user();
         $res = CollectionModel::delByModuleIdAndUserIdAndId($module->id , $user->id , $param['collection_id']);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function store(Base $context , array $param = []): array
     {
         $validator = Validator::make($param , [
-            'username' => 'required|min:6' ,
+            'email' => 'required|email' ,
+            'email_code' => 'required' ,
             'password' => 'required|min:6' ,
             'confirm_password' => 'required|min:6' ,
-            'captcha_code' => 'required|min:4' ,
+//            'captcha_code' => 'required|min:4' ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
-        if (empty($param['captcha_key'])) {
-            return self::error('必要参数丢失【captcha_key】');
-        }
-        if (!Captcha::check_api($param['captcha_code'] , $param['captcha_key'])) {
-            return self::error([
-                'captcha_code' => '图形验证码错误',
-            ]);
-        }
-        $user = UserModel::findByUsername($param['username']);
+//        if (empty($param['captcha_key'])) {
+//            return self::error('必要参数丢失【captcha_key】');
+//        }
+//        if (!Captcha::check_api($param['captcha_code'] , $param['captcha_key'])) {
+//            return self::error([
+//                'captcha_code' => '图形验证码错误',
+//            ]);
+//        }
+        $user = UserModel::findByEmail($param['email']);
         if (!empty($user)) {
-            return self::error([
-                'username' => '用户已经存在'
+            return self::error('' , [
+                'email' => '邮箱已经注册过，请登录'
             ]);
         }
         if ($param['password'] !== $param['confirm_password']) {
-            return self::error([
-                'password' => '两次输入的密码不一致' ,
+            return self::error('两次输入的密码不一致');
+        }
+        // 检查验证码是否正确
+        $email_code = EmailCodeModel::findByEmailAndType($param['email'] , 'register');
+        if (empty($email_code)) {
+            return self::error('' , [
+                'email' => '请先发送邮箱验证码'
+            ]);
+        }
+        $timestamp = time();
+        $code_duration = my_config('app.code_duration');
+        $expired_timestamp = strtotime($email_code->send_time) + $code_duration;
+        if ($email_code->used || $timestamp > $expired_timestamp) {
+            return self::error('' , [
+                'email_code' => '邮箱验证码已经失效，请重新发送'
+            ]);
+        }
+        if ($email_code->code !== $param['email_code']) {
+            return self::error('' , [
+                'email_code' => '验证码错误'
             ]);
         }
         $token = random(32 , 'mixed' , true);
@@ -123,7 +143,8 @@ class UserAction extends Action
         try {
             DB::beginTransaction();
             $id = UserModel::insertGetId([
-                'username' => $param['username'] ,
+                'username' => random(6 , 'letter' , true) ,
+                'email' => $param['email'] ,
                 'password' => Hash::make($param['password']) ,
                 'last_time' => date('Y-m-d H:i:s'),
                 'last_ip'   => $context->request->ip(),
@@ -133,8 +154,11 @@ class UserAction extends Action
                 'token' => $token ,
                 'expired' => $datetime
             ]);
+            EmailCodeModel::updateById($email_code->id , [
+               'used' => 1 ,
+            ]);
             DB::commit();
-            return self::success($token);
+            return self::success('' , $token);
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -148,16 +172,16 @@ class UserAction extends Action
             'password' => 'required|min:6' ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
-        $user = UserModel::findByUsername($param['username']);
+        $user = UserModel::findByValueInUsernameOrEmailOrPhone($param['username']);
         if (empty($user)) {
-            return self::error([
+            return self::error('' , [
                 'username' => '用户不存在' ,
             ]);
         }
         if (!Hash::check($param['password'] , $user->password)) {
-            return self::error([
+            return self::error('' , [
                 'password' => '密码错误' ,
             ]);
         }
@@ -175,7 +199,7 @@ class UserAction extends Action
                 'last_ip'   => $context->request->ip(),
             ]);
             DB::commit();
-            return self::success($token);
+            return self::success('' , $token);
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -186,36 +210,63 @@ class UserAction extends Action
     {
         $user = user();
         if (empty($user)) {
-            return self::error('用户尚未登录' , 401);
+            return self::error('用户尚未登录' , '' , 401);
         }
-        return self::success($user);
+        return self::success('' , $user);
     }
 
     public static function updatePassword(Base $context , array $param = [])
     {
         $validator = Validator::make($param , [
-            'username' => 'required|min:6' ,
+            'email' => 'required|min:6' ,
+            'email_code' => 'required' ,
             'password' => 'required|min:6' ,
             'confirm_password' => 'required|min:6' ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
-        $user = UserModel::findByUsername($param['username']);
+        $user = UserModel::findByEmail($param['email']);
         if (empty($user)) {
-            return self::error([
-                'username' => '用户不存在' ,
-            ]);
+            return self::error('邮箱尚未注册，请先注册');
         }
         if ($param['password'] !== $param['confirm_password']) {
-            return self::error([
-                'password' => '两次输入的密码不一致' ,
+            return self::error('两次输入的密码不一致');
+        }
+        // 检查验证码是否正确
+        $email_code = EmailCodeModel::findByEmailAndType($user->email , 'password');
+        if (empty($email_code)) {
+            return self::error('' , [
+                'email' => '请先发送邮箱验证码'
             ]);
         }
-        UserModel::updateById($user->id , [
-            'password' => Hash::make($param['password'])
-        ]);
-        return self::success();
+        $timestamp = time();
+        $code_duration = my_config('app.code_duration');
+        $expired_timestamp = strtotime($email_code->send_time) + $code_duration;
+        if ($email_code->used || $timestamp > $expired_timestamp) {
+            return self::error('' , [
+                'email_code' => '邮箱验证码已经失效，请重新发送'
+            ]);
+        }
+        if ($email_code->code !== $param['email_code']) {
+            return self::error('' , [
+                'email_code' => '验证码错误'
+            ]);
+        }
+        try {
+            DB::beginTransaction();
+            UserModel::updateById($user->id , [
+                'password' => Hash::make($param['password'])
+            ]);
+            EmailCodeModel::updateById($email_code->id , [
+                'used' => 1 ,
+            ]);
+            DB::commit();
+            return self::success();
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function lessHistory(Base $context , array $param = [])
@@ -270,7 +321,7 @@ class UserAction extends Action
             }
             $groups[$index]['data'][] = $v;
         }
-        return self::success($groups);
+        return self::success('' , $groups);
     }
 
     public static function histories(Base $context , array $param = []): array
@@ -329,7 +380,7 @@ class UserAction extends Action
             $groups[$index]['data'][] = $v;
         }
         $res->data = $groups;
-        return self::success($res);
+        return self::success('' , $res);
     }
 
 
@@ -366,7 +417,7 @@ class UserAction extends Action
         {
             CollectionGroupUtil::handle($v , $param['relation_type'] , $relation->id);
         }
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function collectionGroup(Base $context , array $param = []): array
@@ -386,7 +437,7 @@ class UserAction extends Action
         $user = user();
         $res = CollectionGroupModel::getByModuleIdAndUserIdAndRelationTypeAndValue($module->id , $user->id , $param['relation_type'] ,  $param['value']);
         $res = CollectionGroupHandler::handleAll($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function collectionHandle(Base $context , array $param = [])
@@ -409,7 +460,7 @@ class UserAction extends Action
         }
         $collection_group = CollectionGroupModel::find($param['collection_group_id']);
         if (empty($collection_group)) {
-            return self::error('收藏夹不存在' , 404);
+            return self::error('收藏夹不存在' , '' , 404);
         }
         $user = user();
         $res = null;
@@ -437,7 +488,7 @@ class UserAction extends Action
         }
         $collection_group = CollectionGroupHandler::handle($collection_group);
         CollectionGroupUtil::handle($collection_group , $param['relation_type'] , $relation->id);
-        return self::success($collection_group);
+        return self::success('' , $collection_group);
     }
 
     //
@@ -485,7 +536,7 @@ class UserAction extends Action
         } else {
             // 其他类型，预留
         }
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function record(Base $context , array $param = [])
@@ -510,7 +561,7 @@ class UserAction extends Action
                 break;
         }
         if (empty($relation)) {
-            return self::error('关联事物不存在' , 404);
+            return self::error('关联事物不存在' , '' , 404);
         }
         $user = user();
         $date = date('Y-m-d');
@@ -525,7 +576,7 @@ class UserAction extends Action
             'time' => date('H:i:s') ,
             'create_time' => $date . ' ' . $time ,
         ]);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function createAndJoinCollectionGroup(Base $context , array $param = [])
@@ -553,7 +604,7 @@ class UserAction extends Action
                 $relation = null;
         }
         if (empty($relation)) {
-            return self::error('关联的事物不存在' , 404);
+            return self::error('关联的事物不存在' , '' , 404);
         }
         $user = user();
         $collection_group = CollectionGroupModel::findByModuleIdAndUserIdAndName($module->id , $user->id , $param['name']);
@@ -580,7 +631,7 @@ class UserAction extends Action
             $collection_group = CollectionGroupHandler::handle($collection_group);
             CollectionGroupUtil::handle($collection_group , $param['relation_type'] , $relation->id);
             DB::commit();
-            return self::success($collection_group);
+            return self::success('' , $collection_group);
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -611,7 +662,7 @@ class UserAction extends Action
             'name' => $param['name'] ,
             'create_time' => current_time() ,
         ]);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function joinCollectionGroup(Base $context , array $param = [])
@@ -639,12 +690,12 @@ class UserAction extends Action
                 $relation = null;
         }
         if (empty($relation)) {
-            return self::error('关联的事物不存在' , 404);
+            return self::error('关联的事物不存在' , '' , 404);
         }
         $user = user();
         $collection_group = CollectionGroupModel::find($param['collection_group_id']);
         if (empty($collection_group)) {
-            return self::error('收藏夹不存在' , 404);
+            return self::error('收藏夹不存在' , '' , 404);
         }
         CollectionModel::insertGetId([
             'module_id' => $module->id ,
@@ -656,7 +707,7 @@ class UserAction extends Action
         ]);
         $collection_group = CollectionGroupHandler::handle($collection_group);
         CollectionGroupUtil::handle($collection_group , $param['relation_type'] , $relation->id);
-        return self::success($collection_group);
+        return self::success('' , $collection_group);
     }
 
     public static function lessRelationInCollection(Base $context , array $param = [])
@@ -674,13 +725,13 @@ class UserAction extends Action
         }
         $collection_group = CollectionGroupModel::find($param['collection_group_id']);
         if (empty($collection_group)) {
-            return self::error('收藏夹不存在' , 404);
+            return self::error('收藏夹不存在' , '' , 404);
         }
         $limit = $param['limit'] ? $param['limit'] : my_config('app.limit');
         $user = user();
         $res = CollectionModel::getByModuleIdAndUserIdAndCollectionGroupIdAndLimit($module->id , $user->id , $collection_group->id , $limit);
         $res = CollectionHandler::handleAll($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function lessCollectionGroupWithCollection(Base $context , array $param = [])
@@ -707,7 +758,7 @@ class UserAction extends Action
             $collections = CollectionHandler::handleAll($collections);
             $v->collections = $collections;
         }
-        return self::success([
+        return self::success('' , [
             'total_collection_group' => $total_collection_group ,
             'collection_groups' => $collection_group ,
         ]);
@@ -720,7 +771,7 @@ class UserAction extends Action
             'sex' => ['required' , Rule::in($sex_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $user = user();
         $param['birthday'] = empty($param['birthday']) ? $user->birthday : $param['birthday'];
@@ -735,7 +786,7 @@ class UserAction extends Action
         ]));
         $user = UserModel::find($user->id);
         $user = UserHandler::handle($user);
-        return self::success($user);
+        return self::success('' , $user);
     }
 
 
@@ -747,11 +798,11 @@ class UserAction extends Action
             'confirm_password' => 'required|min:6' ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $user = user();
         if (!Hash::check($param['old_password'] , $user->password)) {
-            return self::error([
+            return self::error('' , [
                 'old_password' => '原密码错误'
             ]);
         }
@@ -789,7 +840,7 @@ class UserAction extends Action
         }
         // 检查记录是否是当前登录用户
         $count = HistoryModel::destroy($history_ids);
-        return self::success($count);
+        return self::success('' , $count);
     }
 
     public static function collections(Base $context , array $param = []): array
@@ -809,13 +860,13 @@ class UserAction extends Action
         }
         $collection_group = CollectionGroupModel::find($param['collection_group_id']);
         if (empty($collection_group)) {
-            return self::error('收藏夹不存在' , 404);
+            return self::error('收藏夹不存在' , '' , 404);
         }
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $user = user();
         $res = CollectionModel::getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndLimit($module->id , $user->id , $collection_group->id , $param['relation_type'] , $limit);
         $res = CollectionHandler::handlePaginator($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
     public static function updateCollectionGroup(Base $context , array $param = []): array
@@ -844,7 +895,7 @@ class UserAction extends Action
         ]);
         $res = CollectionGroupModel::find($collection_group->id);
         $res = CollectionGroupHandler::handle($res);
-        return self::success($res);
+        return self::success('' , $res);
     }
 
 }

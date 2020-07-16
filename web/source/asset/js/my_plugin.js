@@ -18,7 +18,7 @@ import '../../plugin/Prompt/css/Prompt.css';
 import '../../plugin/Uploader/css/Uploader.css';
 import '../../plugin/Nav/css/Nav.css';
 import '../../plugin/PicPlay_Transform/css/PicPlay_Transform.css';
-import '../../plugin/PicPreview/css/PicPreview.css';
+import '../../plugin/PicPreview_Async/css/PicPreview_Async.css';
 
 
 import '../../plugin/TouchFeedback/js/TouchFeedback.js';
@@ -28,5 +28,5 @@ import '../../plugin/Prompt/js/Prompt.js';
 import '../../plugin/Uploader/js/Uploader.js';
 import '../../plugin/Nav/js/Nav.js';
 import '../../plugin/PicPlay_Transform/js/PicPlay_Transform.js';
-import '../../plugin/PicPreview/js/PicPreview.js';
+import '../../plugin/PicPreview_Async/js/PicPreview_Async.js';
 import '../../plugin/SmallJs/SmallJs.js';

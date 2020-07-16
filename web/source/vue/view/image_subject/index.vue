@@ -4,16 +4,17 @@
         <div class="focus-bar">
             <div class="bg-color"></div>
             <div class="bg-image"></div>
+            <div class="bg-mask"></div>
 
             <div class="content">
                 <div class="big-image">
-                    <a class="mask" :href="imageSubject.length > 0 ? imageSubject[0].link : 'javascript:;'"><img :src="imageSubject.length > 0 ? imageSubject[0].__path__ : $store.state.context.notFound" alt="" class="image"></a>
+                    <a class="mask" :href="imageSubject.length > 0 ? imageSubject[0].link : 'javascript:;'"><img :src="imageSubject.length > 0 ? imageSubject[0].__path__ : $store.state.context.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
                 </div>
                 <div class="small-image">
-                    <a class="mask" :href="imageSubject.length > 1 ? imageSubject[1].link : 'javascript:;'"><img :src="imageSubject.length > 1 ? imageSubject[1].__path__ : $store.state.context.notFound" alt="" class="image"></a>
-                    <a class="mask" :href="imageSubject.length > 2 ? imageSubject[2].link : 'javascript:;'"><img :src="imageSubject.length > 2 ? imageSubject[2].__path__ : $store.state.context.notFound" alt="" class="image"></a>
-                    <a class="mask" :href="imageSubject.length > 3 ? imageSubject[3].link : 'javascript:;'"><img :src="imageSubject.length > 3 ? imageSubject[3].__path__ : $store.state.context.notFound" alt="" class="image"></a>
-                    <a class="mask" :href="imageSubject.length > 4 ? imageSubject[4].link : 'javascript:;'"><img :src="imageSubject.length > 4 ? imageSubject[4].__path__ : $store.state.context.notFound" alt="" class="image"></a>
+                    <a class="mask" :href="imageSubject.length > 1 ? imageSubject[1].link : 'javascript:;'"><img :src="imageSubject.length > 1 ? imageSubject[1].__path__ : $store.state.context.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
+                    <a class="mask" :href="imageSubject.length > 2 ? imageSubject[2].link : 'javascript:;'"><img :src="imageSubject.length > 2 ? imageSubject[2].__path__ : $store.state.context.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
+                    <a class="mask" :href="imageSubject.length > 3 ? imageSubject[3].link : 'javascript:;'"><img :src="imageSubject.length > 3 ? imageSubject[3].__path__ : $store.state.context.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
+                    <a class="mask" :href="imageSubject.length > 4 ? imageSubject[4].link : 'javascript:;'"><img :src="imageSubject.length > 4 ? imageSubject[4].__path__ : $store.state.context.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
                 </div>
             </div>
         </div>
@@ -46,8 +47,8 @@
                     <div class="item card-box" v-for="v in images.data" :key="v.id">
                         <!-- 封面 -->
                         <div class="thumb">
-                            <a class="link" :href="`#/image_subject/${v.id}/show`" target="_blank">
-                                <img :src="v.__thumb__" class="image">
+                            <a class="link" :href="genUrl(`/image_subject/${v.id}/show`)" target="_blank">
+                                <img :src="v.__thumb__" class="image judge-img-size" v-judge-img-size>
                                 <div class="mask">
                                     <div class="top">
                                         <div class="type" v-if="v.type === 'pro'"><my-icon icon="zhuanyerenzheng" size="35" /></div>
@@ -85,9 +86,9 @@
                             <div class="info">
                                 <div class="left"><my-icon icon="shijian" class="ico" mode="right" /> {{ v.create_time }}</div>
                                 <div class="right">
-                                    <span><my-icon icon="chakan" mode="right" />{{ v.view_count }}</span>
-                                    <span><my-icon icon="shoucang2" mode="right" />{{ v.praise_count }}</span>
-                                    <span><my-icon icon="shoucang6" mode="right" />{{ v.collect_count }}</span>
+                                    <span class="view-count"><my-icon icon="chakan" mode="right" />{{ v.view_count }}</span>
+                                    <span class="praise-count"><my-icon icon="shoucang2" mode="right" />{{ v.praise_count }}</span>
+                                    <span class="collect-count" v-if="$store.state.user"><my-icon icon="shoucang6" mode="right" />{{ v.collect_count }}</span>
                                 </div>
                             </div>
                         </div>

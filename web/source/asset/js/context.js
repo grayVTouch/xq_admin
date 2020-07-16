@@ -21,7 +21,8 @@ window.TopContext = {
 
     code: {
         Success: 200 ,
-        AuthFailed: 401
+        AuthFailed: 401 ,
+        FormValidateFail: 400 ,
     } ,
     res: {
         logo: 'http://192.168.3.200:10001/upload/20200712/phjK4tBEQWX8BiIb0ue3kdpfcEwBOGQNCODkpbUK.png' ,
@@ -38,4 +39,15 @@ window.TopContext = {
     // 每页显示记录数
     limit: 20 ,
     config ,
+    val: {
+        fixedTop: 105 ,
+        headerH: 105 ,
+        footerH: 130 ,
+    } ,
+
+    os: {
+        name: '兴趣部落' ,
+        version: '1.0.0' ,
+        author: 'running'
+    } ,
 };

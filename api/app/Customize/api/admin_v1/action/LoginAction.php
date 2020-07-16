@@ -27,13 +27,13 @@ class LoginAction extends Action
             'captcha_code' => 'required|min:4' ,
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         if (empty($param['captcha_key'])) {
             return self::error('必要参数丢失【captcha_key】');
         }
         if (!Captcha::check_api($param['captcha_code'] , $param['captcha_key'])) {
-            return self::error([
+            return self::error('' , [
                 'captcha_code' => '图形验证码错误',
             ]);
         }
@@ -42,7 +42,7 @@ class LoginAction extends Action
             return self::error('用户不存在');
         }
         if (!Hash::check($param['password'] , $user->password)) {
-            return self::error([
+            return self::error('' , [
                 'password' => '密码错误' ,
             ]);
         }
@@ -60,7 +60,7 @@ class LoginAction extends Action
                 'last_ip'   => $context->request->ip(),
             ]);
             DB::commit();
-            return self::success($token);
+            return self::success('' , $token);
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -73,13 +73,13 @@ class LoginAction extends Action
             'username' => 'required'
         ]);
         if ($validator->fails()) {
-            return self::error(get_form_error($validator));
+            return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $user = AdminModel::findByUsername($param['username']);
         if (empty($user)) {
-            return self::error('用户不存在' , 404);
+            return self::error('用户不存在' , '' , 404);
         }
         $user = AdminHandler::handle($user);
-        return self::success($user->__avatar__);
+        return self::success('' , $user->__avatar__);
     }
 }

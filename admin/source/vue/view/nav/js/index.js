@@ -123,7 +123,7 @@ export default {
     methods: {
 
         getModuleData () {
-            Api.module.all((data , code) => {
+            Api.module.all((msg , data , code) => {
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     return ;
@@ -158,7 +158,7 @@ export default {
 
         getData () {
             this.pending('getData' , true);
-            Api.nav.index((data , code) => {
+            Api.nav.index((msg , data , code) => {
                 this.pending('getData' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
@@ -203,7 +203,7 @@ export default {
                     G.invoke(callback , self , false);
                     return ;
                 }
-                Api.nav.destroyAll(ids , (data , code) => {
+                Api.nav.destroyAll(ids , (msg , data , code) => {
                     if (code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
                         this.message('error' , data);
@@ -224,7 +224,7 @@ export default {
 
             Api.nav.localUpdate(record.id , {
                 [extra.field]: val
-            } , (data , code) => {
+            } , (msg , data , code) => {
                 this.pending(pendingKey , false);
                 if (code !== TopContext.code.Success) {
                     record[extra.field] = oVal;
@@ -312,11 +312,11 @@ export default {
 
         submitEvent () {
             const self = this;
-            const callback = (data , code) => {
+            const callback = (msg , data , code) => {
                 this.pending('submit' , false);
                 this.error();
                 if (code !== TopContext.code.Success) {
-                    this.errorHandle(data);
+                    this.errorHandle(msg , data , code);
                     return ;
                 }
                 this.successHandle((keep) => {

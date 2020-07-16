@@ -15,6 +15,7 @@ export default new Vuex.Store({
 
         // 用户登录后需要处理的相关回调函数
         loggedCallback: [] ,
+
     } ,
     mutations: {
         user (state , payload) {
