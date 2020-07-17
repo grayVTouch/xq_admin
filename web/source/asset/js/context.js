@@ -11,13 +11,9 @@ import config from './config.js';
  * ******************
  */
 window.TopContext = {
-    api: 'http://192.168.3.200:10001/api/web_v1' ,
+    api: 'http://api.xq.test/api/web_v1' ,
     // // 图片上传 api
     fileApi: 'http://api.xq.test/api/web_v1/upload' ,
-
-    // api: 'http://www.grayvtouch.top/api/web_v1' ,
-    // // 图片上传 api
-    // fileApi: 'http://www.grayvtouch.top/api/web_v1/upload' ,
 
     code: {
         Success: 200 ,
@@ -25,9 +21,9 @@ window.TopContext = {
         FormValidateFail: 400 ,
     } ,
     res: {
-        logo: 'http://192.168.3.200:10001/upload/20200712/phjK4tBEQWX8BiIb0ue3kdpfcEwBOGQNCODkpbUK.png' ,
-        notFound: 'http://192.168.3.200:10001/upload/20200712/ecrT5SPDzkUQZWPit3qk3L5Vb9GYaoXLKoTiUBMY.jpeg' ,
-        avatar: 'http://192.168.3.200:10001/upload/20200712/VJ8BKpDWTy1oVg1XDgaSOufmGcwcA0zEx5Q6Qxgw.png' ,
+        logo: 'http://api.xq.test/upload/20200712/phjK4tBEQWX8BiIb0ue3kdpfcEwBOGQNCODkpbUK.png' ,
+        notFound: 'http://api.xq.test/upload/20200712/ecrT5SPDzkUQZWPit3qk3L5Vb9GYaoXLKoTiUBMY.jpeg' ,
+        avatar: 'http://api.xq.test/upload/20200712/VJ8BKpDWTy1oVg1XDgaSOufmGcwcA0zEx5Q6Qxgw.png' ,
 
         user: {
             password: '' ,

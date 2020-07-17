@@ -7,6 +7,8 @@ namespace App\Customize\api\web_v1\action;
 use App\Customize\api\web_v1\model\EmailCodeModel;
 use App\Http\Controllers\api\web_v1\Base;
 use App\Mail\web_v1\PasswordEmail;
+use App\Mail\web_v1\RegisterEmail;
+use Exception;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
@@ -38,9 +40,19 @@ class MiscAction extends Action
         }
         $timestamp = current_time();
         $code = random(4 , 'number' , true);
-        $password_email = new PasswordEmail($code);
+        switch ($type)
+        {
+            case 'password':
+                $mailable = new PasswordEmail($code);
+                break;
+            case 'register':
+                $mailable = new RegisterEmail($code);
+                break;
+            default:
+                throw new Exception('不支持的类型');
+        }
         Mail::to($param['email'])
-            ->send($password_email);
+            ->send($mailable);
 
         $email_code = EmailCodeModel::findByEmailAndType($param['email'] , $type);
         if (empty($email_code)) {
