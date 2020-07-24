@@ -1,0 +1,124 @@
+.channel-item-view {
+
+}
+
+.channel-item-view > * {
+    margin-bottom: 20px;
+}
+
+.channel-item-view > *:nth-last-of-type(1) {
+    margin-bottom: 0;
+}
+
+.channel-item-view .list {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    position: relative;
+    min-height: 250px;
+}
+
+.channel-item-view .list .item {
+    transition: all 0.3s;
+    margin-right: 20px;
+    margin-top: 30px;
+}
+
+.channel-item-view .list .item:nth-of-type(3n) {
+    margin-right:0;
+}
+
+.channel-item-view .list .item:nth-of-type(1) ,
+.channel-item-view .list .item:nth-of-type(2) ,
+.channel-item-view .list .item:nth-of-type(3)
+{
+    margin-top: 0;
+}
+
+.channel-item-view .list .item:hover .thumb::before {
+    background-color: var(--card-box-background-color-hover);
+    opacity: 0.5;
+}
+
+.channel-item-view .list .item .thumb {
+    width: 306px;
+    height: 200px;
+    position: relative;
+}
+
+.channel-item-view .list .item .thumb:before {
+    display: block;
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--card-box-background-color);
+    transition: all 0.3s;
+    z-index: 1;
+    opacity: 0;
+}
+
+
+
+.channel-item-view .list .item .thumb .image-mask {
+    position: relative;
+    width: inherit;
+    height: inherit;
+}
+
+.channel-item-view .list .item .thumb .info {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: inherit;
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0,0.6);
+    opacity: 0.8;
+}
+
+.channel-item-view .list .item .name {
+    font-size: 14px;
+    color: var(--font-color-white);
+    margin: 10px 0 5px 0;
+}
+
+.channel-item-view .list .item .time {
+    font-size: 12px;
+    color: var(--font-color);
+}
+
+
+.channel-item-view .list .loading {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0,0.5);
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+
+.channel-item-view .list .empty {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*background-color: rgba(0,0,0,0.5);*/
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+}

@@ -289,5 +289,26 @@ export default {
             this.link(link , '_self');
             window.history.go(0);
         } ,
+
+        focusHandle () {
+            if (this.pending('focusHandle')) {
+                return ;
+            }
+            this.pending('focusHandle' , true);
+            Api.user.focusHandle({
+                user_id: this.data.user_id ,
+                action: this.data.user.focused ? 0 : 1 ,
+            } , (msg , data , code) => {
+                this.pending('focusHandle' , false);
+                if (code !== TopContext.code.Success) {
+                    this.errorHandleAtHomeChildren(msg , data , code , () => {
+                        this.focusHandle();
+                    });
+                    return ;
+                }
+                this.getData();
+            });
+
+        } ,
     } ,
 }

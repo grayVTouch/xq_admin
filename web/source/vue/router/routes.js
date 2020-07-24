@@ -24,6 +24,12 @@ const info = () => import('../view/user/info.vue');
 const password = () => import('../view/user/password.vue');
 const history = () => import('../view/user/history.vue');
 const favorites = () => import('../view/user/favorites.vue');
+const indexForChannel = () => import('../view/channel/index.vue');
+const imageForChannel = () => import('../view/channel/image.vue');
+const myFocusUser = () => import('../view/channel/my_focus_user.vue');
+const focusMeUser = () => import('../view/channel/focus_me_user.vue');
+const indexForCollectionGroup = () => import('../view/collection_group/index.vue');
+const imageForcollectionGroup = () => import('../view/collection_group/image.vue');
 
 
 export default [
@@ -61,6 +67,38 @@ export default [
                 path: 'image_subject/search' ,
                 component: searchForImageSubject ,
                 props: true ,
+            } ,
+            {
+                path: 'collection_group/:id' ,
+                component: indexForCollectionGroup ,
+                props: true ,
+                children: [
+                    {
+                        path: 'image' ,
+                        component: imageForcollectionGroup
+                    }
+                ] ,
+            } ,
+            {
+                name: 'channel' ,
+                path: 'channel/:id' ,
+                redirect: 'channel/:id/image' ,
+                component: indexForChannel ,
+                props: true ,
+                children: [
+                    {
+                        path: 'image' ,
+                        component: imageForChannel ,
+                    } ,
+                    {
+                        path: 'my_focus_user' ,
+                        component: myFocusUser
+                    } ,
+                    {
+                        path: 'focus_me_user' ,
+                        component: focusMeUser ,
+                    } ,
+                ] ,
             } ,
             {
                 path: 'user' ,

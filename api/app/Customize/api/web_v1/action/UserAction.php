@@ -5,12 +5,14 @@ namespace App\Customize\api\web_v1\action;
 
 use App\Customize\api\web_v1\handler\CollectionGroupHandler;
 use App\Customize\api\web_v1\handler\CollectionHandler;
+use App\Customize\api\web_v1\handler\FocusUserHandler;
 use App\Customize\api\web_v1\handler\HistoryHandler;
 use App\Customize\api\web_v1\handler\ImageSubjectHandler;
 use App\Customize\api\web_v1\handler\UserHandler;
 use App\Customize\api\web_v1\model\CollectionGroupModel;
 use App\Customize\api\web_v1\model\CollectionModel;
 use App\Customize\api\web_v1\model\EmailCodeModel;
+use App\Customize\api\web_v1\model\FocusUserModel;
 use App\Customize\api\web_v1\model\HistoryModel;
 use App\Customize\api\web_v1\model\ImageSubjectModel;
 use App\Customize\api\web_v1\model\ModuleModel;
@@ -563,6 +565,9 @@ class UserAction extends Action
         if (empty($relation)) {
             return self::error('关联事物不存在' , '' , 404);
         }
+        if ($module->id !== $relation->id) {
+            return self::error('禁止记录不同模块的内容' , '' , 403);
+        }
         $user = user();
         $date = date('Y-m-d');
         $time = date('H:i:s');
@@ -605,6 +610,9 @@ class UserAction extends Action
         }
         if (empty($relation)) {
             return self::error('关联的事物不存在' , '' , 404);
+        }
+        if ($module->id !== $relation->id) {
+            return self::error('禁止记录不同模块的内容' , '' , 403);
         }
         $user = user();
         $collection_group = CollectionGroupModel::findByModuleIdAndUserIdAndName($module->id , $user->id , $param['name']);
@@ -692,6 +700,9 @@ class UserAction extends Action
         if (empty($relation)) {
             return self::error('关联的事物不存在' , '' , 404);
         }
+        if ($module->id !== $relation->id) {
+            return self::error('禁止记录不同模块的内容' , '' , 403);
+        }
         $user = user();
         $collection_group = CollectionGroupModel::find($param['collection_group_id']);
         if (empty($collection_group)) {
@@ -769,12 +780,12 @@ class UserAction extends Action
         $sex_range = array_keys(my_config('business.sex_for_user'));
         $validator = Validator::make($param , [
             'sex' => ['required' , Rule::in($sex_range)] ,
+            'email' => 'sometimes|email' ,
         ]);
         if ($validator->fails()) {
             return self::error('表单错误，请检查' , get_form_error($validator));
         }
         $user = user();
-        $param['birthday'] = empty($param['birthday']) ? $user->birthday : $param['birthday'];
         UserModel::updateById($user->id , array_unit($param , [
             'nickname' ,
             'sex' ,
@@ -783,6 +794,7 @@ class UserAction extends Action
             'email' ,
             'description' ,
             'birthday' ,
+            'channel_thumb' ,
         ]));
         $user = UserModel::find($user->id);
         $user = UserHandler::handle($user);
@@ -863,8 +875,7 @@ class UserAction extends Action
             return self::error('收藏夹不存在' , '' , 404);
         }
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $user = user();
-        $res = CollectionModel::getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndLimit($module->id , $user->id , $collection_group->id , $param['relation_type'] , $limit);
+        $res = CollectionModel::getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndLimit($module->id , $collection_group->user_id , $collection_group->id , $param['relation_type'] , $limit);
         $res = CollectionHandler::handlePaginator($res);
         return self::success('' , $res);
     }
@@ -898,4 +909,143 @@ class UserAction extends Action
         return self::success('' , $res);
     }
 
+    public static function focusHandle(Base $context , array $param = []): array
+    {
+        $bool_range = array_keys(my_config('business.bool_for_int'));
+        $validator = Validator::make($param , [
+            'user_id' => 'required|integer' ,
+            'action' => ['required' , Rule::in($bool_range)] ,
+        ]);
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first());
+        }
+        $focus_user = UserModel::find($param['user_id']);
+        if (empty($focus_user)) {
+            return self::error('用户不存在' , '' , 404);
+        }
+        $user = user();
+        if ($user->id === $focus_user->id) {
+            return self::error('禁止关注自己' , '' , 403);
+        }
+        if ($param['action'] == 1) {
+            // 关注用户
+            $res = FocusUserModel::findByUserIdAndFocusUserId($user->id , $focus_user->id);
+            if ($res) {
+                return self::error('您已经关注该用户' , 403);
+            }
+            FocusUserModel::insertGetId([
+                'user_id' => $user->id ,
+                'focus_user_id' => $focus_user->id ,
+                'create_time' => current_time() ,
+            ]);
+        } else {
+            // 取消关注
+            FocusUserModel::delByUserIdAndFocusUserId($user->id , $focus_user->id);
+        }
+        return self::success();
+    }
+
+    public static function myFocusUser(Base $context , int $user_id , array $param = []): array
+    {
+        $user = UserModel::find($user_id);
+        if (empty($user)) {
+            return self::error('用户不存在' , '' , 404);
+        }
+        $limit = empty($param['limit']) ? $param['limit'] : my_config('app.limit');
+        $res = FocusUserModel::getWithPagerByUserIdAndLimit($user->id , $limit);
+        $res = FocusUserHandler::handlePaginator($res);
+        return self::success('' , $res);
+    }
+
+    public static function focusMeUser(Base $context , int $user_id , array $param = []): array
+    {
+        $user = UserModel::find($user_id);
+        if (empty($user)) {
+            return self::error('用户不存在' , '' , 404);
+        }
+        $limit = empty($param['limit']) ? $param['limit'] : my_config('app.limit');
+        $res = FocusUserModel::getWithPagerByFocusUserIdAndLimit($user->id , $limit);
+        $res = FocusUserHandler::handlePaginator($res);
+        return self::success('' , $res);
+    }
+
+    public static function show(Base $context , int $user_id , array $param = []): array
+    {
+        $user = UserModel::find($user_id);
+        if (empty($user)) {
+            return self::error('用户不存在' , '' , 404);
+        }
+        $user = UserHandler::handle($user);
+        return self::success('' , $user);
+    }
+
+    public static function collectionGroupByUserId(Base $context , int $user_id , array $param = []): array
+    {
+        $user = UserModel::find($user_id);
+        if (empty($user)) {
+            return self::error('用户不存在' , '' , 404);
+        }
+        $relation_type_range = array_keys(my_config('business.relation_type_for_collection'));
+        $validator = Validator::make($param , [
+            'module_id' => 'required|integer' ,
+            'relation_type' => ['sometimes' , Rule::in($relation_type_range)] ,
+        ]);
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first());
+        }
+        $module = ModuleModel::find($param['module_id']);
+        if (empty($module)) {
+            return self::error('模块不存在');
+        }
+        $res = CollectionGroupModel::getByModuleIdAndUserIdAndRelationTypeAndValue($module->id , $user->id , $param['relation_type'] ,  $param['value']);
+        $res = CollectionGroupHandler::handleAll($res);
+        return self::success('' , $res);
+    }
+
+    // 局部更新
+    public static function localUpdate(Base $context , array $param = [])
+    {
+        $sex_range = array_keys(my_config('business.sex_for_user'));
+        $validator = Validator::make($param , [
+            'sex' => ['sometimes' , Rule::in($sex_range)] ,
+            'email' => 'sometimes|email' ,
+        ]);
+        if ($validator->fails()) {
+            return self::error('表单错误，请检查' , get_form_error($validator));
+        }
+        $user = user();
+        $param['nickname']  = empty($param['nickname']) ? $user->nickname : $param['nickname'];
+        $param['sex']       = $param['sex'] === '' ? $user->sex : $param['sex'];
+        $param['avatar']    = $param['avatar'] === '' ? $user->avatar : $param['avatar'];
+        $param['phone']     = $param['phone'] === '' ? $user->phone : $param['phone'];
+        $param['email']     = $param['email'] === '' ? $user->email : $param['email'];
+        $param['description']   = $param['description'] === '' ? $user->description : $param['description'];
+        $param['birthday']      = empty($param['birthday']) ? $user->birthday : $param['birthday'];
+        $param['channel_thumb'] = $param['channel_thumb'] === '' ? $user->channel_thumb : $param['channel_thumb'];
+        UserModel::updateById($user->id , array_unit($param , [
+            'nickname' ,
+            'sex' ,
+            'avatar' ,
+            'phone' ,
+            'email' ,
+            'description' ,
+            'birthday' ,
+            'channel_thumb' ,
+        ]));
+        $user = UserModel::find($user->id);
+        $user = UserHandler::handle($user);
+        return self::success('' , $user);
+    }
+
+
+    // 局部更新
+    public static function collectionGroupInfo(Base $context , int $collection_group_id , array $param = []): array
+    {
+        $collection_group = CollectionGroupModel::find($collection_group_id);
+        if (empty($collection_group)) {
+            return self::error('记录不存在' , '' , 404);
+        }
+        $collection_group = CollectionGroupHandler::handle($collection_group);
+        return self::success('' , $collection_group);
+    }
 }

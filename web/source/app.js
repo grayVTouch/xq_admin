@@ -21,6 +21,9 @@ import './asset/js/directive.js';
 import './asset/js/my_plugin.js';
 import './asset/js/my_view.js';
 
+// 第三方插件
+import './asset/js/plugin.js';
+
 
 
 import router from './vue/router';

@@ -272,7 +272,27 @@ class User extends Base
         $param['email'] = $param['email'] ?? '';
         $param['birthday'] = $param['birthday'] ?? '';
         $param['description'] = $param['description'] ?? '';
+        $param['channel_thumb'] = $param['channel_thumb'] ?? '';
         $res = UserAction::update($this , $param);
+        if ($res['code'] !== 0) {
+            return error($res['message'] , $res['data'], $res['code']);
+        }
+        return success($res['message'] , $res['data']);
+    }
+
+
+    public function localUpdate()
+    {
+        $param = $this->request->post();
+        $param['nickname'] = $param['nickname'] ?? '';
+        $param['avatar'] = $param['avatar'] ?? '';
+        $param['sex'] = $param['sex'] ?? '';
+        $param['phone'] = $param['phone'] ?? '';
+        $param['email'] = $param['email'] ?? '';
+        $param['birthday'] = $param['birthday'] ?? '';
+        $param['description'] = $param['description'] ?? '';
+        $param['channel_thumb'] = $param['channel_thumb'] ?? '';
+        $res = UserAction::localUpdate($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }
@@ -308,6 +328,7 @@ class User extends Base
     {
         $param = $this->request->post();
         $param['module_id'] = $param['module_id'] ?? '';
+        $param['collection_group_id'] = $param['collection_group_id'] ?? '';
         $param['relation_type'] = $param['relation_type'] ?? '';
         $param['limit'] = $param['limit'] ?? '';
         $res = UserAction::collections($this , $param);
@@ -341,4 +362,72 @@ class User extends Base
         }
         return success($res['message'] , $res['data']);
     }
+
+    public function focusHandle()
+    {
+        $param = $this->request->post();
+        $param['user_id'] = $param['user_id'] ?? '';
+        $param['action'] = $param['action'] ?? '';
+        $res = UserAction::focusHandle($this , $param);
+        if ($res['code'] !== 0) {
+            return error($res['message'] , $res['data'], $res['code']);
+        }
+        return success($res['message'] , $res['data']);
+    }
+
+    public function myFocusUser(int $user_id)
+    {
+        $param = $this->request->query();
+        $param['limit'] = $param['limit'] ?? '';
+        $res = UserAction::myFocusUser($this , $user_id , $param);
+        if ($res['code'] !== 0) {
+            return error($res['message'] , $res['data'], $res['code']);
+        }
+        return success($res['message'] , $res['data']);
+    }
+
+    public function focusMeUser(int $user_id)
+    {
+        $param = $this->request->query();
+        $param['limit'] = $param['limit'] ?? '';
+        $res = UserAction::focusMeUser($this , $user_id , $param);
+        if ($res['code'] !== 0) {
+            return error($res['message'] , $res['data'], $res['code']);
+        }
+        return success($res['message'] , $res['data']);
+    }
+
+    public function show(int $user_id)
+    {
+        $res = UserAction::show($this , $user_id);
+        if ($res['code'] != 0) {
+            return error($res['message'] , $res['data'] , $res['code']);
+        }
+        return success($res['message'] , $res['data']);
+    }
+
+
+    // 收藏夹列表-带搜索
+    public function collectionGroupByUserId(int $user_id)
+    {
+        $param = $this->request->query();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $param['relation_type'] = $param['relation_type'] ?? '';
+        $param['value'] = $param['value'] ?? '';
+        $res = UserAction::collectionGroupByUserId($this , $user_id , $param);
+        if ($res['code'] != 0) {
+            return error($res['message'] , $res['data'] , $res['code']);
+        }
+        return success($res['message'] , $res['data']);
+    }
+
+    public function collectionGroupInfo(int $collection_group_id)
+    {
+        $res = UserAction::collectionGroupInfo($this , $collection_group_id);
+        if ($res['code'] != 0) {
+            return error($res['message'] , $res['data'] , $res['code']);
+        }
+        return success($res['message'] , $res['data']);
+    }
+
 }

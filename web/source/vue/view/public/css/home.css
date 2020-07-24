@@ -525,7 +525,7 @@
     bottom: -20px;
     transform: translate(-50% , calc(100% + 20px)) scale(1,1);
     background-color: #656565;
-    transition: all 0.3s 0.2s;
+    transition: all 0.3s;
     opacity: 0;
     display: flex;
     justify-content: flex-start;
@@ -742,11 +742,11 @@
  * 用户信息
  ***********************************
  */
-.logged-layer> .user {
+.logged-layer > .user {
 
 }
 
-.logged-layer> .user > .action .link {
+.logged-layer > .user > .action .link {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -756,7 +756,7 @@
     display: block;
 }
 
-.logged-layer> .user > .action .link .image {
+.logged-layer > .user > .action .link .image {
     height: 100%;
     min-width: 100%;
     position: absolute;
@@ -766,7 +766,7 @@
     vertical-align: top;
 }
 
-.logged-layer> .user > .info {
+.logged-layer > .user > .info {
     position: absolute;
     bottom: 0;
     left: 50%;
@@ -777,12 +777,12 @@
     opacity: 0;
 }
 
-.logged-layer> .user > .info.show {
+.logged-layer > .user > .info.show {
     opacity: 1;
     transform: translate(-50% , calc(100% + 20px));
 }
 
-.logged-layer> .user > .info:before {
+.logged-layer > .user > .info:before {
     display: block;
     content: '';
     width: 0;
@@ -796,7 +796,7 @@
     transform: translate(-50% , -100%);
 }
 
-.logged-layer> .user > .info .user .link {
+.logged-layer > .user > .info .user .link {
     display: flex;
     justify-content: flex-start;
     background-color: #ffffff1f;
@@ -804,17 +804,17 @@
     cursor: pointer;
 }
 
-.logged-layer> .user > .info .user .link > * {
+.logged-layer > .user > .info .user .link > * {
     margin: 0;
 }
 
-.logged-layer> .user > .info .user .link .avatar {
+.logged-layer > .user > .info .user .link .avatar {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.logged-layer> .user > .info .user .link .avatar .mask {
+.logged-layer > .user > .info .user .link .avatar .mask {
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -822,7 +822,7 @@
     position: relative;
 }
 
-.logged-layer> .user > .info .user .link .avatar .mask .image {
+.logged-layer > .user > .info .user .link .avatar .mask .image {
     min-width: 100%;
     height: 100%;
     position: absolute;
@@ -831,7 +831,7 @@
     transform: translate(-50% , -50%);
 }
 
-.logged-layer> .user > .info .user .link .info {
+.logged-layer > .user > .info .user .link .info {
     padding-left: 10px;
     display: flex;
     flex-direction: column;
@@ -839,26 +839,28 @@
     align-items: flex-start;
 }
 
-.logged-layer> .user > .info .user .link .info > * {
+.logged-layer > .user > .info .user .link .info > * {
     margin: 0;
     font-size: 12px;
     white-space: nowrap;
 }
 
-.logged-layer> .user > .info .user .link .info .name ,
-.logged-layer> .user > .info .user .link .info .desc
+.logged-layer > .user > .info .user .link .info .name ,
+.logged-layer > .user > .info .user .link .info .desc
 {
     max-width: 150px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    line-height: 16px;
+    height: 16px;
 }
 
-.logged-layer> .user > .info .actions {
+.logged-layer > .user > .info .actions {
 
 }
 
-.logged-layer> .user > .info .actions .action {
+.logged-layer > .user > .info .actions .action {
     display: flex;
     justify-content: flex-start;
     padding: 0 20px;
@@ -867,22 +869,22 @@
     cursor: pointer;
 }
 
-.logged-layer> .user > .info .actions .action:hover {
+.logged-layer > .user > .info .actions .action:hover {
     background-color: #ffffff1f;
 }
 
-.logged-layer> .user > .info .actions .action > * {
+.logged-layer > .user > .info .actions .action > * {
     margin: 0;
     flex: 0 0 auto;
 }
-.logged-layer> .user > .info .actions .action .ico {
+.logged-layer > .user > .info .actions .action .ico {
     width: 45px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
 }
 
-.logged-layer> .user > .info .actions .action .name {
+.logged-layer > .user > .info .actions .action .name {
     display: flex;
     justify-content: flex-start;
     align-items: center;

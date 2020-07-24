@@ -60,6 +60,21 @@ class CollectionModel extends Model
         ])->count();
     }
 
+    public static function countByCollectionGroupId(int $collection_group_id): int
+    {
+        return self::where([
+            ['collection_group_id' , '=' , $collection_group_id] ,
+        ])->count();
+    }
+
+    public static function countByCollectionGroupIdAndRelationType(int $collection_group_id , string $relation_type): int
+    {
+        return self::where([
+            ['collection_group_id' , '=' , $collection_group_id] ,
+            ['relation_type' , '=' , $relation_type] ,
+        ])->count();
+    }
+
     public static function findByModuleIdAndUserIdAndCollectionGroupIdAndRelationTypeAndRelationId(int $module_id , int $user_id ,int $collection_group_id , string $relation_type , int $relation_id): ?CollectionModel
     {
         return self::where([
@@ -104,5 +119,17 @@ class CollectionModel extends Model
         return self::where($where)
             ->orderBy('create_time' , 'desc')
             ->paginate($limit);
+    }
+
+    public static function countByUserId(int $user_id)
+    {
+        return self::where('user_id' , $user_id)->count();
+    }
+
+    public static function firstOrderIdAscByCollectionGroupId(int $collection_group_id): ?CollectionModel
+    {
+        return self::where('collection_group_id' , $collection_group_id)
+            ->orderBy('id' , 'asc')
+            ->first();
     }
 }

@@ -4,7 +4,10 @@
  * ***********************
  */
 :root {
+    --view-width: 1280px;
     --border-color: dimgrey;
+    --border-color-yellow: #f3c669;
+    --font-color-yellow: #f3c669;
     --fixed-top: 105px;
     --fixed-top-with-extra: 125px;
     --button-background-color: #5d5d5d;
@@ -12,11 +15,11 @@
     --button-color: #fff;
     --box-background-color: #464646;
     --box-background-color-hover: #585858;
-
     --card-box-background-color: #383838;
     --card-box-background-color-hover: #424242;
-
-    --image-subject-index-background: url(http://192.168.3.200:10001/upload/20200716/SuiqSdbWqJl6kK3TnNUbr8un86BxJxYVoVZKKZgV.png);
-    --background:  url(http://192.168.3.200:10001/upload/20200712/ixdTRcttkZq0JaUt5WYowOWuW0Q9ShfpEKXjakSF.jpeg);
-    --image-subject-index-ico-background:  url(http://192.168.3.200:10001/upload/20200717/426h1DUu19DyimtQ16HR1laaND8k5F0K2RBfz2nI.jpeg);
+    --image-subject-index-background: url(http://api.xq.test/upload/20200716/SuiqSdbWqJl6kK3TnNUbr8un86BxJxYVoVZKKZgV.png);
+    --background:  url(http://api.xq.test/upload/20200712/ixdTRcttkZq0JaUt5WYowOWuW0Q9ShfpEKXjakSF.jpeg);
+    --image-subject-index-ico-background:  url(http://api.xq.test/upload/20200717/426h1DUu19DyimtQ16HR1laaND8k5F0K2RBfz2nI.jpeg);
+    --font-color: #ccc;
+    --font-color-white: #fff;
 }

@@ -28,6 +28,17 @@
             };
         } ,
 
+        beforeRouteEnter (to , from , next) {
+            next((vm) => {
+                vm.scrollEvent();
+            });
+        },
+
+        beforeRouteUpdate (to , from , next) {
+            console.log('update');
+            next();
+        } ,
+
         mounted () {
             this.initDom();
             this.initEvent();
@@ -60,21 +71,21 @@
     .view {
         display: flex;
         justify-content: flex-start;
-        align-items: flex-start;
+        align-items: stretch;
         padding-top: 20px;
         position: relative;
     }
 
-    .view:before {
-        position: absolute;
-        left: 0;
-        top: 20px;
-        width: 150px;
-        height: calc(100% - 20px);
-        background-color: #5d5d5d;
-        content: '';
-        z-index: 0;
-    }
+    /*.view:before {*/
+    /*    position: absolute;*/
+    /*    left: 0;*/
+    /*    top: 20px;*/
+    /*    width: 150px;*/
+    /*    height: calc(100% - 20px);*/
+    /*    background-color: #5d5d5d;*/
+    /*    content: '';*/
+    /*    z-index: 0;*/
+    /*}*/
 
     .view > * {
         margin: 0;
@@ -86,6 +97,7 @@
         width: 150px;
         position: relative;
         z-index: 1;
+        background-color: var(--button-background-color);
     }
 
     .view > .menu > .inner {
@@ -102,24 +114,24 @@
         justify-content: flex-start;
         align-items: center;
         height: 40px;
-        background-color: #5d5d5d;
+        /*background-color: var(--button-background-color);*/
         transition: all 0.3s;
         padding: 0 20px;
         font-size: 14px;
     }
 
     .view > .menu > .inner > .link:hover {
-        background-color: #828282;
+        background-color: var(--button-background-color-hover);
     }
 
     .view > .menu > .inner > .link.cur {
-        background-color: #828282;
+        background-color: var(--button-background-color-hover);
     }
 
     .view > .content {
         width: calc(100% - 150px);
         background-color: #424242;
-        min-height: 600px;
+        /*min-height: 600px;*/
         /*padding: 0 20px 20px 20px;*/
     }
 

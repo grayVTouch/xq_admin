@@ -47,11 +47,6 @@ Vue.mixin({
         } ,
 
         message (msg , option = {}) {
-            console.log({
-                closeBtn: true ,
-                ...option
-            });
-
             return Prompt.alert(msg , {
                 closeBtn: true ,
                 ...option
@@ -87,8 +82,8 @@ Vue.mixin({
         errorHandle (msg , data , code , callback) {
             if (code === TopContext.code.AuthFailed) {
                 this.message('您尚未登录，请登录后操作？' , {
-                    closeBtn: false ,
-                    btn: [
+                    // closeBtn: false ,
+                    action: [
                         {
                             name: '确定' ,
                             callback () {
@@ -167,6 +162,10 @@ Vue.mixin({
 
         genUrl (route) {
             return '#' + route;
+        } ,
+
+        reload () {
+            window.history.go(0);
         } ,
     } ,
 });

@@ -63,7 +63,7 @@
                 <div class="inner" :class="{fixed: val.fixed}">
 
                     <!-- 发布者 -->
-                    <div class="user">
+                    <a class="user m-b-20" target="_blank" :href="genUrl(`/channel/${data.user.id}`)">
                         <div class="inner" :class="{fixed: val.fixed}">
                             <div class="avatar">
                                 <div class="mask">
@@ -72,19 +72,23 @@
                             </div>
                             <div class="name">{{ data.user ? data.user.username : '' }}</div>
                             <div class="data">
-                                <div class="left">关注 1</div>
-                                <div class="right">粉丝 4106</div>
+                                <a class="left" target="_blank" :href="genUrl(`/channel/${data.user_id}/my_focus_user`)">关注 {{ data.user.my_focus_user_count }}</a>
+                                <a class="right" target="_blank" :href="genUrl(`/channel/${data.user_id}/focus_me_user`)">粉丝 {{ data.user.focus_me_user_count }}</a>
                             </div>
-                            <div class="desc">个人简介</div>
+                            <div class="desc">{{ data.user.description }}</div>
                             <div class="action">
-                                <my-button class="focus"><my-icon icon="add" /> 关注</my-button>
-                                <my-button class="message">私信</my-button>
+                                <my-button class="focus" @click.prevent="focusHandle">
+
+                                    <template v-if="!data.user.focused"><my-icon icon="add" v-if="!data.user.focused" class="run-position-relative run-t--2" /> 关注</template>
+                                    <template v-else>取消关注</template>
+                                    <my-loading size="16" v-if="val.pending.focusHandle"></my-loading></my-button>
+                                <my-button class="message" @click.prevent>私信</my-button>
                             </div>
                         </div>
-                    </div>
+                    </a>
 
                     <!-- 关联主题 -->
-                    <div class="subject" v-if="data.type === 'pro'" @click="link(`#/image_subject/search?subject_id=${data.subject_id}`)">
+                    <a class="subject m-b-20" v-if="data.type === 'pro'" target="_blank" :href="genUrl(`/image_subject/search?subject_id=${data.subject_id}`)">
                         <div class="info">
                             <div class="thumb">
                                 <div class="mask">
@@ -107,7 +111,7 @@
                         <!--                        <button class="focus"><my-icon icon="add" /> 关注</button>-->
                         <!--                    </div>-->
 
-                    </div>
+                    </a>
                     <!-- 最新发布 -->
                     <div class="newest" ref="newest">
                         <div class="inner" :class="{fixed: val.fixed}">

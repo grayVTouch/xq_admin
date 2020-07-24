@@ -1,5 +1,5 @@
 <template>
-    <a class="ripple" :href="href ? href : 'javascript: ;'" @click="clickEvent">
+    <a v-ripple class="ripple" :href="href ? href : 'javascript: ;'" @click="clickEvent">
         <slot></slot>
     </a>
 </template>
@@ -21,12 +21,7 @@
         } ,
 
         mounted () {
-            const button = G(this.$el);
-            const color = button.getStyleVal('color');
-            const background = this.background ? this.background : color;
-            new TouchFeedback(button.get(0) , {
-                backgroundColor: background ,
-            });
+
         } ,
 
         methods: {

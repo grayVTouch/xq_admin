@@ -9,12 +9,10 @@
                 <nav class="nav nav-top">
                     <div class="inner">
                         <div class="c-inner">
-                            <my-link class="logo" href="#/welcome">
-
+                            <a class="logo" :href="genUrl('/welcome')">
                                 <div class="__logo__"><img :src="$store.state.context.res.logo" class="image"></div>
                                 <div class="site"><a class="link">兴趣部落</a></div>
-
-                            </my-link>
+                            </a>
 
                             <div class="search search-in-logged">
                                 <div class="inner">
@@ -65,7 +63,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="load-more">
+                                                <div class="load-more" v-if="histories.length > 0">
                                                     <my-link class="more" href="#/user/history" @click="hideHistoryCtrl">加载更多</my-link>
                                                 </div>
                                             </div>
@@ -127,6 +125,11 @@
                                                 </a>
                                             </div>
                                             <div class="actions">
+                                                <a class="action" v-ripple :href="genUrl(`/channel/${$store.state.user.id}`)" @click="hideUserCtrl">
+                                                    <div class="ico"><my-icon icon="ronghepindao" size="16" /></div>
+                                                    <div class="name">我的频道</div>
+                                                </a>
+
                                                 <a class="action" v-ripple href="#/user/password" @click="hideUserCtrl">
                                                     <div class="ico"><my-icon icon="privilege" size="16" /></div>
                                                     <div class="name">修改密码</div>

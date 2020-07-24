@@ -97,7 +97,7 @@
                     <td>
                         <input type="text" class="form-text" v-model="form.birthday" @input="val.error.birthday = ''">
                         <span class="need"></span>
-                        <div class="msg">格式：YYYY-MM-DD HH:II:SS</div>
+                        <div class="msg">格式：YYYY-MM-DD，例：1996-11-07</div>
                         <div class="e-msg">{{ val.error.birthday }}</div>
                     </td>
                 </tr>

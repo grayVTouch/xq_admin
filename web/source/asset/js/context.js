@@ -11,6 +11,7 @@ import config from './config.js';
  * ******************
  */
 window.TopContext = {
+    host: 'http://xq.test' ,
     api: 'http://api.xq.test/api/web_v1' ,
     // // 图片上传 api
     fileApi: 'http://api.xq.test/api/web_v1/upload' ,

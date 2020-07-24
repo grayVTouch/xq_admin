@@ -1,0 +1,96 @@
+
+.channel-item-view {
+
+}
+
+.channel-item-view .list {
+    min-height: 100px;
+    position: relative;
+}
+
+.channel-item-view .list .item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: var(--box-background-color);
+    transition: all 0.3s;
+    cursor: pointer;
+    padding: 10px 20px;
+}
+
+.channel-item-view .list .item:hover {
+    background-color: var(--box-background-color-hover);
+}
+
+.channel-item-view .list .item > * {
+    margin: 0;
+}
+
+.channel-item-view .list .item .avatar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.channel-item-view .list .item .avatar .image-mask {
+    width: 80px;
+    height: 80px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 50%;
+}
+
+.channel-item-view .list .item .avatar .info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding-left: 10px;
+    max-width: 200px;
+}
+
+.channel-item-view .list .item .avatar .info > * {
+    margin: 0;
+}
+
+.channel-item-view .list .item .avatar .info > div {
+    height: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 14px;
+}
+
+.channel-item-view .list .loading {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0,0.5);
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+
+.channel-item-view .list .empty {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*background-color: rgba(0,0,0,0.5);*/
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.channel-item-view .pager {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

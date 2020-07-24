@@ -5,6 +5,7 @@ const updatePassword = `${TopContext.api}/user/update_password`;
 const lessHistory = `${TopContext.api}/less_history`;
 const history = `${TopContext.api}/history`;
 const collectionGroup = `${TopContext.api}/user/collection_group`;
+const collectionGroupByUserId = `${TopContext.api}/user/{user_id}/collection_group`;
 const collections = `${TopContext.api}/user/collections`;
 const collectionGroupWithJudge = `${TopContext.api}/user/collection_group_with_judge`;
 const createAndJoinCollectionGroup = `${TopContext.api}/user/create_and_join_collection_group`;
@@ -21,6 +22,12 @@ const updatePasswordInLogged = `${TopContext.api}/user/update_password_in_logged
 const destroyHistory = `${TopContext.api}/user/destroy_history`;
 const destroyCollection = `${TopContext.api}/user/destroy_collection`;
 const updateCollectionGroup = `${TopContext.api}/user/update_collection_group`;
+const focusHandle = `${TopContext.api}/user/focus_handle`;
+const show = `${TopContext.api}/user/{user_id}/show`;
+const myFocusUser = `${TopContext.api}/user/{user_id}/my_focus_user`;
+const focusMeUser = `${TopContext.api}/user/{user_id}/focus_me_user`;
+const localUpdate = `${TopContext.api}/user/{user_id}/update`;
+const collectionGroupInfo = `${TopContext.api}/user/{collection_group_id}/collection_group_info`;
 
 export default {
     login(data, success, error) {
@@ -122,4 +129,33 @@ export default {
     updateCollectionGroup (data, success, error) {
         return request(updateCollectionGroup, 'patch', data, success, error);
     },
+
+    focusHandle (data, success, error) {
+        return request(focusHandle, 'post', data, success, error);
+    } ,
+
+    show (userId, success, error) {
+        return request(show.replace('{user_id}' , userId), 'get', null , success, error);
+    } ,
+
+    focusMeUser (userId , data , success, error) {
+        return request(focusMeUser.replace('{user_id}' , userId), 'get', data, success, error);
+    } ,
+
+    myFocusUser (userId , data , success, error) {
+        return request(myFocusUser.replace('{user_id}' , userId), 'get', data, success, error);
+    } ,
+
+    collectionGroupByUserId (userId , data , success, error) {
+        return request(collectionGroupByUserId.replace('{user_id}' , userId), 'get', data, success, error);
+    } ,
+
+    localUpdate (userId , data , success, error) {
+        return request(localUpdate.replace('{user_id}' , userId), 'patch', data, success, error);
+    } ,
+
+
+    collectionGroupInfo (collectionGroupId , success, error) {
+        return request(collectionGroupInfo.replace('{collection_group_id}' , collectionGroupId), 'get', null, success, error);
+    } ,
 };

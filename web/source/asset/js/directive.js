@@ -6,7 +6,7 @@
 Vue.directive('ripple', {
     // 当被绑定的元素插入到 DOM 中时……
     inserted: function (el) {
-        new TouchFeedback(el , {
+        new TouchFeedback_Transform(el , {
 
         });
     }
@@ -20,14 +20,58 @@ const judgeImgSize = (img) => {
     if (!G.isValid(src)) {
         return ;
     }
+    const initialized = img.data('initialized');
+    if (G.isValid(initialized)) {
+        // 初始化过的跳过
+        return ;
+    }
+    img.data('initialized' , 1);
     const imgCopy = new Image();
     imgCopy.onload = function(){
         const w = this.width;
         const h = this.height;
-        if (w > h) {
-            img.addClass('horizontal-for-img');
-        } else {
+
+        const pW = img.parent().width();
+        const pH = img.parent().height();
+
+        // 容器尺寸
+        img.data('p-width' , pW);
+        img.data('p-height' , pH);
+
+        // 原图尺寸
+        img.data('width' , w);
+        img.data('height' , h);
+
+        const pRatio = pW / pH;
+        const squareRatio = 1;
+        const ratio = w / h;
+        if (pRatio > squareRatio) {
+            // 水平-矩形
+            if (pRatio > 1.5) {
+                img.addClass('horizontal-for-img');
+            } else {
+                // 当长款比例小于这个值的时候，将其当成是正方形处理
+                if (ratio > squareRatio) {
+                    img.addClass('vertical-for-img');
+                } else if (ratio < squareRatio) {
+                    img.addClass('horizontal-for-img');
+                } else {
+                    img.addClass('vertical-for-img');
+                }
+            }
+
+        } else if (pRatio < squareRatio) {
+            // 垂直-矩形
             img.addClass('vertical-for-img');
+        } else {
+            // 正方形
+            if (ratio > squareRatio) {
+                img.addClass('vertical-for-img');
+            } else if (ratio < squareRatio) {
+                img.addClass('horizontal-for-img');
+            } else {
+                img.addClass('vertical-for-img');
+            }
         }
     };
     imgCopy.src = src;
@@ -45,3 +89,9 @@ Vue.directive('judge-img-size', {
     update: judgeImgSize
 });
 
+// 复制功能
+Vue.directive('clipboard' , {
+    inserted (dom) {
+        new ClipboardJS(dom);
+    }
+});

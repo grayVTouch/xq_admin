@@ -68,7 +68,7 @@ export default {
                         return ;
                     }
                     this.status(file.id , true);
-                    self.form.avatar = data;
+                    self.form.avatar = data.data;
                 } ,
                 // 全部上传完成回调函数
                 completed () {

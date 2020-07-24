@@ -164,15 +164,15 @@ export default {
         };
     } ,
 
-    beforeRouteEnter (to , from , next) {
-        if (from.path === '/welcome') {
-            next(() => {
-                window.history.go(0);
-            });
-            return ;
-        }
-        next();
-    } ,
+    // beforeRouteEnter (to , from , next) {
+    //     if (from.path === '/welcome') {
+    //         next(() => {
+    //             window.history.go(0);
+    //         });
+    //         return ;
+    //     }
+    //     next();
+    // } ,
 
     beforeRouteUpdate (to , from , next) {
         this.initPosition(to.path);
@@ -338,7 +338,9 @@ export default {
             }
             this.dom.userForm.removeClass('hide');
             this.dom.userForm.startTransition('show');
-            this.userFormCallback[type].push(callback);
+            if (G.isFunction(callback)) {
+                this.userFormCallback[type].push(callback);
+            }
         } ,
 
         switchUserForm (type) {
@@ -462,8 +464,14 @@ export default {
                     }
                     return ;
                 }
-                this.loginMessage('登录成功，获取用户信息中...' , 'run-green');
                 G.s.set('token' , data);
+                // console.log(G.jsonEncode(this.userFormCallback.login) , this.userFormCallback.login.length);
+                if (this.userFormCallback.login.length < 1) {
+                    this.loginMessage('登录成功，页面刷新中...' , 'run-green');
+                    window.setTimeout(this.reload.bind(this) , 1000);
+                    return ;
+                }
+                this.loginMessage('登录成功，获取用户信息中...' , 'run-green');
                 // 获取用户信息
                 this.userInfo((keep) => {
                     this.pending('userLogin' , false);

@@ -60,6 +60,13 @@ Route::prefix('web_v1')
 
             Route::post('send_email_code_for_password' , 'Misc@sendEmailCodeForPassword');
             Route::post('send_email_code_for_register' , 'Misc@sendEmailCodeForRegister');
+
+            Route::get('user/{user_id}/my_focus_user' , 'User@myFocusUser');
+            Route::get('user/{user_id}/focus_me_user' , 'User@focusMeUser');
+            Route::get('user/{user_id}/collection_group' , 'User@collectionGroupByUserId');
+            Route::get('user/{user_id}/show' , 'User@show');
+            Route::get('user/{collection_group_id}/collection_group_info' , 'User@collectionGroupInfo');
+            Route::get('user/collections' , 'User@collections');
         });
 
         Route::middleware([
@@ -78,15 +85,18 @@ Route::prefix('web_v1')
             Route::delete('user/destroy_history' , 'User@destroyHistory');
             Route::get('user/collection_group_with_judge' , 'User@collectionGroupWithJudge');
             Route::get('user/collection_group' , 'User@collectionGroup');
-            Route::get('user/collections' , 'User@collections');
             Route::get('user_info' , 'User@info');
             Route::get('less_history' , 'User@lessHistory');
             Route::get('history' , 'User@histories');
             Route::get('less_relation_in_collection' , 'User@lessRelationInCollection');
             Route::get('less_collection_group_with_collection' , 'User@lessCollectionGroupWithCollection');
-            Route::put('user/update' , 'User@update');
+            Route::put('user/{user_id}/update' , 'User@update');
+            Route::patch('user/{user_id}/update' , 'User@localUpdate');
             Route::patch('user/update_password_in_logged' , 'User@updatePasswordInLogged');
             Route::patch('user/update_collection_group' , 'User@updateCollectionGroup');
+
+            // 关注用户
+            Route::post('user/focus_handle' , 'User@focusHandle');
 
 
         });

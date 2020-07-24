@@ -7,6 +7,7 @@ import subject from './../../api/subject.js';
 import category from './../../api/category.js';
 import tag from './../../api/tag.js';
 import user from './../../api/user.js';
+import file from './../../api/file.js';
 
 window.Api = {
     misc ,
@@ -18,4 +19,5 @@ window.Api = {
     category ,
     tag ,
     user ,
+    file ,
 };

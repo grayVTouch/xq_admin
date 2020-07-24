@@ -1,5 +1,5 @@
 <template>
-    <button class="ripple" type="type" @click="clickEvent">
+    <button v-ripple class="ripple" :type="type" @click="clickEvent">
         <slot></slot>
     </button>
 </template>
@@ -21,13 +21,7 @@
         } ,
 
         mounted () {
-            const button = G(this.$el);
-            const color = button.getStyleVal('color');
-            const background = this.background ? this.background : color;
-            new TouchFeedback(button.get(0) , {
-                // time: 300 ,
-                backgroundColor: background ,
-            });
+
         } ,
 
         methods: {

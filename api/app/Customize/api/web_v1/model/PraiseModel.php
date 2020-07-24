@@ -31,4 +31,10 @@ class PraiseModel extends Model
         ])
             ->delete();
     }
+
+    public static function countByUserId(int $user_id)
+    {
+        return self::where('user_id' , $user_id)
+            ->count();
+    }
 }

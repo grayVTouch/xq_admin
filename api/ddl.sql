@@ -149,6 +149,7 @@ create table if not exists `xq_user` (
     phone varchar(30) default '' comment '手机' ,
     email varchar(50) default '' comment '电子邮件' ,
     user_group_id bigint unsigned default 0 comment 'xq_user_group.id' ,
+    channel_thumb varchar(500) default '' comment '频道封面' ,
     create_time datetime default current_timestamp ,
     update_time datetime default current_timestamp on update current_timestamp ,
     primary key `id` (`id`) ,
