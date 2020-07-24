@@ -3,6 +3,7 @@ const form = {
     p_id: 0 ,
     module_id: 0 ,
     enable: 1 ,
+    is_menu: 0 ,
     weight: 0 ,
     platform: '' ,
 };
@@ -67,6 +68,12 @@ export default {
                     {
                         title: '所属平台' ,
                         key: '__platform__' ,
+                        width: TopContext.table.status ,
+                        align: TopContext.table.alignCenter ,
+                    } ,
+                    {
+                        title: '菜单?' ,
+                        slot: 'is_menu' ,
                         width: TopContext.table.status ,
                         align: TopContext.table.alignCenter ,
                     } ,
@@ -173,6 +180,7 @@ export default {
             data.forEach((v) => {
                 this.pending(`enable_${v.id}` , false);
                 this.pending(`delete_${v.id}` , false);
+                this.pending(`is_menu_${v.id}` , false);
             });
         } ,
 

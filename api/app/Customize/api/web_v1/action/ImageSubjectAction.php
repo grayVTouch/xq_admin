@@ -255,6 +255,19 @@ class ImageSubjectAction extends Action
         $tag_ids = $param['tag_ids'] === '' ? [] : json_decode($param['tag_ids'] , true);
         $order = $param['order'] === '' ? null : parse_order($param['order']);
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
+
+
+        // 获取所有子类
+        $categories = CategoryModel::getAll();
+        $categories = obj_to_array($categories);
+        $tmp_category_ids = [];
+        foreach ($category_ids as $v)
+        {
+            $childrens = Category::childrens($v , $categories , null , true , false);
+            $ids = array_column($childrens , 'id');
+            $tmp_category_ids = array_merge($tmp_category_ids , $ids);
+        }
+        $category_ids = array_unique($tmp_category_ids);
         $res = [];
         switch ($param['mode'])
         {

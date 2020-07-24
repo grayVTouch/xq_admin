@@ -4,10 +4,10 @@
 namespace App\Customize\api\web_v1\action;
 
 
+use App\Customize\api\web_v1\mail\PasswordEmail;
+use App\Customize\api\web_v1\mail\RegisterEmail;
 use App\Customize\api\web_v1\model\EmailCodeModel;
 use App\Http\Controllers\api\web_v1\Base;
-use App\Mail\web_v1\PasswordEmail;
-use App\Mail\web_v1\RegisterEmail;
 use Exception;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;

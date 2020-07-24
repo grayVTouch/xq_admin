@@ -25,6 +25,8 @@
                         </template>
 <!--                        <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>-->
                         <template v-slot:enable="{row,index}"><my-switch v-model="row.enable" :loading="val.pending['enable_' + row.id]" :extra="{id: row.id , field: 'enable'}" @on-change="updateBoolValEvent" /></template>
+                        <template v-slot:is_menu="{row,index}"><my-switch v-model="row.is_menu" :loading="val.pending['is_menu_' + row.id]" :extra="{id: row.id , field: 'is_menu'}" @on-change="updateBoolValEvent" /></template>
+
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
                             <my-table-button type="error" :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
@@ -84,6 +86,18 @@
                                     <span class="need"></span>
                                     <div class="msg"></div>
                                     <div class="e-msg">{{ val.error.value }}</div>
+                                </td>
+                            </tr>
+
+                            <tr :class="{error: val.error.is_menu}" id="form_is_menu">
+                                <td>菜单？</td>
+                                <td>
+                                    <RadioGroup v-model="form.is_menu"  @input="val.error.is_menu = ''">
+                                        <Radio v-for="(v,k) in $store.state.business.bool_for_int" :key="k" :label="parseInt(k)">{{ v }}</Radio>
+                                    </RadioGroup>
+                                    <span class="need">*</span>
+                                    <div class="msg">默认：否</div>
+                                    <div class="e-msg">{{ val.error.is_menu }}</div>
                                 </td>
                             </tr>
 

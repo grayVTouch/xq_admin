@@ -51,6 +51,7 @@ class NavAction extends Action
         }
         $param['name']     = $param['name'] === '' ? $nav->name : $param['name'];
         $param['enable']   = $param['enable'] === '' ? $nav->enable : $param['enable'];
+        $param['is_menu']   = $param['is_menu'] === '' ? $nav->is_menu : $param['is_menu'];
         $param['weight']    = $param['weight'] === '' ? $nav->weight : $param['weight'];
         $param['p_id']     = $param['p_id'] === '' ? $nav->p_id : $param['p_id'];
         $param['module_id']     = $param['module_id'] === '' ? $nav->module_id : $param['module_id'];
@@ -60,6 +61,7 @@ class NavAction extends Action
         NavModel::updateById($nav->id , array_unit($param , [
             'name' ,
             'enable' ,
+            'is_menu' ,
             'weight' ,
             'p_id' ,
             'module_id' ,
@@ -76,6 +78,7 @@ class NavAction extends Action
         $validator = Validator::make($param , [
             'name'    => 'required',
             'enable'   => ['required', Rule::in($bool_range)],
+            'is_menu'   => ['required', Rule::in($bool_range)],
             'p_id'    => 'required|integer',
             'weight'    => 'sometimes|integer',
             'module_id'    => 'required|integer',
@@ -93,6 +96,7 @@ class NavAction extends Action
         NavModel::updateById($nav->id , array_unit($param , [
             'name' ,
             'enable' ,
+            'is_menu' ,
             'weight' ,
             'p_id' ,
             'module_id' ,
@@ -109,6 +113,7 @@ class NavAction extends Action
         $validator = Validator::make($param , [
             'name'    => 'required',
             'enable'  => ['required', Rule::in($bool_range)],
+            'is_menu'  => ['required', Rule::in($bool_range)],
             'p_id'    => 'required|integer',
             'weight'  => 'sometimes|integer',
             'module_id'  => 'required|integer',
@@ -122,6 +127,7 @@ class NavAction extends Action
         $id = NavModel::insertGetId(array_unit($param , [
             'name' ,
             'enable' ,
+            'is_menu' ,
             'weight' ,
             'p_id' ,
             'module_id' ,

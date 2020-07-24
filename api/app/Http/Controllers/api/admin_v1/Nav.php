@@ -28,6 +28,7 @@ class Nav extends Base
         $param['value'] = $param['value'] ?? '';
         $param['platform'] = $param['platform'] ?? '';
         $param['enable']    = $param['enable'] ?? '';
+        $param['is_menu']    = $param['is_menu'] ?? '';
         $param['weight']    = $param['weight'] ?? '';
         $param['module_id']        = $param['module_id'] ?? '';
         $res = NavAction::localUpdate($this , $id ,$param);
@@ -44,6 +45,7 @@ class Nav extends Base
         $param['name']        = $param['name'] ?? '';
         $param['value'] = $param['value'] ?? '';
         $param['enable']    = $param['enable'] ?? '';
+        $param['is_menu']    = $param['is_menu'] ?? '';
         $param['weight']    = $param['weight'] ?? '';
         $param['module_id']        = $param['module_id'] ?? '';
         $param['platform']        = $param['platform'] ?? '';
@@ -61,6 +63,7 @@ class Nav extends Base
         $param['name']        = $param['name'] ?? '';
         $param['value'] = $param['value'] ?? '';
         $param['enable']    = $param['enable'] ?? '';
+        $param['is_menu']    = $param['is_menu'] ?? '';
         $param['weight']    = $param['weight'] ?? '';
         $param['module_id']        = $param['module_id'] ?? '';
         $param['platform']        = $param['platform'] ?? '';

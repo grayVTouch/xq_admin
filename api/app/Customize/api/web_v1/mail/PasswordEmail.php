@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Mail\web_v1;
+namespace App\Customize\api\web_v1\mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class RegisterEmail extends Mailable
+class PasswordEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $subject = '用户注册';
-
     private $code = '';
+
+    public $subject = '忘记密码';
 
     /**
      * Create a new message instance.
@@ -22,7 +22,6 @@ class RegisterEmail extends Mailable
      */
     public function __construct(string $code)
     {
-        //
         $this->code = $code;
     }
 
@@ -33,7 +32,7 @@ class RegisterEmail extends Mailable
      */
     public function build()
     {
-        return $this->view('email.register_email')
+        return $this->view('email.password_email')
             ->with([
                 'code' => $this->code
             ]);
