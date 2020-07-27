@@ -78,7 +78,7 @@ export default {
                         return ;
                     }
                     this.status(file.id , true);
-                    self.form.s_ico = data;
+                    self.form.s_ico = data.data;
                 } ,
                 cleared () {
                     self.form.s_ico = '';
@@ -94,7 +94,7 @@ export default {
                         return ;
                     }
                     this.status(file.id , true);
-                    self.form.b_ico = data;
+                    self.form.b_ico = data.data;
                 } ,
                 cleared () {
                     self.form.b_ico = '';

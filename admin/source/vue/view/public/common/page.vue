@@ -93,12 +93,12 @@
                 let value = tar.val();
                 const numberReg = /^\d+$/;
                 if (!numberReg.test(value)) {
-                    this.message('请提供数字');
+                    this.message('error' , '请提供数字');
                     return ;
                 }
                 value = parseInt(value);
                 if (value < 1) {
-                    this.message('请提供有效数字');
+                    this.message('error' , '请提供有效数字');
                     return ;
                 }
                 this.toPage(value);

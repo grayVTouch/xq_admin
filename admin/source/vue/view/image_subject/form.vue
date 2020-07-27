@@ -16,8 +16,8 @@
         <template slot="default">
             <form @submit.prevent="submitEvent" class="form">
                 <div class="menu">
-                    <div class="menu-item" :class="{cur: val.tab === 'base'}" @click="val.tab = 'base'">基本信息</div>
-                    <div class="menu-item" :class="{cur: val.tab === 'image'}" @click="val.tab = 'image'">图片信息</div>
+                    <div class="menu-item" v-ripple :class="{cur: val.tab === 'base'}" @click="val.tab = 'base'">基本信息</div>
+                    <div class="menu-item" v-ripple :class="{cur: val.tab === 'image'}" @click="val.tab = 'image'">图片信息</div>
                 </div>
                 <div class="menu-mapping-content">
                     <div class="" v-show="val.tab === 'base'">
