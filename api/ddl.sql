@@ -6,10 +6,10 @@ create table if not exists `xq_module` (
   description varchar(500) comment '描述' ,
   weight int default 0 comment '权重' ,
   enable tinyint default 1 comment '启用？0-否 1-是' ,
-  create_time datetime default current_timestamp ,
-  update_time datetime default current_timestamp on update current_timestamp ,
+  create_time datetime default null ,
+  update_time datetime default null ,
   primary key `id` (id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '模块表';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '模块表';
 
 
 drop table if exists `xq_tag`;
@@ -19,8 +19,8 @@ create table if not exists `xq_tag` (
   weight int default 0 comment '权重' ,
   `count` int default 0 comment '使用次数' ,
   module_id bigint unsigned default 0 comment 'xq_module.id' ,
-  create_time datetime default current_timestamp ,
-  update_time datetime default current_timestamp on update current_timestamp ,
+  create_time datetime default null ,
+  update_time datetime default null ,
   primary key (id) ,
   unique key `name_module_id` (name , module_id)
 ) engine=innodb default charset=utf8 comment='标签表';
@@ -34,10 +34,10 @@ create table if not exists `xq_category` (
   enable tinyint default 1 comment '是否启用：0-否 1-是' ,
   weight int default 0 comment '权重' ,
   module_id bigint unsigned default 0 comment 'xq_module.id' ,
-  create_time datetime default current_timestamp comment '创建时间' ,
-  update_time datetime default current_timestamp on update current_timestamp ,
+  create_time datetime default null comment '创建时间' ,
+  update_time datetime default null ,
   primary key(id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '专题表';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '专题表';
 
 
 drop table if exists `xq_subject`;
@@ -49,11 +49,11 @@ create table if not exists `xq_subject` (
   attr text comment 'json:其他属性' ,
   weight int default 0 comment '权重' ,
   module_id bigint unsigned default 0 comment 'xq_module.id' ,
-  create_time datetime default current_timestamp ,
-  update_time datetime default current_timestamp on update current_timestamp ,
+  create_time datetime default null ,
+  update_time datetime default null ,
   primary key (id) ,
   unique key `name` (`name`)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '主体表';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '主体表';
 
 
 -- 图片专题
@@ -74,12 +74,12 @@ create table if not exists `xq_image_subject` (
   praise_count bigint unsigned default 0 comment '获赞次数' ,
   status tinyint default 0 comment '审核状态：-1-审核失败 0-待审核 1-审核通过' ,
   fail_reason varchar(1000) default '' comment '失败原因' ,
-  create_time datetime default current_timestamp comment '创建时间' ,
-  update_time datetime default current_timestamp on update current_timestamp ,
+  create_time datetime default null comment '创建时间' ,
+  update_time datetime default null ,
   primary key (id) ,
   key (module_id) ,
   key (category_id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '图片专题表';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '图片专题表';
 
 drop table if exists `xq_relation_tag`;
 create table if not exists `xq_relation_tag` (
@@ -91,7 +91,7 @@ create table if not exists `xq_relation_tag` (
   relation_id bigint unsigned default 0 comment '对应关联表中的 id' ,
   primary key (id)
   -- unique key `relation` (`tag_id` , `relation_type` , 'relation_id')
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '关联标签';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '关联标签';
 
 
 drop table if exists `xq_image`;
@@ -102,9 +102,9 @@ create table if not exists `xq_image` (
   mime varchar(50) default '' comment 'mime类型，如：image/jpeg' ,
   `size` bigint unsigned default 0 comment '文件大小，单位字节' ,
   path varchar(500) default '' comment '图片路径' ,
-  create_time datetime default current_timestamp comment '创建时间' ,
+  create_time datetime default null comment '创建时间' ,
   primary key (id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '图片专题包含的图片';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '图片专题包含的图片';
 
 drop table if exists `xq_image_subject_comment` ;
 create table if not exists `xq_image_subject_comment` (
@@ -116,23 +116,20 @@ create table if not exists `xq_image_subject_comment` (
   praise_count bigint unsigned default 0 comment '获赞次数' ,
   against_count bigint unsigned default 0 comment '反对次数' ,
   status tinyint default 1 comment '状态：-1-审核不通过 0-审核中 1-审核通过' ,
-  create_time datetime default current_timestamp ,
-  update_time datetime default current_timestamp on update current_timestamp ,
+  update_time datetime default null ,
+  create_time datetime default null ,
   primary key (id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '图片专题评论表';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '图片专题评论';
 
 drop table if exists `xq_image_subject_comment_image`;
 create table if not exists `xq_image_subject_comment_image` (
   id bigint unsigned not null auto_increment ,
   image_subject_id bigint unsigned default 0 comment 'xq_image_subject.id' ,
   image_subject_comment_id bigint unsigned default 0 comment 'xq_image_subject_comment.id' ,
-  name varchar(500) default '' comment '文件名称' ,
-  mime varchar(50) comment '文件 mime 类型' ,
-  `size` bigint unsigned default 0 comment '文件大小，单位字节' ,
   path varchar(500) default '' comment '文件路径' ,
-  create_time datetime default current_timestamp ,
+  create_time datetime default null ,
   primary key (id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '图片专题评论表';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '图片专题评论-图片';
 
 
 drop table if exists `xq_user`;
@@ -150,12 +147,12 @@ create table if not exists `xq_user` (
     email varchar(50) default '' comment '电子邮件' ,
     user_group_id bigint unsigned default 0 comment 'xq_user_group.id' ,
     channel_thumb varchar(500) default '' comment '频道封面' ,
-    create_time datetime default current_timestamp ,
-    update_time datetime default current_timestamp on update current_timestamp ,
+    create_time datetime default null ,
+    update_time datetime default null ,
     primary key `id` (`id`) ,
     key (`username`) ,
     key (`phone`)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '平台用户表';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '平台用户表';
 
 drop table if exists `xq_admin`;
 create table if not exists `xq_admin` (
@@ -171,10 +168,10 @@ create table if not exists `xq_admin` (
     email varchar(50) comment '电子邮件' ,
     role_id bigint unsigned default 0 comment 'xq_role.id' ,
     is_root tinyint default 0 comment '是否超级管理员：0-否 1-是' ,
-    create_time datetime default current_timestamp comment '注册时间' ,
-    update_time datetime default current_timestamp on update current_timestamp ,
+    create_time datetime default null comment '注册时间' ,
+    update_time datetime default null ,
     primary key `id` (`id`)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '后台用户';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '后台用户';
 
 drop table if exists `xq_admin_land_log`;
 create table if not exists `xq_admin_land_log` (
@@ -182,9 +179,9 @@ create table if not exists `xq_admin_land_log` (
   user_id bigint unsigned default 0 comment 'xq_admin.id' ,
   ip varchar(100) comment '登录ip' ,
   duration int comment '登录时长，单位 s' ,
-  create_time datetime default current_timestamp comment '登录时间' ,
+  create_time datetime default null comment '登录时间' ,
   primary key (id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '管理员登录日志表';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '管理员登录日志表';
 
 drop table if exists `xq_admin_permission`;
 create table if not exists `xq_admin_permission` (
@@ -202,28 +199,28 @@ create table if not exists `xq_admin_permission` (
      s_ico varchar(500) default '' comment '小图标' ,
      b_ico varchar(500) default '' comment '大图标' ,
      weight smallint default 0 comment '权重' ,
-     create_time datetime default current_timestamp ,
-     update_time datetime default current_timestamp on update current_timestamp ,
+     create_time datetime default null ,
+     update_time datetime default null ,
      primary key (id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '后台用户-权限表';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '后台用户-权限表';
 
 drop table if exists `xq_role`;
 create table if not exists `xq_role` (
     id bigint unsigned not null auto_increment ,
     name varchar(1000) default '' comment '名称' ,
     weight int default 0 comment '权重' ,
-    create_time datetime default current_timestamp ,
+    create_time datetime default null ,
     primary key (id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '角色表';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '角色表';
 
 drop table if exists `xq_role_permission`;
 create table if not exists `xq_role_permission` (
  id bigint unsigned not null auto_increment ,
  role_id bigint unsigned default 0 comment 'xq_role.id' ,
  admin_permission_id bigint unsigned default 0 comment 'xq_admin_permission.id' ,
- create_time datetime default current_timestamp ,
+ create_time datetime default null ,
  primary key (id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '角色-权限-关联表';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '角色-权限-关联表';
 
 
 drop table if exists `xq_user_group`;
@@ -232,11 +229,11 @@ create table if not exists `xq_user_group` (
 	name varchar(500) comment '组名' ,
 	p_id int comment 'xq_user_group.id' ,
     module_id bigint unsigned default 0 comment 'xq_module.id' ,
-	create_time datetime default current_timestamp ,
-	update_time datetime default current_timestamp on update current_timestamp ,
+	create_time datetime default null ,
+	update_time datetime default null ,
 	primary key (id) ,
 	unique key `name` (`name`)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '用户组';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '用户组';
 
 drop table if exists `xq_user_group_permission`;
 create table if not exists `xq_user_group_permission` (
@@ -245,7 +242,7 @@ create table if not exists `xq_user_group_permission` (
 	permission_id bigint unsigned default 0 comment 'xq_permission.id' ,
 	primary key (id) ,
 	unique key `permission` (`user_group_id` , `permission_id`)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '用户组-用户权限 关联表';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '用户组-用户权限 关联表';
 
 drop table if exists `xq_permission`;
 drop table if exists `xq_user_permission`;
@@ -255,10 +252,10 @@ create table if not exists `xq_user_permission` (
 	description varchar(500) default '' comment '权限描述' ,
 	enable tinyint default 1 comment '是否启用：0-否 1-是' ,
     module_id bigint unsigned default 0 comment 'xq_module.id' ,
-	create_time datetime default current_timestamp ,
-	update_time datetime default current_timestamp on update current_timestamp ,
+	create_time datetime default null ,
+	update_time datetime default null ,
 	primary key `id` (`id`)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '平台用户-权限表';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '平台用户-权限表';
 
 
 drop table if exists `xq_admin_token`;
@@ -267,7 +264,7 @@ create table if not exists `xq_admin_token` (
 	`user_id` bigint unsigned default 0 comment 'xq_admin_user.id' ,
 	token varchar(500) comment 'token' ,
 	expired datetime not null comment '过期时间' ,
-	create_time datetime default current_timestamp ,
+	create_time datetime default null ,
 	primary key (id) ,
 	unique key `token` (`token`)
 ) comment '后台用户登录表';
@@ -279,7 +276,7 @@ create table if not exists `xq_user_token` (
 	`user_id` bigint unsigned default 0 comment 'xq_user.id' ,
 	token varchar(500) comment 'token' ,
 	expired datetime not null comment '过期时间' ,
-	create_time datetime default current_timestamp ,
+	create_time datetime default null ,
 	primary key (id) ,
 	unique key `token` (`token`)
 ) comment '平台用户登录表';
@@ -291,7 +288,7 @@ create table if not exists `xq_position` (
      name varchar(255) default '' comment '名称' ,
      description varchar(1000) default '' comment '位置描述' ,
      platform varchar(255) default '' comment '平台：当前预备的有 app|android|ios|web|mobile 等，后期可扩充' ,
-     create_time datetime default current_timestamp ,
+     create_time datetime default null ,
      primary key (id)
 ) comment '位置';
 
@@ -306,7 +303,7 @@ create table if not exists `xq_image_at_position` (
    path varchar(1000) default '' comment '路径' ,
    link varchar(1000) default '' comment '跳转链接' ,
    module_id bigint unsigned default 0 comment 'xq_module.id' ,
-   create_time datetime default current_timestamp ,
+   create_time datetime default null ,
    primary key (id)
 ) comment '定点图片';
 
@@ -316,9 +313,9 @@ create table if not exists `xq_collection_group` (
    name varchar(500) default '' comment '名称' ,
    user_id bigint unsigned default 0 comment 'xq_user.id' ,
    module_id bigint unsigned default 0 comment 'xq_module.id' ,
-   create_time datetime default current_timestamp ,
+   create_time datetime default null ,
    primary key (id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '收藏分组';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '收藏分组';
 
 
 drop table if exists `xq_nav`;
@@ -334,7 +331,7 @@ create table if not exists `xq_nav` (
     platform varchar(255) default '' comment '平台：app | android | ios | web | mobile' ,
     create_time datetime default null ,
     primary key (id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '菜单表-区分不同平台';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '菜单表-区分不同平台';
 
 drop table if exists `xq_history`;
 create table if not exists `xq_history` (
@@ -347,7 +344,7 @@ create table if not exists `xq_history` (
     `time` time default null comment '创建时间' ,
     create_time datetime default null ,
     primary key (id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '活动记录';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '活动记录';
 
 drop table if exists `xq_collection`;
 create table if not exists `xq_collection` (
@@ -360,7 +357,7 @@ create table if not exists `xq_collection` (
    create_time datetime default null ,
    primary key (id) ,
    unique key `unique` (user_id , relation_type , relation_id , module_id , collection_group_id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '我的收藏';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '我的收藏';
 
 drop table if exists `xq_focus_user`;
 create table if not exists `xq_focus_user` (
@@ -370,7 +367,7 @@ create table if not exists `xq_focus_user` (
     create_time datetime default null ,
     primary key (id) ,
     unique key `unique` (user_id , focus_user_id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '关注的用户';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '关注的用户';
 
 drop table if exists `xq_praise`;
 create table if not exists `xq_praise` (
@@ -382,7 +379,7 @@ create table if not exists `xq_praise` (
     create_time datetime default null ,
     primary key (id) ,
     unique key `unique` (user_id , relation_type , relation_id , module_id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '点赞表';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '点赞表';
 
 drop table if exists `xq_email_code`;
 create table if not exists `xq_email_code` (
@@ -396,7 +393,114 @@ create table if not exists `xq_email_code` (
     create_time datetime default null ,
     primary key (id) ,
     unique key `email` (`email` , `type`)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_bin comment '邮箱验证码';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '邮箱验证码';
+
+drop table if exists `xq_video_series`;
+create table if not exists `xq_video_series` (
+    id bigint unsigned not null auto_increment ,
+    name varchar(255) default '' comment '名称' ,
+    module_id bigint unsigned default 0 comment 'xq_module.id' ,
+    create_time datetime default null ,
+    primary key (id)
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '视频系列';
+
+drop table if exists `xq_video_subject`;
+create table if not exists `xq_video_subject` (
+    id bigint unsigned not null auto_increment ,
+    name varchar(255) default '' comment '名称' ,
+    thumb varchar(500) default '' comment '封面' ,
+    score decimal(13,2) default 0 comment '评分' ,
+    release_time datetime default null comment '发布时间' ,
+    end_time datetime default null comment '完结时间' ,
+    status varchar(30) default 'completed' comment '状态：making-制作中 completed-已完结 terminated-已终止（部分完成）' ,
+    `count` smallint unsigned default 0 comment '视频数量' ,
+    play_count bigint unsigned default 0 comment '播放数' ,
+    type varchar(30) default '' comment '类型：second-二次元 third-三次元' ,
+    description varchar(1000) default '' comment '描述' ,
+    video_series_id bigint unsigned default 0 comment 'xq_video_series.id' ,
+    video_company_id bigint unsigned default 0 comment 'xq_video_company.id' ,
+    module_id bigint unsigned default 0 comment 'xq_module.id' ,
+    create_time datetime default null ,
+    primary key (id)
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '视频专题';
+
+drop table if exists `xq_video_company`;
+create table if not exists `xq_video_company` (
+  id bigint unsigned not null auto_increment ,
+  name varchar(255) default '' comment '名称' ,
+  thumb varchar(500) default '' comment '封面' ,
+  description varchar(1000) default '' comment '描述' ,
+  country_id int unsigned default 0 comment 'xq_region.id' ,
+  country varchar(50) default '' comment '国家名称' ,
+  module_id bigint unsigned default 0 comment 'xq_module.id' ,
+  create_time datetime default null ,
+  primary key (id)
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '视频制作公司';
+
+drop table if exists `xq_video`;
+create table if not exists `xq_video` (
+      id bigint unsigned not null auto_increment ,
+      name varchar(255) default '' comment '名称' ,
+      user_id bigint unsigned default 0 comment 'xq_user.id' ,
+      thumb varchar(500) default '' comment '用户设置封面' ,
+      thumb_for_program varchar(500) default '' comment '程序智能截取封面' ,
+      praise_count bigint unsigned default 0 comment '点赞数' ,
+      against_count bigint unsigned default 0 comment '反对数' ,
+      duration int unsigned default 0 comment '时长' ,
+      type varchar(50) default '' comment 'misc-杂项 pro-视频专题' ,
+      video_subject_id bigint unsigned default 0 comment 'xq_video_subject.id，视频专题' ,
+      simple_preview varchar(500) default '' comment '简单视频预览 gif' ,
+      preview varchar(500) default '' comment '视频预览' ,
+      preview_width int unsigned default 0 comment '视频预览：单个画面尺寸：宽' ,
+      preview_height int unsigned default 0 comment '视频预览：单个画面尺寸：高' ,
+      preview_duration int unsigned default 0 comment '视频预览：单个画面间隔时间' ,
+      preview_count int unsigned default 0 comment '视频预览：合成的画面数量' ,
+      module_id bigint unsigned default 0 comment 'xq_module.id' ,
+      create_time datetime default null ,
+      primary key (id)
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '视频';
+
+drop table if exists `xq_video_src`;
+create table if not exists `xq_video_src` (
+      id bigint unsigned not null auto_increment ,
+      video_id bigint unsigned default 0 comment 'xq_video.id' ,
+      src varchar(500) default '' comment '视频源' ,
+      duration int unsigned default 0 comment '时长' ,
+      width int unsigned default 0 comment '宽' ,
+      height int unsigned default 0 comment '高' ,
+      display_aspect_ratio varchar(50) default '' comment '长宽比，比如：16:9' ,
+      size bigint unsigned default 0 comment '大小，单位 Byte' ,
+      definition varchar(50) default '' comment '清晰度: 360P|480P|720P|1080P|2K|4K ... 等' ,
+      create_time datetime default null ,
+      primary key (id)
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '视频源';
+
+drop table if exists `xq_video_comment` ;
+create table if not exists `xq_video_comment` (
+    id bigint unsigned not null auto_increment ,
+    content text comment '内容' ,
+    user_id bigint unsigned default 0 comment 'xq_user.id 评论者' ,
+    p_id int comment 'xq_video_comment.id' ,
+    video_id bigint unsigned default 0 comment 'xq_video.id' ,
+    video_subject_id bigint unsigned default 0 comment 'xq_video_subject.id' ,
+    praise_count bigint unsigned default 0 comment '获赞次数' ,
+    against_count bigint unsigned default 0 comment '反对次数' ,
+    status tinyint default 1 comment '状态：-1-审核不通过 0-审核中 1-审核通过' ,
+    update_time datetime default null ,
+    create_time datetime default null ,
+    primary key (id)
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '视频评论';
+
+drop table if exists `xq_video_comment_image`;
+create table if not exists `xq_video_comment_image` (
+    id bigint unsigned not null auto_increment ,
+    video_id bigint unsigned default 0 comment 'xq_video.id' ,
+    video_subject_id bigint unsigned default 0 comment 'xq_video_subject.id' ,
+    video_comment_id bigint unsigned default 0 comment 'xq_video_comment.id' ,
+    path varchar(500) default '' comment '文件路径' ,
+    create_time datetime default null ,
+    primary key (id)
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_general_ci comment '视频评论-图片';
 
 alter table xq_tag add module_id bigint unsigned default 0 comment 'xq_module.id';
 alter table xq_category add module_id bigint unsigned default 0 comment 'xq_module.id';
