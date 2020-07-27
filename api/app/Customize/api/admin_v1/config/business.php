@@ -47,4 +47,11 @@ return [
         'ios' => 'ios' ,
         'mobile' => '移动端' ,
     ] ,
+
+    'mode_for_file' => [
+        'ratio' ,
+        'fix' ,
+        'fix-width' ,
+        'fix-height' ,
+    ] ,
 ];

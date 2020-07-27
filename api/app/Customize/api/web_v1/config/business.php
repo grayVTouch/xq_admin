@@ -90,4 +90,11 @@ return [
         'password' => '修改密码' ,
         'register' => '用户注册' ,
     ] ,
+
+    'mode_for_file' => [
+        'ratio' ,
+        'fix' ,
+        'fix-width' ,
+        'fix-height' ,
+    ] ,
 ];
