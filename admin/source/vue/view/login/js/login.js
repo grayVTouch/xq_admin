@@ -34,30 +34,19 @@ export default {
     } ,
 
     mounted () {
-        this.dom.submitButton = G(this.$refs['button-submit']);
-
-        this.ins.innerSubmit = new TouchFeedback(this.dom.submitButton.get(0) , {
-            backgroundColor: '#e0c057cc' ,
-        });
-
         this.captcha();
     } ,
 
     methods: {
 
         topMessage (text = '' , classname = '') {
-            this.val.message = Object.assign({} , {
+            this._val('message' , Object.assign({} , {
                 text ,
                 class: classname
-            });
+            }));
         } ,
 
-        request (name , val) {
-            if (!G.isValid(val)) {
-                return this.val.request[name];
-            }
-            this.val.request = {...this.val.request , ...{[name]: val}};
-        } ,
+
 
         captcha () {
             Api.misc.captcha((msg , data , code) => {
@@ -109,7 +98,7 @@ export default {
                     return ;
                 }
                 this.request('submit' , false);
-                this.topMessage('登录成功' , 'green');
+                this.topMessage('登录成功' , 'run-green');
                 G.s.set('token' , data);
                 G.setTimeout(() => {
                     this.push({name: 'home'});

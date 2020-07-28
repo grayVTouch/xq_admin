@@ -33,4 +33,8 @@ window.TopContext = {
     os: {
         name: '兴趣部落' ,
     } ,
+    val: {
+        thumbW: 960 ,
+        imageW: 2160 ,
+    } ,
 };

@@ -126,7 +126,7 @@ export default {
         initIns () {
             const self = this;
             this.ins.thumb = new Uploader(this.dom.thumb.get(0) , {
-                api: TopContext.fileApi ,
+                api: this.thumbApi() ,
                 mode: 'override' ,
                 clear: true ,
                 uploaded (file , data , code) {
@@ -135,7 +135,7 @@ export default {
                         return ;
                     }
                     this.status(file.id , true);
-                    self.form.thumb = data;
+                    self.form.thumb = data.data;
                 } ,
                 cleared () {
                     self.form.thumb = '';

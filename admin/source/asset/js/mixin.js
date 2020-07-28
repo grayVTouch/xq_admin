@@ -15,6 +15,7 @@ Vue.mixin({
                 pending: {} ,
                 error: {} ,
                 select: {} ,
+                request: {} ,
             } ,
         };
     } ,
@@ -127,6 +128,21 @@ Vue.mixin({
                     G.invoke(callback , null , false);
                 } ,
             });
+        } ,
+
+        request (name , val) {
+            if (!G.isValid(val)) {
+                return this.val.request[name];
+            }
+            this.val.request = {...this.val.request , ...{[name]: val}};
+        } ,
+
+        imageApi (resize = false) {
+            return TopContext.fileApi  + (resize ? '?w=' + TopContext.val.imageW : '');
+        } ,
+
+        thumbApi () {
+            return TopContext.fileApi + '?w=' + TopContext.val.thumbW;
         } ,
     }
 });

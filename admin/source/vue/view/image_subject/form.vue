@@ -38,12 +38,10 @@
                                 <td>所属用户：</td>
                                 <td>
                                     <input type="text" readonly="readonly" v-model="users.current.username" class="form-text w-150">
-                                    如需重新搜索，请输入：
-                                    <my-loading v-if="val.pending.searchUser"></my-loading>
-                                    <input type="text" class="form-text w-150" @input="val.error.user_id = ''" v-model="users.value">
+                                    如需重新搜索，请点击
                                     <Button @click="searchUserEvent">搜索</Button>
                                     <span class="need">*</span>
-                                    <div class="msg">输入用户id、用户名、手机号码、邮箱可查询用户</div>
+                                    <div class="msg"></div>
                                     <div class="e-msg">{{ val.error.user_id }}</div>
                                 </td>
                             </tr>
@@ -85,8 +83,7 @@
                                 <td>关联主体：</td>
                                 <td>
                                     <input type="text" readonly="readonly" v-model="subjects.current.name" class="form-text w-150">
-                                    如需重新搜索，请输入：<my-loading v-if="val.pending.searchSubject"></my-loading>
-                                    <input type="text" class="form-text w-150" v-model="subjects.value" @input="val.error.subject_id = ''">
+                                    如需重新搜索，请点击
                                     <Button @click="searchSubjectEvent">搜索</Button>
                                     <span class="need">*</span>
                                     <div class="msg">请务必在选择模块后操作；输入关联主体id、名称可查询</div>
@@ -338,9 +335,20 @@
                     <Button v-ripple type="error" @click="val.modalForUser=false">取消</Button>
                 </template>
                 <template slot="default">
-                    <Table border :data="users.data" :columns="users.field" @on-row-click="updateUserEvent">
-                        <template v-slot:avatar="{row,index}"><img :src="row.avatar ? row.__avatar__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
-                    </Table>
+                    <div class="search-modal">
+                        <div class="input">
+                            <div class="input-mask"><input type="text" v-model="users.value" @keyup.enter="searchUser" placeholder="请输入搜索值"></div>
+                            <div class="msg">输入用户id、用户名、手机号码、邮箱可查询用户</div>
+                        </div>
+                        <div class="list">
+                            <Table border :loading="val.pending.searchUser" :data="users.data" :columns="users.field" @on-row-click="updateUserEvent">
+                                <template v-slot:avatar="{row,index}"><img :src="row.avatar ? row.__avatar__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
+                            </Table>
+                        </div>
+                        <div class="pager">
+                            <my-page :total="users.total" :limit="users.limit" :page="users.page" @on-change="userPageEvent"></my-page>
+                        </div>
+                    </div>
                 </template>
             </my-form-modal>
 
@@ -350,10 +358,22 @@
                     <Button v-ripple type="error" @click="val.modalForSubject=false">取消</Button>
                 </template>
                 <template slot="default">
-                    <Table border :data="subjects.data" :columns="subjects.field" @on-row-click="updateSubjectEvent">
-                        <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
-                        <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
-                    </Table>
+
+                    <div class="search-modal">
+                        <div class="input">
+                            <div class="input-mask"><input type="text" v-model="users.value" @keyup.enter="searchSubject" placeholder="请输入搜索值"></div>
+                            <div class="msg"></div>
+                        </div>
+                        <div class="list">
+                            <Table border  :loading="val.pending.searchSubject" :data="subjects.data" :columns="subjects.field" @on-row-click="updateSubjectEvent">
+                                <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
+                                <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
+                            </Table>
+                        </div>
+                        <div class="pager">
+                            <my-page :total="users.total" :limit="users.limit" :page="users.page" @on-change="userPageEvent"></my-page>
+                        </div>
+                    </div>
                 </template>
             </my-form-modal>
 

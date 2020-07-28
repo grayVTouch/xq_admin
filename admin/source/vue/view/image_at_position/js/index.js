@@ -119,7 +119,7 @@ export default {
                     this.message('error' , data);
                     return ;
                 }
-                this.position = data;
+                this.positions = data;
             });
         } ,
 
@@ -139,7 +139,7 @@ export default {
         initIns () {
             const self = this;
             this.ins.path = new Uploader(this.dom.path.get(0) , {
-                api: TopContext.fileApi ,
+                api: this.imageApi(true) ,
                 mode: 'override' ,
                 clear: true ,
                 uploaded (file , data , code) {
@@ -148,7 +148,7 @@ export default {
                         return ;
                     }
                     this.status(file.id , true);
-                    self.form.path = data;
+                    self.form.path = data.data;
                 } ,
                 cleared () {
                     self.form.path = '';

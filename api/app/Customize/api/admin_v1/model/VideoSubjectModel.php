@@ -8,9 +8,9 @@ use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
-class SubjectModel extends Model
+class VideoSubjectModel extends Model
 {
-    protected $table = 'xq_subject';
+    protected $table = 'xq_video_subject';
 
     public static function index(array $filter = [] , array $order = [] , int $limit = 20): Paginator
     {

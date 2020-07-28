@@ -69,7 +69,7 @@ export default {
         initIns () {
             const self = this;
             this.ins.sIco = new Uploader(this.dom.sIco.get(0) , {
-                api: TopContext.fileApi ,
+                api: this.thumbApi() ,
                 mode: 'override' ,
                 clear: true ,
                 uploaded (file , data , code) {
@@ -85,7 +85,7 @@ export default {
                 }
             });
             this.ins.bIco = new Uploader(this.dom.bIco.get(0) , {
-                api: TopContext.fileApi ,
+                api: this.thumbApi() ,
                 mode: 'override' ,
                 clear: true ,
                 uploaded (file , data , code) {

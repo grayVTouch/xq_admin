@@ -1,3 +1,69 @@
+const users = {
+    data: [],
+    field: [
+        {
+            title: 'id' ,
+            key: 'id' ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '名称' ,
+            key: 'username' ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '头像' ,
+            slot: 'avatar' ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '创建时间' ,
+            key: 'create_time' ,
+            center: TopContext.table.alignCenter ,
+        } ,
+    ] ,
+    current: {} ,
+    limit: TopContext.limit ,
+    value: '' ,
+    page: 1 ,
+    total: 0 ,
+};
+
+const subjects = {
+    data: [],
+    field: [
+        {
+            title: 'id' ,
+            key: 'id' ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '名称' ,
+            key: 'name' ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '模块【id】' ,
+            slot: 'module_id' ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '封面' ,
+            slot: 'thumb' ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '创建时间' ,
+            key: 'create_time' ,
+            center: TopContext.table.alignCenter ,
+        } ,
+    ] ,
+    current: {} ,
+    total: 0 ,
+    page: 1 ,
+    value: '' ,
+};
+
 export default {
     data () {
         return {
@@ -8,70 +74,16 @@ export default {
                 selectedIds: [] ,
                 modalForSubject: false ,
                 modalForUser: false ,
+                valueForUser: '' ,
             } ,
 
             drawer: false ,
 
             // 用户
-            users: {
-                data: [],
-                field: [
-                    {
-                        title: 'id' ,
-                        key: 'id' ,
-                        center: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '名称' ,
-                        key: 'username' ,
-                        center: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '头像' ,
-                        slot: 'avatar' ,
-                        center: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '创建时间' ,
-                        key: 'create_time' ,
-                        center: TopContext.table.alignCenter ,
-                    } ,
-                ] ,
-                current: {} ,
-            },
+            users: G.copy(users , true),
 
             // 关联主体
-            subjects: {
-                data: [],
-                field: [
-                    {
-                        title: 'id' ,
-                        key: 'id' ,
-                        center: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '名称' ,
-                        key: 'name' ,
-                        center: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '模块【id】' ,
-                        slot: 'module_id' ,
-                        center: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '封面' ,
-                        slot: 'thumb' ,
-                        center: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '创建时间' ,
-                        key: 'create_time' ,
-                        center: TopContext.table.alignCenter ,
-                    } ,
-                ] ,
-                current: {} ,
-            },
+            subjects: G.copy(subjects , true),
 
             // 标签
             tags: [] ,
@@ -184,7 +196,7 @@ export default {
         initIns () {
             const self = this;
             this.ins.thumb = new Uploader(this.dom.thumb.get(0) , {
-                api: TopContext.fileApi ,
+                api: this.thumbApi(),
                 mode: 'override' ,
                 clear: true ,
                 uploaded (file , data , code) {
@@ -193,7 +205,7 @@ export default {
                         return ;
                     }
                     this.status(file.id , true);
-                    self.form.thumb = data;
+                    self.form.thumb = data.data;
                 } ,
                 cleared () {
                     self.form.thumb = '';
@@ -201,7 +213,7 @@ export default {
             });
 
             this.ins.images = new Uploader(this.dom.images.get(0) , {
-                api: TopContext.fileApi ,
+                api: this.imageApi() ,
                 mode: 'append' ,
                 multiple: true ,
                 clear: true ,
@@ -211,7 +223,7 @@ export default {
                         return ;
                     }
                     this.status(file.id , true);
-                    self.images.push(data);
+                    self.images.push(data.data);
                 } ,
                 cleared () {
                     self.images = [];
@@ -220,20 +232,26 @@ export default {
             });
         } ,
 
-        searchUser (value) {
+        searchUser () {
             this.pending('searchUser' , true);
-            Api.user.search(value , (msg , data , code) => {
+            Api.user.search(this.users.value , (msg , data , code) => {
                 this.pending('searchUser' , false);
                 if (code !== TopContext.code.Success) {
                     this.error({user_id: data});
                     return ;
                 }
-                this.users.data = data;
-                this._val('modalForUser' , true);
+                this.users.total = data.total;
+                this.users.page = data.current_page;
+                this.users.data = data.data;
             });
         } ,
 
-        searchSubject (value) {
+        userPageEvent (page) {
+            this.users.page = page;
+            this.searchUser();
+        } ,
+
+        searchSubject () {
             if (this.form.module_id < 1) {
                 this.error({subject_id: '请选择模块后操作'});
                 return ;
@@ -241,34 +259,28 @@ export default {
             this.pending('searchSubject' , true);
             Api.subject.search({
                 module_id: this.form.module_id ,
-                value: value ,
+                value: this.subjects.value ,
             } , (msg , data , code) => {
                 this.pending('searchSubject' , false);
                 if (code !== TopContext.code.Success) {
                     this.error({subject_id: data});
                     return ;
                 }
-                this.subjects.data = data;
-                this._val('modalForSubject' , true);
+                this.subjects.page = data.current_page;
+                this.subjects.total = data.total;
+                this.subjects.data = data.data;
             });
         } ,
 
         searchSubjectEvent (e) {
-            if (!G.isValid(this.subjects.value)) {
-                this.message('warning' , '请提供有效的搜索值');
-                return ;
-            }
-            // 开始搜索
-            this.searchSubject(this.subjects.value);
+            this.searchSubject();
+            this._val('modalForSubject' , true);
         } ,
 
         searchUserEvent (e) {
-            if (!G.isValid(this.users.value)) {
-                this.message('error' , '请提供有效的搜索值');
-                return ;
-            }
             // 开始搜索
-            this.searchUser(this.users.value);
+            this.searchUser();
+            this._val('modalForUser' , true);
         } ,
 
         updateSubjectEvent (row , index) {

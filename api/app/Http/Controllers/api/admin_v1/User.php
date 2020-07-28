@@ -12,8 +12,10 @@ class User extends Base
 {
     public function search()
     {
-        $value = $this->request->get('value' , '');
-        $res = UserAction::search($this , $value);
+        $param = $this->request->query();
+        $param['value'] = $param['value'] ?? '';
+        $param['limit'] = $param['limit'] ?? '';
+        $res = UserAction::search($this , $param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }

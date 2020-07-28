@@ -140,7 +140,7 @@ export default {
         initIns () {
             const self = this;
             this.ins.avatar = new Uploader(this.dom.avatar.get(0) , {
-                api: TopContext.fileApi ,
+                api: this.thumbApi() ,
                 mode: 'override' ,
                 clear: true ,
                 uploaded (file , data , code) {

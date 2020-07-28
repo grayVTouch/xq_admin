@@ -4,7 +4,9 @@
 namespace App\Customize\api\admin_v1\action;
 
 use App\Customize\api\admin_v1\handler\SubjectHandler;
+use App\Customize\api\admin_v1\handler\UserHandler;
 use App\Customize\api\admin_v1\model\SubjectModel;
+use App\Customize\api\admin_v1\model\UserModel;
 use App\Http\Controllers\api\admin_v1\Base;
 use Illuminate\Support\Facades\Validator;
 use function api\admin_v1\get_form_error;
@@ -94,14 +96,12 @@ class SubjectAction extends Action
 
     public static function search(Base $context , array $param = [])
     {
-        if (empty($param['value'])) {
-            return self::error('请提供搜索值');
-        }
         if (empty($param['module_id'])) {
             return self::error('请提供 module_id');
         }
-        $res = SubjectModel::search($param['module_id'] , $param['value'] , 20);
-        $res = SubjectHandler::handleAll($res);
+        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
+        $res = SubjectModel::search($param['module_id'] , $param['value'] , $limit);
+        $res = SubjectHandler::handlePaginator($res);
         return self::success('' , $res);
     }
 }

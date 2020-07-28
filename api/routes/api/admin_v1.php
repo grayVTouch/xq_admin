@@ -13,11 +13,13 @@ Route::prefix('admin_v1')
     ->group(function(){
         Route::middleware([])
             ->group(function(){
+                Route::any('test' , 'Test@index');
+
+
                 // 不用登录的相关接口
                 Route::get('captcha' , 'Misc@captcha');
                 Route::post('login' , 'Login@login');
                 Route::get('avatar' , 'Login@avatar');
-                Route::get('test' , 'Test@index');
                 Route::post('upload' , 'File@upload');
             });
 

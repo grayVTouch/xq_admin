@@ -11,14 +11,13 @@ class UserModel extends Model
 {
     protected $table = 'xq_user';
 
-    public static function search(string $value = '' , int $limit = 20): Collection
+    public static function search(string $value = '' , int $limit = 20): Paginator
     {
         return self::where('id' , $value)
             ->orWhere('username' , 'like' , "%{$value}%")
             ->orWhere('phone' , 'like' ,  "%{$value}%")
             ->orWhere('email' , 'like' , "%{$value}%")
-            ->limit($limit)
-            ->get();
+            ->paginate($limit);
     }
 
     public static function index(array $filter = [] , array $order = [] , int $limit = 20): Paginator

@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use function api\admin_v1\my_config;
 use function api\admin_v1\get_form_error;
+use function api\admin_v1\res_path_prefix;
+use function api\admin_v1\res_realpath;
 use function core\format_path;
 
 class FileAction extends Action
@@ -32,9 +34,6 @@ class FileAction extends Action
         }
         $dir    = date('Ymd');
         $path   = Storage::put($dir , $file);
-        $realpath = Storage::path($path);
-        $dir_prefix = Storage::disk()->getAdapter()->getPathPrefix();
-        $dir_prefix = format_path($dir_prefix) . '/';
         if (empty($param['m'])) {
             if (!empty($param['w'])) {
                 $mode = 'fix-width';
@@ -50,7 +49,8 @@ class FileAction extends Action
             $mode = $param['m'];
         }
         if (in_array($mode , $mode_range)) {
-            $image_processor = new ImageProcessor($dir_prefix . $dir);
+            $realpath = res_realpath($path);
+            $image_processor = new ImageProcessor(res_realpath($dir));
             $res = $image_processor->compress($realpath , [
                 'mode' => $mode ,
                 'ratio' => $param['r'] ,
@@ -59,7 +59,8 @@ class FileAction extends Action
             ] , false);
             // 删除源文件
             Storage::delete($path);
-            $path = str_replace($dir_prefix , '' , $res);
+            $path_prefix = res_path_prefix() . '/';
+            $path = str_replace($path_prefix , '' , $res);
         }
         return self::success('' , $path);
     }

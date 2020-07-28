@@ -5,6 +5,8 @@ namespace api\admin_v1;
 
 use Illuminate\Contracts\Validation\Validator;
 use Exception;
+use Illuminate\Support\Facades\Storage;
+use function core\format_path;
 use function extra\config;
 /**
  * @param string $data
@@ -89,4 +91,20 @@ function get_value($key , $value)
         }
     }
     return '';
+}
+
+// 获取资源路径前缀
+function res_path_prefix(): string
+{
+    $path = Storage::disk()->getAdapter()->getPathPrefix();
+    return format_path($path);
+}
+
+// 获取资源的真实路径（仅适用于本地文件系统保存的资源）
+function res_realpath(string $relative_path = ''): string
+{
+    if (empty($relative_path)) {
+        return '';
+    }
+    return Storage::path($relative_path);
 }

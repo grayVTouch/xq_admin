@@ -12,6 +12,6 @@ module.exports = merge(common, {
         // Ip
         host: '127.0.0.1' ,
         // 端口
-        port: 8000
+        port: 30000
     }
 });

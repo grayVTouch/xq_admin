@@ -32,34 +32,38 @@ class FileAction extends Action
         }
         $dir    = date('Ymd');
         $path   = Storage::put($dir , $file);
-        $realpath = Storage::path($path);
-        $dir_prefix = Storage::disk()->getAdapter()->getPathPrefix();
-        $dir_prefix = format_path($dir_prefix) . '/';
-        if (empty($param['m'])) {
-            if (!empty($param['w'])) {
-                $mode = 'fix-width';
-                if (!empty($param['h'])) {
-                    $mode = 'fix';
+        $image_extensioin = ['jpg' , 'jpeg' , 'png' , 'gif'];
+        if (in_array($file->extension() , $image_extensioin)) {
+            // 如果是图片，特别处理
+            $realpath = Storage::path($path);
+            $dir_prefix = Storage::disk()->getAdapter()->getPathPrefix();
+            $dir_prefix = format_path($dir_prefix) . '/';
+            if (empty($param['m'])) {
+                if (!empty($param['w'])) {
+                    $mode = 'fix-width';
+                    if (!empty($param['h'])) {
+                        $mode = 'fix';
+                    }
+                } else if (!empty($param['h'])) {
+                    $mode = 'fix-height';
+                } else {
+                    $mode = '';
                 }
-            } else if (!empty($param['h'])) {
-                $mode = 'fix-height';
             } else {
-                $mode = '';
+                $mode = $param['m'];
             }
-        } else {
-            $mode = $param['m'];
-        }
-        if (in_array($mode , $mode_range)) {
-            $image_processor = new ImageProcessor($dir_prefix . $dir);
-            $res = $image_processor->compress($realpath , [
-                'mode' => $mode ,
-                'ratio' => $param['r'] ,
-                'width' => $param['w'] ,
-                'height' => $param['h'] ,
-            ] , false);
-            // 删除源文件
-            Storage::delete($path);
-            $path = str_replace($dir_prefix , '' , $res);
+            if (in_array($mode , $mode_range)) {
+                $image_processor = new ImageProcessor($dir_prefix . $dir);
+                $res = $image_processor->compress($realpath , [
+                    'mode' => $mode ,
+                    'ratio' => $param['r'] ,
+                    'width' => $param['w'] ,
+                    'height' => $param['h'] ,
+                ] , false);
+                // 删除源文件
+                Storage::delete($path);
+                $path = str_replace($dir_prefix , '' , $res);
+            }
         }
         return self::success('' , $path);
     }

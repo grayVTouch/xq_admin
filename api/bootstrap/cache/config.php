@@ -428,7 +428,7 @@
       array (
         'url' => NULL,
         'host' => '127.0.0.1',
-        'password' => NULL,
+        'password' => '364793',
         'port' => '6379',
         'database' => '0',
       ),
@@ -436,7 +436,7 @@
       array (
         'url' => NULL,
         'host' => '127.0.0.1',
-        'password' => NULL,
+        'password' => '364793',
         'port' => '6379',
         'database' => '1',
       ),

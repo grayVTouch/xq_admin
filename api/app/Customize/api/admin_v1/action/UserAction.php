@@ -19,13 +19,11 @@ use function core\array_unit;
 class UserAction extends Action
 {
 
-    public static function search(Base $context , $value , array $param = [])
+    public static function search(Base $context , array $param = [])
     {
-        if (empty($value)) {
-            return self::error('请提供搜索值');
-        }
-        $res = UserModel::search($value , 20);
-        $res = UserHandler::handleAll($res);
+        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
+        $res = UserModel::search($param['value'] , $limit);
+        $res = UserHandler::handlePaginator($res);
         return self::success('' , $res);
     }
 

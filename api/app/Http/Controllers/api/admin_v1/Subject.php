@@ -88,8 +88,8 @@ class Subject extends Base
     {
         $param = $this->request->query();
         $param['value'] = $param['value'] ?? '';
+        $param['limit'] = $param['limit'] ?? '';
         $param['module_id'] = $param['module_id'] ?? '';
-
         $res = SubjectAction::search($this , $param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
