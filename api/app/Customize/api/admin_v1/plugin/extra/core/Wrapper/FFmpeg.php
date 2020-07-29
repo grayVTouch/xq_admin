@@ -15,11 +15,6 @@ use function core\format_path;
 
 class FFmpeg
 {
-    /**
-     * @title 输出目录
-     * @var string
-     */
-    private $dir = '';
 
     /**
      * @title 执行的命令
@@ -53,18 +48,25 @@ class FFmpeg
     private $input = '';
 
 
-    public function __construct(string $dir)
+    public function __construct()
     {
-        if (!File::isDir($dir)) {
-            throw new Exception('无效目录');
-        }
-        $dir = format_path($dir);
-        $this->dir = $dir;
+
+    }
+
+    /**
+     * 不创建实例便捷调用
+     *
+     * @return FFmpeg
+     * @throws Exception
+     */
+    public static function create(): FFmpeg
+    {
+        return new self();
     }
 
     public function input(string $input): FFmpeg
     {
-        $this->input = $input;
+        $this->input = "\"" . $input . "\"";
         return $this;
     }
 
@@ -76,7 +78,7 @@ class FFmpeg
      */
     public function size(int $width = 0 , int $height = 0): FFmpeg
     {
-        $size_command = '';
+        $size_command = '-s ';
         $size_command .= empty($width) ? '' : $width . 'x';
         $size_command .= empty($height) ? '' : $height;
         $size_command = ltrim($size_command , 'x');
@@ -153,7 +155,7 @@ class FFmpeg
     }
 
 
-    public function ss(int $timepoint = 0 , string $mode = 'output'): FFmpeg
+    public function ss(int $timepoint = 0 , string $mode = 'input'): FFmpeg
     {
         switch ($mode)
         {
@@ -167,7 +169,7 @@ class FFmpeg
         throw new Exception('不支持的操作模式');
     }
 
-    public function to(int $timepoint = 0 , string $mode = 'output'): FFmpeg
+    public function to(int $timepoint = 0 , string $mode = 'input'): FFmpeg
     {
         switch ($mode)
         {
@@ -209,16 +211,7 @@ class FFmpeg
         return $this;
     }
 
-    public function durationForInput(int $duration = 0): FFmpeg
-    {
-        if (empty($duration)) {
-            return $this;
-        }
-        $this->durationForOutputCommand = '-t ' . $duration;
-        return $this;
-    }
-
-    public function durationForOutput(int $duration = 0): FFmpeg
+    public function durationForInput(float $duration = 0): FFmpeg
     {
         if (empty($duration)) {
             return $this;
@@ -227,7 +220,16 @@ class FFmpeg
         return $this;
     }
 
-    public function duration(int $duration = 0 , string $mode = 'input'): FFmpeg
+    public function durationForOutput(float $duration = 0): FFmpeg
+    {
+        if (empty($duration)) {
+            return $this;
+        }
+        $this->durationForOutputCommand = '-t ' . $duration;
+        return $this;
+    }
+
+    public function duration(float $duration = 0 , string $mode = 'output'): FFmpeg
     {
         switch ($mode)
         {
@@ -243,16 +245,16 @@ class FFmpeg
 
     // 设置编码器
     // libx264 | copy 等...
-    public function codec(string $codec = 'libx264'): FFmpeg
+    public function codec(string $codec = 'h264'): FFmpeg
     {
         $this->codecCommand = '-codec:v ' . $codec;
         return $this;
     }
 
-    public function output(string $file): FFmpeg
+    public function save(string $file): void
     {
         $this->output = $file;
-        return $this;
+        $this->run();
     }
 
     public function disabledAudio(): FFmpeg
@@ -268,7 +270,7 @@ class FFmpeg
     }
 
     // 重新运行
-    public function run()
+    public function run(): void
     {
         if (empty($this->input)) {
             throw new Exception('请提供输入文件');
@@ -308,10 +310,11 @@ class FFmpeg
         if (!empty($this->codecCommand)) {
             $command .= $this->codecCommand . ' ';
         }
-        $command .= $this->dir . '/' . $this->output;
+        $command .= $this->output;
+
         exec($command , $res , $status);
         if ($status > 0) {
-            throw new Exception("ffmpeg 执行发生错误：\n" . implode("\n" , $res));
+            throw new Exception("ffmpeg 执行发生错误\n command: " . $command . "\nerror: " . implode("\n" , $res));
         }
     }
 }

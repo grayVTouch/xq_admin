@@ -533,7 +533,7 @@ export default {
         form (form , oldVal) {
             this.ins.thumb.render(form.__thumb__);
             // console.log('render' , form.__src__);
-            this.ins.video.render(form.__src__);
+            // this.ins.video.render(form.__src__);
             this.users.current = form.user ? {...form.user} : {};
             this.video_subjects.current = form.video_subject ? {...form.video_subject} : {};
             this.videos.data = form.videos;
