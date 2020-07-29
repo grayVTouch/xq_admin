@@ -12,6 +12,8 @@ import admin from '../../api/admin.js';
 import position from '../../api/position.js';
 import image_at_position from '../../api/image_at_position.js';
 import nav from '../../api/nav.js';
+import video from '../../api/video.js';
+import video_subject from '../../api/video_subject.js';
 
 window.Api = {
     login ,
@@ -28,4 +30,6 @@ window.Api = {
     position ,
     image_at_position ,
     nav ,
+    video ,
+    video_subject ,
 };

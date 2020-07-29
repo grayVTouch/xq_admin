@@ -22,6 +22,20 @@ export default {
         }
     } ,
 
+    video: {
+        type: {
+            pro: '专题' ,
+            misc: '杂项' ,
+        } ,
+
+        status: {
+            '-1' : '审核失败' ,
+            0: '待审核' ,
+            1: '审核通过'
+        }
+    } ,
+
+
     user: {
         sex: {
             male: '男' ,

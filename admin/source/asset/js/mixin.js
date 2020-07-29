@@ -137,12 +137,24 @@ Vue.mixin({
             this.val.request = {...this.val.request , ...{[name]: val}};
         } ,
 
+        fileApi (resize = false) {
+            return TopContext.fileApi;
+        } ,
+
         imageApi (resize = false) {
             return TopContext.fileApi  + (resize ? '?w=' + TopContext.val.imageW : '');
         } ,
 
         thumbApi () {
             return TopContext.fileApi + '?w=' + TopContext.val.thumbW;
+        } ,
+
+        handleImageSubject () {
+
+        } ,
+
+        handleVideo () {
+
         } ,
     }
 });

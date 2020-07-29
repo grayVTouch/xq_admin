@@ -8,13 +8,15 @@ use App\Customize\api\admin_v1\model\CategoryModel;
 use App\Customize\api\admin_v1\model\ImageModel;
 use App\Customize\api\admin_v1\model\ModuleModel;
 use App\Customize\api\admin_v1\model\RelationTagModel;
-use App\Customize\api\admin_v1\model\SubjectModel;
+use App\Customize\api\admin_v1\model\VideoSrcModel;
+use App\Customize\api\admin_v1\model\VideoSubjectModel;
 use App\Customize\api\admin_v1\model\UserModel;
 use App\Customize\api\admin_v1\model\VideoModel;
 use Illuminate\Support\Facades\Storage;
 use stdClass;
 use function api\admin_v1\get_value;
 use function core\convert_obj;
+use function core\format_time;
 
 class VideoHandler extends Handler
 {
@@ -35,28 +37,32 @@ class VideoHandler extends Handler
         $category = CategoryHandler::handle($category);
 
         if ($res->type === 'pro') {
-            $subject = SubjectModel::find($res->subject_id);
-            $subject = SubjectHandler::handle($subject);
+            $video_subject = VideoSubjectModel::find($res->video_subject_id);
+            $video_subject = VideoSubjectHandler::handle($video_subject);
         } else {
-            $subject = null;
+            $video_subject = null;
         }
 
-        $images = ImageModel::getByImageSubjectId($res->id);
-        $images = ImageHandler::handleAll($images);
-
-        $tags = RelationTagModel::getByRelationTypeAndRelationId('image_subject' , $res->id);
+        $videos = VideoSrcModel::getByVideoId($res->id);
+        $videos = VideoSrcHandler::handleAll($videos);
 
         $res->user = $user;
         $res->module = $module;
         $res->category = $category;
-        $res->subject = $subject;
+        $res->video_subject = $video_subject;
+        $res->videos = $videos;
+        $res->__duration__ = empty($res->duration) ? 0 : format_time($res->duration , 'HH:II:SS');
 
-        $res->images = $images;
-        $res->tags = $tags;
-
+        $res->__src__ = empty($res->src) ? '' : Storage::url($res->src);
         $res->__thumb__ = empty($res->thumb) ? '' : Storage::url($res->thumb);
-        $res->__type__ = get_value('business.type_for_image_subject' , $res->type);
-        $res->__status__ = get_value('business.status_for_image_subject' , $res->status);
+        $res->__thumb_for_program__ = empty($res->thumb_for_program) ? '' : Storage::url($res->thumb_for_program);
+        $res->__simple_preview__ = empty($res->simple_preview) ? '' : Storage::url($res->simple_preview);
+        $res->__preview__ = empty($res->preview) ? '' : Storage::url($res->preview);
+        $res->__type__ = get_value('business.type_for_video' , $res->type);
+        $res->__status__ = get_value('business.status_for_video' , $res->status);
+        $res->__process_status__ = get_value('business.process_status_for_video' , $res->process_status);
+
+
         return $res;
     }
 

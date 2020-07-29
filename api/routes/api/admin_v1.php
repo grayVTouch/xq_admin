@@ -222,5 +222,35 @@ Route::prefix('admin_v1')
             Route::delete('destroy_all_nav/' , 'Nav@destroyAll');
             Route::delete('nav/{id}' , 'Nav@destroy');
 
+
+            /**
+             * ******************
+             * 视频
+             * ******************
+             */
+            Route::get('video' , 'Video@index');
+            Route::get('video/{id}' , 'Video@show');
+            Route::patch('video/{id}' , 'Video@localUpdate');
+            Route::put('video/{id}' , 'Video@update');
+            Route::post('video' , 'Video@store');
+            Route::delete('video/{id}' , 'Video@destroy');
+            Route::delete('destroy_all_video' , 'Video@destroyAll');
+
+            /**
+             * ******************
+             * 视频专题
+             * ******************
+             */
+            Route::get('video_subject' , 'VideoSubject@index');
+            Route::get('video_subject/{id}' , 'VideoSubject@show');
+            Route::patch('video_subject/{id}' , 'VideoSubject@localUpdate');
+            Route::put('video_subject/{id}' , 'VideoSubject@update');
+            Route::post('video_subject' , 'VideoSubject@store');
+            // 特别注意，这边这个顺序不能更换
+            // 如果更换会导致 路由匹配出现不是期望的现象
+            Route::delete('destroy_all_video_subject' , 'VideoSubject@destroyAll');
+            Route::delete('video_subject/{id}' , 'VideoSubject@destroy');
+
+            Route::get('search_video_subject' , 'VideoSubject@search');
         });
     });

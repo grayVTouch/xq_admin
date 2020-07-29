@@ -3,6 +3,7 @@ export default {
     id: 80 ,
     name: 160 ,
     image: 120 ,
+    video: 200 ,
     desc: 250 ,
     status: 120 ,
     sex: 80 ,
@@ -28,4 +29,5 @@ export default {
     height: 330 ,
 
     imageH: 40 ,
+    videoH: 150 ,
 };

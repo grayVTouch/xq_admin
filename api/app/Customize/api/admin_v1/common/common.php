@@ -106,5 +106,5 @@ function res_realpath(string $relative_path = ''): string
     if (empty($relative_path)) {
         return '';
     }
-    return Storage::path($relative_path);
+    return format_path(Storage::path($relative_path));
 }

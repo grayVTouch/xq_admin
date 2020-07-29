@@ -5,20 +5,6 @@ namespace App\Customize\api\admin_v1\job\middleware;
 
 class BootMiddleware
 {
-    /**
-     * 任务可尝试的次数
-     *
-     * @var int
-     */
-    public $tries = 25;
-
-
-    /**
-     * 任务失败前允许的最大异常数
-     *
-     * @var int
-     */
-    public $maxExceptions = 3;
 
     /**
      * 处理队列任务

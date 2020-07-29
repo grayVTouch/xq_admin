@@ -626,7 +626,7 @@
   ),
   'queue' => 
   array (
-    'default' => 'sync',
+    'default' => 'redis',
     'connections' => 
     array (
       'sync' => 
@@ -663,7 +663,7 @@
         'driver' => 'redis',
         'connection' => 'default',
         'queue' => 'default',
-        'retry_after' => 90,
+        'retry_after' => 5,
         'block_for' => NULL,
       ),
     ),

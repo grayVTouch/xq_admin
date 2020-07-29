@@ -66,4 +66,11 @@ return [
         'fix-width' ,
         'fix-height' ,
     ] ,
+
+    'process_status_for_video' => [
+        -1 => '处理失败' ,
+        0 => '信息处理中' ,
+        1 => '转码中' ,
+        2 => '处理完成' ,
+    ] ,
 ];
