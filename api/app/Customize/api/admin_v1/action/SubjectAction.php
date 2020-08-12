@@ -28,11 +28,11 @@ class SubjectAction extends Action
     public static function update(Base $context , $id , array $param = [])
     {
         $validator = Validator::make($param , [
-            'name' => 'required' ,
+            'name'      => 'required' ,
             'module_id' => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $res = SubjectModel::find($id);
         if (empty($res)) {
@@ -58,7 +58,7 @@ class SubjectAction extends Action
             'module_id' => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $id = SubjectModel::insertGetId(array_unit($param , [
@@ -84,13 +84,13 @@ class SubjectAction extends Action
 
     public static function destroy(Base $context , $id , array $param = [])
     {
-        $count = SubjectModel::delById($id);
+        $count = SubjectModel::destroy($id);
         return self::success('' , $count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
-        $count = SubjectModel::delByIds($ids);
+        $count = SubjectModel::destroy($ids);
         return self::success('' , $count);
     }
 

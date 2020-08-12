@@ -15,8 +15,17 @@
                     </div>
 
                     <div class="option">
-                        <div class="field">名称：</div>
-                        <div class="value"><input type="text" class="form-text" v-model="search.name"></div>
+                        <div class="field">位置：</div>
+                        <div class="value"><input type="text" class="form-text" v-model="search.value"></div>
+                    </div>
+
+                    <div class="option">
+                        <div class="field">平台：</div>
+                        <div class="value">
+                            <RadioGroup v-model="search.platform">
+                                <Radio v-for="(v,k) in $store.state.context.business.platform" :key="k" :label="k">{{ v }}</Radio>
+                            </RadioGroup>
+                        </div>
                     </div>
 
                     <div class="option">
@@ -113,7 +122,7 @@
                     <form class="form" @submit.prevent="submitEvent">
                         <table class="input-table">
                             <tbody>
-                            <tr :class="{error: val.error.value}" id="form-value">
+                            <tr :class="{error: val.error.value}">
                                 <td>位置</td>
                                 <td>
                                     <input type="text" v-model="form.value" @input="val.error.value=''" class="form-text">
@@ -122,7 +131,7 @@
                                     <div class="e-msg">{{ val.error.value }}</div>
                                 </td>
                             </tr>
-                            <tr :class="{error: val.error.name}" id="form-name">
+                            <tr :class="{error: val.error.name}">
                                 <td>名称</td>
                                 <td>
                                     <input type="text" v-model="form.name" @input="val.error.name=''" class="form-text">
@@ -131,7 +140,7 @@
                                     <div class="e-msg">{{ val.error.name }}</div>
                                 </td>
                             </tr>
-                            <tr :class="{error: val.error.platform}" id="form-platform">
+                            <tr :class="{error: val.error.platform}">
                                 <td>所属平台</td>
                                 <td>
                                     <select v-model="form.platform" class="form-select">
@@ -143,7 +152,7 @@
                                     <div class="e-msg">{{ val.error.platform }}</div>
                                 </td>
                             </tr>
-                            <tr :class="{error: val.error.description}" id="form-description">
+                            <tr :class="{error: val.error.description}">
                                 <td>描述</td>
                                 <td>
                                     <textarea v-model="form.description" class="form-textarea" @input="val.error.description = ''"></textarea>

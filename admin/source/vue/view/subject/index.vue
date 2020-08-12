@@ -19,6 +19,15 @@
                         <div class="value"><input type="text" class="form-text" v-model="search.name"></div>
                     </div>
 
+
+                    <div class="option">
+                        <div class="field">模块：</div>
+                        <div class="value">
+                            <my-select :data="modules" v-model="search.module_id" empty=""></my-select>
+                            <my-loading v-if="val.pending.getModules"></my-loading>
+                        </div>
+                    </div>
+
                     <div class="option">
                         <div class="field"></div>
                         <div class="value">
@@ -139,7 +148,7 @@
                     <table class="input-table">
                         <tbody>
 
-                        <tr :class="{error: val.error.name}" id="form-name">
+                        <tr :class="{error: val.error.name}">
                             <td>名称</td>
                             <td>
                                 <input type="text" v-model="form.name" @input="val.error.name=''" class="form-text">
@@ -149,7 +158,7 @@
                             </td>
                         </tr>
 
-                        <tr :class="{error: val.error.module_id}" id="form-module_id">
+                        <tr :class="{error: val.error.module_id}">
                             <td>所属模块</td>
                             <td>
                                 <my-select :data="modules" v-model="form.module_id"></my-select>
@@ -159,7 +168,7 @@
                             </td>
                         </tr>
 
-                        <tr :class="{error: val.error.thumb}" id="form-thumb">
+                        <tr :class="{error: val.error.thumb}">
                             <td>封面</td>
                             <td>
                                 <div ref="thumb">
@@ -195,7 +204,7 @@
                             </td>
                         </tr>
 
-                        <tr :class="{error: val.error.attr}" id="form-attr">
+                        <tr :class="{error: val.error.attr}">
                             <td>属性</td>
                             <td>
                                 <div class="attr">
@@ -226,7 +235,7 @@
                             </td>
                         </tr>
 
-                        <tr :class="{error: val.error.description}" id="form-description">
+                        <tr :class="{error: val.error.description}">
                             <td>描述</td>
                             <td>
                                 <textarea v-model="form.description" @input="val.error.description=''" class="form-textarea"></textarea>
@@ -236,7 +245,7 @@
                             </td>
                         </tr>
 
-                        <tr :class="{error: val.error.weight}" id="form-weight">
+                        <tr :class="{error: val.error.weight}">
                             <td>权重</td>
                             <td>
                                 <input type="number" v-model="form.weight" @input="val.error.weight = ''" class="form-text">

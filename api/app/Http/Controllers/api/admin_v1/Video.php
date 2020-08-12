@@ -13,13 +13,23 @@ class video extends Base
     public function index()
     {
         $param = $this->request->query();
+
         $param['name'] = $param['name'] ?? '';
+        $param['user_id']      = $param['user_id'] ?? '';
+        $param['module_id']    = $param['module_id'] ?? '';
+        $param['category_id']          = $param['category_id'] ?? '';
+        $param['video_subject_id']     = $param['video_subject_id'] ?? '';
+        $param['type']         = $param['type'] ?? '';
+        $param['status']       = $param['status'] ?? '';
         $param['order'] = $param['order'] ?? '';
         $param['limit'] = $param['limit'] ?? '';
+
         $res = VideoAction::index($this , $param);
+
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
+
         return success($res['message'] , $res['data']);
     }
 

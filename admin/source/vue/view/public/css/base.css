@@ -1,0 +1,50 @@
+/**
+ * ********************
+ * 搜索表单
+ * ********************
+ */
+.search-modal {
+
+}
+
+.search-modal > * {
+    margin-bottom: 20px;
+}
+
+.search-modal > *:nth-last-of-type(1) {
+    margin-bottom: 0;
+}
+
+.search-modal > .input {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-modal > .input .input-mask {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.search-modal > .input .input-mask input {
+    height: 30px;
+    width: 300px;
+}
+
+.search-modal > .input .input-mask input:focus {
+    border-color: var(--border-color-hover);
+}
+
+.search-modal > .input .msg {
+    font-size: 12px;
+    color: var(--msg-color);
+}
+
+.search-modal .pager {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

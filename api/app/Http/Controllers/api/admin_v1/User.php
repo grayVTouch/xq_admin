@@ -25,13 +25,21 @@ class User extends Base
     public function index()
     {
         $param = $this->request->query();
-        $param['username'] = $param['username'] ?? '';
-        $param['order'] = $param['order'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+
+        $param['username']  = $param['username'] ?? '';
+        $param['nickname']  = $param['nickname'] ?? '';
+        $param['sex']       = $param['sex'] ?? '';
+        $param['phone']     = $param['phone'] ?? '';
+        $param['email']     = $param['email'] ?? '';
+        $param['order']     = $param['order'] ?? '';
+        $param['limit']     = $param['limit'] ?? '';
+
         $res = UserAction::index($this , $param);
+
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
+
         return success($res['message'] , $res['data']);
     }
 

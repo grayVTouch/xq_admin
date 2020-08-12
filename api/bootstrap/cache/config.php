@@ -624,6 +624,13 @@
       ),
     ),
   ),
+  'my' => 
+  array (
+    'res_url' => 'http://res.xq.test',
+    'admin_username' => 'admin',
+    'admin_password' => 'admin',
+    'module_auth_password' => '364793',
+  ),
   'queue' => 
   array (
     'default' => 'redis',
@@ -663,7 +670,7 @@
         'driver' => 'redis',
         'connection' => 'default',
         'queue' => 'default',
-        'retry_after' => 5,
+        'retry_after' => 31536000,
         'block_for' => NULL,
       ),
     ),

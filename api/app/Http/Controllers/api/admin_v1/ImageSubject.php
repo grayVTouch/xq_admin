@@ -13,13 +13,24 @@ class ImageSubject extends Base
     public function index()
     {
         $param = $this->request->query();
-        $param['name'] = $param['name'] ?? '';
-        $param['order'] = $param['order'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+
+        $param['id']           = $param['id'] ?? '';
+        $param['name']         = $param['name'] ?? '';
+        $param['user_id']      = $param['user_id'] ?? '';
+        $param['module_id']    = $param['module_id'] ?? '';
+        $param['category_id']  = $param['category_id'] ?? '';
+        $param['subject_id']   = $param['subject_id'] ?? '';
+        $param['type']         = $param['type'] ?? '';
+        $param['status']       = $param['status'] ?? '';
+        $param['order']        = $param['order'] ?? '';
+        $param['limit']        = $param['limit'] ?? '';
+
         $res = ImageSubjectAction::index($this , $param);
+
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
+
         return success($res['message'] , $res['data']);
     }
 
@@ -32,7 +43,7 @@ class ImageSubject extends Base
         $param['category_id']   = $param['category_id'] ?? '';
         $param['type']          = $param['type'] ?? '';
         $param['subject_id']    = $param['subject_id'] ?? '';
-        $param['tag']           = $param['tag'] ?? '';
+        $param['tags']           = $param['tags'] ?? '';
         $param['thumb']         = $param['thumb'] ?? '';
         $param['description']   = $param['description'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
@@ -58,7 +69,7 @@ class ImageSubject extends Base
         $param['category_id']   = $param['category_id'] ?? '';
         $param['type']          = $param['type'] ?? '';
         $param['subject_id']    = $param['subject_id'] ?? '';
-        $param['tag']           = $param['tag'] ?? '';
+        $param['tags']           = $param['tags'] ?? '';
         $param['thumb']         = $param['thumb'] ?? '';
         $param['description']   = $param['description'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
@@ -115,9 +126,12 @@ class ImageSubject extends Base
         return success($res['message'] , $res['data']);
     }
 
-    public function destroyTag($image_subject_id , $tag_id)
+    public function destroyTag()
     {
-        $res = ImageSubjectAction::destroyTag($this , $image_subject_id , $tag_id);
+        $param = $this->request->post();
+        $param['image_subject_id'] = $param['image_subject_id'] ?? '';
+        $param['tag_id'] = $param['tag_id'] ?? '';
+        $res = ImageSubjectAction::destroyTag($this , $param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }

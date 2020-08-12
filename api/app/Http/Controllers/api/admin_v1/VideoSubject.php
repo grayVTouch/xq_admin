@@ -13,13 +13,21 @@ class VideoSubject extends Base
     public function index()
     {
         $param = $this->request->query();
-        $param['name'] = $param['name'] ?? '';
-        $param['order'] = $param['order'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+
+        $param['id']               = $param['id'] ?? '';
+        $param['name']             = $param['name'] ?? '';
+        $param['module_id']        = $param['module_id'] ?? '';
+        $param['video_series_id']  = $param['video_series_id'] ?? '';
+        $param['video_company_id'] = $param['video_company_id'] ?? '';
+        $param['order']            = $param['order'] ?? '';
+        $param['limit']            = $param['limit'] ?? '';
+
         $res = VideoSubjectAction::index($this , $param);
+
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
+
         return success($res['message'] , $res['data']);
     }
 
@@ -27,11 +35,19 @@ class VideoSubject extends Base
     {
         $param = $this->request->post();
         $param['name']          = $param['name'] ?? '';
-        $param['description']   = $param['description'] ?? '';
         $param['thumb']         = $param['thumb'] ?? '';
-        $param['attr']          = $param['attr'] ?? '';
-        $param['weight']        = $param['weight'] ?? '';
-        $param['module_id']        = $param['module_id'] ?? '';
+        $param['score']          = $param['score'] ?? '';
+        $param['release_time']          = $param['release_time'] ?? null;
+        $param['end_time']          = $param['end_time'] ?? null;
+        $param['status']          = $param['status'] ?? '';
+        $param['count']          = $param['count'] ?? '';
+        $param['play_count']          = $param['play_count'] ?? '';
+        $param['video_series_id']          = $param['video_series_id'] ?? '';
+        $param['video_company_id']          = $param['video_company_id'] ?? '';
+        $param['module_id']          = $param['module_id'] ?? '';
+        $param['weight']          = $param['weight'] ?? '';
+        $param['tags']          = $param['tags'] ?? '';
+
         $res = VideoSubjectAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -43,11 +59,19 @@ class VideoSubject extends Base
     {
         $param = $this->request->post();
         $param['name']          = $param['name'] ?? '';
-        $param['description']   = $param['description'] ?? '';
         $param['thumb']         = $param['thumb'] ?? '';
-        $param['attr']          = $param['attr'] ?? '';
-        $param['weight']        = $param['weight'] ?? '';
-        $param['module_id']        = $param['module_id'] ?? '';
+        $param['score']          = $param['score'] ?? '';
+        $param['release_time']          = $param['release_time'] ?? null;
+        $param['end_time']          = $param['end_time'] ?? null;
+        $param['status']          = $param['status'] ?? '';
+        $param['count']          = $param['count'] ?? '';
+        $param['play_count']          = $param['play_count'] ?? '';
+        $param['video_series_id']          = $param['video_series_id'] ?? '';
+        $param['video_company_id']          = $param['video_company_id'] ?? '';
+        $param['module_id']          = $param['module_id'] ?? '';
+        $param['weight']          = $param['weight'] ?? '';
+        $param['tags']          = $param['tags'] ?? '';
+
         $res = VideoSubjectAction::store($this ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -78,6 +102,18 @@ class VideoSubject extends Base
         $ids = $this->request->input('ids' , '[]');
         $ids = json_decode($ids , true);
         $res = VideoSubjectAction::destroyAll($this , $ids);
+        if ($res['code'] != 0) {
+            return error($res['message'] , $res['data'] , $res['code']);
+        }
+        return success($res['message'] , $res['data']);
+    }
+
+    public function destroyTag()
+    {
+        $param = $this->request->post();
+        $param['video_subject_id'] = $param['video_subject_id'] ?? '';
+        $param['tag_id'] = $param['tag_id'] ?? '';
+        $res = VideoSubjectAction::destroyTag($this , $param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }

@@ -3,6 +3,18 @@ export default {
         0: '否',
         1: '是'
     } ,
+
+    bool: {
+        integer: {
+            0: '否',
+            1: '是'
+        } ,
+        string: {
+            'y': '是' ,
+            'n': '否' ,
+        } ,
+    } ,
+
     admin_permission: {
         type: {
             view: 'view' ,
@@ -22,6 +34,15 @@ export default {
         }
     } ,
 
+    video_subject: {
+
+        status: {
+            making : '连载中' ,
+            completed: '已完结' ,
+            terminated: '已终止'
+        }
+    } ,
+
     video: {
         type: {
             pro: '专题' ,
@@ -30,7 +51,7 @@ export default {
 
         status: {
             '-1' : '审核失败' ,
-            0: '待审核' ,
+            0: '审核中' ,
             1: '审核通过'
         }
     } ,
@@ -52,5 +73,13 @@ export default {
         android: 'android' ,
         ios: 'ios' ,
         mobile: '移动端' ,
+    } ,
+
+    disk: {
+        os: {
+            windows: 'windows' ,
+            linux: 'linux' ,
+            mac: 'mac' ,
+        } ,
     } ,
 };

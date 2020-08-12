@@ -10,15 +10,15 @@
                     <div class="left">
                         数据列表&nbsp;&nbsp;&nbsp;
 
-                        <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
+                        <my-table-button v-if="$store.state.context.debug" @click="addEvent"><my-icon icon="add" />添加</my-table-button>
+                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-if="$store.state.context.debug" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
                     </div>
                     <div class="right"></div>
                 </div>
 
                 <div class="table">
 
-                    <Table border width="100%" height="630" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
+                    <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
                         <template v-slot:cn="{row,index}">
                             <template v-if="row.floor > 1">{{ '|' + '_'.repeat(row.floor * 2) + row.cn }}</template>
                             <template v-else>{{ row.cn }}</template>
@@ -40,13 +40,19 @@
             </div>
 
             <div class="line operation">
-                <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
+                <my-table-button v-if="$store.state.context.debug" @click="addEvent"><my-icon icon="add" />添加</my-table-button>
+                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-if="$store.state.context.debug" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
             </div>
 
             <div class="line page hide"></div>
 
-            <my-form :title="title" :form="form" :mode="val.mode" v-model="val.drawer" :permission="permission" @on-success="getData"></my-form>
+            <my-form
+                    ref="form"
+                    :data="form"
+                    :mode="val.mode"
+                    @on-success="getData">
+
+            </my-form>
         </div>
     </my-base>
 </template>

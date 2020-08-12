@@ -94,7 +94,7 @@
 
                 <div class="table">
 
-                    <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent">
+                    <Table border :loading="val.pending.getData" :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent">
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
                             <my-table-button @click="allocateEvent(row)"><my-icon icon="privilege" />权限分配</my-table-button>
@@ -120,7 +120,7 @@
                     <form class="form" @submit.prevent="submitEvent">
                         <table class="input-table">
                             <tbody>
-                            <tr :class="{error: val.error.name}" id="form-name">
+                            <tr :class="{error: val.error.name}">
                                 <td>名称</td>
                                 <td>
                                     <input type="text" v-model="form.name" @input="val.error.name=''" class="form-text">
@@ -129,7 +129,7 @@
                                     <span class="e-msg"></span>
                                 </td>
                             </tr>
-                            <tr :class="{error: val.error.weight}" id="form-weight">
+                            <tr :class="{error: val.error.weight}">
                                 <td>权重</td>
                                 <td>
                                     <input type="number" v-model="form.weight" @input="val.error.weight = ''" class="form-text">

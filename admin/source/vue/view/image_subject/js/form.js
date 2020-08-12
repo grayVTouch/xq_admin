@@ -1,3 +1,19 @@
+const form = {
+    type: 'misc' ,
+    user_id: '' ,
+    module_id: '' ,
+    category_id: '' ,
+    subject_id: '' ,
+    view_count: 0  ,
+    praise_count: 0 ,
+    weight: 0 ,
+    __tag__: [] ,
+    status: 0 ,
+    images: [] ,
+    tags: [] ,
+};
+
+
 const users = {
     data: [],
     field: [
@@ -21,8 +37,15 @@ const users = {
             key: 'create_time' ,
             center: TopContext.table.alignCenter ,
         } ,
+        {
+            title: '操作' ,
+            slot: 'action' ,
+        } ,
     ] ,
-    current: {} ,
+    current: {
+        id: 0 ,
+        username: 'unknow' ,
+    } ,
     limit: TopContext.limit ,
     value: '' ,
     page: 1 ,
@@ -57,14 +80,28 @@ const subjects = {
             key: 'create_time' ,
             center: TopContext.table.alignCenter ,
         } ,
+        {
+            title: '操作' ,
+            slot: 'action' ,
+        } ,
     ] ,
-    current: {} ,
+    current: {
+        id: 0 ,
+        name: 'unknow' ,
+    },
     total: 0 ,
     page: 1 ,
     value: '' ,
+    limit: TopContext.limit ,
 };
 
 export default {
+    computed: {
+        title () {
+            return this.val.mode === 'edit' ? '编辑' : '添加';
+        } ,
+    } ,
+
     data () {
         return {
             val: {
@@ -74,10 +111,8 @@ export default {
                 selectedIds: [] ,
                 modalForSubject: false ,
                 modalForUser: false ,
-                valueForUser: '' ,
+                drawer: false ,
             } ,
-
-            drawer: false ,
 
             // 用户
             users: G.copy(users , true),
@@ -88,7 +123,16 @@ export default {
             // 标签
             tags: [] ,
 
-            // 标签
+            // 分类
+            categories: [] ,
+
+            // 模块
+            modules: [] ,
+
+            // 前 10 标签
+            topTags: [] ,
+
+            // 元素
             dom: {} ,
 
             // 实例
@@ -98,7 +142,7 @@ export default {
                 field: [
                     {
                         type: 'selection' ,
-                        width: TopContext.table.checkbox ,
+                        minWidth: TopContext.table.checkbox ,
                         center: TopContext.table.alignCenter ,
                     } ,
                     {
@@ -121,50 +165,19 @@ export default {
             images: [] ,
 
             createTime: '' ,
+
+            form: G.copy(form , true) ,
         };
     } ,
 
-    model: {
-        name: 'value' ,
-        event: 'change' ,
-    } ,
-
     props: {
-        title: {
-            type: String ,
-            default: '' ,
-        } ,
-        value: {
-            type: Boolean ,
-            default: false
-        } ,
-        form: {
+        data: {
             type: Object ,
-            default () {
-                return {};
-            } ,
-        } ,
-        categories: {
-            type: Array ,
-            default () {
-                return [];
-            } ,
-        } ,
-        modules: {
-            type: Array ,
-            default () {
-                return [];
-            } ,
-        } ,
-        topTags: {
-            type: Array ,
-            default () {
-                return [];
-            } ,
+            required: true ,
         } ,
         mode: {
             type: String ,
-            default: '' ,
+            required: true ,
         } ,
     } ,
 
@@ -176,14 +189,64 @@ export default {
 
     methods: {
 
-        moduleChangedEvent (moduleId) {
-            moduleId = parseInt(moduleId);
-            this.val.error.module_id = '';
-            this.form.category_id = 0;
-            this.form.subject_id = 0;
-            this.form.topTags = [];
+        getCategories (moduleId , callback) {
+            this.pending('getCategories' , true);
+            Api.category.searchByModuleId(moduleId , (msg , data , code) => {
+                this.pending('getCategories' , false);
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , data);
+                    G.invoke(callback , null , false);
+                    return ;
+                }
+                this.categories = data;
+                this.$nextTick(() => {
+                    G.invoke(callback , null , true);
+                });
+            });
+        } ,
 
-            this.$emit('on-module-change' , moduleId);
+        getModules (callback) {
+            this.pending('getModules' , true);
+            Api.module.all((msg , data , code) => {
+                this.pending('getModules' , false);
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , data);
+                    G.invoke(callback , null , false);
+                    return ;
+                }
+                this.modules = data;
+                this.$nextTick(() => {
+                    G.invoke(callback , null , true);
+                });
+            });
+        } ,
+
+        getTopTags (moduleId) {
+            Api.tag.topByModuleId(moduleId , (msg , data , code) => {
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , data);
+                    return ;
+                }
+                this.topTags = data;
+            });
+        } ,
+
+        moduleChangedEvent (moduleId) {
+            this.val.error.module_id = '';
+            this.form.category_id = '';
+            this.form.subject_id = '';
+            this.form.subject_id = '';
+            this.form.topTags = [];
+            this.form.subject = G.copy(subjects.current);
+            this.getCategories(moduleId);
+            this.getTopTags(moduleId);
+        } ,
+
+        typeChangedEvent (type) {
+            if (type === 'misc') {
+                this.form.subject = G.copy(subjects.current);
+                this.form.subject_id = '';
+            }
         } ,
 
         initDom () {
@@ -234,7 +297,10 @@ export default {
 
         searchUser () {
             this.pending('searchUser' , true);
-            Api.user.search(this.users.value , (msg , data , code) => {
+            Api.user.search({
+                value: this.users.value ,
+                limit: this.users.limit ,
+            }, (msg , data , code) => {
                 this.pending('searchUser' , false);
                 if (code !== TopContext.code.Success) {
                     this.error({user_id: data});
@@ -251,15 +317,17 @@ export default {
             this.searchUser();
         } ,
 
+        subjectPageEvent (page) {
+            this.subjects.page = page;
+            this.searchSubject();
+        } ,
+
         searchSubject () {
-            if (this.form.module_id < 1) {
-                this.error({subject_id: '请选择模块后操作'});
-                return ;
-            }
             this.pending('searchSubject' , true);
             Api.subject.search({
                 module_id: this.form.module_id ,
                 value: this.subjects.value ,
+                limit: this.subjects.limit ,
             } , (msg , data , code) => {
                 this.pending('searchSubject' , false);
                 if (code !== TopContext.code.Success) {
@@ -273,26 +341,31 @@ export default {
         } ,
 
         searchSubjectEvent (e) {
+            if (this.form.module_id < 1) {
+                this.error({subject_id: '请选择模块后操作'});
+                return ;
+            }
             this.searchSubject();
             this._val('modalForSubject' , true);
         } ,
 
         searchUserEvent (e) {
-            // 开始搜索
             this.searchUser();
             this._val('modalForUser' , true);
         } ,
 
         updateSubjectEvent (row , index) {
+            this.error({subject_id: ''} , false);
             this.form.subject_id = row.id;
-            this.subjects.current = row;
+            this.form.subject = row;
             this._val('modalForSubject' , false);
             this.subjects.data = [];
         } ,
 
         updateUserEvent (row , index) {
+            this.error({user_id: ''} , false);
             this.form.user_id = row.id;
-            this.users.current = row;
+            this.form.user = row;
             this._val('modalForUser' , false);
             this.users.data = [];
         } ,
@@ -301,20 +374,31 @@ export default {
 
         } ,
 
+        openFormDrawer () {
+            this.getModules();
+            if (this.mode === 'edit') {
+                this.getTopTags(this.form.module_id);
+                this.getCategories(this.form.module_id);
+            }
+            this._val('drawer' , true);
+        } ,
+
         closeFormDrawer () {
             if (this.pending('submit')) {
                 this.message('warning' , '请求中...请耐心等待');
                 return ;
             }
-            this.drawer = false;
+            this._val('drawer' , false);
             this.ins.thumb.clearAll();
             this.ins.images.clearAll();
             this.images = [];
             this.tags = [];
-            // 切换回基本的内容
-            this._val('tab' , 'base');
+            this.topTags = [];
+            this.modules = [];
+            this.categories = [];
             this.users.value = '';
             this.subjects.value = '';
+            this._val('tab' , 'base');
         } ,
 
         destroy (id , callback) {
@@ -427,7 +511,10 @@ export default {
             }
             // 编辑模式
             this.pending('destroy_tag_' + tagId , true);
-            Api.image_subject.destroyTag(this.form.id , tagId , (msg , data , code) => {
+            Api.image_subject.destroyTag({
+                image_subject_id: this.form.id ,
+                tag_id: tagId ,
+            } , (msg , data , code) => {
                 this.pending('destroy_tag_' + tagId , false);
                 if (code !== TopContext.code.Success) {
                     this.error({tags: data});
@@ -464,7 +551,7 @@ export default {
             } , (msg , data , code) => {
                 this.dom.tagInputOuter.removeClass('disabled');
                 if (code !== TopContext.code.Success) {
-                    this.error({tags: data});
+                    this.error({tags: msg} , false);
                     return ;
                 }
                 this.tags.push(data);
@@ -485,16 +572,16 @@ export default {
                     return ;
                 }
                 this.successHandle((keep) => {
-                    this.$emit('on-success');
-
-                    if (!keep) {
-                        this.closeFormDrawer();
+                    if (keep) {
+                        return ;
                     }
+                    this.$emit('on-success');
+                    this.closeFormDrawer();
                 });
             };
-            const form = {...this.form};
-            form.images = G.jsonEncode(this.images);
-            form.tags = [];
+            const form = G.copy(this.form);
+                form.images = G.jsonEncode(this.images);
+                form.tags = [];
             this.tags.forEach((v) => {
                 form.tags.push(v.id);
             });
@@ -507,33 +594,29 @@ export default {
             Api.image_subject.store(form , callback);
         } ,
 
-        setDatetimeEvent (date) {
+        setCreateTimeEvent (date) {
             this.form.create_time = date;
         } ,
 
-        changeEventTest (value) {
-            console.log('i-select changed' , value , JSON.stringify(this.modules));
-        } ,
     } ,
 
     watch: {
-        drawer (newVal , oldVal) {
-            this.$emit('change' , newVal);
+        data (data) {
+            if (G.isEmptyObject(data)) {
+                this.form = G.copy(form , true);
+            } else {
+                this.form = data;
+            }
+            this.ins.thumb.render(this.form.__thumb__);
         } ,
-
-        value: {
-            immediate: true ,
-            handler (newVal , oldVal) {
-                this.drawer = newVal;
+        form: {
+            deep: true ,
+            handler (form) {
+                this.table.data = form.images;
+                this.users.current = form.user ? form.user : G.copy(users.current);
+                this.subjects.current = form.subject ? form.subject: G.copy(subjects.current);
+                this.createTime = form.create_time;
             } ,
-        } ,
-
-        form (form , oldVal) {
-            this.table.data = form.images;
-            this.ins.thumb.render(form.__thumb__);
-            this.users.current = form.user ? {...form.user} : {};
-            this.subjects.current = form.subject ? {...form.subject} : {};
-            this.createTime = form.create_time;
         } ,
     } ,
 };

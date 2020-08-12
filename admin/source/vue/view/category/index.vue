@@ -20,10 +20,10 @@
 
                     <Table border width="100%" :height="630" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
                         <template v-slot:name="{row,index}">
-                            <template v-if="row.floor > 1">{{ '|' + '_'.repeat((row.floor - 1) * 10) + row.name + `【${row.module ? row.module.name : 'unknow'}】` }}</template>
-                            <template v-else>{{ row.name + `【${row.module ? row.module.name : 'unknow'}】` }}</template>
+                            <template v-if="row.floor > 1">{{ '|' + '_'.repeat((row.floor - 1) * 10) + row.name }}</template>
+                            <template v-else>{{ row.name }}</template>
                         </template>
-<!--                        <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>-->
+                        <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
                         <template v-slot:enable="{row,index}"><my-switch v-model="row.enable" :loading="val.pending['enable_' + row.id]" :extra="{id: row.id , field: 'enable'}" @on-change="updateBoolValEvent" /></template>
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
@@ -47,7 +47,7 @@
                     <form class="form" @submit.prevent="submitEvent" ref="form">
                         <table class="input-table">
                             <tbody>
-                            <tr :class="{error: val.error.name}" id="form_cn">
+                            <tr :class="{error: val.error.name}">
                                 <td>名称</td>
                                 <td>
                                     <input type="text" v-model="form.name"  @input="val.error.name = ''" class="form-text">
@@ -57,7 +57,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.module_id}" id="form-module_id">
+                            <tr :class="{error: val.error.module_id}">
                                 <td>所属模块</td>
                                 <td>
                                     <my-select :data="modules" v-model="form.module_id" @change="moduleChangedEvent"></my-select>
@@ -67,17 +67,18 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.p_id}" id="form_p_id">
+                            <tr :class="{error: val.error.p_id}">
                                 <td>上级分类</td>
                                 <td>
-                                    <my-deep-select :data="category" v-model="form.p_id" :has="true" :attr="val.attr"  @change="val.error.p_id = ''"></my-deep-select>
+                                    <my-deep-select :data="categories" v-model="form.p_id" :has="true" :attr="val.attr"  @change="val.error.p_id = ''"></my-deep-select>
+                                    <my-loading v-if="val.pending.getCategories"></my-loading>
                                     <span class="need">*</span>
                                     <div class="msg">请务必选择模块后操作</div>
                                     <div class="e-msg">{{ val.error.p_id }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.description}" id="form_description">
+                            <tr :class="{error: val.error.description}">
                                 <td>描述</td>
                                 <td>
                                     <textarea v-model="form.description" class="form-textarea" @input="val.error.description = ''"></textarea>
@@ -87,7 +88,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.enable}" id="form_enable">
+                            <tr :class="{error: val.error.enable}">
                                 <td>启用？</td>
                                 <td>
                                     <RadioGroup v-model="form.enable"  @input="val.error.enable = ''">
@@ -99,7 +100,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.weight}" id="form_weight">
+                            <tr :class="{error: val.error.weight}">
                                 <td>权重</td>
                                 <td>
                                     <input type="number" class="form-text"  @input="val.error.weight = ''" v-model="form.weight">

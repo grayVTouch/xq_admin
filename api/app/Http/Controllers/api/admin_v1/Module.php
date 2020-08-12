@@ -26,14 +26,21 @@ class Module extends Base
     public function update($id)
     {
         $param = $this->request->post();
+
         $param['name']          = $param['name'] ?? '';
         $param['description']   = $param['description'] ?? '';
         $param['enable']        = $param['enable'] ?? '';
+        $param['auth']          = $param['auth'] ?? '';
+        $param['auth_password'] = $param['auth_password'] ?? '';
+        $param['default']        = $param['default'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
+
         $res = ModuleAction::update($this , $id ,$param);
+
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
+
         return success($res['message'] , $res['data']);
     }
 
@@ -44,6 +51,9 @@ class Module extends Base
         $param['description']   = $param['description'] ?? '';
         $param['enable']        = $param['enable'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
+        $param['auth']        = $param['auth'] ?? '';
+        $param['auth_password']        = $param['auth_password'] ?? '';
+        $param['default']        = $param['default'] ?? '';
         $res = ModuleAction::localUpdate($this , $id ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -58,6 +68,9 @@ class Module extends Base
         $param['description']   = $param['description'] ?? '';
         $param['enable']        = $param['enable'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
+        $param['auth']        = $param['auth'] ?? '';
+        $param['auth_password']        = $param['auth_password'] ?? '';
+        $param['default']        = $param['default'] ?? '';
         $res = ModuleAction::store($this ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);

@@ -22,17 +22,41 @@ class UserModel extends Model
 
     public static function index(array $filter = [] , array $order = [] , int $limit = 20): Paginator
     {
-        $filter['id'] = $filter['id'] ?? '';
+        $filter['id']       = $filter['id'] ?? '';
         $filter['username'] = $filter['username'] ?? '';
-        $order['field'] = $order['field'] ?? 'id';
-        $order['value'] = $order['value'] ?? 'asc';
+        $filter['nickname'] = $filter['nickname'] ?? '';
+        $filter['sex']      = $filter['sex'] ?? '';
+        $filter['phone']    = $filter['phone'] ?? '';
+        $filter['email']    = $filter['email'] ?? '';
+        $order['field']     = $order['field'] ?? 'id';
+        $order['value']     = $order['value'] ?? 'asc';
+
         $where = [];
+
         if ($filter['id'] !== '') {
             $where[] = ['id' , '=' , $filter['id']];
         }
+
         if ($filter['username'] !== '') {
             $where[] = ['username' , 'like' , "%{$filter['username']}%"];
         }
+
+        if ($filter['nickname'] !== '') {
+            $where[] = ['nickname' , 'like' , "%{$filter['nickname']}%"];
+        }
+
+        if ($filter['sex'] !== '') {
+            $where[] = ['sex' , '=' , $filter['sex']];
+        }
+
+        if ($filter['phone'] !== '') {
+            $where[] = ['phone' , 'like' , "%{$filter['phone']}%"];
+        }
+
+        if ($filter['email'] !== '') {
+            $where[] = ['email' , 'like' , "%{$filter['email']}%"];
+        }
+
         return self::where($where)
             ->orderBy($order['field'] , $order['value'])
             ->paginate($limit);
@@ -42,5 +66,4 @@ class UserModel extends Model
     {
         return self::where('username' , $username)->first();
     }
-
 }

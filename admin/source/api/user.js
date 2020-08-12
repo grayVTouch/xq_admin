@@ -8,10 +8,8 @@ const destroy = genUrl('user/{id}');
 const destroyAll = genUrl('destroy_all_user');
 
 export default {
-    search (value , success , error) {
-        return request(search , 'get' , {
-            value ,
-        } , success , error);
+    search (data , success , error) {
+        return request(search , 'get' , data , success , error);
     } ,
 
     index (data , success , error) {

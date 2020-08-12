@@ -5,7 +5,7 @@ namespace App\Customize\api\admin_v1\handler;
 
 
 use App\Customize\api\admin_v1\model\AdminPermissionModel;
-use Illuminate\Support\Facades\Storage;
+use App\Customize\api\admin_v1\util\FileUtil;
 use stdClass;
 use Traversable;
 use function core\convert_obj;
@@ -25,8 +25,11 @@ class AdminPermissionHandler extends Handler
             $permission = null;
         }
         $model->permission = $permission;
-        $model->__b_ico__ = empty($model->b_ico) ? '' : Storage::url($model->b_ico);
-        $model->__s_ico__ = empty($model->s_ico) ? '' : Storage::url($model->s_ico);
+
+        // 特殊！仅该模型的资源文件在数据库写死！
+        // 不允许程序改动，仅允许直接数据库修改
+        $model->__b_ico__ = $model->b_ico;
+        $model->__s_ico__ = $model->s_ico;
         return $model;
     }
 

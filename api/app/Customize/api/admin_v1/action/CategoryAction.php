@@ -30,7 +30,7 @@ class CategoryAction extends Action
         return self::success('' , $res);
     }
 
-    public static function searchByModuleId(Base $context , $module_id , array $param = [])
+    public static function searchByModuleId(Base $context , int $module_id , array $param = [])
     {
         if (empty($module_id)) {
             return self::success('' , []);
@@ -90,7 +90,7 @@ class CategoryAction extends Action
             'module_id'    => 'required|integer',
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $category = CategoryModel::find($id);
         if (empty($category)) {
@@ -119,7 +119,7 @@ class CategoryAction extends Action
             'module_id'  => 'required|integer',
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $id = CategoryModel::insertGetId(array_unit($param , [
@@ -149,7 +149,7 @@ class CategoryAction extends Action
         $data = obj_to_array($data);
         $data = Category::childrens($id , $data , null , true , false);
         $ids = array_column($data , 'id');
-        $count = CategoryModel::delByIds($ids);
+        $count = CategoryModel::destroy($ids);
         return self::success('' , $count);
     }
 
@@ -164,7 +164,7 @@ class CategoryAction extends Action
             $_ids = array_column($_data , 'id');
             $destroy = array_merge($destroy , $_ids);
         }
-        CategoryModel::delByIds($destroy);
+        CategoryModel::destroy($destroy);
         return self::success();
     }
 

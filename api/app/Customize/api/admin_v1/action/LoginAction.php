@@ -22,12 +22,12 @@ class LoginAction extends Action
     public static function login(Base $context , array $param = [])
     {
         $validator = Validator::make($param , [
-            'username' => 'required|min:6' ,
-            'password' => 'required|min:6' ,
+            'username' => 'required|min:4' ,
+            'password' => 'required|min:4' ,
             'captcha_code' => 'required|min:4' ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         if (empty($param['captcha_key'])) {
             return self::error('必要参数丢失【captcha_key】');
@@ -73,7 +73,7 @@ class LoginAction extends Action
             'username' => 'required'
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $user = AdminModel::findByUsername($param['username']);
         if (empty($user)) {

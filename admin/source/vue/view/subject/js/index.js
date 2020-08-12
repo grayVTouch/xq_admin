@@ -1,6 +1,6 @@
 
 const form = {
-    module_id: 0 ,
+    module_id: '' ,
     weight: 0 ,
 };
 
@@ -32,48 +32,60 @@ export default {
                 field: [
                     {
                         type: 'selection',
-                        width: TopContext.table.checkbox,
+                        minWidth: TopContext.table.checkbox,
                         align: TopContext.table.alignCenter,
+                        fixed: 'left' ,
                     },
                     {
                         title: 'id',
                         key: 'id',
+                        minWidth: TopContext.table.id ,
                         align: TopContext.table.alignCenter,
+                        fixed: 'left' ,
                     },
                     {
                         title: '名称【模块】',
                         slot: 'name',
-                        align: TopContext.table.alignLeft
+                        minWidth: TopContext.table.name ,
+                        align: TopContext.table.alignLeft ,
+                        fixed: 'left' ,
                     },
                     {
                         title: '模块id',
                         key: 'module_id',
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter,
                     },
                     {
                         title: 'thumb',
                         slot: 'thumb',
+                        minWidth: TopContext.table.image ,
                         align: TopContext.table.alignCenter,
                     },
                     {
                         title: '属性',
                         slot: 'attr',
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter,
                     },
                     {
                         title: '权重',
                         key: 'weight',
+                        minWidth: TopContext.table.weight ,
                         align: TopContext.table.alignCenter,
                     },
                     {
                         title: '创建时间',
                         key: 'create_time',
+                        minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter,
                     },
                     {
                         title: '操作',
                         slot: 'action',
+                        minWidth: TopContext.table.action ,
                         align: TopContext.table.alignCenter,
+                        fixed: 'right' ,
                     },
                 ],
                 total: 0,
@@ -81,9 +93,10 @@ export default {
                 data: [],
             },
             search: {
-                limit: this.$store.state.context.limit ,
+                limit: TopContext.limit ,
+                module_id: '' ,
             } ,
-            form: {...form}  ,
+            form: G.copy(form)  ,
             attr ,
             modules: [] ,
         };
@@ -93,6 +106,7 @@ export default {
         this.initDom();
         this.initIns();
         this.getData();
+        this.getModules();
     } ,
 
     computed: {
@@ -111,8 +125,10 @@ export default {
             this.dom.thumb = G(this.$refs.thumb);
         } ,
 
-        getModuleData () {
+        getModules () {
+            this.pending('getModules' , true);
             Api.module.all((msg , data , code) => {
+                this.pending('getModules' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     return ;
@@ -225,9 +241,9 @@ export default {
             this._val('mode' , 'edit');
             this.error();
             this.attr = record.__attr__;
-            this.form = {...record};
+            this.form = G.copy(record);
             this.ins.thumb.render(record.__thumb__);
-            this.getModuleData();
+            this.getModules();
         } ,
 
         addEvent () {
@@ -235,8 +251,8 @@ export default {
             this._val('mode' , 'add');
             this.error();
             this.attr = attr;
-            this.form = {...form};
-            this.getModuleData();
+            this.form = G.copy(form);
+            this.getModules();
         } ,
 
         submitEvent () {

@@ -1,7 +1,7 @@
 
 const form = {
     p_id: 0 ,
-    module_id: 0 ,
+    module_id: '' ,
     enable: 1 ,
     weight: 0 ,
 };
@@ -28,70 +28,70 @@ export default {
                 field: [
                     {
                         type: 'selection',
-                        width: TopContext.table.checkbox ,
+                        minWidth: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     },
                     {
                         title: 'id' ,
                         key: 'id' ,
-                        width: TopContext.table.id ,
+                        minWidth: TopContext.table.id ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     } ,
                     {
-                        title: '名称【模块】' ,
+                        title: '名称' ,
                         slot: 'name' ,
                         width: 600 ,
                         fixed: 'left' ,
                     } ,
                     {
-                        title: '模块id',
-                        key: 'module_id',
-                        width: TopContext.table.name ,
+                        title: '模块【id】',
+                        slot: 'module_id',
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter,
                     },
                     {
                         title: '上级id' ,
                         key: 'p_id' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '描述' ,
                         key: 'description' ,
-                        width: TopContext.table.desc
+                        minWidth: TopContext.table.desc
                     } ,
                     {
                         title: '启用?' ,
                         slot: 'enable' ,
-                        width: TopContext.table.status ,
+                        minWidth: TopContext.table.status ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '权重' ,
                         key: 'weight' ,
-                        width: TopContext.table.weight ,
+                        minWidth: TopContext.table.weight ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '创建时间' ,
                         key: 'create_time' ,
-                        width: TopContext.table.time ,
+                        minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '操作' ,
                         slot: 'action' ,
-                        width: TopContext.table.action ,
+                        minWidth: TopContext.table.action ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'right' ,
                     } ,
                 ] ,
                 data: [] ,
             } ,
-            form: {...form}  ,
-            category: [] ,
+            form: G.copy(form)  ,
+            categories: [] ,
             modules: [] ,
         };
     } ,
@@ -114,8 +114,10 @@ export default {
 
     methods: {
 
-        getModuleData () {
+        getModules () {
+            this.pending('getModules' , true);
             Api.module.all((msg , data , code) => {
+                this.pending('getModules' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     return ;
@@ -124,19 +126,28 @@ export default {
             });
         } ,
 
-        moduleChangedEvent (moduleId) {
-            moduleId = parseInt(moduleId);
-            this.val.error.module_id = '';
-            this.form.p_id = 0;
-            let category;
-            if (this.val.mode === 'edit') {
-                category = this.getCategoryExcludeSelfAndChildrenByIdAndModuleId(this.form.id , moduleId);
-            } else {
-                category = this.getCategoryByModuleId(moduleId);
-            }
-            this.category = category;
+        getCategories (moduleId) {
+            this.pending('getCategories' , true);
+            Api.category.searchByModuleId(moduleId , (msg , data , code) => {
+                this.pending('getCategories' , false);
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , data);
+                    return ;
+                }
+                if (this.val.mode === 'edit') {
+                    data = this.getCategoryExcludeSelfAndChildrenByIdAndData(this.form.id , data);
+                }
+                this.categories = data;
+            });
         } ,
 
+
+
+        moduleChangedEvent (moduleId) {
+            this.val.error.module_id = '';
+            this.form.p_id = 0;
+            this.getCategories(moduleId);
+        } ,
 
         initDom () {
 
@@ -254,18 +265,15 @@ export default {
             });
         } ,
 
-        getCategoryExcludeSelfAndChildrenByIdAndModuleId (id , moduleId) {
-            const selfAndChildren = G.t.childrens(id , this.table.data , null , true , false);
+        getCategoryExcludeSelfAndChildrenByIdAndData (id , data) {
+            const selfAndChildren = G.t.childrens(id , data , null , true , false);
             const selfAndChildrenIds = [];
             selfAndChildren.forEach((v) => {
                 selfAndChildrenIds.push(v.id);
             });
             const res = [];
-            this.table.data.forEach((v) => {
+            data.forEach((v) => {
                 if (G.contain(v.id , selfAndChildrenIds)) {
-                    return ;
-                }
-                if (v.module_id !== moduleId) {
                     return ;
                 }
                 res.push(v);
@@ -284,21 +292,22 @@ export default {
             return res;
         } ,
 
-        editEvent (v) {
+        editEvent (record) {
             this._val('modal' , true);
             this._val('mode' , 'edit');
             this.error();
-            this.form = {...v};
-            this.getModuleData();
-            this.category = this.getCategoryExcludeSelfAndChildrenByIdAndModuleId(v.id , this.form.module_id);
+            this.form = G.copy(record);
+            this.getModules();
+            this.getCategories(record.module_id);
         } ,
 
         addEvent () {
             this._val('modal' , true);
             this._val('mode' , 'add');
             this.error();
-            this.form = {...form};
-            this.getModuleData();
+            this.form = G.copy(form);
+            this.getModules();
+            this.categories = [];
         } ,
 
 

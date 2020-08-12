@@ -7,7 +7,11 @@ namespace App\Customize\api\admin_v1\action;
 
 use App\Customize\api\admin_v1\handler\AdminHandler;
 use App\Customize\api\admin_v1\model\AdminModel;
+use App\Customize\api\admin_v1\model\ResourceModel;
+use App\Customize\api\admin_v1\util\ResourceUtil;
 use App\Http\Controllers\api\admin_v1\Base;
+use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -50,12 +54,12 @@ class AdminAction extends Action
     {
         $sex_range = array_keys(my_config('business.sex_for_user'));
         $validator = Validator::make($param , [
-            'username' => 'required|min:6' ,
+            'username' => 'required|min:4' ,
             'sex' => ['required' , Rule::in($sex_range)] ,
             'role_id' => 'required|integer' ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         // 检查用户名是否已经存在
         $res = AdminModel::find($id);
@@ -71,29 +75,41 @@ class AdminAction extends Action
         }
         $param['birthday']      = in_array($param['birthday'] , ['' , 'null']) ? null : $param['birthday'];
         $param['password']      = $param['password'] === '' ? $res->password : Hash::make($param['password']);
-        AdminModel::updateById($res->id , array_unit($param , [
-            'username' ,
-            'password' ,
-            'birthday' ,
-            'avatar' ,
-            'phone' ,
-            'email' ,
-            'role_id' ,
-        ]));
-        return self::success();
+        try {
+            DB::beginTransaction();
+            if ($res->avatar !== $param['avatar']) {
+                // 添加到待删除资源列表
+                ResourceUtil::delete($res->avatar);
+                ResourceUtil::used($param['avatar']);
+            }
+            AdminModel::updateById($res->id , array_unit($param , [
+                'username' ,
+                'password' ,
+                'birthday' ,
+                'avatar' ,
+                'phone' ,
+                'email' ,
+                'role_id' ,
+            ]));
+            DB::commit();
+            return self::success();
+        } catch(Exception $e){
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function store(Base $context , array $param = [])
     {
         $sex_range = array_keys(my_config('business.sex_for_user'));
         $validator = Validator::make($param , [
-            'username' => 'required|min:6' ,
+            'username' => 'required|min:4' ,
             'password' => 'required' ,
             'sex' => ['required' , Rule::in($sex_range)] ,
             'role_id' => 'required|integer' ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $res = AdminModel::findByUsername($param['username']);
         if (!empty($res)) {
@@ -101,16 +117,24 @@ class AdminAction extends Action
         }
         $param['birthday']      = in_array($param['birthday'] , ['' , 'null']) ? null : $param['birthday'];
         $param['password']      = Hash::make($param['password']);
-        $id = AdminModel::insertGetId(array_unit($param , [
-            'username' ,
-            'password' ,
-            'birthday' ,
-            'avatar' ,
-            'phone' ,
-            'email' ,
-            'role_id' ,
-        ]));
-        return self::success('' , $id);
+        try {
+            DB::beginTransaction();
+            $id = AdminModel::insertGetId(array_unit($param , [
+                'username' ,
+                'password' ,
+                'birthday' ,
+                'avatar' ,
+                'phone' ,
+                'email' ,
+                'role_id' ,
+            ]));
+            ResourceUtil::used($res->path);
+            DB::commit();
+            return self::success('' , $id);
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function show(Base $context , $id , array $param = [])
@@ -132,20 +156,36 @@ class AdminAction extends Action
         if ($res->is_root) {
             return self::error('禁止对超级管理员操作' , '' , 403);
         }
-        $count = AdminModel::delById($id);
-        return self::success('' , $count);
+        try {
+            DB::beginTransaction();
+            $count = AdminModel::destroy($id);
+            ResourceUtil::delete($res->avatar);
+            DB::commit();
+            return self::success('' , $count);
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
-        $res = AdminModel::getByIds($ids);
-        foreach ($res as $v)
-        {
-            if ($v->is_root) {
-                return self::error('包含超级管理员，禁止操作' , '' , 403);
+        try {
+            DB::beginTransaction();
+            $res = AdminModel::getByIds($ids);
+            foreach ($res as $v)
+            {
+                if ($v->is_root) {
+                    return self::error('包含超级管理员，禁止操作' , '' , 403);
+                }
+                ResourceUtil::delete($v->avatar);
+                AdminModel::destroy($v->id);
             }
+            DB::commit();
+            return self::success();
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
         }
-        $count = AdminModel::delByIds($ids);
-        return self::success('' , $count);
     }
 }

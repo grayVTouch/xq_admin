@@ -12,6 +12,7 @@ use function api\admin_v1\get_form_error;
 use function api\admin_v1\my_config;
 use function api\admin_v1\parse_order;
 use function core\array_unit;
+use function core\current_time;
 
 class TagAction extends Action
 {
@@ -31,7 +32,7 @@ class TagAction extends Action
             'module_id' => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $res = TagModel::find($id);
         if (empty($res)) {
@@ -98,10 +99,12 @@ class TagAction extends Action
             return self::success('' , $tag);
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
+        $param['create_time'] = current_time();
         $id = TagModel::insertGetId(array_unit($param , [
             'name' ,
             'weight' ,
             'module_id' ,
+            'create_time' ,
         ]));
         $tag = TagModel::find($id);
         TagHandler::handle($tag);
@@ -111,23 +114,23 @@ class TagAction extends Action
 
     public static function show(Base $context , $id , array $param = [])
     {
-        $role = TagModel::find($id);
+        $res = TagModel::find($id);
         if (empty($role)) {
             return self::error('标签不存在' , '' , 404);
         }
-        $role = TagModel::handle($role);
-        return self::success('' , $role);
+        $res = TagHandler::handle($res);
+        return self::success('' , $res);
     }
 
     public static function destroy(Base $context , $id , array $param = [])
     {
-        $count = TagModel::delById($id);
+        $count = TagModel::destroy($id);
         return self::success('' , $count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
-        $count = TagModel::delByIds($ids);
+        $count = TagModel::destroy($ids);
         return self::success('' , $count);
     }
 
@@ -141,7 +144,7 @@ class TagAction extends Action
         return self::success('' , $res);
     }
 
-    public static function topByModuleId(Base $context , $module_id , array $param = [])
+    public static function topByModuleId(Base $context , int $module_id ,  array $param = [])
     {
         if (empty($module_id)) {
             return self::success('' , []);

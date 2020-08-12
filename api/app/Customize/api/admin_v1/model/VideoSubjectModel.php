@@ -14,17 +14,37 @@ class VideoSubjectModel extends Model
 
     public static function index(array $filter = [] , array $order = [] , int $limit = 20): Paginator
     {
-        $filter['id'] = $filter['id'] ?? '';
-        $filter['name'] = $filter['name'] ?? '';
+        $filter['id']               = $filter['id'] ?? '';
+        $filter['name']             = $filter['name'] ?? '';
+        $filter['module_id']        = $filter['module_id'] ?? '';
+        $filter['video_series_id']  = $filter['video_series_id'] ?? '';
+        $filter['video_company_id'] = $filter['video_company_id'] ?? '';
+
         $order['field'] = $order['field'] ?? 'id';
         $order['value'] = $order['value'] ?? 'asc';
+
         $where = [];
+
         if ($filter['id'] !== '') {
             $where[] = ['id' , '=' , $filter['id']];
         }
+
         if ($filter['name'] !== '') {
             $where[] = ['name' , 'like' , "%{$filter['name']}%"];
         }
+
+        if ($filter['module_id'] !== '') {
+            $where[] = ['module_id' , '=' , $filter['module_id']];
+        }
+
+        if ($filter['video_series_id'] !== '') {
+            $where[] = ['video_series_id' , '=' , $filter['video_series_id']];
+        }
+
+        if ($filter['video_company_id'] !== '') {
+            $where[] = ['video_company_id' , '=' , $filter['video_company_id']];
+        }
+
         return self::where($where)
             ->orderBy($order['field'] , $order['value'])
             ->paginate($limit);

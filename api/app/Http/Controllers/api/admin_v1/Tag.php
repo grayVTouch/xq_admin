@@ -14,6 +14,7 @@ class Tag extends Base
     {
         $param = $this->request->query();
         $param['name'] = $param['name'] ?? '';
+        $param['module_id'] = $param['module_id'] ?? '';
         $param['order'] = $param['order'] ?? '';
         $param['limit'] = $param['limit'] ?? '';
         $res = TagAction::index($this , $param);
@@ -94,8 +95,9 @@ class Tag extends Base
         return success($res['message'] , $res['data']);
     }
 
-    public function topByModuleId($module_id)
+    public function topByModuleId()
     {
+        $module_id = $this->request->query('module_id') ?? 0;
         $res = TagAction::topByModuleId($this , $module_id);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);

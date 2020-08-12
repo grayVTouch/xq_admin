@@ -89,6 +89,8 @@
 
                     <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
                         <template v-slot:enable="{row,index}"><my-switch v-model="row.enable" :loading="val.pending['enable_' + row.id]" :extra="{field: 'enable' , data: row}" @on-change="updateBoolValEvent" /></template>
+                        <template v-slot:default="{row,index}"><my-switch v-model="row.default" :loading="val.pending['default_' + row.id]" :extra="{field: 'default' , data: row}" @on-change="updateBoolValEvent" /></template>
+                        <template v-slot:auth="{row,index}"><my-switch v-model="row.auth" :loading="val.pending['auth_' + row.id]" :extra="{field: 'auth' , data: row}" @on-change="updateBoolValEvent" /></template>
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
                             <my-table-button type="error" :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
@@ -113,25 +115,69 @@
                     <form class="form" @submit.prevent="submitEvent">
                         <table class="input-table">
                             <tbody>
-                            <tr :class="{error: val.error.name}" id="form-name">
+                            <tr :class="{error: val.error.name}">
                                 <td>名称</td>
                                 <td>
                                     <input type="text" v-model="form.name" @input="val.error.name=''" class="form-text">
-                                    <span class="msg"></span>
                                     <span class="need">*</span>
-                                    <span class="e-msg"></span>
+                                    <div class="msg"></div>
+                                    <div class="e-msg">{{ val.error.name }}</div>
                                 </td>
                             </tr>
-                            <tr :class="{error: val.error.description}" id="form-description">
+                            <tr :class="{error: val.error.description}">
                                 <td>描述</td>
                                 <td>
                                     <textarea v-model="form.description" @input="val.error.description=''" class="form-textarea"></textarea>
-                                    <span class="msg"></span>
                                     <span class="need"></span>
-                                    <span class="e-msg"></span>
+                                    <div class="msg"></div>
+                                    <div class="e-msg">{{ val.error.description }}</div>
                                 </td>
                             </tr>
-                            <tr :class="{error: val.error.weight}" id="form-weight">
+                            <tr :class="{error: val.error.enable}">
+                                <td>启用？</td>
+                                <td>
+                                    <RadioGroup v-model="form.enable"  @input="val.error.enable = ''">
+                                        <Radio v-for="(v,k) in $store.state.business.bool_for_int" :key="k" :label="parseInt(k)">{{ v }}</Radio>
+                                    </RadioGroup>
+                                    <span class="need">*</span>
+                                    <div class="msg">默认：开启</div>
+                                    <div class="e-msg">{{ val.error.enable }}</div>
+                                </td>
+                            </tr>
+                            <tr :class="{error: val.error.default}">
+                                <td>默认？</td>
+                                <td>
+                                    <RadioGroup v-model="form.default"  @input="val.error.default = ''">
+                                        <Radio v-for="(v,k) in $store.state.business.bool_for_int" :key="k" :label="parseInt(k)">{{ v }}</Radio>
+                                    </RadioGroup>
+                                    <span class="need">*</span>
+                                    <div class="msg">默认：否</div>
+                                    <div class="e-msg">{{ val.error.default }}</div>
+                                </td>
+                            </tr>
+                            <tr :class="{error: val.error.auth}">
+                                <td>认证？</td>
+                                <td>
+                                    <RadioGroup v-model="form.auth"  @input="val.error.auth = ''">
+                                        <Radio v-for="(v,k) in $store.state.business.bool_for_int" :key="k" :label="parseInt(k)">{{ v }}</Radio>
+                                    </RadioGroup>
+                                    <span class="need">*</span>
+                                    <div class="msg">默认：否</div>
+                                    <div class="e-msg">{{ val.error.auth }}</div>
+                                </td>
+                            </tr>
+                            <tr :class="{error: val.error.auth_password}" v-show="form.auth">
+                                <td>认证密码</td>
+                                <td>
+                                    <input type="text" v-model="form.auth_password" @input="val.error.auth_password=''" class="form-text">
+                                    <span class="need"></span>
+                                    <div class="msg">
+                                        <template v-if="val.mode === 'edit'">为空，则使用原密码</template>
+                                    </div>
+                                    <div class="e-msg">{{ val.error.auth_password }}</div>
+                                </td>
+                            </tr>
+                            <tr :class="{error: val.error.weight}">
                                 <td>权重</td>
                                 <td>
                                     <input type="number" v-model="form.weight" @input="val.error.weight = ''" class="form-text">

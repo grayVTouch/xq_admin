@@ -28,4 +28,12 @@ class ModuleModel extends Model
             ->orderBy($order['field'] , $order['value'])
             ->paginate($limit);
     }
+
+    public static function setNotDefaultByExcludeId(int $exclude_id)
+    {
+        return self::where('id' , '!=' , $exclude_id)
+            ->update([
+                'default' => 0 ,
+            ]);
+    }
 }

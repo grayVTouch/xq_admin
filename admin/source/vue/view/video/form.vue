@@ -1,5 +1,5 @@
 <template>
-    <my-form-drawer :title="title" v-model="drawer">
+    <my-form-drawer :title="title" v-model="val.drawer">
 
         <template slot="header">
 
@@ -24,7 +24,7 @@
                         <table class="input-table">
                             <tbody>
 
-                            <tr :class="{error: val.error.name}" id="form-name">
+                            <tr :class="{error: val.error.name}">
                                 <td>名称：</td>
                                 <td>
                                     <input type="text" class="form-text" v-model="form.name" @input="val.error.name = ''">
@@ -34,10 +34,10 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.user_id}" id="form-user_id">
+                            <tr :class="{error: val.error.user_id}">
                                 <td>所属用户：</td>
                                 <td>
-                                    <input type="text" readonly="readonly" v-model="users.current.username" class="form-text w-150">
+                                    <input type="text" readonly="readonly" :value="`${getUsername(users.current.username , users.current.nickname)}【${users.current.id}】`" class="form-text w-180 run-cursor-not-allow">
                                     如需重新搜索，请点击
                                     <Button @click="searchUserEvent">搜索</Button>
                                     <span class="need">*</span>
@@ -46,43 +46,44 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.module_id}" id="form-module_id">
+                            <tr :class="{error: val.error.module_id}">
                                 <td>所属模块：</td>
                                 <td>
-
                                     <my-select :data="modules" v-model="form.module_id" @change="moduleChangedEvent"></my-select>
+                                    <my-loading v-if="val.pending.getModules"></my-loading>
                                     <span class="need">*</span>
                                     <div class="msg"></div>
                                     <div class="e-msg">{{ val.error.module_id }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.category_id}" id="form-category_id">
+                            <tr :class="{error: val.error.category_id}">
                                 <td>所属分类：</td>
                                 <td>
                                     <my-deep-select :data="categories" v-model="form.category_id" @on-change="val.error.category_id = ''" :has="false"></my-deep-select>
                                     <span class="need">*</span>
+                                    <my-loading v-if="val.pending.getCategories"></my-loading>
                                     <div class="msg">请务必在选择模块后操作</div>
                                     <div class="e-msg">{{ val.error.category_id }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.type}" id="form-type">
+                            <tr :class="{error: val.error.type}">
                                 <td>类型：</td>
                                 <td>
-                                    <RadioGroup v-model="form.type">
+                                    <RadioGroup v-model="form.type" @on-change="typeChangedEvent">
                                         <Radio v-for="(v,k) in $store.state.business.video.type" :key="k" :label="k">{{ v }}</Radio>
                                     </RadioGroup>
                                     <span class="need">*</span>
-                                    <div class="msg"></div>
+                                    <div class="msg">默认：杂类</div>
                                     <div class="e-msg">{{ val.error.type }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.video_subject_id}" id="form-video_subject_id" v-show="form.type === 'pro'">
-                                <td>关联主体：</td>
+                            <tr :class="{error: val.error.video_subject_id}" v-show="form.type === 'pro'">
+                                <td>视频专题：</td>
                                 <td>
-                                    <input type="text" readonly="readonly" v-model="video_subjects.current.name" class="form-text w-150">
+                                    <input type="text" readonly="readonly" :value="`${videoSubjects.current.name}【${videoSubjects.current.id}】`" class="form-text w-180 run-cursor-not-allow">
                                     如需重新搜索，请点击
                                     <Button @click="searchVideoSubjectEvent">搜索</Button>
                                     <span class="need">*</span>
@@ -91,7 +92,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.thumb}" id="form-thumb">
+                            <tr :class="{error: val.error.thumb}">
                                 <td>封面</td>
                                 <td>
                                     <div ref="thumb">
@@ -127,7 +128,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.weight}" id="form-weight">
+                            <tr :class="{error: val.error.weight}">
                                 <td>权重</td>
                                 <td>
                                     <input type="number" v-model="form.weight" @input="val.error.weight = ''" class="form-text">
@@ -137,7 +138,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.view_count}" id="form-view_count">
+                            <tr :class="{error: val.error.view_count}">
                                 <td>浏览次数</td>
                                 <td>
                                     <input type="number" v-model="form.view_count" @input="val.error.view_count = ''" class="form-text">
@@ -147,7 +148,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.praise_count}" id="form-praise_count">
+                            <tr :class="{error: val.error.praise_count}">
                                 <td>获赞次数</td>
                                 <td>
                                     <input type="number" v-model="form.praise_count" @input="val.error.praise_count = ''" class="form-text">
@@ -157,7 +158,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.against_count}" id="form-against_count">
+                            <tr :class="{error: val.error.against_count}">
                                 <td>反对次数</td>
                                 <td>
                                     <input type="number" v-model="form.against_count" @input="val.error.against_count = ''" class="form-text">
@@ -167,19 +168,19 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.status}" id="form-status">
+                            <tr :class="{error: val.error.status}">
                                 <td>状态</td>
                                 <td>
                                     <RadioGroup v-model="form.status">
                                         <Radio v-for="(v,k) in $store.state.business.video.status" :key="k" :label="parseInt(k)">{{ v }}</Radio>
                                     </RadioGroup>
                                     <span class="need">*</span>
-                                    <div class="msg"></div>
+                                    <div class="msg">默认：审核中</div>
                                     <div class="e-msg">{{ val.error.status }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.fail_reason}" v-show="form.status === -1" id="form-fail_reason">
+                            <tr :class="{error: val.error.fail_reason}" v-show="form.status === -1">
                                 <td>失败原因</td>
                                 <td>
                                     <textarea v-model="form.fail_reason" class="form-textarea"></textarea>
@@ -189,7 +190,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.description}" id="form-description">
+                            <tr :class="{error: val.error.description}">
                                 <td>描述</td>
                                 <td>
                                     <textarea v-model="form.description" class="form-textarea"></textarea>
@@ -199,7 +200,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.create_time}" id="form-create_time">
+                            <tr :class="{error: val.error.create_time}">
                                 <td>创建时间</td>
                                 <td>
                                     <DatePicker type="datetime" v-model="createTime" format="yyyy-MM-dd HH:mm:ss" @on-change="setDatetimeEvent" class="iview-form-input"></DatePicker>
@@ -229,7 +230,7 @@
                                 <div>
                                     <table class="input-table">
                                         <tbody>
-                                        <tr :class="{error: val.error.src}" id="form-src">
+                                        <tr :class="{error: val.error.src}">
                                             <td>
                                                 <div ref="video">
                                                     <!-- 上传图片组件 -->
@@ -330,11 +331,11 @@
 
                     <div class="search-modal">
                         <div class="input">
-                            <div class="input-mask"><input type="text" v-model="video_subjects.value" @keyup.enter="searchVideoSubject" placeholder="请输入搜索值"></div>
+                            <div class="input-mask"><input type="text" v-model="videoSubjects.value" @keyup.enter="searchVideoSubject" placeholder="请输入搜索值"></div>
                             <div class="msg"></div>
                         </div>
                         <div class="list">
-                            <Table border  :loading="val.pending.searchVideoSubject" :data="video_subjects.data" :columns="video_subjects.field" @on-row-click="updateSubjectEvent">
+                            <Table border  :loading="val.pending.searchVideoSubject" :data="videoSubjects.data" :columns="videoSubjects.field" @on-row-click="updateSubjectEvent">
                                 <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
                                 <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
                             </Table>

@@ -20,6 +20,14 @@
                     </div>
 
                     <div class="option">
+                        <div class="field">模块：</div>
+                        <div class="value">
+                            <my-select :data="modules" v-model="search.module_id" empty=""></my-select>
+                            <my-loading v-if="val.pending.getModules"></my-loading>
+                        </div>
+                    </div>
+
+                    <div class="option">
                         <div class="field"></div>
                         <div class="value">
                             <Button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
@@ -88,8 +96,8 @@
                 <div class="table">
 
                     <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
-                        <template v-slot:name="{row,index}">{{ row.name + `【${row.module ? row.module.name : 'unknow'}】` }}</template>
-<!--                        <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>-->
+<!--                        <template v-slot:name="{row,index}">{{ row.name + `【${row.module ? row.module.name : 'unknow'}】` }}</template>-->
+                        <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
                             <my-table-button type="error" :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
@@ -114,7 +122,7 @@
                     <form class="form" @submit.prevent="submitEvent">
                         <table class="input-table">
                             <tbody>
-                            <tr :class="{error: val.error.name}" id="form-name">
+                            <tr :class="{error: val.error.name}">
                                 <td>名称</td>
                                 <td>
                                     <input type="text" v-model="form.name" @input="val.error.name=''" class="form-text">
@@ -124,7 +132,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.module_id}" id="form-module_id">
+                            <tr :class="{error: val.error.module_id}">
                                 <td>所属模块</td>
                                 <td>
                                     <my-select :data="modules" v-model="form.module_id"></my-select>
@@ -134,13 +142,13 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.weight}" id="form-weight">
+                            <tr :class="{error: val.error.weight}">
                                 <td>权重</td>
                                 <td>
                                     <input type="number" v-model="form.weight" @input="val.error.weight = ''" class="form-text">
-                                    <span class="msg">仅允许整数</span>
                                     <span class="need"></span>
-                                    <span class="e-msg"></span>
+                                    <div class="msg">仅允许整数</div>
+                                    <div class="e-msg">{{ val.error.weight }}</div>
                                 </td>
                             </tr>
 

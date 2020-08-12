@@ -1,6 +1,9 @@
 
 const form = {
     weight: 0 ,
+    auth: 0 ,
+    enable: 1 ,
+    default: 0 ,
 };
 
 export default {
@@ -26,43 +29,69 @@ export default {
                 field: [
                     {
                         type: 'selection',
-                        width: TopContext.table.checkbox ,
+                        minWidth: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
                     },
                     {
                         title: 'id' ,
                         key: 'id' ,
+                        minWidth: TopContext.table.id ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
                     } ,
                     {
                         title: '名称' ,
                         key: 'name' ,
-                        align: TopContext.table.alignCenter
+                        minWidth: TopContext.table.name ,
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
                     } ,
                     {
                         title: '描述' ,
                         key: 'description' ,
+                        minWidth: TopContext.table.desc ,
                         align: TopContext.table.alignLeft ,
                     } ,
                     {
                         title: '启用？' ,
                         slot: 'enable' ,
+                        minWidth: TopContext.table.status ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
+                    } ,
+                    {
+                        title: '默认？' ,
+                        slot: 'default' ,
+                        minWidth: TopContext.table.status ,
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
+                    } ,
+                    {
+                        title: '认证？' ,
+                        slot: 'auth' ,
+                        minWidth: TopContext.table.status ,
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
                     } ,
                     {
                         title: '权重' ,
                         key: 'weight' ,
+                        minWidth: TopContext.table.weight ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '创建时间' ,
                         key: 'create_time' ,
+                        minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '操作' ,
                         slot: 'action' ,
+                        minWidth: TopContext.table.action ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
                     } ,
                 ] ,
                 total: 0 ,
@@ -70,9 +99,9 @@ export default {
                 data: [] ,
             } ,
             search: {
-                limit: this.$store.state.context.limit
+                limit: TopContext.limit
             } ,
-            form: {...form}  ,
+            form: G.copy(form)  ,
         };
     } ,
 
@@ -122,6 +151,9 @@ export default {
                     return ;
                 }
                 this.message('success' , '操作成功');
+                if (extra.field === 'default') {
+                    this.getData();
+                }
             });
         } ,
 
@@ -207,14 +239,15 @@ export default {
             this._val('modal' , true);
             this._val('mode' , 'edit');
             this.error();
-            this.form = {...record};
+            record.auth_password = '';
+            this.form = G.copy(record);
         } ,
 
         addEvent () {
             this._val('modal' , true);
             this._val('mode' , 'add');
             this.error();
-            this.form = {...form};
+            this.form = G.copy(form);
         } ,
 
         submitEvent () {

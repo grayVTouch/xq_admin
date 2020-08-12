@@ -6,6 +6,9 @@ namespace App\Customize\api\admin_v1\action;
 use App\Customize\api\admin_v1\handler\ModuleHandler;
 use App\Customize\api\admin_v1\model\ModuleModel;
 use App\Http\Controllers\api\admin_v1\Base;
+use Exception;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use function api\admin_v1\get_form_error;
@@ -28,69 +31,177 @@ class ModuleAction extends Action
     public static function update(Base $context , $id , array $param = [])
     {
         $bool_for_int = array_keys(my_config('business.bool_for_int'));
+
         $validator = Validator::make($param , [
-            'name' => 'required' ,
-            'enable' => ['required' , Rule::in($bool_for_int)] ,
+            'name'          => 'required' ,
+            'enable'        => ['required' , Rule::in($bool_for_int)] ,
+            'default'       => ['required' , Rule::in($bool_for_int)] ,
+            'auth'          => ['required' , Rule::in($bool_for_int)] ,
+            'auth_password' => 'sometimes|min:4' ,
         ]);
+
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
+
         $res = ModuleModel::find($id);
+
         if (empty($res)) {
             return self::error('模块不存在' , '' , 404);
         }
-        $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
-        ModuleModel::updateById($res->id , array_unit($param , [
-            'name' ,
-            'weight' ,
-            'enable' ,
-        ]));
-        return self::success();
+
+        $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
+        $param['auth_password'] = $param['auth'] ?
+            ($param['auth_password'] === '' ?
+                $res->auth_password :
+                Hash::make($param['auth_password'])
+            ) :
+            '';
+
+        try {
+            DB::beginTransaction();
+
+            ModuleModel::updateById($res->id , array_unit($param , [
+                'name' ,
+                'description' ,
+                'enable' ,
+                'auth' ,
+                'auth_password' ,
+                'weight' ,
+                'default' ,
+            ]));
+
+            if ($param['default']) {
+                ModuleModel::setNotDefaultByExcludeId($res->id);
+            }
+
+            DB::commit();
+
+            return self::success();
+        } catch(Exception $e) {
+
+            DB::rollBack();
+
+            throw $e;
+        }
     }
 
     public static function localUpdate(Base $context , $id , array $param = [])
     {
         $bool_for_int = array_keys(my_config('business.bool_for_int'));
+
         $validator = Validator::make($param , [
-            'enable' => ['sometimes' , Rule::in($bool_for_int)] ,
+            'enable'        => ['sometimes' , Rule::in($bool_for_int)] ,
+            'auth'          => ['sometimes' , Rule::in($bool_for_int)] ,
+            'auth_password' => 'sometimes|min:4' ,
         ]);
+
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
+
         $res = ModuleModel::find($id);
+
         if (empty($res)) {
             return self::error('模块不存在' , '' , 404);
         }
-        $param['name'] = $param['name'] === '' ? $res->name : $param['name'];
+
+        $param['name']   = $param['name'] === '' ? $res->name : $param['name'];
         $param['weight'] = $param['weight'] === '' ? $res->weight : $param['weight'];
         $param['enable'] = $param['enable'] === '' ? $res->enable : $param['enable'];
-        ModuleModel::updateById($res->id , array_unit($param , [
-            'name' ,
-            'weight' ,
-            'enable' ,
-        ]));
-        return self::success();
+        $param['default'] = $param['default'] === '' ? $res->default : $param['default'];
+        $param['auth_password'] = $param['auth'] !== '' ?
+            ($param['auth'] ?
+                ($param['auth_password'] === '' ?
+                    $res->auth_password :
+                    Hash::make($param['auth_password'])
+                ) :
+                ''
+            ) :
+            $res->auth_password;
+
+        try {
+            DB::beginTransaction();
+
+            ModuleModel::updateById($res->id , array_unit($param , [
+                'name' ,
+                'description' ,
+                'enable' ,
+                'auth' ,
+                'auth_password' ,
+                'weight' ,
+                'default' ,
+            ]));
+
+            if ($param['default']) {
+                ModuleModel::setNotDefaultByExcludeId($res->id);
+            }
+
+            DB::commit();
+
+            return self::success();
+        } catch(Exception $e) {
+
+            DB::rollBack();
+
+            throw $e;
+        }
     }
 
     public static function store(Base $context , array $param = [])
     {
         $bool_for_int = array_keys(my_config('business.bool_for_int'));
+
         $validator = Validator::make($param , [
-            'name' => 'required' ,
-            'enable' => ['required' , Rule::in($bool_for_int)] ,
+            'name'          => 'required' ,
+            'enable'        => ['required' , Rule::in($bool_for_int)] ,
+            'default'       => ['required' , Rule::in($bool_for_int)] ,
+            'auth'          => ['required' , Rule::in($bool_for_int)] ,
+            'auth_password' => 'sometimes|min:4' ,
         ]);
+
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
-        $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
-        $param['create_time'] = current_time();
-        $id = ModuleModel::insertGetId(array_unit($param , [
-            'name' ,
-            'weight' ,
-            'enable' ,
-            'create_time'
-        ]));
-        return self::success('' , $id);
+
+        if ($param['auth']) {
+            if (empty($param['auth_password'])) {
+                return self::error('表单错误' , [
+                    'auth_password' => '请提供认证密码' ,
+                ]);
+            }
+        }
+
+        $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
+        $param['auth_password'] = $param['auth'] ? Hash::make($param['auth_password']) : '';
+        $param['create_time']   = current_time();
+
+        try {
+            DB::beginTransaction();
+
+            $id = ModuleModel::insertGetId(array_unit($param , [
+                'name' ,
+                'description' ,
+                'enable' ,
+                'auth' ,
+                'auth_password' ,
+                'weight' ,
+                'default' ,
+            ]));
+
+            if ($param['default']) {
+                ModuleModel::setNotDefaultByExcludeId($id);
+            }
+
+            DB::commit();
+
+            return self::success('' , $id);
+        } catch(Exception $e) {
+
+            DB::rollBack();
+
+            throw $e;
+        }
     }
 
     public static function show(Base $context , $id , array $param = [])
@@ -105,13 +216,13 @@ class ModuleAction extends Action
 
     public static function destroy(Base $context , $id , array $param = [])
     {
-        $count = ModuleModel::delById($id);
+        $count = ModuleModel::destroy($id);
         return self::success('' , $count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
-        $count = ModuleModel::delByIds($ids);
+        $count = ModuleModel::destroy($ids);
         return self::success('' , $count);
     }
 

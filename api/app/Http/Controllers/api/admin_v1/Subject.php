@@ -14,6 +14,7 @@ class Subject extends Base
     {
         $param = $this->request->query();
         $param['name'] = $param['name'] ?? '';
+        $param['module_id'] = $param['module_id'] ?? '';
         $param['order'] = $param['order'] ?? '';
         $param['limit'] = $param['limit'] ?? '';
         $res = SubjectAction::index($this , $param);

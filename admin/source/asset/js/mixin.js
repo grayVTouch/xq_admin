@@ -1,5 +1,5 @@
 
-import store from '../../vue/vuex';
+import store from '../../vue/vuex/index.js';
 
 /**
  * ****************
@@ -7,6 +7,7 @@ import store from '../../vue/vuex';
  * ****************
  */
 Vue.mixin({
+
     store ,
 
     data () {
@@ -23,11 +24,7 @@ Vue.mixin({
     methods: {
 
         isValid (val) {
-            return G.isValid(val);
-        } ,
-
-        getClass (val) {
-            return G.isValid(val) ? 'error' : '';
+            return G.isValid(val) && !G.isEmptyString(val);
         } ,
 
         push (...args) {
@@ -102,7 +99,7 @@ Vue.mixin({
                 this.message('error' , msg);
                 return ;
             }
-            this.message('error' , '表单错误，请检查');
+            this.message('error' , G.isEmptyString(msg) ? '表单错误，请检查' : msg);
             this.error(data);
         } ,
 
@@ -156,5 +153,11 @@ Vue.mixin({
         handleVideo () {
 
         } ,
+
+        getUsername (username , nickname) {
+            return username ? username : (nickname ? nickname : '');
+        } ,
+
+
     }
 });

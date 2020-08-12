@@ -9,22 +9,73 @@
                 </div>
 
                 <div class="filter-option">
-                    <div class="option">
-                        <div class="field">id：</div>
-                        <div class="value"><input type="text" class="form-text" v-model="search.id"></div>
-                    </div>
-
-                    <div class="option">
-                        <div class="field">名称：</div>
-                        <div class="value"><input type="text" class="form-text" v-model="search.name"></div>
-                    </div>
-
-                    <div class="option">
-                        <div class="field"></div>
-                        <div class="value">
-                            <Button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
+                    <form @submit.prevent="searchEvent">
+                        <div class="option">
+                            <div class="field">id：</div>
+                            <div class="value"><input type="text" class="form-text" v-model="search.id"></div>
                         </div>
-                    </div>
+
+                        <div class="option">
+                            <div class="field">名称：</div>
+                            <div class="value"><input type="text" class="form-text" v-model="search.name"></div>
+                        </div>
+
+                        <div class="option">
+                            <div class="field">用户id：</div>
+                            <div class="value"><input type="text" class="form-text" v-model="search.user_id"></div>
+                        </div>
+
+
+                        <div class="option">
+                            <div class="field">模块：</div>
+                            <div class="value">
+                                <my-select :data="modules" v-model="search.module_id" empty="" @change="getCategories"></my-select>
+                                <my-loading v-if="val.pending.getModules"></my-loading>
+                            </div>
+                        </div>
+
+                        <div class="option">
+                            <div class="field">分类：</div>
+                            <div class="value">
+                                <my-deep-select :data="categories" v-model="search.category_id" :has="false" empty=""></my-deep-select>
+                                <my-loading v-if="val.pending.getCategories"></my-loading>
+                                <span class="msg">请选择模块后操作</span>
+                            </div>
+                        </div>
+
+                        <div class="option">
+                            <div class="field">类型：</div>
+                            <div class="value">
+                                <RadioGroup v-model="search.type">
+                                    <Radio v-for="(v,k) in $store.state.context.business.video.type" :key="k" :label="k">{{ v }}</Radio>
+                                </RadioGroup>
+                            </div>
+                        </div>
+
+                        <div class="option">
+                            <div class="field">视频专题：</div>
+                            <div class="value">
+                                <input type="number" class="form-text" v-model="search.video_subject_id">
+                            </div>
+                        </div>
+
+                        <div class="option">
+                            <div class="field">状态：</div>
+                            <div class="value">
+                                <RadioGroup v-model="search.status">
+                                    <Radio v-for="(v,k) in $store.state.context.business.video.status" :key="k" :label="parseInt(k)">{{ v }}</Radio>
+                                </RadioGroup>
+                            </div>
+                        </div>
+
+                        <div class="option">
+                            <div class="field"></div>
+                            <div class="value">
+                                <button type="submit" v-show="false"></button>
+                                <Button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -95,10 +146,12 @@
                             <img :src="row.thumb_for_program ? row.__thumb_for_program__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image" @click="link(row.__thumb_for_program__)">
                         </template>
                         <template v-slot:simple_preview="{row,index}">
-                            <video :src="row.__simple_preview__" controls :height="$store.state.context.table.imageH"></video>
+                            <Tooltip content="点击可播放预览视频" placement="right">
+                                <video :src="row.__simple_preview__" @click="restartPlayVideo" :height="$store.state.context.table.imageH"></video>
+                            </Tooltip>
                         </template>
                         <template v-slot:preview="{row,index}">
-                            <img :src="row.preview ? row.__preview__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image" @click="link(row.__preview__)">
+                            <Button @click="link(row.__preview__)">点击查看</Button>
                         </template>
                         <template v-slot:user_id="{row,index}">
                             {{ row.user ? `${row.user.username}【${row.user.id}】` : `unknow【${row.user_id}】` }}
@@ -141,14 +194,9 @@
             </div>
 
             <my-form
-                    :form="form"
-                    :title="title"
-                    :categories="categories"
-                    :modules="modules"
-                    :topTags="topTags"
+                    ref="form"
+                    :data="form"
                     :mode="val.mode"
-                    v-model="val.drawer"
-                    @on-module-change="moduleChanged"
                     @on-success="getData"
             ></my-form>
 

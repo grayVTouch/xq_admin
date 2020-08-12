@@ -20,12 +20,15 @@ class Category extends Base
         return success($res['message'] , $res['data']);
     }
 
-    public function searchByModuleId($module_id)
+    public function searchByModuleId()
     {
-        $res = CategoryAction::searchByModuleId($this , $module_id);
+        $module_id  = $this->request->query('module_id') ?? 0;
+        $res        = CategoryAction::searchByModuleId($this , $module_id);
+
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
+
         return success($res['message'] , $res['data']);
     }
 

@@ -7,7 +7,10 @@ use App\Customize\api\admin_v1\handler\ImageAtPositionHandler;
 use App\Customize\api\admin_v1\model\ImageAtPositionModel;
 use App\Customize\api\admin_v1\model\ModuleModel;
 use App\Customize\api\admin_v1\model\PositionModel;
+use App\Customize\api\admin_v1\util\ResourceUtil;
 use App\Http\Controllers\api\admin_v1\Base;
+use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use function api\admin_v1\get_form_error;
 use function api\admin_v1\my_config;
@@ -28,12 +31,12 @@ class ImageAtPositionAction extends Action
     public static function update(Base $context , $id , array $param = [])
     {
         $validator = Validator::make($param , [
-            'module_id' => 'required' ,
-            'position_id' => 'required' ,
-            'path' => 'required' ,
+            'module_id'     => 'required' ,
+            'position_id'   => 'required' ,
+            'path'          => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $res = ImageAtPositionModel::find($id);
         if (empty($res)) {
@@ -49,27 +52,37 @@ class ImageAtPositionAction extends Action
         }
         $param['module_id'] = $module->id;
         $param['platform'] = $position->platform;
-        ImageAtPositionModel::updateById($res->id , array_unit($param , [
-            'position_id' ,
-            'platform' ,
-            'name' ,
-            'mime' ,
-            'path' ,
-            'link' ,
-            'module_id' ,
-        ]));
-        return self::success();
+        try {
+            DB::beginTransaction();
+            if ($res->path !== $param['path']) {
+                ResourceUtil::delete($res->path);
+                ResourceUtil::used($param['path']);
+            }
+            ImageAtPositionModel::updateById($res->id , array_unit($param , [
+                'position_id' ,
+                'platform' ,
+                'path' ,
+                'link' ,
+                'module_id' ,
+            ]));
+            DB::commit();
+            return self::success();
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
     }
 
     public static function store(Base $context , array $param = [])
     {
         $validator = Validator::make($param , [
-            'position_id' => 'required' ,
-            'module_id' => 'required' ,
-            'path' => 'required' ,
+            'position_id'   => 'required' ,
+            'module_id'     => 'required' ,
+            'path'          => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
@@ -81,16 +94,22 @@ class ImageAtPositionAction extends Action
         }
         $param['module_id'] = $module->id;
         $param['platform'] = $position->platform;
-        $id = ImageAtPositionModel::insertGetId(array_unit($param , [
-            'position_id' ,
-            'platform' ,
-            'name' ,
-            'mime' ,
-            'path' ,
-            'link' ,
-            'module_id' ,
-        ]));
-        return self::success('' , $id);
+        try {
+            DB::beginTransaction();
+            $id = ImageAtPositionModel::insertGetId(array_unit($param , [
+                'position_id' ,
+                'platform' ,
+                'path' ,
+                'link' ,
+                'module_id' ,
+            ]));
+            ResourceUtil::used($param['path']);
+            DB::commit();
+            return self::success('' , $id);
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        };
     }
 
     public static function show(Base $context , $id , array $param = [])
@@ -105,14 +124,39 @@ class ImageAtPositionAction extends Action
 
     public static function destroy(Base $context , $id , array $param = [])
     {
-        $count = ImageAtPositionModel::delById($id);
-        return self::success('' , $count);
+        $res = ImageAtPositionModel::find($id);
+        if (empty($res)) {
+            return self::error('待删除记录不存在' , '' , 404);
+        }
+        try {
+            DB::beginTransaction();
+            $count = ImageAtPositionModel::destroy($id);
+            ResourceUtil::delete($res->path);
+            DB::commit();
+            return self::success($count);
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
-        $count = ImageAtPositionModel::delByIds($ids);
-        return self::success('' , $count);
+        try {
+            DB::beginTransaction();
+            $res = ImageAtPositionModel::getByIds($ids);
+            foreach ($res as $v)
+            {
+                ResourceUtil::delete($v->path);
+            }
+            $count = ImageAtPositionModel::destroy($ids);
+            DB::commit();
+            return self::success($count);
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function search(Base $context , $value , array $param = [])

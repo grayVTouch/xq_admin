@@ -1,7 +1,7 @@
 
 const form = {
     p_id: 0 ,
-    module_id: 0 ,
+    module_id: '' ,
     enable: 1 ,
     is_menu: 0 ,
     weight: 0 ,
@@ -30,14 +30,14 @@ export default {
                 field: [
                     {
                         type: 'selection',
-                        width: TopContext.table.checkbox ,
+                        minWidth: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     },
                     {
                         title: 'id' ,
                         key: 'id' ,
-                        width: TopContext.table.id ,
+                        minWidth: TopContext.table.id ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     } ,
@@ -50,62 +50,62 @@ export default {
                     {
                         title: '模块id',
                         key: 'module_id',
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter,
                     },
                     {
                         title: '上级id' ,
                         key: 'p_id' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: 'value' ,
                         key: 'value' ,
-                        width: TopContext.table.link ,
+                        minWidth: TopContext.table.link ,
                         align: TopContext.table.alignLeft ,
                     } ,
                     {
                         title: '所属平台' ,
                         key: '__platform__' ,
-                        width: TopContext.table.status ,
+                        minWidth: TopContext.table.status ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '菜单?' ,
                         slot: 'is_menu' ,
-                        width: TopContext.table.status ,
+                        minWidth: TopContext.table.status ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '启用?' ,
                         slot: 'enable' ,
-                        width: TopContext.table.status ,
+                        minWidth: TopContext.table.status ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '权重' ,
                         key: 'weight' ,
-                        width: TopContext.table.weight ,
+                        minWidth: TopContext.table.weight ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '创建时间' ,
                         key: 'create_time' ,
-                        width: TopContext.table.time ,
+                        minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '操作' ,
                         slot: 'action' ,
-                        width: TopContext.table.action ,
+                        minWidth: TopContext.table.action ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'right' ,
                     } ,
                 ] ,
                 data: [] ,
             } ,
-            form: {...form}  ,
+            form: G.copy(form)  ,
             category: [] ,
             modules: [] ,
         };
@@ -129,7 +129,7 @@ export default {
 
     methods: {
 
-        getModuleData () {
+        getModules () {
             Api.module.all((msg , data , code) => {
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
@@ -140,7 +140,7 @@ export default {
         } ,
 
         moduleChangedEvent (moduleId) {
-            moduleId = parseInt(moduleId);
+
             this.val.error.module_id = '';
             this.form.p_id = 0;
             let category;
@@ -300,21 +300,21 @@ export default {
             return res;
         } ,
 
-        editEvent (v) {
+        editEvent (record) {
             this._val('modal' , true);
             this._val('mode' , 'edit');
             this.error();
-            this.form = {...v};
-            this.getModuleData();
-            this.category = this.getCategoryExcludeSelfAndChildrenByIdAndModuleId(v.id , this.form.module_id);
+            this.form = G.copy(record);
+            this.getModules();
+            this.category = this.getCategoryExcludeSelfAndChildrenByIdAndModuleId(record.id , this.form.module_id);
         } ,
 
         addEvent () {
             this._val('modal' , true);
             this._val('mode' , 'add');
             this.error();
-            this.form = {...form};
-            this.getModuleData();
+            this.form = G.copy(form);
+            this.getModules();
         } ,
 
 

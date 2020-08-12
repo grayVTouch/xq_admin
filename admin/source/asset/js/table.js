@@ -19,6 +19,7 @@ export default {
     ip: 180 ,
     action: 200 ,
     link: 300 ,
+    path: 350 ,
 
     w_160: 160 ,
     w_200: 200 ,
@@ -26,7 +27,9 @@ export default {
     alignCenter: 'center' ,
     alignLeft: 'left' ,
 
-    height: 330 ,
+    // height: 330 ,
+    // height: 500 ,
+    height: 'auto' ,
 
     imageH: 40 ,
     videoH: 150 ,

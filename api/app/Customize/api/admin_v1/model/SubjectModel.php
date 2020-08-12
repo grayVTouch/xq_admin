@@ -16,6 +16,7 @@ class SubjectModel extends Model
     {
         $filter['id'] = $filter['id'] ?? '';
         $filter['name'] = $filter['name'] ?? '';
+        $filter['module_id'] = $filter['module_id'] ?? '';
         $order['field'] = $order['field'] ?? 'id';
         $order['value'] = $order['value'] ?? 'asc';
         $where = [];
@@ -24,6 +25,9 @@ class SubjectModel extends Model
         }
         if ($filter['name'] !== '') {
             $where[] = ['name' , 'like' , "%{$filter['name']}%"];
+        }
+        if ($filter['module_id'] !== '') {
+            $where[] = ['module_id' , '=' , $filter['module_id']];
         }
         return self::where($where)
             ->orderBy($order['field'] , $order['value'])

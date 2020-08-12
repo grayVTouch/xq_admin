@@ -15,6 +15,10 @@ const indexForPosition = () => import('../view/position/index.vue');
 const indexForImageAtPosition = () => import('../view/image_at_position/index.vue');
 const indexForNav = () => import('../view/nav/index.vue');
 const indexForVideo = () => import('../view/video/index.vue');
+const indexForVideoSeries = () => import('../view/video_series/index.vue');
+const indexForVideoSubject = () => import('../view/video_subject/index.vue');
+const indexForVideoCompany = () => import('../view/video_company/index.vue');
+const indexForDisk = () => import('../view/disk/index.vue');
 
 
 export default [
@@ -40,7 +44,7 @@ export default [
     } ,
 
     {
-        path: '/admin_permission/list' ,
+        path: '/admin_permission/index' ,
         component: indexForAdminPermission
     } ,
 
@@ -99,6 +103,23 @@ export default [
     {
         path: '/video/index' ,
         component: indexForVideo
+    } ,
+    {
+        path: '/video_series/index' ,
+        component: indexForVideoSeries
+    } ,
+    {
+        path: '/video_subject/index' ,
+        component: indexForVideoSubject
+    } ,
+    {
+        path: '/video_company/index' ,
+        component: indexForVideoCompany
+    } ,
+
+    {
+        path: '/disk/index' ,
+        component: indexForDisk ,
     } ,
 
 ];

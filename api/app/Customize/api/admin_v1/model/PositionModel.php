@@ -13,17 +13,27 @@ class PositionModel extends Model
 
     public static function index(array $filter = [] , array $order = [] , int $limit = 20): Paginator
     {
-        $filter['id'] = $filter['id'] ?? '';
-        $filter['name'] = $filter['name'] ?? '';
-        $order['field'] = $order['field'] ?? 'id';
-        $order['value'] = $order['value'] ?? 'asc';
+        $filter['id']       = $filter['id'] ?? '';
+        $filter['value']    = $filter['value'] ?? '';
+        $filter['platform'] = $filter['platform'] ?? '';
+
+        $order['field']     = $order['field'] ?? 'id';
+        $order['value']     = $order['value'] ?? 'asc';
+
         $where = [];
+
         if ($filter['id'] !== '') {
             $where[] = ['id' , '=' , $filter['id']];
         }
-        if ($filter['name'] !== '') {
-            $where[] = ['name' , 'like' , "%{$filter['name']}%"];
+
+        if ($filter['value'] !== '') {
+            $where[] = ['value' , 'like' , "%{$filter['value']}%"];
         }
+
+        if ($filter['platform'] !== '') {
+            $where[] = ['platform' , '=' , $filter['platform']];
+        }
+
         return self::where($where)
             ->orderBy($order['field'] , $order['value'])
             ->paginate($limit);

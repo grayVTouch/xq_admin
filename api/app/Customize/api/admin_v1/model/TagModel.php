@@ -14,17 +14,27 @@ class TagModel extends Model
 
     public static function index(array $filter = [] , array $order = [] , int $limit = 20): Paginator
     {
-        $filter['id'] = $filter['id'] ?? '';
-        $filter['name'] = $filter['name'] ?? '';
+        $filter['id']           = $filter['id'] ?? '';
+        $filter['name']         = $filter['name'] ?? '';
+        $filter['module_id']    = $filter['module_id'] ?? '';
+
         $order['field'] = $order['field'] ?? 'id';
         $order['value'] = $order['value'] ?? 'asc';
+
         $where = [];
+
         if ($filter['id'] !== '') {
             $where[] = ['id' , '=' , $filter['id']];
         }
+
+        if ($filter['module_id'] !== '') {
+            $where[] = ['module_id' , '=' , $filter['module_id']];
+        }
+
         if ($filter['name'] !== '') {
             $where[] = ['name' , 'like' , "%{$filter['name']}%"];
         }
+
         return self::where($where)
             ->orderBy($order['field'] , $order['value'])
             ->paginate($limit);
@@ -37,7 +47,7 @@ class TagModel extends Model
             ->get();
     }
 
-    public static function topByModuleId(int $module_id , int $limit = 10): Collection
+    public static function topByModuleId(int $module_id = 0 , int $limit = 10): Collection
     {
         return self::where('module_id' , $module_id)
             ->orderBy('count' , 'desc')

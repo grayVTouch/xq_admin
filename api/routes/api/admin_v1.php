@@ -63,8 +63,8 @@ Route::prefix('admin_v1')
              * 权限管理
              */
             Route::get('admin_permission' , 'AdminPermission@index');
-            Route::get('admin_permission/{id}/all' , 'AdminPermission@allExcludeSelfAndChildren');
             Route::get('admin_permission/{id}' , 'AdminPermission@show');
+            Route::get('admin_permission/{id}/all' , 'AdminPermission@allExcludeSelfAndChildren');
             Route::patch('admin_permission/{id}' , 'AdminPermission@localUpdate');
             Route::put('admin_permission/{id}' , 'AdminPermission@update');
             Route::post('admin_permission' , 'AdminPermission@store');
@@ -125,14 +125,14 @@ Route::prefix('admin_v1')
             Route::delete('destroy_all_tag' , 'Tag@destroyAll');
             Route::delete('tag/{id}' , 'Tag@destroy');
             Route::get('search_tag' , 'Tag@search');
-            Route::get('tag/{module_id}/top_by_module_id' , 'Tag@topByModuleId');
+            Route::get('top_by_module_id' , 'Tag@topByModuleId');
 
 
             /**
              * 分类管理
              */
             Route::get('category' , 'Category@index');
-            Route::get('category/{module_id}/search_by_module_id' , 'Category@searchByModuleId');
+            Route::get('search_category_by_module_id' , 'Category@searchByModuleId');
             Route::get('category/{id}/all' , 'Category@allExcludeSelfAndChildren');
             Route::get('category/{id}' , 'Category@show');
             Route::patch('category/{id}' , 'Category@localUpdate');
@@ -140,7 +140,7 @@ Route::prefix('admin_v1')
             Route::post('category' , 'Category@store');
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_category/' , 'Category@destroyAll');
+            Route::delete('destroy_all_category' , 'Category@destroyAll');
             Route::delete('category/{id}' , 'Category@destroy');
 
             /**
@@ -175,7 +175,7 @@ Route::prefix('admin_v1')
             Route::delete('destroy_all_image_subject' , 'ImageSubject@destroyAll');
             Route::delete('image_subject/{id}' , 'ImageSubject@destroy');
             Route::delete('destroy_all_image_for_image_subject' , 'ImageSubject@destroyImages');
-            Route::delete('image_subject/{image_subject_id}/destroy/{tag_id}' , 'ImageSubject@destroyTag');
+            Route::delete('destroy_image_subject_tag' , 'ImageSubject@destroyTag');
 
             /**
              * ******************
@@ -187,6 +187,8 @@ Route::prefix('admin_v1')
             Route::patch('position/{id}' , 'Position@localUpdate');
             Route::put('position/{id}' , 'Position@update');
             Route::post('position' , 'Position@store');
+
+
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
             Route::delete('destroy_all_position' , 'Position@destroyAll');
@@ -250,7 +252,66 @@ Route::prefix('admin_v1')
             // 如果更换会导致 路由匹配出现不是期望的现象
             Route::delete('destroy_all_video_subject' , 'VideoSubject@destroyAll');
             Route::delete('video_subject/{id}' , 'VideoSubject@destroy');
-
             Route::get('search_video_subject' , 'VideoSubject@search');
+            Route::delete('destroy_video_subject_tag' , 'VideoSubject@destroyTag');
+
+            /**
+             * ******************
+             * 视频系列
+             * ******************
+             */
+            Route::get('video_series' , 'VideoSeries@index');
+            Route::get('video_series/{id}' , 'VideoSeries@show');
+            Route::patch('video_series/{id}' , 'VideoSeries@localUpdate');
+            Route::put('video_series/{id}' , 'VideoSeries@update');
+            Route::post('video_series' , 'VideoSeries@store');
+            // 特别注意，这边这个顺序不能更换
+            // 如果更换会导致 路由匹配出现不是期望的现象
+            Route::delete('destroy_all_video_series' , 'VideoSeries@destroyAll');
+            Route::delete('video_series/{id}' , 'VideoSeries@destroy');
+            Route::get('search_video_series' , 'VideoSeries@search');
+
+            /**
+             * region 相关接口
+             */
+            Route::get('country' , 'Region@country');
+            Route::get('search_region' , 'Region@search');
+
+            /**
+             * ******************
+             * 视频制作公司
+             * ******************
+             */
+            Route::get('video_company' , 'VideoCompany@index');
+            Route::get('video_company/{id}' , 'VideoCompany@show');
+            Route::patch('video_company/{id}' , 'VideoCompany@localUpdate');
+            Route::put('video_company/{id}' , 'VideoCompany@update');
+            Route::post('video_company' , 'VideoCompany@store');
+            // 特别注意，这边这个顺序不能更换
+            // 如果更换会导致 路由匹配出现不是期望的现象
+            Route::delete('destroy_all_video_company' , 'VideoCompany@destroyAll');
+            Route::delete('video_company/{id}' , 'VideoCompany@destroy');
+            Route::get('search_video_company' , 'VideoCompany@search');
+
+            /**
+             * 控制台
+             */
+            Route::get('pannel/info' , 'Pannel@info');
+
+            /**
+             * ******************
+             * 磁盘管理
+             * ******************
+             */
+            Route::get('disk' , 'Disk@index');
+            Route::get('disk/{id}' , 'Disk@show');
+            Route::patch('disk/{id}' , 'Disk@localUpdate');
+            Route::put('disk/{id}' , 'Disk@update');
+            Route::post('disk' , 'Disk@store');
+            // 特别注意，这边这个顺序不能更换
+            // 如果更换会导致 路由匹配出现不是期望的现象
+            Route::delete('destroy_all_disk' , 'Disk@destroyAll');
+            Route::delete('disk/{id}' , 'Disk@destroy');
+
         });
     });

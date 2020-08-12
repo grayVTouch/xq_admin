@@ -28,7 +28,7 @@
             } ,
             // 未选择时的默认值
             empty: {
-                default: 0 ,
+                default: '' ,
             } ,
             attr: {
                 type: Object ,

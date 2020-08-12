@@ -32,33 +32,42 @@ export default {
                 field: [
                     {
                         type: 'selection',
-                        width: TopContext.table.checkbox ,
+                        minWidth: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
                     },
                     {
                         title: 'id' ,
                         key: 'id' ,
+                        minWidth: TopContext.table.id ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
                     } ,
                     {
                         title: '名称' ,
                         key: 'name' ,
-                        align: TopContext.table.alignCenter
+                        minWidth: TopContext.table.name ,
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
                     } ,
                     {
                         title: '权重' ,
                         key: 'weight' ,
+                        minWidth: TopContext.table.weight ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '创建时间' ,
                         key: 'create_time' ,
+                        minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '操作' ,
                         slot: 'action' ,
+                        minWidth: TopContext.table.action + 100 ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
                     } ,
                 ] ,
                 total: 0 ,
@@ -72,15 +81,18 @@ export default {
             // 选中的权限
             rolePermission: [] ,
             search: {
-                limit: this.$store.state.context.limit
+                limit: TopContext.limit
             } ,
-            form: {...form}  ,
+            form: G.copy(form)  ,
             role: {} ,
         };
     } ,
 
     mounted () {
-        this.init();
+        this.initDom();
+        this.initIns();
+        this.getPermission();
+        this.getData();
     } ,
 
     computed: {
@@ -94,19 +106,9 @@ export default {
     } ,
 
     methods: {
-
-        init () {
-            this.initDom();
-            this.initIns();
-            this.getPermission();
-            this.getData();
-        } ,
-
-
         initDom () {
+
         } ,
-
-
 
         initIns () {
 
@@ -239,14 +241,14 @@ export default {
             this._val('modal' , true);
             this._val('mode' , 'edit');
             this.error();
-            this.form = {...record};
+            this.form = G.copy(record);
         } ,
 
         addEvent () {
             this._val('modal' , true);
             this._val('mode' , 'add');
             this.error();
-            this.form = {...form};
+            this.form = G.copy(form);
         } ,
 
         submitEvent () {
@@ -280,7 +282,6 @@ export default {
                 return;
             }
             this.val.modal = false;
-
         } ,
 
         searchEvent () {
@@ -294,7 +295,7 @@ export default {
         } ,
 
         allocateEvent (record) {
-            this.role = {...record};
+            this.role = G.copy(record);
             this._val('drawer' , true);
             Api.role.permission(record.id , (msg , data , code) => {
                 if (code !== TopContext.code.Success) {

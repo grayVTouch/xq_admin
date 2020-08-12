@@ -1,5 +1,11 @@
 :root {
     --msg-color: #999;
+    --font-color: #999;
     --border-color-hover: #f3c669;
     --font-color-hover: #f3c669;
+    --transition: all 0.3s;
+
+    /*最小视图尺寸*/
+    --view-min-width: 1280px;
+
 }

@@ -39,24 +39,31 @@ class UserAction extends Action
     public static function update(Base $context , $id , array $param = [])
     {
         $sex_range = array_keys(my_config('business.sex_for_user'));
+
         $validator = Validator::make($param , [
-            'username' => 'required' ,
-            'sex' => ['required' , Rule::in($sex_range)] ,
+            'username'  => 'required' ,
+            'sex'       => ['required' , Rule::in($sex_range)] ,
         ]);
+
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
+
         // 检查用户名是否已经存在
         $res = UserModel::find($id);
+
         if (empty($res)) {
             return self::error('用户不存在' , '' , 404);
         }
+
         if ($res->username !== $param['username'] && UserModel::findByUsername($param['username'])) {
             return self::error('用户名已经被使用');
         }
+
         $param['user_group_id'] = $param['user_group_id'] === '' ? 0 : $param['user_group_id'];
         $param['birthday']      = in_array($param['birthday'] , ['' , 'null']) ? null : $param['birthday'];
         $param['password']      = $param['password'] === '' ? $res->password : Hash::make($param['password']);
+
         UserModel::updateById($res->id , array_unit($param , [
             'username' ,
             'password' ,
@@ -64,29 +71,37 @@ class UserAction extends Action
             'avatar' ,
             'phone' ,
             'email' ,
+            'sex' ,
             'user_group_id' ,
         ]));
+
         return self::success();
     }
 
     public static function store(Base $context , array $param = [])
     {
         $sex_range = array_keys(my_config('business.sex_for_user'));
+
         $validator = Validator::make($param , [
             'username' => 'required' ,
             'password' => 'required' ,
             'sex' => ['required' , Rule::in($sex_range)] ,
         ]);
+
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
+
         $res = UserModel::findByUsername($param['username']);
+
         if (!empty($res)) {
             return self::error('用户名已经被使用');
         }
+
         $param['user_group_id'] = $param['user_group_id'] === '' ? 0 : $param['user_group_id'];
         $param['birthday']      = in_array($param['birthday'] , ['' , 'null']) ? null : $param['birthday'];
         $param['password']      = Hash::make($param['password']);
+
         $id = UserModel::insertGetId(array_unit($param , [
             'username' ,
             'password' ,
@@ -94,30 +109,35 @@ class UserAction extends Action
             'avatar' ,
             'phone' ,
             'email' ,
+            'sex' ,
             'user_group_id' ,
         ]));
+
         return self::success('' , $id);
     }
 
     public static function show(Base $context , $id , array $param = [])
     {
         $res = UserModel::find($id);
+
         if (empty($res)) {
             return self::error('用户不存在' , '' , 404);
         }
+
         $res = UserHandler::handle($res);
+
         return self::success('' , $res);
     }
 
     public static function destroy(Base $context , $id , array $param = [])
     {
-        $count = UserModel::delById($id);
+        $count = UserModel::destroy($id);
         return self::success('' , $count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
-        $count = UserModel::delByIds($ids);
+        $count = UserModel::destroy($ids);
         return self::success('' , $count);
     }
 }

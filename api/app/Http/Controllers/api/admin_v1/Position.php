@@ -14,6 +14,7 @@ class Position extends Base
     {
         $param = $this->request->query();
         $param['value'] = $param['value'] ?? '';
+        $param['platform'] = $param['platform'] ?? '';
         $param['order'] = $param['order'] ?? '';
         $param['limit'] = $param['limit'] ?? '';
         $res = PositionAction::index($this , $param);

@@ -1,20 +1,5 @@
 import Form from '../form.vue';
 
-const form = {
-    type: 'misc' ,
-    user_id: 0 ,
-    module_id: 0 ,
-    category_id: 0 ,
-    subject_id: 0 ,
-    view_count: 0  ,
-    praise_count: 0 ,
-    weight: 0 ,
-    __tag__: [] ,
-    status: 0 ,
-    images: [] ,
-    tags: [] ,
-};
-
 export default {
     name: "index",
 
@@ -42,14 +27,14 @@ export default {
                 field: [
                     {
                         type: 'selection',
-                        width: TopContext.table.checkbox ,
+                        minWidth: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     },
                     {
                         title: 'id' ,
                         key: 'id' ,
-                        width: TopContext.table.id ,
+                        minWidth: TopContext.table.id ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     } ,
@@ -66,83 +51,84 @@ export default {
                     {
                         title: '封面' ,
                         slot: 'thumb' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     } ,
                     {
                         title: '用户【id】' ,
                         slot: 'user_id' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '模块【id】' ,
                         slot: 'module_id' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '分类【id】' ,
                         slot: 'category_id' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '类型' ,
                         key: '__type__' ,
-                        width: TopContext.table.type ,
+                        minWidth: TopContext.table.type ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '关联主体【id】' ,
                         slot: 'subject_id' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '标签' ,
-                        slot: 'tag' ,
-                        width: TopContext.table.name ,
+                        slot: 'tags' ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '图片列表' ,
                         slot: 'images' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '状态' ,
                         key: '__status__' ,
                         slot: 'status' ,
-                        width: TopContext.table.status ,
-                        align: TopContext.table.alignCenter
+                        minWidth: TopContext.table.status ,
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
                     } ,
                     {
                         title: '失败原因' ,
                         key: 'fail_reason' ,
-                        width: TopContext.table.desc ,
+                        minWidth: TopContext.table.desc ,
                         align: TopContext.table.alignCenter
                     } ,
 
                     {
                         title: '浏览次数' ,
                         key: 'view_count' ,
-                        width: TopContext.table.number ,
+                        minWidth: TopContext.table.number ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '获赞次数' ,
                         key: 'praise_count' ,
-                        width: TopContext.table.number ,
+                        minWidth: TopContext.table.number ,
                         align: TopContext.table.alignCenter
                     } ,
 
                     {
                         title: '描述' ,
                         key: 'description' ,
-                        width: TopContext.table.desc ,
+                        minWidth: TopContext.table.desc ,
                         align: TopContext.table.alignCenter ,
                         resizable: true ,
                         ellipsis: true ,
@@ -152,19 +138,19 @@ export default {
                     {
                         title: '权重' ,
                         key: 'weight' ,
-                        width: TopContext.table.weight ,
+                        minWidth: TopContext.table.weight ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '创建时间' ,
                         key: 'create_time' ,
-                        width: TopContext.table.time ,
+                        minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '操作' ,
                         slot: 'action' ,
-                        width: TopContext.table.action ,
+                        minWidth: TopContext.table.action ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'right' ,
                     } ,
@@ -173,13 +159,21 @@ export default {
                 page: 1 ,
                 data: [] ,
             } ,
+
             search: {
-                limit: this.$store.state.context.limit ,
+                limit: TopContext.limit ,
+                user_id: '' ,
+                module_id: '' ,
+                category_id: '' ,
+                subject_id: '' ,
+                status: '' ,
             } ,
-            form: {...form}  ,
-            categories: [] ,
+
             modules: [] ,
-            topTags: [] ,
+
+            categories: [] ,
+
+            form: {}  ,
         };
     } ,
 
@@ -187,13 +181,11 @@ export default {
         this.initDom();
         this.initIns();
         this.getData();
+        this.getModules();
+        // this.getCategories();
     } ,
 
     computed: {
-        title () {
-            return this.val.mode === 'edit' ? '编辑' : '添加';
-        } ,
-
         showDestroyAllBtn () {
             return this.val.selectedIds.length > 0;
         } ,
@@ -211,46 +203,37 @@ export default {
 
         } ,
 
-        moduleChanged (moduleId) {
-            this.getCategoriesData(moduleId);
-            this.getTopTags(moduleId);
-        } ,
+        getCategories (moduleId) {
+            this.search.category_id = '';
+            this.categories         = [];
 
-        getCategoriesData (moduleId , callback) {
+            if (!G.isNumeric(moduleId)) {
+                return ;
+            }
+
+            this.pending('getCategories' , true);
+
             Api.category.searchByModuleId(moduleId , (msg , data , code) => {
+                this.pending('getCategories' , false);
+
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
-                    G.invoke(callback , null , false);
                     return ;
                 }
+
                 this.categories = data;
-                this.$nextTick(() => {
-                    G.invoke(callback , null , true);
-                });
             });
         } ,
 
-        getModulesData (callback) {
+        getModules () {
+            this.pending('getModules' , true);
             Api.module.all((msg , data , code) => {
+                this.pending('getModules' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
-                    G.invoke(callback , null , false);
                     return ;
                 }
                 this.modules = data;
-                this.$nextTick(() => {
-                    G.invoke(callback , null , true);
-                });
-            });
-        } ,
-
-        getTopTags (moduleId) {
-            Api.tag.topByModule(moduleId , (msg , data , code) => {
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
-                    return ;
-                }
-                this.topTags = data;
             });
         } ,
 
@@ -269,9 +252,13 @@ export default {
             });
         } ,
 
+
         handleData (data) {
             data.forEach((v) => {
                 this.pending(`delete_${v.id}` , false);
+
+                v.images = v.images ? v.images : [];
+                v.tags = v.tags ? v.tags : [];
             });
         } ,
 
@@ -332,21 +319,19 @@ export default {
         } ,
 
         editEvent (record) {
-            this._val('drawer' , true);
             this._val('mode' , 'edit');
-            this.error();
-            this.form = {...record};
-            this.getModulesData();
-            this.getCategoriesData(record.module_id);
-            this.getTopTags(record.module_id);
+            this.form = G.copy(record);
+            this.$nextTick(() => {
+                this.$refs.form.openFormDrawer();
+            });
         } ,
 
         addEvent () {
-            this._val('drawer' , true);
             this._val('mode' , 'add');
-            this.error();
-            this.form = {...form};
-            this.getModulesData();
+            this.form = {};
+            this.$nextTick(() => {
+                this.$refs.form.openFormDrawer();
+            });
         } ,
 
         submitEvent () {

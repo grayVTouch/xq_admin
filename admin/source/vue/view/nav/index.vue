@@ -49,7 +49,7 @@
                     <form class="form" @submit.prevent="submitEvent" ref="form">
                         <table class="input-table">
                             <tbody>
-                            <tr :class="{error: val.error.name}" id="form_cn">
+                            <tr :class="{error: val.error.name}">
                                 <td>名称</td>
                                 <td>
                                     <input type="text" v-model="form.name"  @input="val.error.name = ''" class="form-text">
@@ -59,7 +59,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.module_id}" id="form-module_id">
+                            <tr :class="{error: val.error.module_id}">
                                 <td>所属模块</td>
                                 <td>
                                     <my-select :data="modules" v-model="form.module_id" @change="moduleChangedEvent"></my-select>
@@ -69,7 +69,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.p_id}" id="form_p_id">
+                            <tr :class="{error: val.error.p_id}">
                                 <td>上级分类</td>
                                 <td>
                                     <my-deep-select :data="category" v-model="form.p_id" :has="true" :attr="val.attr"  @change="val.error.p_id = ''"></my-deep-select>
@@ -79,7 +79,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.value}" id="form_description">
+                            <tr :class="{error: val.error.value}">
                                 <td>value</td>
                                 <td>
                                     <input type="text" v-model="form.value" class="form-text" @input="val.error.value = ''">
@@ -89,7 +89,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.is_menu}" id="form_is_menu">
+                            <tr :class="{error: val.error.is_menu}">
                                 <td>菜单？</td>
                                 <td>
                                     <RadioGroup v-model="form.is_menu"  @input="val.error.is_menu = ''">
@@ -101,7 +101,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.enable}" id="form_enable">
+                            <tr :class="{error: val.error.enable}">
                                 <td>启用？</td>
                                 <td>
                                     <RadioGroup v-model="form.enable"  @input="val.error.enable = ''">
@@ -113,7 +113,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.platform}" id="form-platform">
+                            <tr :class="{error: val.error.platform}">
                                 <td>所属平台</td>
                                 <td>
                                     <select v-model="form.platform" class="form-select">
@@ -126,7 +126,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.weight}" id="form_weight">
+                            <tr :class="{error: val.error.weight}">
                                 <td>权重</td>
                                 <td>
                                     <input type="number" class="form-text"  @input="val.error.weight = ''" v-model="form.weight">

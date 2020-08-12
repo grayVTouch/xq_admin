@@ -15,8 +15,20 @@
                     </div>
 
                     <div class="option">
-                        <div class="field">名称：</div>
-                        <div class="value"><input type="text" class="form-text" v-model="search.name"></div>
+                        <div class="field">模块：</div>
+                        <div class="value">
+                            <my-select :data="modules" :empty="''" v-model="search.module_id"></my-select>
+                        </div>
+                    </div>
+
+                    <div class="option">
+                        <div class="field">位置：</div>
+                        <div class="value">
+                            <select v-model="search.position_id" class="form-select">
+                                <option value="">请选择...</option>
+                                <option v-for="v in positions" :value="v.id" :key="v.id">{{ v.name + `【${v.platform}】` }}</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="option">
@@ -122,7 +134,7 @@
                         <table class="input-table">
                             <tbody>
 
-                            <tr :class="{error: val.error.module_id}" id="form-module_id">
+                            <tr :class="{error: val.error.module_id}">
                                 <td>模块</td>
                                 <td>
                                     <my-select :data="modules" v-model="form.module_id"></my-select>
@@ -132,7 +144,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.position_id}" id="form-position_id">
+                            <tr :class="{error: val.error.position_id}">
                                 <td>位置</td>
                                 <td>
                                     <select v-model="form.position_id" class="form-select">
@@ -145,7 +157,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.path}" id="form-path">
+                            <tr :class="{error: val.error.path}">
                                 <td>图片</td>
                                 <td>
                                     <div ref="path">
@@ -181,7 +193,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.link}" id="form-link">
+                            <tr :class="{error: val.error.link}">
                                 <td>链接</td>
                                 <td>
                                     <input type="text" v-model="form.link" @input="val.error.link=''" class="form-text">

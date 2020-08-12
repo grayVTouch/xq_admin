@@ -23,14 +23,14 @@ class Nav extends Base
     public function localUpdate($id)
     {
         $param = $this->request->post();
-        $param['p_id']        = $param['p_id'] ?? '';
-        $param['name']        = $param['name'] ?? '';
-        $param['value'] = $param['value'] ?? '';
-        $param['platform'] = $param['platform'] ?? '';
-        $param['enable']    = $param['enable'] ?? '';
-        $param['is_menu']    = $param['is_menu'] ?? '';
-        $param['weight']    = $param['weight'] ?? '';
-        $param['module_id']        = $param['module_id'] ?? '';
+        $param['p_id']          = $param['p_id'] ?? '';
+        $param['name']          = $param['name'] ?? '';
+        $param['value']         = $param['value'] ?? '';
+        $param['platform']      = $param['platform'] ?? '';
+        $param['enable']        = $param['enable'] ?? '';
+        $param['is_menu']       = $param['is_menu'] ?? '';
+        $param['weight']        = $param['weight'] ?? '';
+        $param['module_id']     = $param['module_id'] ?? '';
         $res = NavAction::localUpdate($this , $id ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -41,14 +41,14 @@ class Nav extends Base
     public function update($id)
     {
         $param = $this->request->post();
-        $param['p_id']        = $param['p_id'] ?? '';
-        $param['name']        = $param['name'] ?? '';
-        $param['value'] = $param['value'] ?? '';
-        $param['enable']    = $param['enable'] ?? '';
-        $param['is_menu']    = $param['is_menu'] ?? '';
-        $param['weight']    = $param['weight'] ?? '';
-        $param['module_id']        = $param['module_id'] ?? '';
-        $param['platform']        = $param['platform'] ?? '';
+        $param['p_id']          = $param['p_id'] ?? '';
+        $param['name']          = $param['name'] ?? '';
+        $param['value']         = $param['value'] ?? '';
+        $param['platform']      = $param['platform'] ?? '';
+        $param['enable']        = $param['enable'] ?? '';
+        $param['is_menu']       = $param['is_menu'] ?? '';
+        $param['weight']        = $param['weight'] ?? '';
+        $param['module_id']     = $param['module_id'] ?? '';
         $res = NavAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);

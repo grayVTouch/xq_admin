@@ -86,7 +86,7 @@ class NavAction extends Action
             'platform' => ['required' , Rule::in($platform_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $nav = NavModel::find($id);
         if (empty($nav)) {
@@ -121,7 +121,7 @@ class NavAction extends Action
             'platform' => ['required' , Rule::in($platform_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $id = NavModel::insertGetId(array_unit($param , [
@@ -153,7 +153,7 @@ class NavAction extends Action
         $data = obj_to_array($data);
         $data = Category::childrens($id , $data , null , true , false);
         $ids = array_column($data , 'id');
-        $count = NavModel::delByIds($ids);
+        $count = NavModel::destroy($ids);
         return self::success('' , $count);
     }
 
@@ -168,7 +168,7 @@ class NavAction extends Action
             $_ids = array_column($_data , 'id');
             $destroy = array_merge($destroy , $_ids);
         }
-        NavModel::delByIds($destroy);
+        NavModel::destroy($destroy);
         return self::success();
     }
 

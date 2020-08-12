@@ -13,7 +13,7 @@ class VideoUtil
 {
     public static function delete(int $id)
     {
-        VideoModel::delById($id);
+        VideoModel::destroy($id);
         VideoSrcModel::delByVideoId($id);
         VideoCommentModel::delByVideoId($id);
         VideoCommentImageModel::delByVideoId($id);

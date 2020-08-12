@@ -1,18 +1,5 @@
 import Form from '../form.vue';
 
-const form = {
-    type: 'misc' ,
-    user_id: 0 ,
-    module_id: 0 ,
-    category_id: 0 ,
-    video_subject_id: 0 ,
-    view_count: 0  ,
-    praise_count: 0 ,
-    against_count: 0 ,
-    weight: 0 ,
-    status: 0 ,
-};
-
 export default {
     name: "index",
 
@@ -22,9 +9,6 @@ export default {
 
     data () {
         return {
-            filter: {
-                id: '' ,
-            } ,
             dom: {} ,
             ins: {} ,
             val: {
@@ -33,21 +17,20 @@ export default {
                 // edit-编辑 add-添加
                 mode: '' ,
                 selectedIds: [] ,
-                // 抽屉
                 drawer: false ,
             } ,
             table: {
                 field: [
                     {
                         type: 'selection',
-                        width: TopContext.table.checkbox ,
+                        minWidth: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     },
                     {
                         title: 'id' ,
                         key: 'id' ,
-                        width: TopContext.table.id ,
+                        minWidth: TopContext.table.id ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     } ,
@@ -64,106 +47,107 @@ export default {
                     {
                         title: '封面' ,
                         slot: 'thumb' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter ,
-                        fixed: 'left' ,
                     } ,
                     {
                         title: '程序截取封面' ,
                         slot: 'thumb_for_program' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '简略预览' ,
                         slot: 'simple_preview' ,
-                        width: TopContext.table.image ,
+                        minWidth: TopContext.table.image ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '完整预览' ,
                         slot: 'preview' ,
-                        width: TopContext.table.image ,
+                        minWidth: TopContext.table.image ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '时长' ,
                         key: '__duration__' ,
-                        width: TopContext.table.number ,
+                        minWidth: TopContext.table.number ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '用户【id】' ,
                         slot: 'user_id' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '模块【id】' ,
                         slot: 'module_id' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '分类【id】' ,
                         slot: 'category_id' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '类型' ,
                         key: '__type__' ,
-                        width: TopContext.table.type ,
+                        minWidth: TopContext.table.type ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '关联主体【id】' ,
                         slot: 'video_subject_id' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '处理状态' ,
                         slot: 'process_status' ,
-                        width: TopContext.table.status ,
-                        align: TopContext.table.alignCenter
+                        minWidth: TopContext.table.status ,
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
                     } ,
                     {
                         title: '审核状态' ,
                         slot: 'status' ,
-                        width: TopContext.table.status ,
-                        align: TopContext.table.alignCenter
+                        minWidth: TopContext.table.status ,
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
                     } ,
                     {
                         title: '失败原因' ,
                         key: 'fail_reason' ,
-                        width: TopContext.table.desc ,
+                        minWidth: TopContext.table.desc ,
                         align: TopContext.table.alignCenter
                     } ,
 
                     {
                         title: '浏览次数' ,
                         key: 'view_count' ,
-                        width: TopContext.table.number ,
+                        minWidth: TopContext.table.number ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '获赞次数' ,
                         key: 'praise_count' ,
-                        width: TopContext.table.number ,
+                        minWidth: TopContext.table.number ,
                         align: TopContext.table.alignCenter
                     } ,
 
                     {
                         title: '反对次数' ,
                         key: 'against_count' ,
-                        width: TopContext.table.number ,
+                        minWidth: TopContext.table.number ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '描述' ,
                         key: 'description' ,
-                        width: TopContext.table.desc ,
+                        minWidth: TopContext.table.desc ,
                         align: TopContext.table.alignCenter ,
                         resizable: true ,
                         ellipsis: true ,
@@ -172,19 +156,19 @@ export default {
                     {
                         title: '权重' ,
                         key: 'weight' ,
-                        width: TopContext.table.weight ,
+                        minWidth: TopContext.table.weight ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '创建时间' ,
                         key: 'create_time' ,
-                        width: TopContext.table.time ,
+                        minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '操作' ,
                         slot: 'action' ,
-                        width: TopContext.table.action ,
+                        minWidth: TopContext.table.action ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'right' ,
                     } ,
@@ -193,13 +177,21 @@ export default {
                 page: 1 ,
                 data: [] ,
             } ,
+
             search: {
-                limit: this.$store.state.context.limit ,
+                limit: TopContext.limit ,
+                user_id: '' ,
+                module_id: '' ,
+                category_id: '' ,
+                video_subject_id: '' ,
+                status: '' ,
             } ,
-            form: {...form}  ,
-            categories: [] ,
+
             modules: [] ,
-            topTags: [] ,
+
+            categories: [] ,
+
+            form: {}  ,
         };
     } ,
 
@@ -207,13 +199,10 @@ export default {
         this.initDom();
         this.initIns();
         this.getData();
+        this.getModules();
     } ,
 
     computed: {
-        title () {
-            return this.val.mode === 'edit' ? '编辑' : '添加';
-        } ,
-
         showDestroyAllBtn () {
             return this.val.selectedIds.length > 0;
         } ,
@@ -231,35 +220,36 @@ export default {
 
         } ,
 
-        moduleChanged (moduleId) {
-            this.getCategoriesData(moduleId);
-        } ,
-
-        getCategoriesData (moduleId , callback) {
-            Api.category.searchByModuleId(moduleId , (msg , data , code) => {
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
-                    G.invoke(callback , null , false);
-                    return ;
-                }
-                this.categories = data;
-                this.$nextTick(() => {
-                    G.invoke(callback , null , true);
-                });
-            });
-        } ,
-
-        getModulesData (callback) {
+        getModules () {
+            this.pending('getModules' , true);
             Api.module.all((msg , data , code) => {
+                this.pending('getModules' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
-                    G.invoke(callback , null , false);
                     return ;
                 }
                 this.modules = data;
-                this.$nextTick(() => {
-                    G.invoke(callback , null , true);
-                });
+            });
+        } ,
+
+        getCategories (moduleId) {
+            this.search.category_id = '';
+            this.categories         = [];
+
+            if (!G.isNumeric(moduleId)) {
+                return ;
+            }
+            this.pending('getCategories' , true);
+
+            Api.category.searchByModuleId(moduleId , (msg , data , code) => {
+                this.pending('getCategories' , false);
+
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , data);
+                    return ;
+                }
+
+                this.categories = data;
             });
         } ,
 
@@ -341,20 +331,20 @@ export default {
         } ,
 
         editEvent (record) {
-            this._val('drawer' , true);
             this._val('mode' , 'edit');
-            this.error();
-            this.form = {...record};
-            this.getModulesData();
-            this.getCategoriesData(record.module_id);
+            this.form = G.copy(record);
+            this.$nextTick(() => {
+                this.$refs.form.openFormDrawer();
+            });
         } ,
 
         addEvent () {
-            this._val('drawer' , true);
             this._val('mode' , 'add');
-            this.error();
-            this.form = {...form};
-            this.getModulesData();
+            this.form = {};
+            this.$nextTick(() => {
+                this.$refs.form.openFormDrawer();
+            });
+
         } ,
 
         submitEvent () {
@@ -398,6 +388,12 @@ export default {
         pageEvent (page) {
             this.search.page = page;
             this.getData();
+        } ,
+
+        restartPlayVideo: function(e){
+            const tar = e.currentTarget;
+            tar.currentTime = 0;
+            tar.play();
         } ,
     } ,
 }

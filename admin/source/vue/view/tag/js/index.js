@@ -1,6 +1,6 @@
 
 const form = {
-    module_id: 0 ,
+    module_id: '' ,
     weight: 0 ,
 };
 
@@ -29,43 +29,54 @@ export default {
                 field: [
                     {
                         type: 'selection',
-                        width: TopContext.table.checkbox ,
+                        minWidth: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
                     },
                     {
                         title: 'id' ,
                         key: 'id' ,
+                        minWidth: TopContext.table.id ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
                     } ,
                     {
                         title: '名称' ,
-                        slot: 'name' ,
-                        align: TopContext.table.alignCenter
+                        key: 'name' ,
+                        minWidth: TopContext.table.name ,
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
                     } ,
                     {
-                        title: '模块id',
-                        key: 'module_id',
+                        title: '模块【id】',
+                        slot: 'module_id',
+                        minWidth: TopContext.table.id ,
                         align: TopContext.table.alignCenter,
                     },
                     {
                         title: '使用次数' ,
                         key: 'count' ,
+                        minWidth: TopContext.table.number ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '权重' ,
                         key: 'weight' ,
+                        minWidth: TopContext.table.weight ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '创建时间' ,
                         key: 'create_time' ,
+                        minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '操作' ,
                         slot: 'action' ,
+                        minWidth: TopContext.table.action ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
                     } ,
                 ] ,
                 total: 0 ,
@@ -73,9 +84,11 @@ export default {
                 data: [] ,
             } ,
             search: {
-                limit: this.$store.state.context.limit
+                limit: TopContext.limit ,
+                module_id: '' ,
             } ,
-            form: {...form}  ,
+            form: G.copy(form)  ,
+
             modules: [] ,
         };
     } ,
@@ -84,6 +97,7 @@ export default {
         this.initDom();
         this.initIns();
         this.getData();
+        this.getModules();
     } ,
 
     computed: {
@@ -98,8 +112,10 @@ export default {
 
     methods: {
 
-        getModuleData () {
+        getModules () {
+            this.pending('getModules' , true);
             Api.module.all((msg , data , code) => {
+                this.pending('getModules' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     return ;
@@ -199,16 +215,16 @@ export default {
             this._val('modal' , true);
             this._val('mode' , 'edit');
             this.error();
-            this.form = {...record};
-            this.getModuleData();
+            this.form = G.copy(record);
+            this.getModules();
         } ,
 
         addEvent () {
             this._val('modal' , true);
             this._val('mode' , 'add');
             this.error();
-            this.form = {...form};
-            this.getModuleData();
+            this.form = G.copy(form);
+            this.getModules();
         } ,
 
         submitEvent () {

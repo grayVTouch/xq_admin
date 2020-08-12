@@ -6,6 +6,8 @@ create table if not exists `xq_module` (
   description varchar(500) comment '描述' ,
   weight int default 0 comment '权重' ,
   enable tinyint default 1 comment '启用？0-否 1-是' ,
+  auth tinyint default 0 comment '认证？0-否 1-是' ,
+  auth_password varchar(255) default '' comment '当 auth=1 时，要求提供认证密码' ,
   create_time datetime default null ,
   update_time datetime default null ,
   primary key `id` (id)
@@ -37,7 +39,7 @@ create table if not exists `xq_category` (
   create_time datetime default null comment '创建时间' ,
   update_time datetime default null ,
   primary key(id)
-) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_unicode_ci comment '专题表';
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_unicode_ci comment '分类表';
 
 
 drop table if exists `xq_subject`;
@@ -239,9 +241,9 @@ drop table if exists `xq_user_group_permission`;
 create table if not exists `xq_user_group_permission` (
 	id bigint unsigned not null auto_increment ,
 	user_group_id bigint unsigned default 0 comment 'xq_user_group.id' ,
-	permission_id bigint unsigned default 0 comment 'xq_permission.id' ,
+	user_permission_id bigint unsigned default 0 comment 'xq_user_permission.id' ,
 	primary key (id) ,
-	unique key `permission` (`user_group_id` , `permission_id`)
+	unique key `permission` (`user_group_id` , `user_permission_id`)
 ) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_unicode_ci comment '用户组-用户权限 关联表';
 
 drop table if exists `xq_permission`;
@@ -356,7 +358,7 @@ create table if not exists `xq_collection` (
    module_id bigint unsigned default 0 comment 'xq_module.id' ,
    create_time datetime default null ,
    primary key (id) ,
-   unique key `unique` (user_id , relation_type , relation_id , module_id , collection_group_id)
+   unique key (user_id , relation_type , relation_id , module_id , collection_group_id)
 ) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_unicode_ci comment '我的收藏';
 
 drop table if exists `xq_focus_user`;
@@ -366,7 +368,7 @@ create table if not exists `xq_focus_user` (
     focus_user_id bigint unsigned default 0 comment 'xq_user.id，关注的用户' ,
     create_time datetime default null ,
     primary key (id) ,
-    unique key `unique` (user_id , focus_user_id)
+    unique key (user_id , focus_user_id)
 ) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_unicode_ci comment '关注的用户';
 
 drop table if exists `xq_praise`;
@@ -378,7 +380,7 @@ create table if not exists `xq_praise` (
     module_id bigint unsigned default 0 comment 'xq.module.id' ,
     create_time datetime default null ,
     primary key (id) ,
-    unique key `unique` (user_id , relation_type , relation_id , module_id)
+    unique key (user_id , relation_type , relation_id , module_id)
 ) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_unicode_ci comment '点赞表';
 
 drop table if exists `xq_email_code`;
@@ -400,6 +402,7 @@ create table if not exists `xq_video_series` (
     id bigint unsigned not null auto_increment ,
     name varchar(255) default '' comment '名称' ,
     module_id bigint unsigned default 0 comment 'xq_module.id' ,
+    weight smallint default 0 comment '权重' ,
     create_time datetime default null ,
     primary key (id)
 ) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_unicode_ci comment '视频系列';
@@ -410,8 +413,8 @@ create table if not exists `xq_video_subject` (
     name varchar(255) default '' comment '名称' ,
     thumb varchar(500) default '' comment '封面' ,
     score decimal(13,2) default 0 comment '评分' ,
-    release_time datetime default null comment '发布时间' ,
-    end_time datetime default null comment '完结时间' ,
+    release_time date default null comment '发布时间' ,
+    end_time date default null comment '完结时间' ,
     status varchar(30) default 'completed' comment '状态：making-制作中 completed-已完结 terminated-已终止（部分完成）' ,
     `count` smallint unsigned default 0 comment '视频数量' ,
     play_count bigint unsigned default 0 comment '播放数' ,
@@ -434,6 +437,7 @@ create table if not exists `xq_video_company` (
   country_id int unsigned default 0 comment 'xq_region.id' ,
   country varchar(50) default '' comment '国家名称' ,
   module_id bigint unsigned default 0 comment 'xq_module.id' ,
+  weight int default 0 comment '权重' ,
   create_time datetime default null ,
   primary key (id)
 ) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_unicode_ci comment '视频制作公司';
@@ -463,7 +467,6 @@ create table if not exists `xq_video` (
       status tinyint default 1 comment '状态：-1-审核不通过 0-审核中 1-审核通过' ,
       process_status tinyint default 0 comment '处理处理状态：-1-处理失败 0-信息处理中 1-转码中 2-处理完成' ,
       fail_reason varchar(1000) default '' comment '失败原因' ,
-      failed_job_id bigint unsigned default 0 comment 'xq_failed_jobs.id' ,
       weight int default 0 comment '权重' ,
       update_time datetime default null ,
       create_time datetime default null ,
@@ -484,6 +487,16 @@ create table if not exists `xq_video_src` (
       create_time datetime default null ,
       primary key (id)
 ) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_unicode_ci comment '视频源';
+
+drop table if exists `xq_video_subtitle`;
+create table if not exists `xq_video_subtitle` (
+    id bigint unsigned not null auto_increment ,
+    video_id bigint unsigned default 0 comment 'xq_video.id' ,
+    name varchar(255) default '' comment '字幕名称' ,
+    src varchar(500) default '' comment '字幕源' ,
+    create_time datetime default null ,
+    primary key (id)
+) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_unicode_ci comment '视频字幕-仅支持 .vtt 格式';
 
 drop table if exists `xq_video_comment` ;
 create table if not exists `xq_video_comment` (
@@ -523,6 +536,21 @@ alter table xq_image_at_position add module_id bigint unsigned default 0 comment
 alter table xq_collection add module_id bigint unsigned default 0 comment 'xq_module.id';
 alter table xq_history add module_id bigint unsigned default 0 comment 'xq_module.id';
 alter table xq_module add enable tinyint default 1 comment '启用？0-否 1-是';
+
+
+-- ----------------------------
+-- Table structure for xq_region
+-- ----------------------------
+DROP TABLE IF EXISTS `xq_region`;
+CREATE TABLE `xq_region`  (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '地区名称',
+  `p_id` bigint(20) UNSIGNED NULL DEFAULT NULL COMMENT 'xq_region.id',
+  `type` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '地区类型：country-国家 state-州|邦|省份 region-地区',
+  `create_time` datetime(0) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `p_id`(`p_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 6909 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '全球地区' ROW_FORMAT = Dynamic;
 
 -- 新增菜单
 delete from xq_nav;

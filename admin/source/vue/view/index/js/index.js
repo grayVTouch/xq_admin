@@ -14,10 +14,14 @@ export default {
                 pending: {} ,
                 fixedNav: false ,
                 // 标签页
-                tab: [] ,
+                tabs: [] ,
                 duration: null ,
                 // 当前标签 id
                 tabId: '' ,
+                // 子视图
+                views: [] ,
+                // 视图之间传递的参数
+                params: [] ,
             } ,
         };
     } ,
@@ -125,7 +129,7 @@ export default {
                 icon: 'switch' ,
 
 
-                // id: [1] ,
+                // id: [23] ,
                 // id: [4] ,
                 // id: [19] ,
 
@@ -191,21 +195,23 @@ export default {
                 // 如果需要关闭动画，那么把时间调整成 0 试试
                 time: 150 ,
                 ico: TopContext.res.logo ,
-                created (id) {
-                    // 路由参数
-                    let param = this.attr(id , 'param');
-                        param = G.isValid(param) ? G.jsonDecode(param) : {};
-                    self.createTabItem(this , id , param);
+                created (tabId) {
+                    const tab = self.findTabByTabId(tabId);
+                    self.createTabItem(this , tab.tabId , tab.param);
+                    // 由于标签可复用，所以为了避免参数的副作用，参数用完立即销毁
+                    // 如果需要再次使用，则需重新传递，重新传递仅发生在实际需要要
+                    // 参数作用的地方，所以这符合功能要求
+                    tab.param = null;
                 } ,
-                deleted (id , tab) {
-                    self.deleteTab(id , tab);
-                    if (id === self._val('tabId')) {
+                deleted (tabId , tab) {
+                    self.deleteTabMappingContent(tabId);
+                    if (tabId === self._val('tabId')) {
                         self._val('tabId' , '');
                     }
                 } ,
-                focus (id) {
-                    self.switchTabItemByTabId(id);
-                    self._val('tabId' , id);
+                focus (tabId) {
+                    self.switchTabItemByTabId(tabId);
+                    self._val('tabId' , tabId);
 
                 } ,
             });
@@ -301,9 +307,9 @@ export default {
         } ,
 
         findTabByRoute (route) {
-            for (let i = 0; i < this.val.tab.length; ++i)
+            for (let i = 0; i < this.val.tabs.length; ++i)
             {
-                const cur = this.val.tab[i];
+                const cur = this.val.tabs[i];
                 if (cur.route === route) {
                     return cur;
                 }
@@ -311,10 +317,21 @@ export default {
             return false;
         } ,
 
-        findTabIndexByTabId (tabId) {
-            for (let i = 0; i < this.val.tab.length; ++i)
+        findTabByTabId (tabId) {
+            for (let i = 0; i < this.val.tabs.length; ++i)
             {
-                const cur = this.val.tab[i];
+                const cur = this.val.tabs[i];
+                if (cur.tabId === tabId) {
+                    return cur;
+                }
+            }
+            return false;
+        } ,
+
+        findTabIndexByTabId (tabId) {
+            for (let i = 0; i < this.val.tabs.length; ++i)
+            {
+                const cur = this.val.tabs[i];
                 if (cur.tabId === tabId) {
                     return i;
                 }
@@ -327,8 +344,12 @@ export default {
             if (TopContext.config.reuseTab) {
                 const tab = this.findTabByRoute(route);
                 if (tab !== false) {
+                    // 切换标签
                     this.ins.tab.switchById(tab.tabId);
+                    // 切换标签对应内容
                     this.switchTabItemByTabId(tab.tabId);
+                    // 重新渲染标签对应内容
+                    this.reRender(tab.tabId , route , param);
                     return ;
                 }
             }
@@ -337,13 +358,13 @@ export default {
                 text ,
                 attr: {
                     route ,
-                    param: G.jsonEncode(param)
                 } ,
             });
             // 添加标签页（为标签页复用服务）
-            this.val.tab.push({
-                route ,
+            this.val.tabs.push({
                 tabId ,
+                route ,
+                param ,
             });
         } ,
 
@@ -368,18 +389,29 @@ export default {
         } ,
 
         // 删除标签对应内容
-        deleteTab (tabId , tab) {
+        deleteTabMappingContent (tabId) {
             // 菜单失去焦点
-            tab = G(tab);
-            const route = tab.data('route');
+            const tab = this.findTabByTabId(tabId);
+            const route = tab.route;
             const deletedRoute = this.findRouteByRoute(route);
             this.ins.ic.blur(deletedRoute.id);
 
             // 移除标签对应内容
-            const index = this.findTabIndexByTabId(tabId);
-            this.val.tab.splice(index , 1);
+            const indexInTabs = this.findTabIndexByTabId(tabId);
+            this.val.tabs.splice(indexInTabs , 1);
+
             // 移除标签对应内容
             this.dom.tabItems.remove(this.findTabItemByTabId(tabId));
+        } ,
+        
+        // 关闭标签页（删除标签 + 标签对应内容）
+        closeTabByTabId (tabId) {
+            this.ins.tab.closeTab(tabId);
+        } ,
+
+        closeTabByRoute (route) {
+            const tab = this.findTabByRoute(route);
+            this.closeTabByTabId(tab.tabId);
         } ,
 
         // 查找给定的项
@@ -401,7 +433,7 @@ export default {
             // 切换菜单项
             const route = this.ins.tab.attr(tabId , 'route');
             const curRoute = this.findRouteByRoute(route);
-            this.ins.ic.focus(curRoute.id);
+            this.ins.ic.spreadSpecified(curRoute.id , false);
 
             // 切换标签对应内容
             const tabItem = G(this.findTabItemByTabId(tabId));
@@ -427,7 +459,7 @@ export default {
         } ,
 
         // 挂载组建
-        mount (container , id , route , param) {
+        mount (container , tabId , route , param) {
             let component = this.component(route);
 
             // 组件重新挂载的时候，滚动条切换到顶部
@@ -441,8 +473,9 @@ export default {
                 // 请查看组件的具体导出 js
                 // 你会看到 export default {} 这样的字样
                 // 所以，这边使用 default 来获取组件
-                let component = this.newComponent(module.default , route , param , id);
-                new component().$mount(container);
+                let component = this.newComponent(module.default , route , param , tabId);
+                    component = new component();
+                    component.$mount(container);
             });
             // component = this.newComponent(component , route , param , id);
             // component = new component();
@@ -450,16 +483,16 @@ export default {
         } ,
 
         // 重新渲染
-        reRender (id , route , param) {
+        reRender (tabId , route , param) {
             let curRoute = this.findRouteByRoute(route);
             let topRoute = this.topRoute(curRoute.id);
             let title = this.genTabName(topRoute , curRoute);
-            this.ins.tab.title(id , title);
-            // 更新标签内容
-            // 重新渲染元素内容
-            let container = this.findTabItemByTabId(id);
+            // 重新渲染标签名称
+            this.ins.tab.title(tabId , title);
+            // 重新渲染标签对应内容
+            let container = this.findTabItemByTabId(tabId);
                 container = G(container);
-            this.mount(container.children().jump(0).get(0) , id , route , param);
+            this.mount(container.children().jump(0).get(0) , tabId , route , param);
         } ,
 
         // 新开一个标签页
@@ -472,19 +505,19 @@ export default {
         } ,
 
         // 实例化 vue 组件
-        newComponent (component , route , param , id) {
+        newComponent (component , route , param , tabId) {
             let self = this;
             route = this.findRouteByRoute(route);
             let topRoute = this.topRoute(route.id);
             let position = this.position(route.id);
-            console.log('position' , position);
+            // console.log('position' , position);
             let mixins = {
-                store: this.$store ,
+                // store: this.$store ,
                 data () {
                     return {
                         // 当前组件的标识符
                         // 子组件不允许设置这些值！
-                        id ,
+                        id: tabId ,
                         param ,
                         route ,
                         topRoute ,
@@ -499,7 +532,7 @@ export default {
                         // _blank 打开新的标签页
                         let typeRange = ['_self' , '_blank'];
                         if (type == '_self') {
-                            return self.reRender(id , route , param);
+                            return self.reRender(tabId , route , param);
                         }
                         if (type == '_blank') {
                             // 新开一个标签页
@@ -510,6 +543,15 @@ export default {
                     // 刷新操作
                     reload () {
                         this.location(this.route.value , this.param);
+                    } ,
+
+                    // 关闭标签页
+                    closeTabByTabId (tabId) {
+                        self.closeTabByTabId(tabId);
+                    } ,
+
+                    closeTabByRoute (route) {
+                        self.closeTabByRoute(route);
                     } ,
 
                     // 标签页切换

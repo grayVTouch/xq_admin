@@ -13,7 +13,7 @@ use App\Customize\api\web_v1\model\ImageSubjectModel;
 use App\Customize\api\web_v1\model\ModuleModel;
 use App\Customize\api\web_v1\model\SubjectModel;
 use App\Customize\api\web_v1\model\UserModel;
-use Illuminate\Support\Facades\Storage;
+use App\Customize\api\web_v1\util\FileUtil;
 use stdClass;
 use function api\web_v1\get_value;
 use function api\web_v1\user;
@@ -56,7 +56,7 @@ class ImageSubjectHandler extends Handler
         $res->tags = $tags;
         $res->images = $images;
 
-        $res->__thumb__ = empty($res->thumb) ? '' : Storage::url($res->thumb);
+        $res->__thumb__ = empty($res->thumb) ? '' : FileUtil::url($res->thumb);
         $res->__type__ = get_value('business.type_for_image_subject' , $res->type);
         $res->__status__ = get_value('business.status_for_image_subject' , $res->status);
 

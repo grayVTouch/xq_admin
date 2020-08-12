@@ -1,15 +1,6 @@
 import Form from '../form.vue';
 
-const form = {
-    type: 'view' ,
-    p_id: 0 ,
-    enable: 1 ,
-    is_menu: 0 ,
-    is_view: 1 ,
-    weight: 0 ,
-    s_ico: '' ,
-    b_ico: '' ,
-};
+
 
 export default {
     name: "index",
@@ -19,6 +10,113 @@ export default {
     } ,
 
     data () {
+        const field = [
+            {
+                type: 'selection',
+                minWidth: TopContext.table.checkbox ,
+                align: TopContext.table.alignCenter ,
+                fixed: 'left' ,
+            },
+            {
+                title: 'id' ,
+                key: 'id' ,
+                minWidth: TopContext.table.id ,
+                align: TopContext.table.alignCenter ,
+                fixed: 'left' ,
+            } ,
+            {
+                title: '中文名称' ,
+                slot: 'cn' ,
+                minWidth: TopContext.table.name ,
+                fixed: 'left' ,
+            } ,
+            {
+                title: '英文名称' ,
+                key: 'en' ,
+                minWidth: TopContext.table.name ,
+                align: TopContext.table.alignCenter ,
+            } ,
+            {
+                title: '小图标' ,
+                minWidth: TopContext.table.image ,
+                slot: 's_ico' ,
+                align: 'center'
+            } ,
+            {
+                title: '大图标' ,
+                minWidth: TopContext.table.image ,
+                slot: 'b_ico' ,
+                align: 'center'
+            } ,
+            {
+                title: '上级id' ,
+                key: 'p_id' ,
+                minWidth: TopContext.table.id ,
+                align: TopContext.table.alignCenter ,
+            } ,
+            {
+                title: '权限值' ,
+                key: 'value' ,
+                minWidth: TopContext.table.w_200 ,
+                align: TopContext.table.alignLeft ,
+            } ,
+            {
+                title: '描述' ,
+                key: 'description' ,
+                minWidth: TopContext.table.desc ,
+            } ,
+            {
+                title: '类型' ,
+                key: 'type' ,
+                minWidth: TopContext.table.type ,
+                align: TopContext.table.alignCenter ,
+            } ,
+            {
+                title: '菜单?' ,
+                slot: 'is_menu' ,
+                minWidth: TopContext.table.status ,
+                align: TopContext.table.alignCenter ,
+                fixed: 'right' ,
+            } ,
+            {
+                title: '视图?' ,
+                slot: 'is_view' ,
+                minWidth: TopContext.table.status ,
+                align: TopContext.table.alignCenter ,
+                fixed: 'right' ,
+            } ,
+            {
+                title: '启用?' ,
+                slot: 'enable' ,
+                minWidth: TopContext.table.status ,
+                align: TopContext.table.alignCenter ,
+                fixed: 'right' ,
+            } ,
+            {
+                title: '权重' ,
+                key: 'weight' ,
+                minWidth: TopContext.table.weight ,
+                align: TopContext.table.alignCenter ,
+            } ,
+            {
+                title: '创建时间' ,
+                key: 'create_time' ,
+                minWidth: TopContext.table.time ,
+                align: TopContext.table.alignCenter ,
+            } ,
+            {
+                title: '操作' ,
+                slot: 'action' ,
+                minWidth: TopContext.table.action ,
+                align: TopContext.table.alignCenter ,
+                fixed: 'right' ,
+            } ,
+        ];
+        if (!this.$store.state.context.debug) {
+            // 仅在调试模式可供修改
+            field.shift();
+            field.pop();
+        }
         return {
             filter: {
                 id: '' ,
@@ -40,108 +138,10 @@ export default {
                 selectedIds: [] ,
             } ,
             table: {
-                field: [
-                    {
-                        type: 'selection',
-                        width: TopContext.table.checkbox ,
-                        align: TopContext.table.alignCenter ,
-                        fixed: 'left' ,
-                    },
-                    {
-                        title: 'id' ,
-                        key: 'id' ,
-                        width: TopContext.table.id ,
-                        align: TopContext.table.alignCenter ,
-                        fixed: 'left' ,
-                    } ,
-                    {
-                        title: '中文名称' ,
-                        slot: 'cn' ,
-                        width: TopContext.table.name ,
-                        fixed: 'left' ,
-                    } ,
-                    {
-                        title: '英文名称' ,
-                        key: 'en' ,
-                        width: TopContext.table.name ,
-                        align: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '小图标' ,
-                        width: TopContext.table.image ,
-                        slot: 's_ico' ,
-                        align: 'center'
-                    } ,
-                    {
-                        title: '大图标' ,
-                        width: TopContext.table.image ,
-                        slot: 'b_ico' ,
-                        align: 'center'
-                    } ,
-                    {
-                        title: '上级id' ,
-                        key: 'p_id' ,
-                        width: TopContext.table.id ,
-                        align: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '权限值' ,
-                        key: 'value' ,
-                        width: TopContext.table.w_200 ,
-                        align: TopContext.table.alignLeft ,
-                    } ,
-                    {
-                        title: '描述' ,
-                        key: 'description' ,
-                        width: TopContext.table.desc ,
-                    } ,
-                    {
-                        title: '类型' ,
-                        key: 'type' ,
-                        width: TopContext.table.type ,
-                        align: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '菜单?' ,
-                        slot: 'is_menu' ,
-                        width: TopContext.table.status ,
-                        align: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '视图?' ,
-                        slot: 'is_view' ,
-                        width: TopContext.table.status ,
-                        align: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '启用?' ,
-                        slot: 'enable' ,
-                        width: TopContext.table.status ,
-                        align: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '权重' ,
-                        key: 'weight' ,
-                        width: TopContext.table.weight ,
-                        align: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '创建时间' ,
-                        key: 'create_time' ,
-                        width: TopContext.table.time ,
-                        align: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '操作' ,
-                        slot: 'action' ,
-                        width: TopContext.table.action ,
-                        align: TopContext.table.alignCenter ,
-                        fixed: 'right' ,
-                    } ,
-                ] ,
+                field: field ,
                 data: [] ,
             } ,
-            form: {...form}  ,
+            form: {}  ,
             permission: [] ,
         };
     } ,
@@ -151,10 +151,6 @@ export default {
     } ,
 
     computed: {
-        title () {
-            return this.val.mode === 'edit' ? '编辑' : '添加';
-        } ,
-
         showDestroyAllBtn () {
             return this.val.selectedIds.length > 0;
         } ,
@@ -287,38 +283,20 @@ export default {
             });
         } ,
 
-        getPermissionExcludeSelfAndChildrenById (id) {
-            const exclude = G.t.childrens(id , this.table.data , null , true , false);
-            const exclude_ids = [];
-            exclude.forEach((v) => {
-                exclude_ids.push(v.id);
-            });
-            const res = [];
-            this.table.data.forEach((v) => {
-                if (G.contain(v.id , exclude_ids)) {
-                    return ;
-                }
-                res.push(v);
-            });
-            return res;
-        } ,
-
         editEvent (v) {
-            this._val('drawer' , true);
             this._val('mode' , 'edit');
-            this.error();
-            this.form = {...v};
-            this.permission = this.getPermissionExcludeSelfAndChildrenById(v.id);
-
-
+            this.form = G.copy(v);
+            this.$nextTick(() => {
+                this.$refs.form.openFormDrawer();
+            });
         } ,
 
         addEvent () {
-            this._val('drawer' , true);
             this._val('mode' , 'add');
-            this.error();
-            this.form = {...form};
-            this.permission = this.table.data;
+            this.form = {};
+            this.$nextTick(() => {
+                this.$refs.form.openFormDrawer();
+            });
         } ,
 
 

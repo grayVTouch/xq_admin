@@ -1,7 +1,13 @@
 
 const form = {
     sex: 'secret' ,
-    role_id: 0 ,
+    role_id: '' ,
+};
+
+const search = {
+    role_id: '' ,
+    limit: TopContext.limit ,
+    order: '' ,
 };
 
 export default {
@@ -9,9 +15,6 @@ export default {
 
     data () {
         return {
-            filter: {
-                id: '' ,
-            } ,
             dom: {} ,
             ins: {} ,
             val: {
@@ -27,88 +30,88 @@ export default {
                 field: [
                     {
                         type: 'selection',
-                        width: TopContext.table.checkbox ,
+                        minWidth: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     },
                     {
                         title: 'id' ,
                         key: 'id' ,
-                        width: TopContext.table.id ,
+                        minWidth: TopContext.table.id ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     } ,
                     {
                         title: '用户名' ,
                         key: 'username' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     } ,
                     {
                         title: '角色【id】' ,
                         slot: 'role_id' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '头像' ,
                         slot: 'avatar' ,
-                        width: TopContext.table.image ,
+                        minWidth: TopContext.table.image ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '性别' ,
                         key: '__sex__' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '生日' ,
                         key: 'birthday' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '手机号码' ,
                         key: 'phone' ,
-                        width: TopContext.table.phone ,
+                        minWidth: TopContext.table.phone ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '电子邮箱' ,
                         key: 'email' ,
-                        width: TopContext.table.email ,
+                        minWidth: TopContext.table.email ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '最近一次登录时间' ,
                         key: 'last_time' ,
-                        width: TopContext.table.time ,
+                        minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '最近一次登录ip' ,
                         key: 'last_ip' ,
-                        width: TopContext.table.ip ,
+                        minWidth: TopContext.table.ip ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '超级管理员' ,
                         slot: 'is_root' ,
-                        width: TopContext.table.status ,
+                        minWidth: TopContext.table.status ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '创建时间' ,
                         key: 'create_time' ,
-                        width: TopContext.table.time ,
+                        minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '操作' ,
                         slot: 'action' ,
-                        width: TopContext.table.action ,
+                        minWidth: TopContext.table.action ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'right' ,
                     } ,
@@ -117,18 +120,19 @@ export default {
                 page: 1 ,
                 data: [] ,
             } ,
-            role: [] ,
-            search: {
-                limit: this.$store.state.context.limit
-            } ,
-            form: {...form}  ,
+
+            // 角色列表
+            roles: [] ,
+
+            search: G.copy(search) ,
+            form: G.copy(form)  ,
         };
     } ,
 
     mounted () {
         this.initDom();
         this.initIns();
-        this.getRoleData();
+        this.getRoles();
         this.getData();
     } ,
 
@@ -148,14 +152,31 @@ export default {
             this.form.birthday = date;
         } ,
 
-        getRoleData () {
+        getRoles () {
+            this.pending('getRoles' , true);
             Api.role.all((msg , data , code) => {
+                this.pending('getRoles' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     return ;
                 }
-                this.role = data;
+                this.roles = data;
             });
+        } ,
+
+        addRoleEvent () {
+            const route = '/role/index';
+            this.location(route , {
+                action: 'add' ,
+                callback: () => {
+                    // 更新角色
+                    this.getRoles();
+                    // 切换回当前的标签
+                    this.location(this.route.value , null , '_blank');
+                    // 关闭标签
+                    this.closeTabByRoute(route);
+                } ,
+            } , '_blank');
         } ,
 
         initDom () {
@@ -265,14 +286,16 @@ export default {
             this._val('modal' , true);
             this._val('mode' , 'edit');
             this.error();
-            this.form = {...record};
+            this.getRoles();
+            this.form = G.copy(record);
         } ,
 
         addEvent () {
             this._val('modal' , true);
             this._val('mode' , 'add');
             this.error();
-            this.form = {...form};
+            this.getRoles();
+            this.form = G.copy(form);
         } ,
 
         submitEvent () {

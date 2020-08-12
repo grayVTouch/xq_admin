@@ -51,7 +51,7 @@ class VideoAction extends Action
             'status'        => ['required' , 'integer' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $video = VideoModel::find($id);
         if (empty($video)) {
@@ -59,19 +59,19 @@ class VideoAction extends Action
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('表单错误，请检查' , [
+            return self::error($validator->errors()->first() , [
                 'module_id' => '模块不存在'
             ]);
         }
         $category = CategoryModel::find($param['category_id']);
         if (empty($category)) {
-            return self::error('表单错误，请检查' , [
+            return self::error($validator->errors()->first() , [
                 'category_id' => '分类不存在' ,
             ]);
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error('表单错误，请检查' , [
+            return self::error($validator->errors()->first() , [
                 'user_id' => '用户不存在'
             ]);
         }
@@ -79,13 +79,13 @@ class VideoAction extends Action
         if ($param['type'] === 'pro') {
             $video_subject = VideoSubjectModel::find($param['video_subject_id']);
             if (empty($video_subject)) {
-                return self::error('表单错误，请检查' , [
+                return self::error($validator->errors()->first() , [
                     'video_subject_id' => '专题不存在' ,
                 ]);
             }
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error('表单错误，请检查' , [
+            return self::error($validator->errors()->first() , [
                 'fail_reason' => '请提供失败原因' ,
             ]);
         }
@@ -150,23 +150,23 @@ class VideoAction extends Action
             'status'        => ['required' , 'integer' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('表单错误，请检查' , [
+            return self::error($validator->errors()->first() , [
                 'module_id' => '模块不存在'
             ]);
         }
         $category = CategoryModel::find($param['category_id']);
         if (empty($category)) {
-            return self::error('表单错误，请检查' , [
+            return self::error($validator->errors()->first() , [
                 'category_id' => '分类不存在' ,
             ]);
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error('表单错误，请检查' , [
+            return self::error($validator->errors()->first() , [
                 'user_id' => '用户不存在'
             ]);
         }
@@ -174,13 +174,13 @@ class VideoAction extends Action
         if ($param['type'] === 'pro') {
             $video_subject = VideoSubjectModel::find($param['video_subject_id']);
             if (empty($video_subject)) {
-                return self::error('表单错误，请检查' , [
+                return self::error($validator->errors()->first() , [
                     'video_subject_id' => '专题不存在' ,
                 ]);
             }
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error('表单错误，请检查' , [
+            return self::error($validator->errors()->first() , [
                 'fail_reason' => '请提供失败原因' ,
             ]);
         }

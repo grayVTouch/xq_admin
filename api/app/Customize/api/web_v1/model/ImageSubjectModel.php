@@ -149,6 +149,7 @@ class ImageSubjectModel extends Model
         $value = strtolower($value);
         $where = [
             ['is.module_id' , '=' , $module_id] ,
+            ['is.status' , '=' , 1] ,
         ];
         $query = self::from('xq_image_subject as is')
             ->where($where);
@@ -184,6 +185,7 @@ class ImageSubjectModel extends Model
         $value = strtolower($value);
         $where = [
             ['is.module_id' , '=' , $module_id] ,
+            ['is.status' , '=' , 1] ,
         ];
         $query = self::from('xq_image_subject as is')
             ->where($where);

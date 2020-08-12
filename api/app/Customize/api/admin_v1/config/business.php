@@ -73,4 +73,22 @@ return [
         1 => '转码中' ,
         2 => '处理完成' ,
     ] ,
+
+    'status_for_video_subject' => [
+        'making' => '连载中' ,
+        'completed' => '已完结' ,
+        'terminated' => '已终止' ,
+    ] ,
+
+    'type_for_region' => [
+        'country'   => '国家' ,
+        'state'     => '州|邦|省' ,
+        'region'    => '地区' ,
+    ] ,
+
+    'os_for_disk' => [
+        'windows' => 'windows' ,
+        'linux' => 'linux' ,
+        'mac' => 'mac' ,
+    ] ,
 ];

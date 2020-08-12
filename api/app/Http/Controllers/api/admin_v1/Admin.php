@@ -32,13 +32,22 @@ class Admin extends Base
     public function index()
     {
         $param = $this->request->query();
-        $param['username'] = $param['username'] ?? '';
-        $param['order'] = $param['order'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+
+        $param['username']  = $param['username'] ?? '';
+        $param['sex']       = $param['sex'] ?? '';
+        $param['phone']     = $param['phone'] ?? '';
+        $param['email']     = $param['email'] ?? '';
+        $param['role_id']   = $param['role_id'] ?? '';
+        $param['is_root']   = $param['is_root'] ?? '';
+        $param['order']     = $param['order'] ?? '';
+        $param['limit']     = $param['limit'] ?? '';
+
         $res = AdminAction::index($this , $param);
+
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
+
         return success($res['message'] , $res['data']);
     }
 

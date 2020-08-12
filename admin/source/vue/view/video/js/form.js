@@ -1,3 +1,16 @@
+const form = {
+    type: 'misc' ,
+    user_id: '' ,
+    module_id: '' ,
+    category_id: '' ,
+    video_subject_id: '' ,
+    view_count: 0  ,
+    praise_count: 0 ,
+    against_count: 0 ,
+    weight: 0 ,
+    status: 0 ,
+};
+
 const users = {
     data: [],
     field: [
@@ -22,14 +35,17 @@ const users = {
             center: TopContext.table.alignCenter ,
         } ,
     ] ,
-    current: {} ,
+    current: {
+        id: 0 ,
+        username: 'unknow' ,
+    } ,
     limit: TopContext.limit ,
     value: '' ,
     page: 1 ,
     total: 0 ,
 };
 
-const video_subjects = {
+const videoSubjects = {
     data: [],
     field: [
         {
@@ -58,13 +74,23 @@ const video_subjects = {
             center: TopContext.table.alignCenter ,
         } ,
     ] ,
-    current: {} ,
+    current: {
+        id: 0 ,
+        name: 'unknow' ,
+    } ,
     total: 0 ,
     page: 1 ,
     value: '' ,
 };
 
 export default {
+
+    computed: {
+        title () {
+            return this.mode === 'edit' ? '编辑' : '添加';
+        } ,
+    } ,
+
     data () {
         return {
             val: {
@@ -75,15 +101,14 @@ export default {
                 modalForSubject: false ,
                 modalForUser: false ,
                 valueForUser: '' ,
+                drawer: false ,
             } ,
-
-            drawer: false ,
 
             // 用户
             users: G.copy(users , true),
 
             // 关联主体
-            video_subjects: G.copy(video_subjects , true),
+            videoSubjects: G.copy(videoSubjects , true),
 
             // 标签
             tags: [] ,
@@ -98,30 +123,30 @@ export default {
                 field: [
                     // {
                     //     type: 'selection' ,
-                    //     width: TopContext.table.checkbox ,
+                    //     minWidth: TopContext.table.checkbox ,
                     //     center: TopContext.table.alignCenter ,
                     // } ,
                     {
                         title: 'id' ,
                         key: 'id' ,
                         center: TopContext.table.alignCenter ,
-                        width: TopContext.table.id ,
+                        minWidth: TopContext.table.id ,
                     } ,
                     {
                         title: '清晰度' ,
                         key: 'definition' ,
                         center: TopContext.table.alignCenter ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                     } ,
                     {
                         title: '视频' ,
                         slot: 'src' ,
-                        // width: TopContext.table.video ,
+                        // minWidth: TopContext.table.video ,
                     } ,
                     {
                         title: '操作' ,
                         slot: 'action' ,
-                        width: TopContext.table.action ,
+                        minWidth: TopContext.table.action ,
                     } ,
                 ] ,
                 data: [] ,
@@ -129,46 +154,20 @@ export default {
 
             images: [] ,
 
+            categories: [] ,
+
+            modules: [] ,
+
             createTime: '' ,
+
+            form: G.copy(form) ,
         };
     } ,
-
-    model: {
-        name: 'value' ,
-        event: 'change' ,
-    } ,
-
     props: {
-        title: {
-            type: String ,
-            default: '' ,
-        } ,
-        value: {
-            type: Boolean ,
-            default: false
-        } ,
-        form: {
+        data: {
             type: Object ,
             default () {
                 return {};
-            } ,
-        } ,
-        categories: {
-            type: Array ,
-            default () {
-                return [];
-            } ,
-        } ,
-        modules: {
-            type: Array ,
-            default () {
-                return [];
-            } ,
-        } ,
-        topTags: {
-            type: Array ,
-            default () {
-                return [];
             } ,
         } ,
         mode: {
@@ -185,14 +184,53 @@ export default {
 
     methods: {
 
-        moduleChangedEvent (moduleId) {
-            moduleId = parseInt(moduleId);
-            this.val.error.module_id = '';
-            this.form.category_id = 0;
-            this.form.video_subject_id = 0;
-            this.form.topTags = [];
+        getCategories (moduleId , callback) {
+            this.pending('getCategories' , true);
+            Api.category.searchByModuleId(moduleId , (msg , data , code) => {
+                this.pending('getCategories' , false);
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , data);
+                    G.invoke(callback , null , false);
+                    return ;
+                }
+                this.categories = data;
+                this.$nextTick(() => {
+                    G.invoke(callback , null , true);
+                });
+            });
+        } ,
 
-            this.$emit('on-module-change' , moduleId);
+        getModules (callback) {
+            this.pending('getModules' , true);
+            Api.module.all((msg , data , code) => {
+                this.pending('getModules' , false);
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , data);
+                    G.invoke(callback , null , false);
+                    return ;
+                }
+                this.modules = data;
+                this.$nextTick(() => {
+                    G.invoke(callback , null , true);
+                });
+            });
+        } ,
+
+
+        moduleChangedEvent (moduleId) {
+
+            this.error({module_id: ''} , false);
+            this.form.category_id = '';
+            this.form.video_subject_id = '';
+            this.form.video_subject = G.copy(videoSubjects.current);
+            this.getCategories(moduleId);
+        } ,
+
+        typeChangedEvent (type) {
+            if (type === 'misc') {
+                this.form.video_subject = G.copy(videoSubjects.current);
+                this.form.video_subject_id = '';
+            }
         } ,
 
         initDom () {
@@ -260,27 +298,27 @@ export default {
         } ,
 
         searchVideoSubject () {
-            if (this.form.module_id < 1) {
-                this.error({video_subject_id: '请选择模块后操作'});
-                return ;
-            }
             this.pending('searchSubject' , true);
             Api.video_subject.search({
                 module_id: this.form.module_id ,
-                value: this.video_subjects.value ,
+                value: this.videoSubjects.value ,
             } , (msg , data , code) => {
                 this.pending('searchSubject' , false);
                 if (code !== TopContext.code.Success) {
                     this.error({video_subject_id: data});
                     return ;
                 }
-                this.video_subjects.page = data.current_page;
-                this.video_subjects.total = data.total;
-                this.video_subjects.data = data.data;
+                this.videoSubjects.page = data.current_page;
+                this.videoSubjects.total = data.total;
+                this.videoSubjects.data = data.data;
             });
         } ,
 
         searchVideoSubjectEvent (e) {
+            if (this.form.module_id < 1) {
+                this.error({video_subject_id: '请选择模块后操作'});
+                return ;
+            }
             this.searchVideoSubject();
             this._val('modalForSubject' , true);
         } ,
@@ -293,14 +331,14 @@ export default {
 
         updateSubjectEvent (row , index) {
             this.form.video_subject_id = row.id;
-            this.video_subjects.current = row;
+            this.form.video_subject = row;
             this._val('modalForSubject' , false);
-            this.video_subjects.data = [];
+            this.videoSubjects.data = [];
         } ,
 
         updateUserEvent (row , index) {
             this.form.user_id = row.id;
-            this.users.current = row;
+            this.form.user = row;
             this._val('modalForUser' , false);
             this.users.data = [];
         } ,
@@ -309,12 +347,20 @@ export default {
 
         } ,
 
+        openFormDrawer () {
+            this._val('drawer' , true);
+            this.getModules();
+            if (this.mode === 'edit') {
+                this.getCategories(this.form.module_id);
+            }
+        } ,
+
         closeFormDrawer () {
             if (this.pending('submit')) {
                 this.message('warning' , '请求中...请耐心等待');
                 return ;
             }
-            this.drawer = false;
+            this._val('drawer' , false);
             this.ins.thumb.clearAll();
             this.ins.video.clearAll();
             this.images = [];
@@ -322,7 +368,7 @@ export default {
             // 切换回基本的内容
             this._val('tab' , 'base');
             this.users.value = '';
-            this.video_subjects.value = '';
+            this.videoSubjects.value = '';
         } ,
 
         destroy (id , callback) {
@@ -519,25 +565,25 @@ export default {
     } ,
 
     watch: {
-        drawer (newVal , oldVal) {
-            this.$emit('change' , newVal);
-        } ,
-
-        value: {
-            immediate: true ,
-            handler (newVal , oldVal) {
-                this.drawer = newVal;
-            } ,
-        } ,
-
-        form (form , oldVal) {
-            this.ins.thumb.render(form.__thumb__);
-            // console.log('render' , form.__src__);
+        data (data) {
+            if (G.isEmptyObject(data)) {
+                this.form = G.copy(form);
+            } else {
+                this.form = data;
+            }
+            // 仅在外界传入的时候初始化图片
+            this.ins.thumb.render(this.form.__thumb__);
             // this.ins.video.render(form.__src__);
-            this.users.current = form.user ? {...form.user} : {};
-            this.video_subjects.current = form.video_subject ? {...form.video_subject} : {};
-            this.videos.data = form.videos;
-            this.createTime = form.create_time;
+        } ,
+
+        form: {
+            deep: true ,
+            handler (form) {
+                this.users.current = form.user ? form.user : G.copy(users.current);
+                this.videoSubjects.current = form.video_subject ? form.video_subject : G.copy(videoSubjects.current);
+                this.videos.data = form.videos;
+                this.createTime = form.create_time;
+            } ,
         } ,
     } ,
 };

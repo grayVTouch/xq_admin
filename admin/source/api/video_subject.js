@@ -5,6 +5,7 @@ const show = genUrl('video_subject/{id}');
 const destroy = genUrl('video_subject/{id}');
 const destroyAll = genUrl('destroy_all_video_subject');
 const search = genUrl('search_video_subject');
+const destroyTag = genUrl('destroy_video_subject_tag');
 
 export default {
     index (data , success , error) {
@@ -45,4 +46,7 @@ export default {
         return request(search , 'get' , data , success , error);
     } ,
 
+    destroyTag (data , success , error) {
+        return request(destroyTag , 'delete' , data , success , error);
+    } ,
 };

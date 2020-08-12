@@ -71,6 +71,7 @@
 .container .message {
     font-weight: bold;
     text-align: center;
+    font-size: 12px;
 }
 
 /*** 表单  ***/
@@ -86,6 +87,7 @@
     margin-bottom: 20px;
 }
 
+
 .container .form .form-inner .line:nth-last-of-type(1) {
     margin-bottom: 0;
 }
@@ -95,7 +97,15 @@
     line-height: 50px;
     position: relative;
     background-color: rgba(17, 17, 17, 0.55);
+    transition: var(--transition);
 }
+
+.container .form .form-inner .line .top:focus-within ,
+.container .form .form-inner .line .top:focus-within
+{
+    background-color: rgba(56 , 56 , 56 ,0.55);
+}
+
 
 .container .form .form-inner .line .top .left {
     height: 100%;

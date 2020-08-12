@@ -98,7 +98,7 @@ export default {
                     return ;
                 }
                 this.request('submit' , false);
-                this.topMessage('登录成功' , 'run-green');
+                this.topMessage('登录成功，进入首页中...' , 'run-green');
                 G.s.set('token' , data);
                 G.setTimeout(() => {
                     this.push({name: 'home'});

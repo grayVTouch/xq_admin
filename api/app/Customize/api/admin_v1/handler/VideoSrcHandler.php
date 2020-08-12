@@ -6,7 +6,7 @@ namespace App\Customize\api\admin_v1\handler;
 
 use App\Customize\api\admin_v1\model\ModuleModel;
 use App\Customize\api\admin_v1\model\VideoSrcModel;
-use Illuminate\Support\Facades\Storage;
+use App\Customize\api\admin_v1\util\FileUtil;
 use stdClass;
 use function core\convert_obj;
 
@@ -22,7 +22,7 @@ class VideoSrcHandler extends Handler
 //        ModuleHandler::handle($module);
 
 //        $res->module = $module;
-        $res->__src__ = empty($res->src) ? '' : Storage::url($res->src);
+        $res->__src__ = empty($res->src) ? '' : FileUtil::url($res->src);
         return $res;
     }
 

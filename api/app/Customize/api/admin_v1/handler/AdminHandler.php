@@ -9,7 +9,7 @@ use App\Customize\api\admin_v1\model\AdminPermissionModel;
 use App\Customize\api\admin_v1\model\RoleModel;
 use App\Customize\api\admin_v1\model\RolePermissionPivot;
 use Core\Lib\Category;
-use Illuminate\Support\Facades\Storage;
+use App\Customize\api\admin_v1\util\FileUtil;
 use stdClass;
 use function api\admin_v1\get_value;
 use function core\convert_obj;
@@ -38,7 +38,7 @@ class AdminHandler extends Handler
             'p_id'  => 'p_id' ,
         ] , false , false);
         $model->permission = $permission;
-        $model->__avatar__ = empty($model->avatar) ? '' : Storage::url($model->avatar);
+        $model->__avatar__ = empty($model->avatar) ? '' : FileUtil::url($model->avatar);
         $model->__sex__ = get_value('business.sex_for_user' , $model->sex);
         $model->__is_root__ = get_value('business.bool_for_int' , $model->is_root);
         return $model;

@@ -16,7 +16,7 @@
             <div class="right">
                 <!-- 面包屑 -->
                 <template v-for="(v,k) in position">
-                    <span v-ripple class="text" @click="open(v)">{{ v.cn }}</span>
+                    <span v-ripple class="text" :class="{'run-cursor-not-allow': !v.enable || !v.is_view }" @click="open(v)">{{ v.cn }}</span>
                     <span class="delimiter" v-if="!(k == position.length - 1)">/</span>
                 </template>
             </div>

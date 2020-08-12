@@ -4,17 +4,15 @@
 namespace App\Customize\api\admin_v1\action;
 
 
+use App\Customize\api\admin_v1\util\FileUtil;
+use App\Customize\api\admin_v1\util\ResourceUtil;
 use App\Http\Controllers\api\admin_v1\Base;
 use Core\Lib\ImageProcessor;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use function api\admin_v1\my_config;
 use function api\admin_v1\get_form_error;
-use function api\admin_v1\res_path_prefix;
-use function api\admin_v1\res_realpath;
-use function core\format_path;
 
 class FileAction extends Action
 {
@@ -33,7 +31,7 @@ class FileAction extends Action
             return self::error('请提供上传文件');
         }
         $dir    = date('Ymd');
-        $path   = Storage::put($dir , $file);
+        $path   = FileUtil::upload($file , $dir);
         if (empty($param['m'])) {
             if (!empty($param['w'])) {
                 $mode = 'fix-width';
@@ -49,8 +47,8 @@ class FileAction extends Action
             $mode = $param['m'];
         }
         if (in_array($mode , $mode_range)) {
-            $realpath = res_realpath($path);
-            $image_processor = new ImageProcessor(res_realpath($dir));
+            $realpath = FileUtil::getRealPathByRelativePath($path);
+            $image_processor = new ImageProcessor(FileUtil::dir($dir));
             $res = $image_processor->compress($realpath , [
                 'mode' => $mode ,
                 'ratio' => $param['r'] ,
@@ -58,10 +56,10 @@ class FileAction extends Action
                 'height' => $param['h'] ,
             ] , false);
             // 删除源文件
-            Storage::delete($path);
-            $path_prefix = res_path_prefix() . '/';
-            $path = str_replace($path_prefix , '' , $res);
+            FileUtil::delete($path);
+            $path = FileUtil::prefix() . '/' . str_replace(FileUtil::dir() . '/' , '' , $res);
         }
+        ResourceUtil::create($path);
         return self::success('' , $path);
     }
 }

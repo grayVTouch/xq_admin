@@ -15,7 +15,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Storage;
+use App\Customize\api\admin_v1\util\FileUtil;
 use function api\admin_v1\my_config;
 use function api\admin_v1\res_realpath;
 use function core\random;

@@ -40,7 +40,7 @@ class RoleAction extends Action
             'name' => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $role = RoleModel::find($id);
         if (empty($role)) {
@@ -60,7 +60,7 @@ class RoleAction extends Action
             'name' => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $id = RoleModel::insertGetId(array_unit($param , [
@@ -84,7 +84,7 @@ class RoleAction extends Action
     {
         try {
             DB::beginTransaction();
-            RoleModel::delById($id);
+            RoleModel::destroy($id);
             RolePermissionPivot::delByRoleId($id);
             DB::commit();
             return self::success();
@@ -98,7 +98,7 @@ class RoleAction extends Action
     {
         try {
             DB::beginTransaction();
-            RoleModel::delByIds($ids);
+            RoleModel::destroy($ids);
             RolePermissionPivot::delByRoleIds($ids);
             DB::commit();
             return self::success();
@@ -114,7 +114,7 @@ class RoleAction extends Action
             'permission' => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $role = RoleModel::find($id);
         if (empty($role)) {

@@ -29,43 +29,56 @@ export default {
                 field: [
                     {
                         type: 'selection',
-                        width: TopContext.table.checkbox ,
+                        minWidth: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
                     },
                     {
                         title: 'id' ,
                         key: 'id' ,
+                        minWidth: TopContext.table.id ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
                     } ,
                     {
                         title: '位置' ,
                         key: 'value' ,
-                        align: TopContext.table.alignCenter
+                        minWidth: TopContext.table.name ,
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
                     } ,
                     {
                         title: '名称' ,
                         key: 'name' ,
-                        align: TopContext.table.alignCenter
+                        minWidth: TopContext.table.name ,
+                        align: TopContext.table.alignCenter ,
+                        // fixed: 'left' ,
                     } ,
                     {
                         title: '平台',
                         key: '__platform__',
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter,
+                        fixed: 'left' ,
                     },
                     {
                         title: '描述' ,
                         key: 'description' ,
+                        minWidth: TopContext.table.desc ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '创建时间' ,
                         key: 'create_time' ,
+                        minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '操作' ,
                         slot: 'action' ,
+                        minWidth: TopContext.table.action ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
                     } ,
                 ] ,
                 total: 0 ,
@@ -73,9 +86,9 @@ export default {
                 data: [] ,
             } ,
             search: {
-                limit: this.$store.state.context.limit
+                limit: TopContext.limit
             } ,
-            form: {...form}  ,
+            form: G.copy(form)  ,
             modules: [] ,
         };
     } ,
@@ -98,7 +111,7 @@ export default {
 
     methods: {
 
-        getModuleData () {
+        getModules () {
             Api.module.all((msg , data , code) => {
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
@@ -199,16 +212,16 @@ export default {
             this._val('modal' , true);
             this._val('mode' , 'edit');
             this.error();
-            this.form = {...record};
-            this.getModuleData();
+            this.form = G.copy(record);
+            this.getModules();
         } ,
 
         addEvent () {
             this._val('modal' , true);
             this._val('mode' , 'add');
             this.error();
-            this.form = {...form};
-            this.getModuleData();
+            this.form = G.copy(form);
+            this.getModules();
         } ,
 
         submitEvent () {

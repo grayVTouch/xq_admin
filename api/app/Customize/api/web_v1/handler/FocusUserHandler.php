@@ -8,7 +8,7 @@ use App\Customize\api\web_v1\model\CollectionModel;
 use App\Customize\api\web_v1\model\PraiseModel;
 use App\Customize\api\web_v1\model\FocusUserModel;
 use App\Customize\api\web_v1\model\UserModel;
-use Illuminate\Support\Facades\Storage;
+use App\Customize\api\web_v1\util\FileUtil;
 use stdClass;
 use function api\web_v1\get_value;
 use function api\web_v1\user;

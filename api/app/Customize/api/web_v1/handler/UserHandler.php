@@ -9,7 +9,7 @@ use App\Customize\api\web_v1\model\FocusUserModel;
 use App\Customize\api\web_v1\model\PraiseModel;
 use App\Customize\api\web_v1\model\TagModel;
 use App\Customize\api\web_v1\model\UserModel;
-use Illuminate\Support\Facades\Storage;
+use App\Customize\api\web_v1\util\FileUtil;
 use stdClass;
 use function api\web_v1\get_value;
 use function api\web_v1\user;
@@ -45,8 +45,8 @@ class UserHandler extends Handler
             $res->focused = 0;
         }
 
-        $res->__channel_thumb__ = empty($res->channel_thumb) ? '' : Storage::url($res->channel_thumb);
-        $res->__avatar__ = empty($res->avatar) ? '' : Storage::url($res->avatar);
+        $res->__channel_thumb__ = empty($res->channel_thumb) ? '' : FileUtil::url($res->channel_thumb);
+        $res->__avatar__ = empty($res->avatar) ? '' : FileUtil::url($res->avatar);
         $res->__sex__ = get_value('business.sex_for_user' , $res->sex);
 
         return $res;

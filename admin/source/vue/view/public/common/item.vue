@@ -2,7 +2,7 @@
     <div class="item" :data-id="item.id" v-if="item.type === 'view' && item.is_menu && item.enable">
 
         <!-- 测试 -->
-        <div class="function run-action-feedback" v-ripple>
+        <div class="function run-action-feedback">
             <div class="icon">
                 <span class="text" v-if="item.floor > 1"></span>
                 <img :src="item.__s_ico__" class="image">

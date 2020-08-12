@@ -27,19 +27,50 @@ class AdminModel extends Model
 
     public static function index(array $filter = [] , array $order = [] , int $limit = 20): Paginator
     {
-        $filter['id'] = $filter['id'] ?? '';
+        $filter['id']       = $filter['id'] ?? '';
         $filter['username'] = $filter['username'] ?? '';
-        $order['field'] = $order['field'] ?? 'id';
-        $order['value'] = $order['value'] ?? 'asc';
+        $filter['role_id']  = $filter['role_id'] ?? '';
+        $filter['sex']      = $filter['sex'] ?? '';
+        $filter['phone']    = $filter['phone'] ?? '';
+        $filter['email']    = $filter['email'] ?? '';
+        $filter['is_root']  = $filter['is_root'] ?? '';
+        $order['field']     = $order['field'] ?? 'id';
+        $order['value']     = $order['value'] ?? 'asc';
+
         $where = [];
+
         if ($filter['id'] !== '') {
             $where[] = ['id' , '=' , $filter['id']];
         }
+
         if ($filter['username'] !== '') {
             $where[] = ['username' , 'like' , "%{$filter['username']}%"];
         }
+
+        if ($filter['role_id'] !== '') {
+            $where[] = ['role_id' , '=' , $filter['role_id']];
+        }
+
+        if ($filter['sex'] !== '') {
+            $where[] = ['sex' , '=' , $filter['sex']];
+        }
+
+        if ($filter['phone'] !== '') {
+            $where[] = ['phone' , 'like' , "%{$filter['phone']}%"];
+        }
+
+        if ($filter['email'] !== '') {
+            $where[] = ['email' , 'like' , "%{$filter['email']}%"];
+        }
+
+        if ($filter['is_root'] !== '') {
+            $where[] = ['is_root' , '=' , $filter['is_root']];
+        }
+
         return self::where($where)
             ->orderBy($order['field'] , $order['value'])
             ->paginate($limit);
     }
+
+
 }

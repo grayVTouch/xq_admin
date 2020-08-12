@@ -11,7 +11,7 @@ use App\Customize\api\admin_v1\model\ModuleModel;
 use App\Customize\api\admin_v1\model\RelationTagModel;
 use App\Customize\api\admin_v1\model\SubjectModel;
 use App\Customize\api\admin_v1\model\UserModel;
-use Illuminate\Support\Facades\Storage;
+use App\Customize\api\admin_v1\util\FileUtil;
 use stdClass;
 use function api\admin_v1\get_value;
 use function core\convert_obj;
@@ -54,7 +54,7 @@ class ImageSubjectHandler extends Handler
         $res->images = $images;
         $res->tags = $tags;
 
-        $res->__thumb__ = empty($res->thumb) ? '' : Storage::url($res->thumb);
+        $res->__thumb__ = empty($res->thumb) ? '' : FileUtil::url($res->thumb);
         $res->__type__ = get_value('business.type_for_image_subject' , $res->type);
         $res->__status__ = get_value('business.status_for_image_subject' , $res->status);
         return $res;

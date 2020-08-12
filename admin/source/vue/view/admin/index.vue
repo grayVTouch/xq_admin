@@ -9,22 +9,61 @@
                 </div>
 
                 <div class="filter-option">
-                    <div class="option">
-                        <div class="field">id：</div>
-                        <div class="value"><input type="text" class="form-text" v-model="search.id"></div>
-                    </div>
-
-                    <div class="option">
-                        <div class="field">用户名：</div>
-                        <div class="value"><input type="text" class="form-text" v-model="search.username"></div>
-                    </div>
-
-                    <div class="option">
-                        <div class="field"></div>
-                        <div class="value">
-                            <Button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
+                    <form @submit.prevent="searchEvent">
+                        <div class="option">
+                            <div class="field">id：</div>
+                            <div class="value"><input type="text" class="form-text" v-model="search.id"></div>
                         </div>
-                    </div>
+
+                        <div class="option">
+                            <div class="field">用户名：</div>
+                            <div class="value"><input type="text" class="form-text" v-model="search.username"></div>
+                        </div>
+
+                        <div class="option">
+                            <div class="field">性别：</div>
+                            <div class="value">
+                                <RadioGroup v-model="search.sex">
+                                    <Radio v-for="(v,k) in $store.state.business.user.sex" :key="k" :label="k">{{ v }}</Radio>
+                                </RadioGroup>
+                            </div>
+                        </div>
+
+                        <div class="option">
+                            <div class="field">手机：</div>
+                            <div class="value"><input type="text" class="form-text" v-model="search.phone"></div>
+                        </div>
+
+                        <div class="option">
+                            <div class="field">电子邮箱：</div>
+                            <div class="value"><input type="text" class="form-text" v-model="search.email"></div>
+                        </div>
+
+                        <div class="option">
+                            <div class="field">角色：</div>
+                            <div class="value">
+                                <my-select :data="roles" v-model="search.role_id" empty=""></my-select>
+                            </div>
+                        </div>
+
+                        <div class="option">
+                            <div class="field">超级管理员：</div>
+                            <div class="value">
+                                <RadioGroup v-model="search.is_root">
+                                    <Radio v-for="(v,k) in $store.state.business.bool.integer" :key="k" :label="parseInt(k)">{{ v }}</Radio>
+                                </RadioGroup>
+                            </div>
+                        </div>
+
+
+                        <div class="option">
+                            <div class="field"></div>
+                            <div class="value">
+                                <button type="submit" v-show="false"></button>
+                                <Button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -120,7 +159,7 @@
                         <table class="input-table">
                             <tbody>
 
-                            <tr :class="{error: val.error.username}" id="form-name">
+                            <tr :class="{error: val.error.username}">
                                 <td>名称</td>
                                 <td>
                                     <input type="text" v-model="form.username" @input="val.error.username=''" class="form-text">
@@ -130,7 +169,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.password}" id="form-password">
+                            <tr :class="{error: val.error.password}">
                                 <td>密码</td>
                                 <td>
                                     <input type="text" v-model="form.password" @input="val.error.password=''" class="form-text">
@@ -140,17 +179,18 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.role_id}" id="form-role_id">
+                            <tr :class="{error: val.error.role_id}">
                                 <td>角色</td>
                                 <td>
-                                    <my-select :data="role" v-model="form.role_id"></my-select>
+                                    <my-select :data="roles" v-model="form.role_id"></my-select>
+                                    <my-loading v-if="val.pending.getRoles"></my-loading>
                                     <span class="need">*</span>
                                     <div class="msg"></div>
                                     <div class="e-msg">{{ val.error.role_id }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.avatar}" id="form-avatar">
+                            <tr :class="{error: val.error.avatar}">
                                 <td>封面</td>
                                 <td>
                                     <div ref="avatar">
@@ -186,7 +226,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.sex}" id="form-sex">
+                            <tr :class="{error: val.error.sex}">
                                 <td>性别</td>
                                 <td>
                                     <RadioGroup v-model="form.sex">
@@ -198,7 +238,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.birthday}" id="form-birthday">
+                            <tr :class="{error: val.error.birthday}">
                                 <td>生日</td>
                                 <td>
                                     <DatePicker v-model="val.birthday" format="yyyy-MM-dd" class="iview-form-input" @on-change="setDate"></DatePicker>
@@ -208,7 +248,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.phone}" id="form-phone">
+                            <tr :class="{error: val.error.phone}">
                                 <td>手机号码</td>
                                 <td>
                                     <input type="text" v-model="form.phone" @input="val.error.phone=''" class="form-text">
@@ -218,7 +258,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.email}" id="form-email">
+                            <tr :class="{error: val.error.email}">
                                 <td>电子邮件</td>
                                 <td>
                                     <input type="text" v-model="form.email" @input="val.error.email=''" class="form-text">

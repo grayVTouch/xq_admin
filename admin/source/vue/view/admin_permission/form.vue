@@ -1,8 +1,5 @@
 <template>
-    <my-form-drawer
-            :title="title"
-            v-model="show"
-    >
+    <my-form-drawer :title="title" v-model="val.drawer">
 
         <template slot="header">
             <div class="run-action-title">
@@ -18,93 +15,93 @@
             <form class="form" @submit.prevent="submitEvent" ref="form">
                 <table class="input-table">
                     <tbody>
-                    <tr :class="{error: val.error.cn}" id="form_cn">
+                    <tr :class="{error: val.error.cn}">
                         <td>中文名称</td>
                         <td>
                             <input type="text" v-model="form.cn"  @input="val.error.cn = ''" class="form-text">
-                            <span class="msg"></span>
                             <span class="need"></span>
-                            <span class="e-msg">{{ val.error.cn }}</span>
+                            <div class="msg"></div>
+                            <div class="e-msg">{{ val.error.cn }}</div>
                         </td>
                     </tr>
-                    <tr :class="{error: val.error.en}" id="form_en">
+                    <tr :class="{error: val.error.en}">
                         <td>英文名称</td>
                         <td>
                             <input type="text" v-model="form.en"  @input="val.error.en = ''" class="form-text">
-                            <span class="msg"></span>
                             <span class="need"></span>
-                            <span class="e-msg">{{ val.error.en }}</span>
+                            <div class="msg"></div>
+                            <div class="e-msg">{{ val.error.en }}</div>
                         </td>
                     </tr>
-                    <tr :class="{error: val.error.value}" id="form_value">
+                    <tr :class="{error: val.error.value}">
                         <td>权限</td>
                         <td>
                             <input type="text" class="form-text"  @input="val.error.value = ''" v-model="form.value">
-                            <span class="msg"></span>
                             <span class="need">*</span>
-                            <span class="e-msg">{{ val.error.value }}</span>
+                            <div class="msg"></div>
+                            <div class="e-msg">{{ val.error.value }}</div>
                         </td>
                     </tr>
-                    <tr :class="{error: val.error.p_id}" id="form_p_id">
+                    <tr :class="{error: val.error.p_id}">
                         <td>上级权限</td>
                         <td>
-                            <my-deep-select :data="permission" v-model="form.p_id" :has="true" :attr="val.attr"  @change="val.error.p_id = ''"></my-deep-select>
-                            <span class="msg"></span>
+                            <my-deep-select :data="permissions" v-model="form.p_id" :has="true" :attr="val.attr"  @change="val.error.p_id = ''"></my-deep-select>
                             <span class="need">*</span>
-                            <span class="e-msg">{{ val.error.p_id }}</span>
+                            <div class="msg"></div>
+                            <div class="e-msg">{{ val.error.p_id }}</div>
                         </td>
                     </tr>
-                    <tr :class="{error: val.error.description}" id="form_description">
+                    <tr :class="{error: val.error.description}">
                         <td>描述</td>
                         <td>
                             <textarea v-model="form.description" class="form-textarea" @input="val.error.description = ''"></textarea>
-                            <span class="msg"></span>
                             <span class="need"></span>
-                            <span class="e-msg">{{ val.error.description }}</span>
+                            <div class="msg"></div>
+                            <div class="e-msg">{{ val.error.description }}</div>
                         </td>
                     </tr>
-                    <tr :class="{error: val.error.type}" id="form_type">
+                    <tr :class="{error: val.error.type}">
                         <td>类型</td>
                         <td>
                             <RadioGroup v-model="form.type" @on-change="val.error.type = ''">
                                 <Radio v-for="(v,k) in $store.state.business.admin_permission.type" :key="k" :label="k">{{ v }}</Radio>
                             </RadioGroup>
-                            <span class="msg"></span>
                             <span class="need">*</span>
-                            <span class="e-msg">{{ val.error.type }}</span>
+                            <div class="msg"></div>
+                            <div class="e-msg">{{ val.error.type }}</div>
                         </td>
                     </tr>
-                    <tr :class="{error: val.error.is_menu}" id="form_is_menu">
+                    <tr :class="{error: val.error.is_menu}">
                         <td>菜单？</td>
                         <td>
                             <RadioGroup v-model="form.is_menu"  @on-change="val.error.is_menu = ''">
                                 <Radio v-for="(v,k) in $store.state.business.bool_for_int" :key="k" :label="parseInt(k)">{{ v }}</Radio>
                             </RadioGroup>
-                            <span class="msg">默认：否</span>
                             <span class="need">*</span>
-                            <span class="e-msg">{{ val.error.is_menu }}</span>
+                            <div class="msg">默认：否</div>
+                            <div class="e-msg">{{ val.error.is_menu }}</div>
                         </td>
                     </tr>
-                    <tr :class="{error: val.error.is_view}" id="form_is_view">
+                    <tr :class="{error: val.error.is_view}">
                         <td>视图？</td>
                         <td>
                             <RadioGroup v-model="form.is_view"  @on-change="val.error.is_view = ''">
                                 <Radio v-for="(v,k) in $store.state.business.bool_for_int" :key="k" :label="parseInt(k)">{{ v }}</Radio>
                             </RadioGroup>
-                            <span class="msg">默认：是</span>
                             <span class="need">*</span>
-                            <span class="e-msg">{{ val.error.is_view }}</span>
+                            <div class="msg">默认：是</div>
+                            <div class="e-msg">{{ val.error.is_view }}</div>
                         </td>
                     </tr>
-                    <tr :class="{error: val.error.enable}" id="form_enable">
+                    <tr :class="{error: val.error.enable}">
                         <td>启用？</td>
                         <td>
                             <RadioGroup v-model="form.enable"  @input="val.error.enable = ''">
                                 <Radio v-for="(v,k) in $store.state.business.bool_for_int" :key="k" :label="parseInt(k)">{{ v }}</Radio>
                             </RadioGroup>
-                            <span class="msg">默认：开启</span>
                             <span class="need">*</span>
-                            <span class="e-msg">{{ val.error.enable }}</span>
+                            <div class="msg">默认：开启</div>
+                            <div class="e-msg">{{ val.error.enable }}</div>
                         </td>
                     </tr>
 
@@ -138,9 +135,9 @@
                                 </div>
                             </div>
 
-                            <span class="msg"></span>
                             <span class="need">*</span>
-                            <span class="e-msg">{{ val.error.b_ico }}</span>
+                            <div class="msg"></div>
+                            <div class="e-msg">{{ val.error.b_ico }}</div>
                         </td>
                     </tr>
 
@@ -173,20 +170,19 @@
 
                                 </div>
                             </div>
-
-                            <span class="msg"></span>
                             <span class="need">*</span>
-                            <span class="e-msg">{{ val.error.b_ico }}</span>
+                            <div class="msg"></div>
+                            <div class="e-msg">{{ val.error.b_ico }}</div>
                         </td>
                     </tr>
 
-                    <tr :class="{error: val.error.weight}" id="form_weight">
+                    <tr :class="{error: val.error.weight}">
                         <td>权重</td>
                         <td>
                             <input type="number" class="form-text"  @input="val.error.weight = ''" v-model="form.weight">
-                            <span class="msg">请提供整数</span>
                             <span class="need"></span>
-                            <span class="e-msg">{{ val.error.weight }}</span>
+                            <div class="msg">请提供整数</div>
+                            <div class="e-msg">{{ val.error.weight }}</div>
                         </td>
                     </tr>
 

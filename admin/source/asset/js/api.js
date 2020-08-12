@@ -14,6 +14,11 @@ import image_at_position from '../../api/image_at_position.js';
 import nav from '../../api/nav.js';
 import video from '../../api/video.js';
 import video_subject from '../../api/video_subject.js';
+import video_series from '../../api/video_series.js';
+import region from '../../api/region.js';
+import video_company from '../../api/video_company.js';
+import pannel from '../../api/pannel.js';
+import disk from '../../api/disk.js';
 
 window.Api = {
     login ,
@@ -32,4 +37,9 @@ window.Api = {
     nav ,
     video ,
     video_subject ,
+    video_series ,
+    region ,
+    video_company ,
+    pannel ,
+    disk ,
 };

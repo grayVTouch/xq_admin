@@ -39,9 +39,4 @@ class RestartFaildJob implements ShouldQueue
             throw new Exception($msg);
         }
     }
-
-    public function failed(Exception $e)
-    {
-
-    }
 }

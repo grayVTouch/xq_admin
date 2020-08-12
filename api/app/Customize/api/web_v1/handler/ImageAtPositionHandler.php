@@ -8,7 +8,7 @@ use App\Customize\api\web_v1\handler\PositionHandler;
 use App\Customize\api\web_v1\model\ImageAtPositionModel;
 use App\Customize\api\web_v1\model\ModuleModel;
 use App\Customize\api\web_v1\model\PositionModel;
-use Illuminate\Support\Facades\Storage;
+use App\Customize\api\web_v1\util\FileUtil;
 use stdClass;
 use function core\convert_obj;
 
@@ -30,7 +30,7 @@ class ImageAtPositionHandler extends Handler
         $res->module = $module;
         $res->position = $position;
 
-        $res->__path__ = empty($res->path) ? '' : Storage::url($res->path);
+        $res->__path__ = empty($res->path) ? '' : FileUtil::url($res->path);
 
         return $res;
     }

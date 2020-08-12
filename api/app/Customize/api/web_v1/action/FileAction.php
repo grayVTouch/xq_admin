@@ -7,7 +7,7 @@ namespace App\Customize\api\web_v1\action;
 use App\Http\Controllers\api\web_v1\Base;
 use Core\Lib\ImageProcessor;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
+use App\Customize\api\web_v1\util\FileUtil;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use function api\web_v1\get_form_error;

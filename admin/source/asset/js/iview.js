@@ -16,6 +16,7 @@ import {
     Icon ,
     BackTop ,
     Poptip ,
+    Tooltip ,
     Tabs ,
     TabPane ,
     DatePicker ,
@@ -40,6 +41,7 @@ Vue.component('Poptip' , Poptip);
 Vue.component('TabPane' , TabPane);
 Vue.component('Tabs' , Tabs);
 Vue.component('DatePicker' , DatePicker);
+Vue.component('Tooltip' , Tooltip);
 
 Vue.prototype.$Notice = Notice;
 Vue.prototype.$Modal = Modal;

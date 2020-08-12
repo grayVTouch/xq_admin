@@ -34,7 +34,7 @@ class PositionAction extends Action
             'platform' => ['required' , Rule::in($platform_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $res = PositionModel::find($id);
         if (empty($res)) {
@@ -58,7 +58,7 @@ class PositionAction extends Action
             'platform' => ['required' , Rule::in($platform_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $res = PositionModel::getByPlatformAndValue($param['platform'] , $param['value']);
         if (!empty($tag)) {
@@ -85,13 +85,13 @@ class PositionAction extends Action
 
     public static function destroy(Base $context , $id , array $param = [])
     {
-        $count = PositionModel::delById($id);
+        $count = PositionModel::destroy($id);
         return self::success('' , $count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
-        $count = PositionModel::delByIds($ids);
+        $count = PositionModel::destroy($ids);
         return self::success('' , $count);
     }
 

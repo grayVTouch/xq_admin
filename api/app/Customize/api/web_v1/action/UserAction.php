@@ -101,7 +101,7 @@ class UserAction extends Action
 //            'captcha_code' => 'required|min:4' ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
 //        if (empty($param['captcha_key'])) {
 //            return self::error('必要参数丢失【captcha_key】');
@@ -174,7 +174,7 @@ class UserAction extends Action
             'password' => 'required|min:6' ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $user = UserModel::findByValueInUsernameOrEmailOrPhone($param['username']);
         if (empty($user)) {
@@ -226,7 +226,7 @@ class UserAction extends Action
             'confirm_password' => 'required|min:6' ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $user = UserModel::findByEmail($param['email']);
         if (empty($user)) {
@@ -783,7 +783,7 @@ class UserAction extends Action
             'email' => 'sometimes|email' ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $user = user();
         UserModel::updateById($user->id , array_unit($param , [
@@ -810,7 +810,7 @@ class UserAction extends Action
             'confirm_password' => 'required|min:6' ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $user = user();
         if (!Hash::check($param['old_password'] , $user->password)) {
@@ -1011,7 +1011,7 @@ class UserAction extends Action
             'email' => 'sometimes|email' ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $user = user();
         $param['nickname']  = empty($param['nickname']) ? $user->nickname : $param['nickname'];

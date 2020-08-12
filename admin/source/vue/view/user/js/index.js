@@ -26,76 +26,76 @@ export default {
                 field: [
                     {
                         type: 'selection',
-                        width: TopContext.table.checkbox ,
+                        minWidth: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     },
                     {
                         title: 'id' ,
                         key: 'id' ,
-                        width: TopContext.table.id ,
+                        minWidth: TopContext.table.id ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     } ,
                     {
                         title: '用户名' ,
                         key: 'username' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     } ,
                     {
                         title: '头像' ,
                         slot: 'avatar' ,
-                        width: TopContext.table.image ,
+                        minWidth: TopContext.table.image ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '性别' ,
                         key: '__sex__' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '生日' ,
                         key: 'birthday' ,
-                        width: TopContext.table.name ,
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '手机号码' ,
                         key: 'phone' ,
-                        width: TopContext.table.phone ,
+                        minWidth: TopContext.table.phone ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '电子邮箱' ,
                         key: 'email' ,
-                        width: TopContext.table.email ,
+                        minWidth: TopContext.table.email ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '最近一次登录时间' ,
                         key: 'last_time' ,
-                        width: TopContext.table.time ,
+                        minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '最近一次登录ip' ,
                         key: 'last_ip' ,
-                        width: TopContext.table.ip ,
+                        minWidth: TopContext.table.ip ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
                         title: '创建时间' ,
                         key: 'create_time' ,
-                        width: TopContext.table.time ,
+                        minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '操作' ,
                         slot: 'action' ,
-                        width: TopContext.table.action ,
+                        minWidth: TopContext.table.action ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'right' ,
                     } ,
@@ -105,9 +105,9 @@ export default {
                 data: [] ,
             } ,
             search: {
-                limit: this.$store.state.context.limit
+                limit: TopContext.limit ,
             } ,
-            form: {...form}  ,
+            form: G.copy(form)  ,
         };
     } ,
 
@@ -149,7 +149,7 @@ export default {
                         return ;
                     }
                     this.status(file.id , true);
-                    self.form.avatar = data;
+                    self.form.avatar = data.data;
                 } ,
                 cleared () {
                     self.form.avatar = '';
@@ -158,11 +158,9 @@ export default {
         } ,
 
         getData () {
-            this.$refs.base.show();
             this.pending('getData' , true);
             Api.user.index(this.search , (msg , data , code) => {
                 this.pending('getData' , false);
-                this.$refs.base.hide();
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     return ;
@@ -242,14 +240,14 @@ export default {
             this._val('modal' , true);
             this._val('mode' , 'edit');
             this.error();
-            this.form = {...record};
+            this.form = G.copy(record);
         } ,
 
         addEvent () {
             this._val('modal' , true);
             this._val('mode' , 'add');
             this.error();
-            this.form = {...form};
+            this.form = G.copy(form);
         } ,
 
         submitEvent () {

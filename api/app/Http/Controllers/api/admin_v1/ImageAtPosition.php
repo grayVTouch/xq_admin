@@ -14,6 +14,9 @@ class ImageAtPosition extends Base
     {
         $param = $this->request->query();
         $param['name'] = $param['name'] ?? '';
+        $param['platform'] = $param['platform'] ?? '';
+        $param['module_id'] = $param['module_id'] ?? '';
+        $param['position_id'] = $param['position_id'] ?? '';
         $param['order'] = $param['order'] ?? '';
         $param['limit'] = $param['limit'] ?? '';
         $res = ImageAtPositionAction::index($this , $param);
@@ -28,8 +31,6 @@ class ImageAtPosition extends Base
         $param = $this->request->post();
         $param['module_id']   = $param['module_id'] ?? '';
         $param['position_id']   = $param['position_id'] ?? '';
-        $param['name']          = $param['name'] ?? '';
-        $param['mime']          = $param['mime'] ?? '';
         $param['path']          = $param['path'] ?? '';
         $param['link']          = $param['link'] ?? '';
         $res = ImageAtPositionAction::update($this , $id ,$param);
@@ -44,8 +45,6 @@ class ImageAtPosition extends Base
         $param = $this->request->post();
         $param['module_id']   = $param['module_id'] ?? '';
         $param['position_id']   = $param['position_id'] ?? '';
-        $param['name']          = $param['name'] ?? '';
-        $param['mime']          = $param['mime'] ?? '';
         $param['path']          = $param['path'] ?? '';
         $param['link']          = $param['link'] ?? '';
         $res = ImageAtPositionAction::store($this ,$param);

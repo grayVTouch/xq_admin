@@ -14,8 +14,10 @@ class Test extends Base
 {
     public function index()
     {
-        $job_id = RestartFaildJob::dispatch(1);
-        var_dump($job_id);
+//        var_dump(env('APP_URL'));
+        var_dump(env('ADMIN_USERNAME'));
+//        $job_id = RestartFaildJob::dispatch(1);
+//        var_dump($job_id);
 
 //        VideoHandleJob::dispatch(1);
 //        TestJob::dispatch();
