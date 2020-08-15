@@ -114,7 +114,7 @@ export default {
             return this.val.mode === 'edit' ? '编辑' : '添加';
         } ,
 
-        showDestroyAllBtn () {
+        showBatchBtn () {
             return this.val.selectedIds.length > 0;
         } ,
     } ,

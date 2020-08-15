@@ -17,6 +17,7 @@
                         </div>
                         <div class="list">
 
+
                             <div class="card">
                                 <div class="left"><my-icon icon="yonghu2"></my-icon></div>
                                 <div class="right">
@@ -36,7 +37,7 @@
                                     <div class="btm">
                                         <div class="line">今日：<b>{{ info.admin.today }}</b></div>
                                         <div class="line">昨日：<b>{{ info.admin.yesterday }}</b></div>
-                                        <div class="line ratio" :class="{up: info.user.flag == 'up' , down: info.user.flag == 'down'}">相较昨天：<b>{{ info.admin.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
+                                        <div class="line ratio" :class="{up: info.admin.flag == 'up' , down: info.admin.flag == 'down'}">相较昨天：<b>{{ info.admin.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
                                     </div>
                                 </div>
                             </div>
@@ -48,7 +49,7 @@
                                     <div class="btm">
                                         <div class="line">今日：<b>{{ info.image_subject.today }}</b></div>
                                         <div class="line">昨日：<b>{{ info.image_subject.yesterday }}</b></div>
-                                        <div class="line ratio" :class="{up: info.user.flag == 'up' , down: info.user.flag == 'down'}">相较昨天：<b>{{ info.image_subject.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
+                                        <div class="line ratio" :class="{up: info.image_subject.flag == 'up' , down: info.image_subject.flag == 'down'}">相较昨天：<b>{{ info.image_subject.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
                                     </div>
                                 </div>
                             </div>
@@ -60,7 +61,7 @@
                                     <div class="btm">
                                         <div class="line">今日：<b>{{ info.subject.today }}</b></div>
                                         <div class="line">昨日：<b>{{ info.subject.yesterday }}</b></div>
-                                        <div class="line ratio" :class="{up: info.user.flag == 'up' , down: info.user.flag == 'down'}">相较昨天：<b>{{ info.subject.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
+                                        <div class="line ratio" :class="{up: info.subject.flag == 'up' , down: info.subject.flag == 'down'}">相较昨天：<b>{{ info.subject.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
                                     </div>
                                 </div>
                             </div>
@@ -72,7 +73,7 @@
                                     <div class="btm">
                                         <div class="line">今日：<b>{{ info.tag.today }}</b></div>
                                         <div class="line">昨日：<b>{{ info.tag.yesterday }}</b></div>
-                                        <div class="line ratio" :class="{up: info.user.flag == 'up' , down: info.user.flag == 'down'}">相较昨天：<b>{{ info.tag.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
+                                        <div class="line ratio" :class="{up: info.tag.flag == 'up' , down: info.tag.flag == 'down'}">相较昨天：<b>{{ info.tag.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
                                     </div>
                                 </div>
                             </div>
@@ -84,7 +85,7 @@
                                     <div class="btm">
                                         <div class="line">今日：<b>{{ info.module.today }}</b></div>
                                         <div class="line">昨日：<b>{{ info.module.yesterday }}</b></div>
-                                        <div class="line ratio" :class="{up: info.user.flag == 'up' , down: info.user.flag == 'down'}">相较昨天：<b>{{ info.module.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
+                                        <div class="line ratio" :class="{up: info.module.flag == 'up' , down: info.module.flag == 'down'}">相较昨天：<b>{{ info.module.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
                                     </div>
                                 </div>
                             </div>
@@ -96,7 +97,7 @@
                                     <div class="btm">
                                         <div class="line">今日：<b>{{ info.video.today }}</b></div>
                                         <div class="line">昨日：<b>{{ info.video.yesterday }}</b></div>
-                                        <div class="line ratio" :class="{up: info.user.flag == 'up' , down: info.user.flag == 'down'}">相较昨天：<b>{{ info.video.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
+                                        <div class="line ratio" :class="{up: info.video.flag == 'up' , down: info.video.flag == 'down'}">相较昨天：<b>{{ info.video.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
                                     </div>
                                 </div>
                             </div>
@@ -108,7 +109,7 @@
                                     <div class="btm">
                                         <div class="line">今日：<b>{{ info.video_subject.today }}</b></div>
                                         <div class="line">昨日：<b>{{ info.video_subject.yesterday }}</b></div>
-                                        <div class="line ratio" :class="{up: info.user.flag == 'up' , down: info.user.flag == 'down'}">相较昨天：<b>{{ info.video_subject.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
+                                        <div class="line ratio" :class="{up: info.video_subject.flag == 'up' , down: info.video_subject.flag == 'down'}">相较昨天：<b>{{ info.video_subject.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
                                     </div>
                                 </div>
                             </div>
@@ -120,7 +121,7 @@
                                     <div class="btm">
                                         <div class="line">今日：<b>{{ info.video_series.today }}</b></div>
                                         <div class="line">昨日：<b>{{ info.video_series.yesterday }}</b></div>
-                                        <div class="line ratio" :class="{up: info.user.flag == 'up' , down: info.user.flag == 'down'}">相较昨天：<b>{{ info.video_series.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
+                                        <div class="line ratio" :class="{up: info.video_series.flag == 'up' , down: info.video_series.flag == 'down'}">相较昨天：<b>{{ info.video_series.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
                                     </div>
                                 </div>
                             </div>
@@ -132,7 +133,56 @@
                                     <div class="btm">
                                         <div class="line">今日：<b>{{ info.video_company.today }}</b></div>
                                         <div class="line">昨日：<b>{{ info.video_company.yesterday }}</b></div>
-                                        <div class="line ratio" :class="{up: info.user.flag == 'up' , down: info.user.flag == 'down'}">相较昨天：<b>{{ info.video_company.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
+                                        <div class="line ratio" :class="{up: info.video_company.flag == 'up' , down: info.video_company.flag == 'down'}">相较昨天：<b>{{ info.video_company.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="left"><my-icon icon="leimupinleifenleileibie"></my-icon></div>
+                                <div class="right">
+                                    <div class="top">新增内容分类</div>
+                                    <div class="btm">
+                                        <div class="line">今日：<b>{{ info.category.today }}</b></div>
+                                        <div class="line">昨日：<b>{{ info.category.yesterday }}</b></div>
+                                        <div class="line ratio" :class="{up: info.category.flag == 'up' , down: info.user.flag == 'down'}">相较昨天：<b>{{ info.category.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="left"><my-icon icon="guanlian"></my-icon></div>
+                                <div class="right">
+                                    <div class="top">新增失败队列</div>
+                                    <div class="btm">
+                                        <div class="line">今日：<b>{{ info.failed_jobs.today }}</b></div>
+                                        <div class="line">昨日：<b>{{ info.failed_jobs.yesterday }}</b></div>
+                                        <div class="line ratio" :class="{up: info.failed_jobs.flag == 'up' , down: info.failed_jobs.flag == 'down'}">相较昨天：<b>{{ info.failed_jobs.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="left"><my-icon icon="shipin"></my-icon></div>
+                                <div class="right">
+                                    <div class="top">新增处理完成视频</div>
+                                    <div class="btm">
+                                        <div class="line">今日：<b>{{ info.processed_video.today }}</b></div>
+                                        <div class="line">昨日：<b>{{ info.processed_video.yesterday }}</b></div>
+                                        <div class="line ratio" :class="{up: info.processed_video.flag == 'up' , down: info.processed_video.flag == 'down'}">相较昨天：<b>{{ info.processed_video.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="card">
+                                <div class="left"><my-icon icon="shipin"></my-icon></div>
+                                <div class="right">
+                                    <div class="top">新增处理失败视频</div>
+                                    <div class="btm">
+                                        <div class="line">今日：<b>{{ info.process_failed_video.today }}</b></div>
+                                        <div class="line">昨日：<b>{{ info.process_failed_video.yesterday }}</b></div>
+                                        <div class="line ratio" :class="{up: info.process_failed_video.flag == 'up' , down: info.process_failed_video.flag == 'down'}">相较昨天：<b>{{ info.process_failed_video.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
                                     </div>
                                 </div>
                             </div>
@@ -227,6 +277,40 @@
                                     <div class="btm">{{ info.video_company.total }}</div>
                                 </div>
                             </div>
+
+                            <div class="card-for-total">
+                                <div class="left"><my-icon icon="leimupinleifenleileibie"></my-icon></div>
+                                <div class="right">
+                                    <div class="top">内容分类数</div>
+                                    <div class="btm">{{ info.category.total }}</div>
+                                </div>
+                            </div>
+
+                            <div class="card-for-total">
+                                <div class="left"><my-icon icon="guanlian"></my-icon></div>
+                                <div class="right">
+                                    <div class="top">失败队列数</div>
+                                    <div class="btm">{{ info.failed_jobs.total }}</div>
+                                </div>
+                            </div>
+
+                            <div class="card-for-total">
+                                <div class="left"><my-icon icon="shipin"></my-icon></div>
+                                <div class="right">
+                                    <div class="top">处理完成视频数</div>
+                                    <div class="btm">{{ info.processed_video.total }}</div>
+                                </div>
+                            </div>
+
+                            <div class="card-for-total">
+                                <div class="left"><my-icon icon="shipin"></my-icon></div>
+                                <div class="right">
+                                    <div class="top">处理失败视频数</div>
+                                    <div class="btm">{{ info.process_failed_video.total }}</div>
+                                </div>
+                            </div>
+
+
 
 
 
@@ -344,7 +428,7 @@
     </my-base>
 </template>
 
-<script src="./js/index.js"></script>
+<script src="./js/pannel.js"></script>
 <!--<style src="../public/css/global.css"></style>-->
 <!--<style scoped src="../public/css/public.css"></style>-->
-<style scoped src="./css/index.css"></style>
+<style scoped src="./css/pannel.css"></style>

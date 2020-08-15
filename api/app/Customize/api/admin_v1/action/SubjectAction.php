@@ -7,7 +7,10 @@ use App\Customize\api\admin_v1\handler\SubjectHandler;
 use App\Customize\api\admin_v1\handler\UserHandler;
 use App\Customize\api\admin_v1\model\SubjectModel;
 use App\Customize\api\admin_v1\model\UserModel;
+use App\Customize\api\admin_v1\util\ResourceUtil;
 use App\Http\Controllers\api\admin_v1\Base;
+use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use function api\admin_v1\get_form_error;
 use function api\admin_v1\my_config;
@@ -40,15 +43,27 @@ class SubjectAction extends Action
         }
         $param['attr'] = $param['attr'] === '' ? '{}' : $param['attr'];
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
-        SubjectModel::updateById($res->id , array_unit($param , [
-            'name' ,
-            'description' ,
-            'thumb' ,
-            'attr' ,
-            'weight' ,
-            'module_id' ,
-        ]));
-        return self::success();
+        try {
+            DB::beginTransaction();
+            SubjectModel::updateById($res->id , array_unit($param , [
+                'name' ,
+                'description' ,
+                'thumb' ,
+                'attr' ,
+                'weight' ,
+                'module_id' ,
+            ]));
+            ResourceUtil::used($param['thumb']);
+            if ($res->thumb !== $param['thumb']) {
+                ResourceUtil::delete($res->thumb);
+            }
+            DB::commit();
+            return self::success();
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
     }
 
     public static function store(Base $context , array $param = [])
@@ -61,15 +76,23 @@ class SubjectAction extends Action
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
-        $id = SubjectModel::insertGetId(array_unit($param , [
-            'name' ,
-            'description' ,
-            'thumb' ,
-            'attr' ,
-            'weight' ,
-            'module_id' ,
-        ]));
-        return self::success('' , $id);
+        try {
+            DB::beginTransaction();
+            $id = SubjectModel::insertGetId(array_unit($param , [
+                'name' ,
+                'description' ,
+                'thumb' ,
+                'attr' ,
+                'weight' ,
+                'module_id' ,
+            ]));
+            ResourceUtil::used($param['thumb']);
+            DB::commit();
+            return self::success('' , $id);
+        } catch (Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function show(Base $context , $id , array $param = [])
@@ -84,14 +107,38 @@ class SubjectAction extends Action
 
     public static function destroy(Base $context , $id , array $param = [])
     {
-        $count = SubjectModel::destroy($id);
-        return self::success('' , $count);
+        $res = SubjectModel::find($id);
+        if (empty($res)) {
+            return self::error('记录不存在' , '' , 404);
+        }
+        try {
+            DB::beginTransaction();
+            ResourceUtil::delete($res->thumb);
+            $count = SubjectModel::destroy($res->id);
+            DB::commit();
+            return self::success('' , $count);
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
-        $count = SubjectModel::destroy($ids);
-        return self::success('' , $count);
+        $res = SubjectModel::find($ids);
+        try {
+            DB::beginTransaction();
+            foreach ($res as $v)
+            {
+                ResourceUtil::delete($v->thumb);
+            }
+            $count = SubjectModel::destroy($ids);
+            DB::commit();
+            return self::success('' , $count);
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function search(Base $context , array $param = [])

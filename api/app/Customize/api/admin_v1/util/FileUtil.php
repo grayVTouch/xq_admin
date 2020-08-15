@@ -84,7 +84,7 @@ class FileUtil
         return format_path($prefix . '/' . $dir . '/' . $file);
     }
 
-    // 相对路径获取绝对路径
+    // 根据负荷规则的相对路径获取绝对路径
     public static function getRealPathByRelativePath(string $relative_path = ''): string
     {
         if (empty($relative_path)) {
@@ -113,6 +113,7 @@ class FileUtil
         return $prefix . '/' . ltrim($path , '/');
     }
 
+    // 通过给定的路径生成实际保存的绝对路径
     public static function getRealPath(string $path = ''): string
     {
         return self::getRealPathByRelativePath(self::getRelativePath($path));
@@ -159,5 +160,12 @@ class FileUtil
         $res_url        = rtrim(config('my.res_url' , '') , '/');
         $relative_path  = ltrim($relative_path , '/');
         return $res_url . '/' . $relative_path;
+    }
+
+    // 检查文件是否存在
+    public static function exists(string $relative_path = ''): bool
+    {
+        $real_path = self::getRealPathByRelativePath($relative_path);
+        return File::exists($real_path);
     }
 }

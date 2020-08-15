@@ -77,11 +77,6 @@ class AdminAction extends Action
         $param['password']      = $param['password'] === '' ? $res->password : Hash::make($param['password']);
         try {
             DB::beginTransaction();
-            if ($res->avatar !== $param['avatar']) {
-                // 添加到待删除资源列表
-                ResourceUtil::delete($res->avatar);
-                ResourceUtil::used($param['avatar']);
-            }
             AdminModel::updateById($res->id , array_unit($param , [
                 'username' ,
                 'password' ,
@@ -91,6 +86,11 @@ class AdminAction extends Action
                 'email' ,
                 'role_id' ,
             ]));
+            ResourceUtil::used($param['avatar']);
+            if ($res->avatar !== $param['avatar']) {
+                // 添加到待删除资源列表
+                ResourceUtil::delete($res->avatar);
+            }
             DB::commit();
             return self::success();
         } catch(Exception $e){
@@ -151,7 +151,7 @@ class AdminAction extends Action
     {
         $res = AdminModel::find($id);
         if (empty($res)) {
-            return self::error('用户不存在' , '' , 404);
+            return self::error('记录不存在' , '' , 404);
         }
         if ($res->is_root) {
             return self::error('禁止对超级管理员操作' , '' , 403);
@@ -172,7 +172,7 @@ class AdminAction extends Action
     {
         try {
             DB::beginTransaction();
-            $res = AdminModel::getByIds($ids);
+            $res = AdminModel::find($ids);
             foreach ($res as $v)
             {
                 if ($v->is_root) {

@@ -54,10 +54,6 @@ class ImageAtPositionAction extends Action
         $param['platform'] = $position->platform;
         try {
             DB::beginTransaction();
-            if ($res->path !== $param['path']) {
-                ResourceUtil::delete($res->path);
-                ResourceUtil::used($param['path']);
-            }
             ImageAtPositionModel::updateById($res->id , array_unit($param , [
                 'position_id' ,
                 'platform' ,
@@ -65,6 +61,10 @@ class ImageAtPositionAction extends Action
                 'link' ,
                 'module_id' ,
             ]));
+            ResourceUtil::used($param['path']);
+            if ($res->path !== $param['path']) {
+                ResourceUtil::delete($res->path);
+            }
             DB::commit();
             return self::success();
         } catch(Exception $e) {
@@ -145,7 +145,7 @@ class ImageAtPositionAction extends Action
     {
         try {
             DB::beginTransaction();
-            $res = ImageAtPositionModel::getByIds($ids);
+            $res = ImageAtPositionModel::find($ids);
             foreach ($res as $v)
             {
                 ResourceUtil::delete($v->path);

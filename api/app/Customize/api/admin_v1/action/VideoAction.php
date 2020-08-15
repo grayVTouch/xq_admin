@@ -11,6 +11,8 @@ use App\Customize\api\admin_v1\model\ModuleModel;
 use App\Customize\api\admin_v1\model\VideoSrcModel;
 use App\Customize\api\admin_v1\model\VideoSubjectModel;
 use App\Customize\api\admin_v1\model\UserModel;
+use App\Customize\api\admin_v1\model\VideoSubtitleModel;
+use App\Customize\api\admin_v1\util\ResourceUtil;
 use App\Customize\api\admin_v1\util\VideoUtil;
 use App\Http\Controllers\api\admin_v1\Base;
 use Exception;
@@ -35,19 +37,21 @@ class VideoAction extends Action
 
     public static function update(Base $context , $id , array $param = []): array
     {
-        $type_range = array_keys(my_config('business.type_for_video'));
-        $status_range = array_keys(my_config('business.status_for_video'));
+        $type_range     = array_keys(my_config('business.type_for_video'));
+        $status_range   = array_keys(my_config('business.status_for_video'));
+        $bool_range     = array_keys(my_config('business.bool_for_int'));
         $validator = Validator::make($param , [
-            'name'      => 'required' ,
-            'user_id'   => 'required|integer' ,
-            'module_id' => 'required|integer' ,
-            'category_id' => 'required|integer' ,
+            'name'          => 'required' ,
+            'user_id'       => 'required|integer' ,
+            'module_id'     => 'required|integer' ,
+            'category_id'   => 'required|integer' ,
             'video_subject_id' => 'sometimes|integer' ,
-            'type'      => ['required' , Rule::in($type_range)] ,
-            'weight'    => 'sometimes|integer' ,
+            'type'          => ['required' , Rule::in($type_range)] ,
+            'weight'        => 'sometimes|integer' ,
             'view_count'    => 'sometimes|integer' ,
             'praise_count'  => 'sometimes|integer' ,
-            'against_count'  => 'sometimes|integer' ,
+            'against_count' => 'sometimes|integer' ,
+            'merge_video_subtitle' => ['required' , 'integer' , Rule::in($bool_range)] ,
             'status'        => ['required' , 'integer' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
@@ -56,6 +60,11 @@ class VideoAction extends Action
         $video = VideoModel::find($id);
         if (empty($video)) {
             return self::error('视频记录不存在' , '' , 404);
+        }
+        if (!in_array($video->process_status , [-1 , 2]) && $video->src !== $param['src']) {
+            return self::error('当前状态禁止更改视频源' , [
+                'src' => '当前操作禁止更改视频源' ,
+            ] , 403);
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
@@ -91,13 +100,14 @@ class VideoAction extends Action
         }
         $param['weight'] = $param['weight'] === '' ? $video->weight : $param['weight'];
         $param['update_time'] = date('Y-m-d H:i:s');
-        $param['create_time'] = $param['create_time'] === '' ? $video->create_time : $param['create_time'];
-        $has_change = $video->src !== $param['src'];
+        $video_subtitles = $param['video_subtitles'] === '' ? [] : json_decode($param['video_subtitles'] , true);
+        $video_has_change = $video->src !== $param['src'];
         try {
             DB::beginTransaction();
-            if ($has_change) {
+            if ($video_has_change) {
                 // 视频源发生变动
                 $param['process_status'] = 0;
+                ResourceUtil::delete($video->src);
             }
             VideoModel::updateById($video->id , array_unit($param , [
                 'name' ,
@@ -113,18 +123,35 @@ class VideoAction extends Action
                 'view_count' ,
                 'praise_count' ,
                 'against_count' ,
+                'merge_video_subtitle' ,
                 'status' ,
                 'fail_reason' ,
                 'process_status' ,
                 'update_time' ,
-                'create_time' ,
             ]));
-            if ($has_change) {
-                // 视频源发生变化
-                VideoSrcModel::delByVideoId($video->id);
-                VideoHandleJob::dispatch($video->id);
+            ResourceUtil::used($param['src']);
+            ResourceUtil::used($param['thumb']);
+            if ($video->thumb !== $param['thumb']) {
+                ResourceUtil::delete($video->thumb);
+            }
+            // 视频字幕
+            foreach ($video_subtitles as $v)
+            {
+                VideoSubtitleModel::insertGetId([
+                    'video_id'      => $video->id ,
+                    'name'          => $v['name'] ,
+                    'src'           => $v['src'] ,
+                    'create_time'   => $param['create_time'] ,
+                ]);
+                ResourceUtil::used($v['src']);
             }
             DB::commit();
+            $video_subtitle_count = VideoSubtitleModel::countByVideoId($video->id);
+            if ($video_has_change ||
+                ($param['merge_video_subtitle'] == 1 && $video_subtitle_count > 0)
+            ) {
+                VideoHandleJob::dispatch($video->id);
+            }
             return self::success();
         } catch(Exception $e) {
             DB::rollBack();
@@ -134,8 +161,10 @@ class VideoAction extends Action
 
     public static function store(Base $context , array $param = []): array
     {
-        $type_range = array_keys(my_config('business.type_for_video'));
-        $status_range = array_keys(my_config('business.status_for_video'));
+        $type_range     = array_keys(my_config('business.type_for_video'));
+        $status_range   = array_keys(my_config('business.status_for_video'));
+        $bool_range     = array_keys(my_config('business.bool_for_int'));
+
         $validator = Validator::make($param , [
             'name'      => 'required' ,
             'user_id'   => 'required|integer' ,
@@ -148,6 +177,7 @@ class VideoAction extends Action
             'praise_count'  => 'sometimes|integer' ,
             'against_count'  => 'sometimes|integer' ,
             'status'        => ['required' , 'integer' , Rule::in($status_range)] ,
+            'merge_video_subtitle' => ['required' , 'integer' , Rule::in($bool_range)] ,
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
@@ -188,6 +218,7 @@ class VideoAction extends Action
         $datetime = date('Y-m-d H:i:s');
         $param['update_time'] = $datetime;
         $param['create_time'] = $param['create_time'] === '' ? $datetime : $param['create_time'];
+        $video_subtitles = $param['video_subtitles'] === '' ? [] : json_decode($param['video_subtitles'] , true);
         try {
             DB::beginTransaction();
             $id = VideoModel::insertGetId(array_unit($param , [
@@ -205,13 +236,27 @@ class VideoAction extends Action
                 'praise_count' ,
                 'against_count' ,
                 'status' ,
+                'merge_video_subtitle' ,
                 'fail_reason' ,
                 'update_time' ,
                 'create_time' ,
             ]));
-            // 派发任务到队列中执行（如果 redis 异常，那么可以进行回滚，避免数据错误）
-            VideoHandleJob::dispatch($id);
+            ResourceUtil::used($param['thumb']);
+            ResourceUtil::used($param['src']);
+            // 视频字幕
+            foreach ($video_subtitles as $v)
+            {
+                VideoSubtitleModel::insertGetId([
+                    'video_id'      => $id ,
+                    'name'          => $v['name'] ,
+                    'src'           => $v['src'] ,
+                    'create_time'   => $param['create_time'] ,
+                ]);
+                ResourceUtil::used($v['src']);
+            }
             DB::commit();
+            // 派发任务到队列中执行
+            VideoHandleJob::dispatch($id);
             return self::success();
         } catch(Exception $e) {
             throw $e;
@@ -255,5 +300,49 @@ class VideoAction extends Action
             DB::rollBack();
             throw $e;
         }
+    }
+
+    public static function destroyVideos(Base $context , array $video_src_ids , array $param = []): array
+    {
+        $res = VideoSrcModel::find($video_src_ids);
+        try {
+            DB::beginTransaction();
+            foreach ($res as $video_src)
+            {
+                ResourceUtil::delete($video_src->src);
+                VideoSrcModel::destroy($video_src->id);
+            }
+            DB::commit();
+            return self::success();
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    // 重新运行队列
+    public static function retry(Base $context , array $ids = [] , array $param = []): array
+    {
+        $videos = [];
+        foreach ($ids as $id)
+        {
+            $video = VideoModel::find($id);
+            if (empty($video)) {
+                return self::error('包含无效记录' , '' , 404);
+            }
+            if ($video->process_status !== -1) {
+                return self::error('包含无效处理状态视频' , '' , 403);
+            }
+            $videos[$id] = $video;
+        }
+        foreach ($ids as $id)
+        {
+            $video = $videos[$id];
+            VideoModel::updateById($video->id , [
+                'process_status' => 0 ,
+            ]);
+            VideoHandleJob::dispatch($video->id);
+        }
+        return self::success();
     }
 }

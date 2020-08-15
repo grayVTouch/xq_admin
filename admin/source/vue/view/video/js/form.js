@@ -9,6 +9,7 @@ const form = {
     against_count: 0 ,
     weight: 0 ,
     status: 0 ,
+    merge_video_subtitle: 0 ,
 };
 
 const users = {
@@ -17,21 +18,31 @@ const users = {
         {
             title: 'id' ,
             key: 'id' ,
+            minWidth: TopContext.table.id ,
             center: TopContext.table.alignCenter ,
         } ,
         {
             title: '名称' ,
             key: 'username' ,
+            minWidth: TopContext.table.name ,
             center: TopContext.table.alignCenter ,
         } ,
         {
             title: '头像' ,
             slot: 'avatar' ,
+            minWidth: TopContext.table.image ,
             center: TopContext.table.alignCenter ,
         } ,
         {
             title: '创建时间' ,
             key: 'create_time' ,
+            minWidth: TopContext.table.time ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '动作' ,
+            slot: 'action' ,
+            minWidth: TopContext.table.action ,
             center: TopContext.table.alignCenter ,
         } ,
     ] ,
@@ -51,26 +62,37 @@ const videoSubjects = {
         {
             title: 'id' ,
             key: 'id' ,
+            minWidth: TopContext.table.id ,
             center: TopContext.table.alignCenter ,
         } ,
         {
             title: '名称' ,
             key: 'name' ,
+            minWidth: TopContext.table.name ,
             center: TopContext.table.alignCenter ,
         } ,
         {
             title: '模块【id】' ,
             slot: 'module_id' ,
+            minWidth: TopContext.table.name ,
             center: TopContext.table.alignCenter ,
         } ,
         {
             title: '封面' ,
             slot: 'thumb' ,
+            minWidth: TopContext.table.image ,
             center: TopContext.table.alignCenter ,
         } ,
         {
             title: '创建时间' ,
             key: 'create_time' ,
+            minWidth: TopContext.table.time ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '动作' ,
+            slot: 'action' ,
+            minWidth: TopContext.table.action ,
             center: TopContext.table.alignCenter ,
         } ,
     ] ,
@@ -83,11 +105,22 @@ const videoSubjects = {
     value: '' ,
 };
 
+const subtitle = {
+    id: 1 ,
+    name: '' ,
+    src: '' ,
+    delete_1: false ,
+};
+
 export default {
 
     computed: {
         title () {
             return this.mode === 'edit' ? '编辑' : '添加';
+        } ,
+
+        canUploadVideoSubtitle () {
+            return this.uVideoSubtitles.every((v) => {return v.uploaded});
         } ,
     } ,
 
@@ -97,7 +130,8 @@ export default {
                 tab: 'base' ,
                 pending: {} ,
                 error: {} ,
-                selectedIds: [] ,
+                selectedIdsForVideo: [] ,
+                selectedIdsForSubtitle: [] ,
                 modalForSubject: false ,
                 modalForUser: false ,
                 valueForUser: '' ,
@@ -119,34 +153,75 @@ export default {
             // 实例
             ins: {} ,
 
+            uVideoSubtitles: [] ,
+
             videos: {
                 field: [
-                    // {
-                    //     type: 'selection' ,
-                    //     minWidth: TopContext.table.checkbox ,
-                    //     center: TopContext.table.alignCenter ,
-                    // } ,
+                    {
+                        type: 'selection' ,
+                        minWidth: TopContext.table.checkbox ,
+                        center: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
+                    } ,
                     {
                         title: 'id' ,
                         key: 'id' ,
-                        center: TopContext.table.alignCenter ,
                         minWidth: TopContext.table.id ,
+                        center: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
                     } ,
                     {
                         title: '清晰度' ,
                         key: 'definition' ,
-                        center: TopContext.table.alignCenter ,
                         minWidth: TopContext.table.name ,
+                        center: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '视频' ,
                         slot: 'src' ,
-                        // minWidth: TopContext.table.video ,
+                        minWidth: TopContext.table.video ,
                     } ,
                     {
                         title: '操作' ,
                         slot: 'action' ,
                         minWidth: TopContext.table.action ,
+                        fixed: 'right' ,
+                    } ,
+                ] ,
+                data: [] ,
+            } ,
+
+            videoSubtitles: {
+                field: [
+                    {
+                        type: 'selection' ,
+                        minWidth: TopContext.table.checkbox ,
+                        center: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
+                    } ,
+                    {
+                        title: 'id' ,
+                        key: 'id' ,
+                        minWidth: TopContext.table.id ,
+                        center: TopContext.table.alignCenter ,
+                        fixed: 'left' ,
+                    } ,
+                    {
+                        title: '名称' ,
+                        key: 'name' ,
+                        minWidth: TopContext.table.name ,
+                        center: TopContext.table.alignCenter ,
+                    } ,
+                    {
+                        title: '字幕源' ,
+                        minWidth: TopContext.table.src ,
+                        key: 'src' ,
+                    } ,
+                    {
+                        title: '操作' ,
+                        slot: 'action' ,
+                        minWidth: TopContext.table.action ,
+                        fixed: 'right' ,
                     } ,
                 ] ,
                 data: [] ,
@@ -183,6 +258,18 @@ export default {
     } ,
 
     methods: {
+
+        genVideoSubtitle () {
+            const id = G.randomArr(6 , 'letter' , true);
+            return {
+                id ,
+                name: '' ,
+                src: '' ,
+                delete: false ,
+                error: '' ,
+                uploaded: false ,
+            };
+        } ,
 
         getCategories (moduleId , callback) {
             this.pending('getCategories' , true);
@@ -260,7 +347,7 @@ export default {
             });
 
             this.ins.video = new Uploader(this.dom.video.get(0) , {
-                api: this.fileApi() ,
+                api: this.videoApi() ,
                 mode: 'override' ,
                 multiple: false ,
                 clear: true ,
@@ -329,7 +416,7 @@ export default {
             this._val('modalForUser' , true);
         } ,
 
-        updateSubjectEvent (row , index) {
+        updateVideoSubjectEvent (row , index) {
             this.form.video_subject_id = row.id;
             this.form.video_subject = row;
             this._val('modalForSubject' , false);
@@ -341,10 +428,6 @@ export default {
             this.form.user = row;
             this._val('modalForUser' , false);
             this.users.data = [];
-        } ,
-
-        selectedTagEvent () {
-
         } ,
 
         openFormDrawer () {
@@ -365,17 +448,46 @@ export default {
             this.ins.video.clearAll();
             this.images = [];
             this.tags = [];
+            this.uVideoSubtitles = [];
             // 切换回基本的内容
             this._val('tab' , 'base');
             this.users.value = '';
             this.videoSubjects.value = '';
         } ,
 
-        destroy (id , callback) {
-            this.destroyAll([id] , callback);
+
+        selectedVideoEvent (data) {
+            const ids = [];
+            data.forEach((v) => {
+                ids.push(v.id);
+            });
+            this.val.selectedIdsForVideo = ids;
         } ,
 
-        destroyAll (ids , callback) {
+        destroyVideoEvent (index , record) {
+            const pendingKey = 'delete_' + record.id;
+            this.pending(pendingKey , true);
+            this.destroyVideo(record.id , () => {
+                this.pending(pendingKey , false);
+
+            });
+        } ,
+
+        destroyVideosEvent () {
+            this.pending('destroyVideos' , true);
+            this.destroyVideos(this.val.selectedIdsForVideo , (success) => {
+                this.pending('destroyVideos' , false);
+                if (success) {
+                    this.val.selectedIdsForVideo = [];
+                }
+            });
+        } ,
+
+        destroyVideo (id , callback) {
+            this.destroyVideos([id] , callback);
+        } ,
+
+        destroyVideos (ids , callback) {
             if (ids.length < 1) {
                 this.message('warning' ,'请选择待删除的项');
                 G.invoke(callback , this , false);
@@ -384,14 +496,19 @@ export default {
             const self = this;
             this.confirmModal('你确定删除吗？'  , (res) => {
                 if (res) {
-                    Api.video.destroyAllImageForImageSubject(ids , (msg , data , code) => {
+                    Api.video.destroyVideos(ids , (msg , data , code) => {
+                        if (code !== TopContext.code.Success) {
+                            G.invoke(callback , this , false);
+                            this.message('error' , msg);
+                            return ;
+                        }
                         G.invoke(callback , this , true);
                         this.message('success' , '操作成功' , '影响的记录数：' + data);
-                        for (let i = 0; i < this.table.data.length; ++i)
+                        for (let i = 0; i < this.videos.data.length; ++i)
                         {
-                            const cur = this.table.data[i];
+                            const cur = this.videos.data[i];
                             if (G.contain(cur.id , ids)) {
-                                this.table.data.splice(i , 1);
+                                this.videos.data.splice(i , 1);
                                 i--;
                             }
                         }
@@ -402,127 +519,118 @@ export default {
             });
         } ,
 
-        selectedEvent (data) {
+
+        selectedSubtitleEvent (data) {
             const ids = [];
             data.forEach((v) => {
                 ids.push(v.id);
             });
-            this.val.selectedIds = ids;
+            this.val.selectedIdsForSubtitle = ids;
         } ,
 
-        destroyEvent (index , record) {
+        destroyVideoSubtitle (id , callback) {
+            this.destroyVideoSubtitles([id] , callback);
+        } ,
+
+        destroyVideoSubtitles (ids , callback) {
+            if (ids.length < 1) {
+                this.message('warning' ,'请选择待删除的项');
+                G.invoke(callback , this , false);
+                return ;
+            }
+            const self = this;
+            this.confirmModal('你确定删除吗？'  , (res) => {
+                if (res) {
+                    Api.video_subtitle.destroyAll(ids , (msg , data , code) => {
+                        if (code !== TopContext.code.Success) {
+                            G.invoke(callback , this , false);
+                            this.message('error' , msg);
+                            return ;
+                        }
+                        G.invoke(callback , this , true);
+                        this.message('success' , '操作成功' , '影响的记录数：' + data);
+                        for (let i = 0; i < this.videoSubtitles.data.length; ++i)
+                        {
+                            const cur = this.videoSubtitles.data[i];
+                            if (G.contain(cur.id , ids)) {
+                                this.videoSubtitles.data.splice(i , 1);
+                                i--;
+                            }
+                        }
+                    });
+                    return ;
+                }
+                G.invoke(callback , this , false);
+            });
+        } ,
+
+        destroyVideoSubtitleEvent (index , record) {
             const pendingKey = 'delete_' + record.id;
             this.pending(pendingKey , true);
-            this.destroy(record.id , () => {
+            this.destroyVideoSubtitle(record.id , () => {
                 this.pending(pendingKey , false);
-
             });
         } ,
 
-        destroyAllEvent () {
-            this.pending('destroyAll' , true);
-            this.destroyAll(this.val.selectedIds , (success) => {
-                this.pending('destroyAll' , false);
+        destroyVideoSubtitlesEvent () {
+            this.pending('destroyVideoSubtitles' , true);
+            this.destroyVideoSubtitles(this.val.selectedIdsForSubtitle , (success) => {
+                this.pending('destroyVideoSubtitles' , false);
                 if (success) {
-                    this.val.selectedIds = [];
+                    this.val.selectedIdsForSubtitle = [];
                 }
             });
         } ,
 
-        isExistTagByTagId (tagId) {
-            for (let i = 0; i < this.form.tags.length; ++i)
-            {
-                const cur = this.form.tags[i];
-                if (tagId === cur.tag_id) {
-                    return true;
-                }
-            }
-            for (let i = 0; i < this.tags.length; ++i)
-            {
-                const cur = this.tags[i];
-                if (tagId === cur.id) {
-                    return true;
-                }
-            }
-            return false;
+        addVideoSubtitleEvent () {
+            const videoSubtitle = this.genVideoSubtitle();
+            this.uVideoSubtitles.push(videoSubtitle);
         } ,
 
-        isExistTagByName (name) {
-            const tags = this.form.tags.concat(this.tags);
-            for (let i = 0; i < tags.length; ++i)
-            {
-                const cur = tags[i];
-                if (name === cur.name) {
-                    return true;
-                }
-            }
-            return false;
+        videoSubtitleChangeEvent (e , record) {
+            record.file = e.currentTarget.files.length > 0 ? e.currentTarget.files[0] : null;
+            record.uploaded = false;
         } ,
 
-        appendTag (v) {
-            if (this.isExistTagByTagId(v.id)) {
-                this.message('error' , '标签已经存在');
+        // 上传字幕事件
+        uploadVideoSubtitleEvent () {
+            if (this.uVideoSubtitles.length < 1) {
+                this.message('error' , '请添加要上传的字幕文件');
                 return ;
             }
-            this.tags.push(v);
+            this.pending('uploadVideoSubtitle' , true);
+            this.uploadVideoSubtitle(() => {
+                this.pending('uploadVideoSubtitle' , false);
+            })
         } ,
 
-        destroyTag (tagId , direct = true) {
-            if (direct) {
-                for (let i = 0; i < this.tags.length; ++i)
-                {
-                    const tag = this.tags[i];
-                    if (tag.id === tagId) {
-                        this.tags.splice(i , 1);
-                        i--;
-                    }
-                }
-                return ;
-            }
-            // 编辑模式
-            this.pending('destroy_tag_' + tagId , true);
-            Api.video.destroyTag(this.form.id , tagId , (msg , data , code) => {
-                this.pending('destroy_tag_' + tagId , false);
-                if (code !== TopContext.code.Success) {
-                    this.error({tags: data});
+        uploadVideoSubtitle (callback , index) {
+            const total   = this.uVideoSubtitles.length;
+            let handleCount   = 0;
+            this.uVideoSubtitles.forEach((v) => {
+                if (v.uploaded) {
+                    // 过滤掉那些上传成功的数据
                     return ;
                 }
-                for (let i = 0; i < this.form.tags.length; ++i)
-                {
-                    const tag = this.form.tags[i];
-                    if (tag.tag_id === tagId) {
-                        this.form.tags.splice(i , 1);
-                        i--;
+                const pending = 'uploadVideoSubtitle_' + v.id;
+                this.pending(pending , true);
+                v.error = '';
+                Api.file.uploadSubtitle(v.file , (msg , data , code) => {
+                    this.pending(pending , false);
+                    if (++handleCount >= total) {
+                        G.invoke(callback);
                     }
-                }
-            });
-        } ,
-
-        createOrAppendTag () {
-            this.val.error.tags = '';
-            const name = this.dom.tagInput.text().replace(/\s/g , '');
-            this.dom.tagInput.html(name);
-            if (!G.isValid(name)) {
-                this.message('error' , '请提供标签名称');
-                return ;
-            }
-            if (this.isExistTagByName(name)) {
-                this.message('error' , '标签已经存在');
-                return ;
-            }
-            this.dom.tagInput.origin('blur');
-            this.dom.tagInputOuter.addClass('disabled');
-            Api.tag.findOrCreateTag({
-                name ,
-                module_id: this.form.module_id ,
-            } , (msg , data , code) => {
-                this.dom.tagInputOuter.removeClass('disabled');
-                if (code !== TopContext.code.Success) {
-                    this.error({tags: data});
-                    return ;
-                }
-                this.tags.push(data);
-                this.dom.tagInput.html('');
+                    if (code !== TopContext.code.Success) {
+                        debugger
+                        v.error = msg;
+                        // this.message('error' , msg);
+                        v.uploaded = false;
+                        return ;
+                    }
+                    debugger
+                    v.uploaded = true;
+                    v.src = data;
+                });
             });
         } ,
 
@@ -547,6 +655,15 @@ export default {
                 });
             };
             const form = G.copy(this.form);
+            // 字幕上传
+            const videoSubtitles = [];
+            this.uVideoSubtitles.forEach((v) => {
+                videoSubtitles.push({
+                    name: v.name ,
+                    src: v.src ,
+                });
+            });
+            form.video_subtitles = G.jsonEncode(videoSubtitles);
             this.pending('submit' , true);
             if (this.mode === 'edit') {
                 Api.video.update(form.id , form , callback);
@@ -582,6 +699,7 @@ export default {
                 this.users.current = form.user ? form.user : G.copy(users.current);
                 this.videoSubjects.current = form.video_subject ? form.video_subject : G.copy(videoSubjects.current);
                 this.videos.data = form.videos;
+                this.videoSubtitles.data = form.video_subtitles;
                 this.createTime = form.create_time;
             } ,
         } ,

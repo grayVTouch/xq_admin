@@ -4,7 +4,7 @@
 namespace App\Http\Controllers\api\admin_v1;
 
 
-use App\Customize\api\admin_v1\job\RestartFaildJob;
+use App\Customize\api\admin_v1\job\QueueHandleJob;
 use App\Customize\api\admin_v1\job\TestJob;
 use App\Customize\api\admin_v1\job\VideoHandleJob;
 use Exception;

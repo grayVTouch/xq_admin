@@ -8,9 +8,9 @@ use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
-class VideoCommentImageModel extends Model
+class VideoSubtitleModel extends Model
 {
-    protected $table = 'xq_video_comment_image';
+    protected $table = 'xq_video_subtitle';
 
     public static function delByVideoId(int $video_id): int
     {
@@ -20,5 +20,10 @@ class VideoCommentImageModel extends Model
     public static function getByVideoId(int $video_id): Collection
     {
         return self::where('video_id' , $video_id)->get();
+    }
+
+    public static function countByVideoId(int $video_id): int
+    {
+        return self::where('video_id' , $video_id)->count();
     }
 }

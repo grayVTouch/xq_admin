@@ -20,7 +20,12 @@ Route::prefix('admin_v1')
                 Route::get('captcha' , 'Misc@captcha');
                 Route::post('login' , 'Login@login');
                 Route::get('avatar' , 'Login@avatar');
+
                 Route::post('upload' , 'File@upload');
+                Route::post('upload_image' , 'File@uploadImage');
+                Route::post('upload_video' , 'File@uploadVideo');
+                Route::post('upload_subtitle' , 'File@uploadSubtitle');
+                Route::post('upload_office' , 'File@uploadOffice');
             });
 
         Route::middleware([
@@ -237,6 +242,8 @@ Route::prefix('admin_v1')
             Route::post('video' , 'Video@store');
             Route::delete('video/{id}' , 'Video@destroy');
             Route::delete('destroy_all_video' , 'Video@destroyAll');
+            Route::delete('destroy_videos' , 'Video@destroyVideos');
+            Route::post('retry_process_video' , 'Video@retry');
 
             /**
              * ******************
@@ -313,5 +320,16 @@ Route::prefix('admin_v1')
             Route::delete('destroy_all_disk' , 'Disk@destroyAll');
             Route::delete('disk/{id}' , 'Disk@destroy');
 
+            /***
+             * 队列任务相关
+             */
+            Route::post('retry_job' , 'Job@retry');
+            Route::post('flush_job' , 'Job@flush');
+
+            /**
+             * 视频字幕相关
+             */
+            Route::delete('video_subtitle/{id}' , 'VideoSubtitle@destroy');
+            Route::delete('destroy_all_video_subtitle' , 'VideoSubtitle@destroyAll');
         });
     });

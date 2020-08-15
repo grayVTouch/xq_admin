@@ -9,7 +9,7 @@ use function core\current_time;
 
 class ResourceUtil
 {
-    public static function create(string $path = ''): ?int
+    public static function create(string $path = '' , int $used = 0 , int $is_delete = 0): ?int
     {
         if (empty($path)) {
             return null;
@@ -17,8 +17,8 @@ class ResourceUtil
         $datetime = current_time();
         return ResourceModel::insertGetId([
             'path'          => $path ,
-            'is_delete'     => 0 ,
-            'used'          => 0 ,
+            'is_delete'     => $used ,
+            'used'          => $is_delete ,
             'create_time'   => $datetime ,
         ]);
     }

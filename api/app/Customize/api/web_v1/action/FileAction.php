@@ -25,7 +25,7 @@ class FileAction extends Action
             'h' => 'sometimes|integer' ,
         ]);
         if ($validator->fails()) {
-            return self::error('参数错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         if (empty($file)) {
             return self::error('请提供上传文件');

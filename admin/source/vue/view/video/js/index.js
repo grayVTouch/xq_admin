@@ -168,7 +168,7 @@ export default {
                     {
                         title: '操作' ,
                         slot: 'action' ,
-                        minWidth: TopContext.table.action ,
+                        minWidth: TopContext.table.action + 80 ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'right' ,
                     } ,
@@ -203,7 +203,7 @@ export default {
     } ,
 
     computed: {
-        showDestroyAllBtn () {
+        showBatchBtn () {
             return this.val.selectedIds.length > 0;
         } ,
     } ,
@@ -270,6 +270,7 @@ export default {
 
         handleData (data) {
             data.forEach((v) => {
+                this.pending(`retry_${v.id}` , false);
                 this.pending(`delete_${v.id}` , false);
             });
         } ,
@@ -395,5 +396,37 @@ export default {
             tar.currentTime = 0;
             tar.play();
         } ,
+
+        retryProcessVideosEvent () {
+            this.retryProcessVideos(this.val.selectedIds);
+        } ,
+
+        retryProcessVideoEvent (record) {
+            const pending = 'retry_' + record.id;
+            this.pending(pending , true);
+            this.retryProcessVideo(record.id , () => {
+                this.pending(pending , false);
+            });
+        } ,
+
+        retryProcessVideo (id , callback) {
+            this.retryProcessVideos([id] , callback)
+        } ,
+
+        retryProcessVideos (ids , callback) {
+            this.pending('retryProcessVideos' , true);
+            Api.video.retryProcessVideo(ids , (msg , data , code) => {
+                this.pending('retryProcessVideos' , false);
+                if (code !== TopContext.code.Success) {
+                    G.invoke(callback , null , false);
+                    this.errorHandle(msg , data , code);
+                    return ;
+                }
+                this.getData();
+                G.invoke(callback , null , true);
+            })
+        } ,
+
+
     } ,
 }

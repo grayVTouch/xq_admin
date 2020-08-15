@@ -31,7 +31,7 @@
 
 .today > .list {
     border: 1px solid #ccc;
-    padding: 12px;
+    padding: 0 15px 15px 15px;
 }
 
 .today > .list:after {
@@ -45,43 +45,19 @@
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    -o-box-sizing: border-box;
-    margin-right: 20px;
-    margin-bottom: 20px;
+    margin-right: 15px;
+    margin-top: 15px;
 }
 
-.today > .list .card .left .run-iconfont {
-    color: var(--font-color);
-    font-size: 24px !important;
-}
-
-.today > .list .card .right .btm .line.ratio .run-iconfont {
-    /*color: var(--font-color);*/
-
-}
-
-.today > .list .card .right .btm .line.ratio.up .run-iconfont {
-    color: green;
-}
-
-.today > .list .card .right .btm .line.ratio.down .run-iconfont {
-    color: red;
-    transform: rotateZ(180deg);
-    -webkit-transform: rotateZ(180deg);
-    -moz-transform: rotateZ(180deg);
-    -ms-transform: rotateZ(180deg);
-    -o-transform: rotateZ(180deg);
-    display: inline-block;
-    vertical-align: middle;
-}
-
+/**
+ * 历史统计资料
+ */
 .history {
 
 }
 
 .history .list {
-    padding: 12px;
+    padding: 0 15px 15px 15px;
     border: 1px solid #ccc;
 }
 
@@ -96,10 +72,8 @@
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    -o-box-sizing: border-box;
-    margin-right: 20px;
-    margin-bottom: 20px;
+    margin-right: 15px;
+    margin-top: 15px;
 }
 
 /**
@@ -111,6 +85,8 @@
     height: 114px;
     line-height: 114px;
     border: 1px solid #ccc;
+    display: inline-block;
+    vertical-align: top;
 }
 
 .card:after {
@@ -141,6 +117,11 @@
     height: 24px;
 }
 
+.card .left .run-iconfont {
+    color: var(--font-color);
+    font-size: 24px !important;
+}
+
 .card .right {
     padding: 10px;
     color: #555;
@@ -169,6 +150,26 @@
 .card .right .btm .line .image {
     width: 20px;
     height: 20px;
+}
+
+.card .right .btm .line.ratio .run-iconfont {
+    /*color: var(--font-color);*/
+
+}
+
+.card .right .btm .line.ratio.up .run-iconfont {
+    color: green;
+}
+
+.card .right .btm .line.ratio.down .run-iconfont {
+    color: red;
+    transform: rotateZ(180deg);
+    -webkit-transform: rotateZ(180deg);
+    -moz-transform: rotateZ(180deg);
+    -ms-transform: rotateZ(180deg);
+    -o-transform: rotateZ(180deg);
+    display: inline-block;
+    vertical-align: middle;
 }
 
 /**

@@ -6,7 +6,10 @@ namespace App\Customize\api\admin_v1\action;
 use App\Customize\api\admin_v1\handler\VideoCompanyHandler;
 use App\Customize\api\admin_v1\model\RegionModel;
 use App\Customize\api\admin_v1\model\VideoCompanyModel;
+use App\Customize\api\admin_v1\util\ResourceUtil;
 use App\Http\Controllers\api\admin_v1\Base;
+use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use function api\admin_v1\get_form_error;
 use function api\admin_v1\my_config;
@@ -55,17 +58,27 @@ class VideoCompanyAction extends Action
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $param['country'] = $country->name;
 
-        VideoCompanyModel::updateById($res->id , array_unit($param , [
-            'name' ,
-            'thumb' ,
-            'description' ,
-            'country_id' ,
-            'country' ,
-            'weight' ,
-            'module_id' ,
-        ]));
-
-        return self::success();
+        try {
+            DB::beginTransaction();
+            VideoCompanyModel::updateById($res->id , array_unit($param , [
+                'name' ,
+                'thumb' ,
+                'description' ,
+                'country_id' ,
+                'country' ,
+                'weight' ,
+                'module_id' ,
+            ]));
+            ResourceUtil::used($param['thumb']);
+            if ($res->thumb !== $param['thumb']) {
+                ResourceUtil::delete($res->thumb);
+            }
+            DB::commit();
+            return self::success();
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function store(Base $context , array $param = [])
@@ -93,17 +106,25 @@ class VideoCompanyAction extends Action
         $param['create_time']   = current_time();
         $param['country']       = $country->name;
 
-        $id = VideoCompanyModel::insertGetId(array_unit($param , [
-            'name' ,
-            'thumb' ,
-            'description' ,
-            'country_id' ,
-            'country' ,
-            'weight' ,
-            'module_id' ,
-            'create_time' ,
-        ]));
-        return self::success('' , $id);
+        try {
+            DB::beginTransaction();
+            $id = VideoCompanyModel::insertGetId(array_unit($param , [
+                'name' ,
+                'thumb' ,
+                'description' ,
+                'country_id' ,
+                'country' ,
+                'weight' ,
+                'module_id' ,
+                'create_time' ,
+            ]));
+            ResourceUtil::used($param['thumb']);
+            DB::commit();
+            return self::success('' , $id);
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function show(Base $context , $id , array $param = [])
@@ -118,14 +139,38 @@ class VideoCompanyAction extends Action
 
     public static function destroy(Base $context , $id , array $param = [])
     {
-        $count = VideoCompanyModel::destroy($id);
-        return self::success('' , $count);
+        $res = VideoCompanyModel::find($id);
+        if (empty($res)) {
+            return self::error('记录不存在' , '' , 404);
+        }
+        try {
+            DB::beginTransaction();
+            ResourceUtil::delete($res->thumb);
+            $count = VideoCompanyModel::destroy($res->id);
+            DB::commit();
+            return self::success('' , $count);
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
-        $count = VideoCompanyModel::destroy($ids);
-        return self::success('' , $count);
+        $res = VideoCompanyModel::find($ids);
+        try {
+            DB::beginTransaction();
+            foreach ($res as $v)
+            {
+                ResourceUtil::delete($v->thumb);
+            }
+            $count = VideoCompanyModel::destroy($ids);
+            DB::commit();
+            return self::success('' , $count);
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function search(Base $context , array $param = [])

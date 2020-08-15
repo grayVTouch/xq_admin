@@ -40,13 +40,6 @@ class Model extends BaseModel
             ->delete();
     }
 
-    public static function getByIds(array $ids = []): Collection
-    {
-        $res = self::whereIn('id' , $ids)
-            ->get();
-        return $res;
-    }
-
     public static function countByDate(string $date): int
     {
         return self::whereRaw('date_format(create_time , "%Y-%m-%d") = ?' , $date)

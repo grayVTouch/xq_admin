@@ -121,7 +121,8 @@
                 <div class="run-action-title">
                     <div class="left">
                         <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
+                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showBatchBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
+                        <my-table-button @click="retryProcessVideosEvent" :loading="val.pending.retryProcessVideos" v-show="showBatchBtn"><my-icon icon="reset" />重新处理 （{{ val.selectedIds.length }}）</my-table-button>
                     </div>
                     <div class="right">
                         <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
@@ -175,6 +176,7 @@
 
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
+                            <my-table-button @click="retryProcessVideoEvent(row)" :loading="val.pending['retry_' + row.id]" v-if="row.process_status === -1"><my-icon icon="reset" />重新处理</my-table-button>
                             <my-table-button type="error" :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
                         </template>
                     </Table>
@@ -185,7 +187,8 @@
 
             <div class="line operation">
                 <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showDestroyAllBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}） （{{ val.selectedIds.length }}）</my-table-button>
+                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showBatchBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
+                <my-table-button @click="retryProcessVideosEvent" :loading="val.pending.retryProcessVideos" v-show="showBatchBtn"><my-icon icon="reset" />重新处理 （{{ val.selectedIds.length }}）</my-table-button>
             </div>
 
             <div class="line page">

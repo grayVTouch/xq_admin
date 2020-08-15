@@ -139,11 +139,23 @@ Vue.mixin({
         } ,
 
         imageApi (resize = false) {
-            return TopContext.fileApi  + (resize ? '?w=' + TopContext.val.imageW : '');
+            return TopContext.uploadImageApi  + (resize ? '?w=' + TopContext.val.imageW : '');
         } ,
 
         thumbApi () {
-            return TopContext.fileApi + '?w=' + TopContext.val.thumbW;
+            return TopContext.uploadImageApi + '?w=' + TopContext.val.thumbW;
+        } ,
+
+        videoApi () {
+            return TopContext.uploadVideoApi;
+        } ,
+
+        subtitleApi () {
+            return TopContext.uploadSubtitleApi;
+        } ,
+
+        officeApi () {
+            return TopContext.uploadOfficeApi;
         } ,
 
         handleImageSubject () {

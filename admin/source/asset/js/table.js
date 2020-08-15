@@ -3,7 +3,7 @@ export default {
     id: 80 ,
     name: 160 ,
     image: 120 ,
-    video: 200 ,
+    video: 250 ,
     desc: 250 ,
     status: 120 ,
     sex: 80 ,
@@ -23,6 +23,8 @@ export default {
 
     w_160: 160 ,
     w_200: 200 ,
+
+    src: 300 ,
 
     alignCenter: 'center' ,
     alignLeft: 'left' ,

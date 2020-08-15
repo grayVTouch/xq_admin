@@ -598,5 +598,10 @@ export default {
             const route = this.ins.tab.attr(tabId , 'route');
             this.reRender(tabId , route);
         } ,
+
+        clearFailedJobs () {
+            this.pending('clearFailedJobs' , true);
+            // Api.jobs
+        } ,
     } ,
 };

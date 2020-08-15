@@ -186,7 +186,7 @@ export default {
     } ,
 
     computed: {
-        showDestroyAllBtn () {
+        showBatchBtn () {
             return this.val.selectedIds.length > 0;
         } ,
     } ,

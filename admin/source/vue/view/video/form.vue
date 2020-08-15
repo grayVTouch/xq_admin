@@ -222,7 +222,7 @@
                     </div>
                     <div class="" v-show="val.tab === 'image'">
                         <div class="video-info">
-                            <div class="line upload">
+                            <div class="line upload-video">
                                 <div class="run-title">
                                     <div class="left">上传视频</div>
                                     <div class="right"></div>
@@ -260,7 +260,10 @@
                                                 </div>
 
                                                 <span class="need"></span>
-                                                <div class="msg"></div>
+                                                <div class="msg">
+                                                    支持的视频格式有：mov,mp4,mkv,rm,rmvb,avi,flv
+                                                    <template v-if="mode === 'edit'"><br><b>当视频处理状态不是 处理完成 或 处理失败 的时候禁止更改</b></template>
+                                                </div>
                                                 <div class="e-msg">{{ val.error.src }}</div>
                                             </td>
                                         </tr>
@@ -269,21 +272,69 @@
                                 </div>
                             </div>
 
-                            <div class="files">
+                            <div class="line upload-subtitle">
+                                <div class="run-title">
+                                    <div class="left">上传字幕</div>
+                                    <div class="right"></div>
+                                </div>
+                                <div>
+                                    <table class="input-table">
+                                        <tbody>
+                                        <tr>
+                                            <td>合并字幕？</td>
+                                            <td>
+                                                <RadioGroup v-model="form.merge_video_subtitle">
+                                                    <Radio v-for="(v,k) in $store.state.context.business.bool.integer" :key="k" :label="parseInt(k)">{{ v }}</Radio>
+                                                </RadioGroup>
+                                                <span class="need">*</span>
+                                                <div class="msg">默认：否；<br>当选择合并字幕的时候服务端会将字幕列表中的首个字幕合并到视频并删除其他字幕，合并完成也会删除合并字幕仅保留合并后的视频文件</div>
+                                                <div class="e-msg">{{ form.merge_video_subtitle }}</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>字幕</td>
+                                            <td>
+                                                <div class="subtitles">
+                                                    <div class="item" v-for="(v,k) in uVideoSubtitles">
+                                                        <div class="name"><input type="text" :readonly="v.uploaded" placeholder="字幕名称" class="form-text" v-model="v.name"></div>
+                                                        <div class="src"><input type="file" :readonly="v.uploaded" class="form-file" @change="videoSubtitleChangeEvent($event , v)"></div>
+                                                        <div class="flag" v-if="v.uploaded"><my-icon icon="604xinxi_chenggong" class="run-green"></my-icon></div>
+                                                        <div class="actions">
+                                                            <my-table-button @click="uVideoSubtitles.splice(k,1)">删除</my-table-button>
+                                                            <my-loading v-if="val.pending['uploadVideoSubtitle_' + v.id]"></my-loading>
+                                                        </div>
+                                                        <div class="e-msg run-red">{{ v.error }}</div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="action">
+                                                    <Button v-ripple @click="addVideoSubtitleEvent">新增</Button>
+                                                    <Button v-ripple :loading="val.pending.uploadVideoSubtitle" :disabled="canUploadVideoSubtitle" @click="uploadVideoSubtitleEvent">上传</Button>
+                                                </div>
+
+                                                <div class="msg">在提交修改之前，请务必点击上传文件先将字幕文件保存到服务器！</div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="line files">
                                 <div class="line">
                                     <div class="run-title">
                                         <div class="left">视频列表</div>
                                         <div class="right">
-<!--                                            <my-table-button type="error" :loading="val.pending['destroyAll']" @click="destroyAllEvent">删除选中项 （{{ val.selectedIds.length }}）</my-table-button>-->
+                                            <my-table-button type="error" :loading="val.pending['destroyVideos']" v-if="val.selectedIdsForVideo.length > 0" @click="destroyVideosEvent">删除选中项 （{{ val.selectedIdsForVideo.length }}）</my-table-button>
                                         </div>
                                     </div>
                                     <div>
-                                        <Table width="100%" border :columns="videos.field" :data="videos.data" @on-selection-change="selectedEvent" style="width: 100%;">
+                                        <Table style="width: 100%;" border :columns="videos.field" :data="videos.data" @on-selection-change="selectedVideoEvent">
                                             <template v-slot:src="{row,index}">
-                                                <video muted="muted" controls :src="row.src ? row.__src__ : $store.state.context.res.notFound" :height="$store.state.context.table.videoH" @click.stop="link(row.__path__)"></video>
+                                                <video muted="muted" controls :src="row.src ? row.__src__ : $store.state.context.res.notFound" :height="$store.state.context.table.videoH"></video>
                                             </template>
                                             <template v-slot:action="{row,index}">
-<!--                                                <my-table-button :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)">删除</my-table-button>-->
+                                                <my-table-button :loading="val.pending['delete_' + row.id]" @click="destroyVideoEvent(index , row)">删除</my-table-button>
                                                 <my-table-button @click="link(row.__src__ , '_blank')">预览</my-table-button>
                                             </template>
                                         </Table>
@@ -291,9 +342,33 @@
                                 </div>
 
                                 <div class="line">
-<!--                                    <my-table-button type="error" :loading="val.pending['destroyAll']" @click="destroyAllEvent">删除选中项 （{{ val.selectedIds.length }}）</my-table-button>-->
+                                    <my-table-button type="error" :loading="val.pending['destroyVideos']" v-if="val.selectedIdsForVideo.length > 0" @click="destroyVideosEvent">删除选中项 （{{ val.selectedIdsForVideo.length }}）</my-table-button>
                                 </div>
                             </div>
+
+                            <div class="line files">
+                                <div class="line">
+                                    <div class="run-title">
+                                        <div class="left">字幕列表</div>
+                                        <div class="right">
+                                            <my-table-button type="error" :loading="val.pending['destroyVideoSubtitles']" v-if="val.selectedIdsForSubtitle.length > 0" @click="destroyVideoSubtitlesEvent">删除选中项 （{{ val.selectedIdsForSubtitle.length }}）</my-table-button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <Table style="width: 100%;" border :columns="videoSubtitles.field" :data="videoSubtitles.data" @on-selection-change="selectedSubtitleEvent">
+                                            <template v-slot:src="{row,index}">{{ row.src }}</template>
+                                            <template v-slot:action="{row,index}">
+                                                <my-table-button :loading="val.pending['delete_' + row.id]" @click="destroyVideoSubtitleEvent(index , row)">删除</my-table-button>
+                                            </template>
+                                        </Table>
+                                    </div>
+                                </div>
+
+                                <div class="line">
+                                    <my-table-button type="error" :loading="val.pending['destroyVideoSubtitles']" v-if="val.selectedIdsForSubtitle.length > 0" @click="destroyVideoSubtitlesEvent">删除选中项 （{{ val.selectedIdsForSubtitle.length }}）</my-table-button>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -313,6 +388,9 @@
                         <div class="list">
                             <Table border :loading="val.pending.searchUser" :data="users.data" :columns="users.field" @on-row-click="updateUserEvent">
                                 <template v-slot:avatar="{row,index}"><img :src="row.avatar ? row.__avatar__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
+                                <template v-slot:action="{row,index}">
+                                    <my-table-button>选择</my-table-button>
+                                </template>
                             </Table>
                         </div>
                         <div class="pager">
@@ -335,9 +413,12 @@
                             <div class="msg"></div>
                         </div>
                         <div class="list">
-                            <Table border  :loading="val.pending.searchVideoSubject" :data="videoSubjects.data" :columns="videoSubjects.field" @on-row-click="updateSubjectEvent">
+                            <Table border  :loading="val.pending.searchVideoSubject" :data="videoSubjects.data" :columns="videoSubjects.field" @on-row-click="updateVideoSubjectEvent">
                                 <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
                                 <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
+                                <template v-slot:action="{row,index}">
+                                    <my-table-button>选择</my-table-button>
+                                </template>
                             </Table>
                         </div>
                         <div class="pager">

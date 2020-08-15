@@ -29,6 +29,7 @@ class CreateVideoTable extends Migration
             $table->unsignedBigInteger('against_count')->default(0)->comment('反对数');
             $table->unsignedBigInteger('view_count')->default(0)->comment('观看次数');
             $table->string('src' , 500)->default('')->comment('视频源');
+            $table->tinyInteger('merge_video_subtitle')->default(0)->comment('合并字幕？0-否 1-是');
             $table->unsignedInteger('duration')->default(0)->comment('时长');
             $table->string('type' , 100)->default('')->comment('类别：pro-专题 misc-杂类');
             $table->unsignedBigInteger('video_subject_id')->default(0)->comment('xq_video_subject.id');

@@ -36,6 +36,10 @@ export default {
                 video_subject: {} ,
                 video_series: {} ,
                 video_company: {} ,
+                category: {} ,
+                failed_jobs: {} ,
+                processed_video: {} ,
+                process_failed_video: {} ,
             } ,
             value: {
                 month: null,

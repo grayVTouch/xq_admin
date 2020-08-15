@@ -122,7 +122,7 @@ export default {
             return this.val.mode === 'edit' ? '编辑分类' : '添加分类';
         } ,
 
-        showDestroyAllBtn () {
+        showBatchBtn () {
             return this.val.selectedIds.length > 0;
         } ,
     } ,

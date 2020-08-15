@@ -39,11 +39,4 @@ class Model extends BaseModel
         return static::whereIn('id' , $ids)
             ->delete();
     }
-
-    public static function getByIds(array $ids = []): Collection
-    {
-        $res = self::whereIn('id' , $ids)
-            ->get();
-        return $res;
-    }
 }

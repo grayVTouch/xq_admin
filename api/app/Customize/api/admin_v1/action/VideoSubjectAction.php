@@ -12,6 +12,7 @@ use App\Customize\api\admin_v1\model\VideoCompanyModel;
 use App\Customize\api\admin_v1\model\VideoSeriesModel;
 use App\Customize\api\admin_v1\model\VideoSubjectModel;
 use App\Customize\api\admin_v1\model\UserModel;
+use App\Customize\api\admin_v1\util\ResourceUtil;
 use App\Http\Controllers\api\admin_v1\Base;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -95,6 +96,10 @@ class VideoSubjectAction extends Action
                 'weight' ,
                 'create_time' ,
             ]));
+            ResourceUtil::used($param['thumb']);
+            if ($video_subject->thumb !== $param['thumb']) {
+                ResourceUtil::delete($video_subject->thumb);
+            }
             $my_tags = RelationTagModel::getByRelationTypeAndRelationId('image_subject' , $video_subject->id);
             foreach ($tags as $v)
             {
@@ -189,6 +194,7 @@ class VideoSubjectAction extends Action
                 'weight',
                 'create_time',
             ]));
+            ResourceUtil::used($param['thumb']);
             foreach ($tags as $v) {
                 $tag = TagModel::find($v);
                 if (empty($tag)) {
@@ -227,14 +233,40 @@ class VideoSubjectAction extends Action
 
     public static function destroy(Base $context , $id , array $param = [])
     {
-        $count = VideoSubjectModel::destroy($id);
-        return self::success('' , $count);
+        $res = VideoSubjectModel::find($id);
+        if (empty($res)) {
+            return self::error('记录不存在' , '' , 404);
+        }
+        try {
+            DB::beginTransaction();
+            ResourceUtil::delete($res->thumb);
+            VideoSubjectModel::destroy($res->id);
+            RelationTagModel::delByRelationTypeAndRelationId('video_subject' , $res->id);
+            DB::commit();
+            return self::success('');
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
-        $count = VideoSubjectModel::destroy($ids);
-        return self::success('' , $count);
+        $res = VideoCompanyModel::find($ids);
+        try {
+            DB::beginTransaction();
+            foreach ($res as $v)
+            {
+                ResourceUtil::delete($v->thumb);
+                RelationTagModel::delByRelationTypeAndRelationId('video_subject' , $v->id);
+                VideoCompanyModel::destroy($v->id);
+            }
+            DB::commit();
+            return self::success();
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     // 删除单个标签

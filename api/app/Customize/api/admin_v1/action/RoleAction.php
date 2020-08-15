@@ -146,7 +146,7 @@ class RoleAction extends Action
             return self::error('角色不存在' , '' , 404);
         }
         $admin_permission_ids = RolePermissionPivot::getPermissionIdsByRoleId($role->id);
-        $permission = AdminPermissionModel::getByIds($admin_permission_ids);
+        $permission = AdminPermissionModel::find($admin_permission_ids);
         $permission = AdminPermissionHandler::handleAll($permission);
         return self::success('' , $permission);
     }

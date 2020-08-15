@@ -101,7 +101,7 @@ class ImageSubjectAction extends Action
         if (empty($tag_ids)) {
             return self::error('请提供过滤的标签');
         }
-        $tags = TagModel::getByIds($tag_ids);
+        $tags = TagModel::find($tag_ids);
         if (count($tags) !== count($tag_ids)) {
             return self::error('部分或全部标签未找到');
         }

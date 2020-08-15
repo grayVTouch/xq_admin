@@ -14,6 +14,7 @@ use App\Customize\api\admin_v1\model\RelationTagModel;
 use App\Customize\api\admin_v1\model\SubjectModel;
 use App\Customize\api\admin_v1\model\TagModel;
 use App\Customize\api\admin_v1\model\UserModel;
+use App\Customize\api\admin_v1\util\ImageSubjectUtil;
 use App\Customize\api\admin_v1\util\ResourceUtil;
 use App\Http\Controllers\api\admin_v1\Base;
 use Exception;
@@ -78,7 +79,7 @@ class ImageSubjectAction extends Action
 
         $image_subject = ImageSubjectModel::find($id);
         if (empty($image_subject)) {
-            return self::error('图片专题不存在' , '' , 404);
+            return self::error('记录不存在' , '' , 404);
         }
 
         $module = ModuleModel::find($param['module_id']);
@@ -141,9 +142,9 @@ class ImageSubjectAction extends Action
                 'fail_reason' ,
                 'create_time' ,
             ]));
+            ResourceUtil::used($param['thumb']);
             if ($image_subject->thumb !== $param['thumb']) {
                 ResourceUtil::delete($image_subject->thumb);
-                ResourceUtil::used($param['thumb']);
             }
             $my_tags = RelationTagModel::getByRelationTypeAndRelationId('image_subject' , $image_subject->id);
             foreach ($tags as $v)
@@ -303,7 +304,7 @@ class ImageSubjectAction extends Action
     {
         $res = ImageSubjectModel::find($id);
         if (empty($res)) {
-            return self::error('图片专题不存在' , '' , 404);
+            return self::error('记录不存在' , '' , 404);
         }
         $res = ImageSubjectHandler::handle($res);
         return self::success('' , $res);
@@ -311,33 +312,9 @@ class ImageSubjectAction extends Action
 
     public static function destroy(Base $context , $id , array $param = []): array
     {
-        $res = ImageSubjectModel::find($id);
-        if (empty($res)) {
-            return self::error('图片专题不存在' , '' , 404);
-        }
-        $res = ImageSubjectHandler::handle($res);
         try {
             DB::beginTransaction();
-            ResourceUtil::delete($res->thumb);
-            foreach ($res->images as $v)
-            {
-                ResourceUtil::delete($v->path);
-            }
-            $comment_images = ImageSubjectCommentImageModel::getByImageSubjectId($res->id);
-            foreach ($comment_images as $v)
-            {
-                ResourceUtil::delete($v->path);
-            }
-            // 删除图片主题
-            ImageSubjectModel::destroy($res->id);
-            // 删除图片主题相关的图片
-            ImageModel::delByImageSubjectId($res->id);
-            // 删除图片主题相关的评论
-            ImageSubjectCommentModel::delByImageSubjectId($res->id);
-            // 删除图片主题相关评论对应的评论图片
-            ImageSubjectCommentImageModel::delByImageSubjectId($res->id);
-            // 删除图片对应的标签
-            RelationTagModel::delByRelationTypeAndRelationId('image_subject' , $res->id);
+            ImageSubjectUtil::delete($id);
             DB::commit();
             return self::success();
         } catch(Exception $e) {
@@ -352,32 +329,7 @@ class ImageSubjectAction extends Action
             DB::beginTransaction();
             foreach ($ids as $id)
             {
-                $res = ImageSubjectModel::find($id);
-                if (empty($res)) {
-                    DB::rollBack();
-                    return self::error('部分记录不存在' , '' , 404);
-                }
-                $res = ImageSubjectHandler::handle($res);
-                ResourceUtil::delete($res->thumb);
-                foreach ($res->images as $v)
-                {
-                    ResourceUtil::delete($v->path);
-                }
-                $comment_images = ImageSubjectCommentImageModel::getByImageSubjectId($res->id);
-                foreach ($comment_images as $v)
-                {
-                    ResourceUtil::delete($v->path);
-                }
-                // 删除图片主题
-                ImageSubjectModel::destroy($res->id);
-                // 删除图片主题相关的图片
-                ImageModel::delByImageSubjectId($res->id);
-                // 删除图片主题相关的评论
-                ImageSubjectCommentModel::delByImageSubjectId($res->id);
-                // 删除图片主题相关评论对应的评论图片
-                ImageSubjectCommentImageModel::delByImageSubjectId($res->id);
-                // 删除图片对应的标签
-                RelationTagModel::delByRelationTypeAndRelationId('image_subject' , $res->id);
+                ImageSubjectUtil::delete($id);
             }
             DB::commit();
             return self::success();
@@ -389,7 +341,7 @@ class ImageSubjectAction extends Action
 
     public static function destroyImages(Base $context , array $ids , array $param = []): array
     {
-        $res = ImageModel::getByIds($ids);
+        $res = ImageModel::find($ids);
         try {
             DB::beginTransaction();
             foreach ($res as $v)

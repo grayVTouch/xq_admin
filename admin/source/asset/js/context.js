@@ -21,6 +21,11 @@ window.TopContext = {
     api: api + '/api/admin_v1' ,
     // 图片上传 api
     fileApi: api + '/api/admin_v1/upload' ,
+    uploadApi: api + '/api/admin_v1/upload' ,
+    uploadImageApi: api + '/api/admin_v1/upload_image' ,
+    uploadVideoApi: api + '/api/admin_v1/upload_video' ,
+    uploadSubtitleApi: api + '/api/admin_v1/upload_subtitle' ,
+    uploadOfficeApi: api + '/api/admin_v1/upload_office' ,
     code: {
         Success: 200 ,
         AuthFailed: 401 ,

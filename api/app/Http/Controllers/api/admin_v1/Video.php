@@ -114,20 +114,24 @@ class video extends Base
         return success($res['message'] , $res['data']);
     }
 
-    public function destroyImages()
+    public function destroyVideos()
     {
-        $ids = $this->request->input('ids' , '[]');
-        $ids = json_decode($ids , true);
-        $res = VideoAction::destroyImages($this , $ids);
+        $video_src_ids = $this->request->post('video_src_ids' , '[]');
+        $video_src_ids = json_decode($video_src_ids , true);
+        $res = VideoAction::destroyVideos($this , $video_src_ids);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
         return success($res['message'] , $res['data']);
     }
 
-    public function destroyTag($image_subject_id , $tag_id)
+
+    // 重新运行队列
+    public function retry()
     {
-        $res = VideoAction::destroyTag($this , $image_subject_id , $tag_id);
+        $ids = $this->request->post('ids' , []);
+        $ids = json_decode($ids , true);
+        $res = VideoAction::retry($this , $ids);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }

@@ -63,4 +63,17 @@ class VideoModel extends Model
             ->orderBy($order['field'] , $order['value'])
             ->paginate($limit);
     }
+
+    public static function countByDateAndProcessStatus(string $date , int $process_status): int
+    {
+        return self::whereRaw('date_format(create_time , "%Y-%m-%d") = ?' , $date)
+            ->where('process_status' , $process_status)
+            ->count();
+    }
+
+    public static function countByProcessStatus(int $process_status): int
+    {
+        return self::where('process_status' , $process_status)
+            ->count();
+    }
 }

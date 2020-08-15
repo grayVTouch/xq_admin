@@ -19,6 +19,8 @@ import region from '../../api/region.js';
 import video_company from '../../api/video_company.js';
 import pannel from '../../api/pannel.js';
 import disk from '../../api/disk.js';
+import file from '../../api/file.js';
+import video_subtitle from '../../api/video_subtitle.js';
 
 window.Api = {
     login ,
@@ -42,4 +44,6 @@ window.Api = {
     video_company ,
     pannel ,
     disk ,
+    file ,
+    video_subtitle ,
 };

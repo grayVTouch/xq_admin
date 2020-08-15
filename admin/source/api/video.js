@@ -4,6 +4,8 @@ const update = genUrl('video/{id}');
 const show = genUrl('video/{id}');
 const destroy = genUrl('video/{id}');
 const destroyAll = genUrl('destroy_all_video');
+const destroyVideos = genUrl('destroy_videos');
+const retryProcessVideo = genUrl('retry_process_video');
 
 export default {
     index (data , success , error) {
@@ -38,6 +40,18 @@ export default {
         return request(destroyAll , 'delete' , {
             ids: G.jsonEncode(ids)
         } , success , error)
+    } ,
+
+    destroyVideos (videoSrcIds , success , error) {
+        return request(destroyVideos , 'delete' , {
+            video_src_ids: G.jsonEncode(videoSrcIds)
+        } , success , error)
+    } ,
+
+    retryProcessVideo (ids , success , error) {
+        return request(retryProcessVideo , 'post' , {
+            ids: G.jsonEncode(ids) ,
+        } , success , error);
     } ,
 
 

@@ -58,9 +58,17 @@
 
                         <div class="left">
                             <!-- 测试范例：翻译 -->
-                            <div class="translate" title="刷新页面" v-ripple @click="reloadChildPage">
-                                <my-icon icon="reset"></my-icon>
-                            </div>
+                            <Tooltip content="刷新当前标签页">
+                                <div v-ripple @click="reloadChildPage">
+                                    <my-icon icon="reset"></my-icon>
+                                </div>
+                            </Tooltip>
+                            <!-- 测试范例：翻译 -->
+                            <Tooltip content="清空失败队列">
+                                <div v-ripple @click="clearFailedJobs">
+                                    <my-icon icon="delete"></my-icon>
+                                </div>
+                            </Tooltip>
                         </div>
 
                         <div class="right">

@@ -66,4 +66,12 @@ return [
 
     // 队列超时时间
     'queue_timeout' => 365 * 24 * 3600 ,
+
+    // 是否保存原视频
+    'save_origin_video' => true ,
+
+    // 字幕转换的格式
+    'video_subtitle' => [
+        'extension' => 'vtt' ,
+    ] ,
 ];
