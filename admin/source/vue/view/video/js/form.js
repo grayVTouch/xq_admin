@@ -118,10 +118,6 @@ export default {
         title () {
             return this.mode === 'edit' ? '编辑' : '添加';
         } ,
-
-        canUploadVideoSubtitle () {
-            return this.uVideoSubtitles.every((v) => {return v.uploaded});
-        } ,
     } ,
 
     data () {
@@ -268,6 +264,7 @@ export default {
                 delete: false ,
                 error: '' ,
                 uploaded: false ,
+                uploading: false ,
             };
         } ,
 
@@ -588,49 +585,35 @@ export default {
         } ,
 
         videoSubtitleChangeEvent (e , record) {
-            record.file = e.currentTarget.files.length > 0 ? e.currentTarget.files[0] : null;
-            record.uploaded = false;
-        } ,
-
-        // 上传字幕事件
-        uploadVideoSubtitleEvent () {
-            if (this.uVideoSubtitles.length < 1) {
-                this.message('error' , '请添加要上传的字幕文件');
+            const tar   = e.currentTarget;
+            const files = tar.files;
+            if (files.length < 1) {
                 return ;
             }
-            this.pending('uploadVideoSubtitle' , true);
-            this.uploadVideoSubtitle(() => {
-                this.pending('uploadVideoSubtitle' , false);
-            })
+            record.file = files[0];
+            this.uploadVideoSubtitle(record , () => {
+                record.uploading = false;
+            });
         } ,
 
-        uploadVideoSubtitle (callback , index) {
-            const total   = this.uVideoSubtitles.length;
-            let handleCount   = 0;
-            this.uVideoSubtitles.forEach((v) => {
-                if (v.uploaded) {
-                    // 过滤掉那些上传成功的数据
+        uploadVideoSubtitle (videoSubtitle , callback) {
+            if (videoSubtitle.uploaded) {
+                // 过滤掉那些上传成功的数据
+                return ;
+            }
+            videoSubtitle.uploaded = false;
+            videoSubtitle.uploading = true;
+            videoSubtitle.error = '';
+            Api.file.uploadSubtitle(videoSubtitle.file , (msg , data , code) => {
+                if (code !== TopContext.code.Success) {
+                    videoSubtitle.error = msg;
+                    videoSubtitle.uploaded = false;
+                    G.invoke(callback , null , false);
                     return ;
                 }
-                const pending = 'uploadVideoSubtitle_' + v.id;
-                this.pending(pending , true);
-                v.error = '';
-                Api.file.uploadSubtitle(v.file , (msg , data , code) => {
-                    this.pending(pending , false);
-                    if (++handleCount >= total) {
-                        G.invoke(callback);
-                    }
-                    if (code !== TopContext.code.Success) {
-                        debugger
-                        v.error = msg;
-                        // this.message('error' , msg);
-                        v.uploaded = false;
-                        return ;
-                    }
-                    debugger
-                    v.uploaded = true;
-                    v.src = data;
-                });
+                videoSubtitle.uploaded = true;
+                videoSubtitle.src = data;
+                G.invoke(callback , null , true);
             });
         } ,
 

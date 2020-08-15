@@ -296,23 +296,24 @@
                                             <td>
                                                 <div class="subtitles">
                                                     <div class="item" v-for="(v,k) in uVideoSubtitles">
-                                                        <div class="name"><input type="text" :readonly="v.uploaded" placeholder="字幕名称" class="form-text" v-model="v.name"></div>
-                                                        <div class="src"><input type="file" :readonly="v.uploaded" class="form-file" @change="videoSubtitleChangeEvent($event , v)"></div>
-                                                        <div class="flag" v-if="v.uploaded"><my-icon icon="604xinxi_chenggong" class="run-green"></my-icon></div>
+                                                        <div class="name"><input type="text" placeholder="字幕名称" class="form-text" v-model="v.name"></div>
+                                                        <div class="src"><input type="file" class="form-file" @change="videoSubtitleChangeEvent($event , v)"></div>
+
                                                         <div class="actions">
                                                             <my-table-button @click="uVideoSubtitles.splice(k,1)">删除</my-table-button>
-                                                            <my-loading v-if="val.pending['uploadVideoSubtitle_' + v.id]"></my-loading>
                                                         </div>
+                                                        <div class="loading" v-if="v.uploading"><my-loading v-if="v.uploading"></my-loading></div>
+                                                        <div class="flag" v-if="v.uploaded"><my-icon icon="604xinxi_chenggong" class="run-green"></my-icon></div>
                                                         <div class="e-msg run-red">{{ v.error }}</div>
                                                     </div>
                                                 </div>
 
                                                 <div class="action">
                                                     <Button v-ripple @click="addVideoSubtitleEvent">新增</Button>
-                                                    <Button v-ripple :loading="val.pending.uploadVideoSubtitle" :disabled="canUploadVideoSubtitle" @click="uploadVideoSubtitleEvent">上传</Button>
+<!--                                                    <Button v-ripple :loading="val.pending.uploadVideoSubtitle" :disabled="canUploadVideoSubtitle" @click="uploadVideoSubtitleEvent">上传</Button>-->
                                                 </div>
 
-                                                <div class="msg">在提交修改之前，请务必点击上传文件先将字幕文件保存到服务器！</div>
+<!--                                                <div class="msg">在提交修改之前，请务必点击上传文件先将字幕文件保存到服务器！</div>-->
                                             </td>
                                         </tr>
                                         </tbody>

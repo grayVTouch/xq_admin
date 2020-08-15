@@ -63,10 +63,14 @@
                                     <my-icon icon="reset"></my-icon>
                                 </div>
                             </Tooltip>
-                            <!-- 测试范例：翻译 -->
                             <Tooltip content="清空失败队列">
                                 <div v-ripple @click="clearFailedJobs">
-                                    <my-icon icon="delete"></my-icon>
+                                    <my-icon icon="qingkong"></my-icon>
+                                </div>
+                            </Tooltip>
+                            <Tooltip content="重试失败队列">
+                                <div v-ripple @click="retryFailedJobs">
+                                    <my-icon icon="lianjie1"></my-icon>
                                 </div>
                             </Tooltip>
                         </div>

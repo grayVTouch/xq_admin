@@ -7,6 +7,6 @@ export default {
     } ,
 
     flush (success , error) {
-        return request(flush , 'get' , null , success , error);
+        return request(flush , 'post' , null , success , error);
     } ,
 };

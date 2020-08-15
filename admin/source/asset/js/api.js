@@ -21,6 +21,7 @@ import pannel from '../../api/pannel.js';
 import disk from '../../api/disk.js';
 import file from '../../api/file.js';
 import video_subtitle from '../../api/video_subtitle.js';
+import job from '../../api/job.js';
 
 window.Api = {
     login ,
@@ -46,4 +47,5 @@ window.Api = {
     disk ,
     file ,
     video_subtitle ,
+    job ,
 };
