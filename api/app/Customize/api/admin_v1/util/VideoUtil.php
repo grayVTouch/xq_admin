@@ -30,7 +30,7 @@ class VideoUtil
             ResourceUtil::delete($v->src);
         }
         // 删除相关字幕文件
-        foreach ($res->subtitles as $v)
+        foreach ($res->video_subtitles as $v)
         {
             ResourceUtil::delete($v->src);
         }
