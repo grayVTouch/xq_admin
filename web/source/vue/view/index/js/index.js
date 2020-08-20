@@ -408,7 +408,7 @@ export default {
             });
             this.group[group].action.translateX = 0;
             this.group[group].action.scrollWidth = width;
-            this.group[group].action.clientWidth = parseInt(list.width());
+            this.group[group].action.clientWidth = parseInt(list.width('content-box'));
             this.group[group].action.maxTranslateX = 0;
             this.group[group].action.minTranslateX = -(Math.ceil(this.group[group].action.scrollWidth / this.group[group].action.clientWidth) - 1) * this.group[group].action.clientWidth;
         } ,
