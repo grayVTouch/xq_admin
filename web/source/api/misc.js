@@ -18,4 +18,8 @@ export default {
             email ,
         } , success , error);
     } ,
+
+    defaultModule () {
+
+    } ,
 };

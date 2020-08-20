@@ -17,9 +17,10 @@
     --box-background-color-hover: #585858;
     --card-box-background-color: #383838;
     --card-box-background-color-hover: #424242;
-    --image-subject-index-background: url(http://api.xq.test/upload/20200716/SuiqSdbWqJl6kK3TnNUbr8un86BxJxYVoVZKKZgV.png);
-    --background:  url(http://api.xq.test/upload/20200712/ixdTRcttkZq0JaUt5WYowOWuW0Q9ShfpEKXjakSF.jpeg);
-    --image-subject-index-ico-background:  url(http://api.xq.test/upload/20200717/426h1DUu19DyimtQ16HR1laaND8k5F0K2RBfz2nI.jpeg);
+    --line-background: url(../res/line.png);
+    --background:  url(../res/background.jpg);
+    --image-subject-index-ico-background:  url(../res/blur.jpg);
     --font-color: #ccc;
     --font-color-white: #fff;
+
 }

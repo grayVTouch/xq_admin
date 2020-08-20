@@ -9,19 +9,20 @@
                 <nav class="nav nav-top">
                     <div class="inner">
                         <div class="c-inner">
-                            <a class="logo" :href="genUrl('/welcome')">
+                            <a class="logo" :href="genUrl('/')">
                                 <div class="__logo__"><img :src="$store.state.context.res.logo" class="image"></div>
-                                <div class="site"><a class="link">兴趣部落</a></div>
+                                <div class="site"><a class="link">{{ $store.state.context.os.name }}</a></div>
+<!--                                <div class="module"><a class="link" v-ripple :href="genUrl('/welcome')">{{ module().name }}</a></div>-->
                             </a>
 
                             <div class="search search-in-logged">
                                 <div class="inner">
                                     <div class="ico"><i class="run-iconfont run-iconfont-search"></i></div>
                                     <div class="input"><input type="text" placeholder="搜索" class="form-input" ref="search" @focus="searchEvent"></div>
-                                    <div class="type" :class="{show: val.navTypeList}">
-                                        <div class="current" @click.stop="showNavTypeList">{{ val.mime.value }}<i class="iconfont run-iconfont run-iconfont-arrow"></i></div>
+                                    <div class="type" :class="{show: val.navTypeList}"  @mouseenter="showNavTypeList" @mouseleave="hideNavTypeList">
+                                        <div class="current">{{ val.mime.value }}<i class="iconfont run-iconfont run-iconfont-arrow"></i></div>
                                         <ul class="list hide" ref="nav-type-list" @click.stop>
-                                            <li v-for="(v,k) in $store.state.context.business.relationType" :key="v" :ref="'mime-item-' + k" :data-mime="k" @click="switchSearchType(k,v)">{{ v }}</li>
+                                            <li v-for="(v,k) in mimeRange" :key="v" :ref="'mime-item-' + k" :data-mime="k" @click="switchSearchType(k,v)">{{ v }}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -171,7 +172,15 @@
                         <div class="item left menu" ref="nav-menu">
                             <my-nav-menu :data="nav"></my-nav-menu>
                         </div>
-                        <div class="item right action"></div>
+                        <div class="item right actions">
+                            <div class="module"><a class="link" v-ripple :href="genUrl('/welcome')" title="点击选择模块">{{ module().name }}</a></div>
+                            <div class="module-switch" @mouseenter="showListForModuleSwitch" @mouseleave="hideListForModuleSwitch">
+                                <div class="action"><my-icon icon="mokuai"></my-icon></div>
+                                <div class="list hide" ref="list-for-module-switch">
+                                    <div class="item" v-for="v in modules" :key="v.id" @click="switchModule(v)">{{ v.name }}</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </nav>
             </div>

@@ -17,7 +17,7 @@ const praiseHandle = `${TopContext.api}/user/praise_handle`;
 const collectionHandle = `${TopContext.api}/user/collection_handle`;
 const record = `${TopContext.api}/user/record`;
 const lessCollectionGroupWithCollection = `${TopContext.api}/less_collection_group_with_collection`;
-const update = `${TopContext.api}/user/update`;
+const update = `${TopContext.api}/update_user`;
 const updatePasswordInLogged = `${TopContext.api}/user/update_password_in_logged`;
 const destroyHistory = `${TopContext.api}/user/destroy_history`;
 const destroyCollection = `${TopContext.api}/user/destroy_collection`;
@@ -26,7 +26,7 @@ const focusHandle = `${TopContext.api}/user/focus_handle`;
 const show = `${TopContext.api}/user/{user_id}/show`;
 const myFocusUser = `${TopContext.api}/user/{user_id}/my_focus_user`;
 const focusMeUser = `${TopContext.api}/user/{user_id}/focus_me_user`;
-const localUpdate = `${TopContext.api}/user/{user_id}/update`;
+const localUpdate = `${TopContext.api}/update_user`;
 const collectionGroupInfo = `${TopContext.api}/user/{collection_group_id}/collection_group_info`;
 
 export default {
@@ -96,7 +96,7 @@ export default {
         return request(lessCollectionGroupWithCollection, 'get', data, success, error);
     },
 
-    update(data, success, error) {
+    update (data, success, error) {
         return request(update, 'put', data, success, error);
     },
 
@@ -150,8 +150,8 @@ export default {
         return request(collectionGroupByUserId.replace('{user_id}' , userId), 'get', data, success, error);
     } ,
 
-    localUpdate (userId , data , success, error) {
-        return request(localUpdate.replace('{user_id}' , userId), 'patch', data, success, error);
+    localUpdate (data , success, error) {
+        return request(localUpdate , 'patch', data, success, error);
     } ,
 
 

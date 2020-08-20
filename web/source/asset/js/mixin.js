@@ -23,7 +23,7 @@ Vue.mixin({
     methods: {
 
         isValid (val) {
-            return G.isValid(val);
+            return G.isValid(val) && val !== '';
         } ,
 
         push (location , onComplete , onAbort) {
@@ -46,8 +46,8 @@ Vue.mixin({
             return this.$store.state[key];
         } ,
 
-        message (msg , option = {}) {
-            return Prompt.alert(msg , {
+        message (action , msg , option = {}) {
+            return Prompt[action](msg , {
                 closeBtn: true ,
                 ...option
             });
@@ -81,7 +81,7 @@ Vue.mixin({
 
         errorHandle (msg , data , code , callback) {
             if (code === TopContext.code.AuthFailed) {
-                this.message('您尚未登录，请登录后操作？' , {
+                this.message('error' , '您尚未登录，请登录后操作？' , {
                     // closeBtn: false ,
                     action: [
                         {
@@ -102,11 +102,11 @@ Vue.mixin({
                 return ;
             }
             if (code !== TopContext.code.FormValidateFail) {
-                this.message(msg);
+                this.message('error' , msg);
                 return ;
             }
             if (!G.isArray(data)) {
-                this.message(msg);
+                this.message('error' , msg);
                 return ;
             }
             this.message('表单发生错误，请检查');
@@ -126,7 +126,7 @@ Vue.mixin({
         } ,
 
         successHandle (callback) {
-            return this.message('操作成功' , {
+            return this.message('success' , '操作成功' , {
 
                 // 点击确认按钮回调
                 confirm () {
@@ -167,5 +167,31 @@ Vue.mixin({
         reload () {
             window.history.go(0);
         } ,
+
+
+        imageApi (resize = false) {
+            return TopContext.uploadImageApi  + (resize ? '?w=' + TopContext.val.imageW : '');
+        } ,
+
+        thumbApi () {
+            return TopContext.uploadImageApi + '?w=' + TopContext.val.thumbW;
+        } ,
+
+        videoApi () {
+            return TopContext.uploadVideoApi;
+        } ,
+
+        subtitleApi () {
+            return TopContext.uploadSubtitleApi;
+        } ,
+
+        officeApi () {
+            return TopContext.uploadOfficeApi;
+        } ,
+
+        module () {
+            return G.s.json('module');
+        } ,
+
     } ,
 });

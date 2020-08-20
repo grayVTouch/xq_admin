@@ -4,8 +4,7 @@
 namespace App\Http\Controllers\api\web_v1;
 
 
-use App\Customize\api\web_v1\action\ImageSubjectAction;
-use App\Customize\api\web_v1\action\UserAction;
+use App\Customize\api\web_v1\action\VideoSubjectAction;
 use function api\web_v1\error;
 use function api\web_v1\success;
 
@@ -15,8 +14,8 @@ class VideoSubject extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
-        $res = ImageSubjectAction::newest($this , $param);
+        $param['limit']     = $param['limit'] ?? '';
+        $res = VideoSubjectAction::newest($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
@@ -27,8 +26,8 @@ class VideoSubject extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
-        $res = ImageSubjectAction::hot($this , $param);
+        $param['limit']     = $param['limit'] ?? '';
+        $res = VideoSubjectAction::hot($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
@@ -39,8 +38,8 @@ class VideoSubject extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
-        $res = ImageSubjectAction::hotWithPager($this , $param);
+        $param['limit']     = $param['limit'] ?? '';
+        $res = VideoSubjectAction::hotWithPager($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
@@ -51,8 +50,9 @@ class VideoSubject extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
-        $res = ImageSubjectAction::newestWithPager($this , $param);
+        $param['type']      = $param['type'] ?? '';
+        $param['limit']     = $param['limit'] ?? '';
+        $res = VideoSubjectAction::newestWithPager($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
@@ -63,9 +63,12 @@ class VideoSubject extends Base
     public function getByTagId($tag_id)
     {
         $param = $this->request->query();
+
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
-        $res = ImageSubjectAction::getByTagId($this , $tag_id , $param);
+        $param['type']      = $param['type'] ?? '';
+        $param['limit']     = $param['limit'] ?? '';
+
+        $res = VideoSubjectAction::getByTagId($this , $tag_id , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
@@ -76,11 +79,13 @@ class VideoSubject extends Base
     public function getWithPagerByTagIds()
     {
         $param = $this->request->query();
+
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['tag_ids'] = $param['tag_ids'] ?? '';
-        $param['mode'] = $param['mode'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
-        $res = ImageSubjectAction::getWithPagerByTagIds($this , $param);
+        $param['tag_ids']   = $param['tag_ids'] ?? '';
+        $param['mode']      = $param['mode'] ?? '';
+        $param['limit']     = $param['limit'] ?? '';
+
+        $res = VideoSubjectAction::getWithPagerByTagIds($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
@@ -91,12 +96,16 @@ class VideoSubject extends Base
     public function hotTags()
     {
         $param = $this->request->query();
+
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
-        $res = ImageSubjectAction::hotTags($this , $param);
+        $param['type']      = $param['type'] ?? '';
+        $param['limit']     = $param['limit'] ?? '';
+
+        $res = VideoSubjectAction::hotTags($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }
+
         return success($res['message'] , $res['data']);
     }
 
@@ -106,7 +115,7 @@ class VideoSubject extends Base
         $param['module_id'] = $param['module_id'] ?? '';
         $param['limit'] = $param['limit'] ?? '';
         $param['value'] = $param['value'] ?? '';
-        $res = ImageSubjectAction::hotTagsWithPager($this , $param);
+        $res = VideoSubjectAction::hotTagsWithPager($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }
@@ -117,7 +126,7 @@ class VideoSubject extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $res = ImageSubjectAction::show($this , $id , $param);
+        $res = VideoSubjectAction::show($this , $id , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }
@@ -129,7 +138,7 @@ class VideoSubject extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $res = ImageSubjectAction::category($this , $param);
+        $res = VideoSubjectAction::category($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }
@@ -142,7 +151,7 @@ class VideoSubject extends Base
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
         $param['value'] = $param['value'] ?? '';
-        $res = ImageSubjectAction::subject($this , $param);
+        $res = VideoSubjectAction::subject($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }
@@ -160,7 +169,7 @@ class VideoSubject extends Base
         $param['order'] = $param['order'] ?? '';
         $param['value'] = $param['value'] ?? '';
         $param['mode'] = $param['mode'] ?? '';
-        $res = ImageSubjectAction::index($this , $param);
+        $res = VideoSubjectAction::index($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }
@@ -169,7 +178,7 @@ class VideoSubject extends Base
 
     public function incrementViewCount(int $image_subject_id)
     {
-        $res = ImageSubjectAction::incrementViewCount($this , $image_subject_id);
+        $res = VideoSubjectAction::incrementViewCount($this , $image_subject_id);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }
@@ -179,8 +188,11 @@ class VideoSubject extends Base
     public function recommend(int $image_subject_id)
     {
         $param = $this->request->query();
+
+        $param['type']  = $param['type'] ?? '';
         $param['limit'] = $param['limit'] ?? '';
-        $res = ImageSubjectAction::recommend($this , $image_subject_id , $param);
+
+        $res = VideoSubjectAction::recommend($this , $image_subject_id , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }

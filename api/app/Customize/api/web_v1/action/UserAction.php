@@ -565,7 +565,7 @@ class UserAction extends Action
         if (empty($relation)) {
             return self::error('关联事物不存在' , '' , 404);
         }
-        if ($module->id !== $relation->id) {
+        if ($module->id !== $relation->module_id) {
             return self::error('禁止记录不同模块的内容' , '' , 403);
         }
         $user = user();
@@ -611,7 +611,7 @@ class UserAction extends Action
         if (empty($relation)) {
             return self::error('关联的事物不存在' , '' , 404);
         }
-        if ($module->id !== $relation->id) {
+        if ($module->id !== $relation->module_id) {
             return self::error('禁止记录不同模块的内容' , '' , 403);
         }
         $user = user();
@@ -700,7 +700,7 @@ class UserAction extends Action
         if (empty($relation)) {
             return self::error('关联的事物不存在' , '' , 404);
         }
-        if ($module->id !== $relation->id) {
+        if ($module->id !== $relation->module_id) {
             return self::error('禁止记录不同模块的内容' , '' , 403);
         }
         $user = user();

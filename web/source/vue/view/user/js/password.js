@@ -34,7 +34,7 @@ export default {
                     this.errorHandleAtUserChildren(msg , data , code);
                     return ;
                 }
-                this.message('操作成功');
+                this.message('success' , '操作成功');
             });
         } ,
     } ,

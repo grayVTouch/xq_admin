@@ -142,8 +142,8 @@ Vue.mixin({
             return TopContext.uploadImageApi  + (resize ? '?w=' + TopContext.val.imageW : '');
         } ,
 
-        thumbApi () {
-            return TopContext.uploadImageApi + '?w=' + TopContext.val.thumbW;
+        thumbApi (resize = true) {
+            return TopContext.uploadImageApi + (resize ? '?w=' + TopContext.val.thumbW : '');
         } ,
 
         videoApi () {

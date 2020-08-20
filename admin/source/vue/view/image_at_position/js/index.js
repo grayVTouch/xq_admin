@@ -137,7 +137,9 @@ export default {
         } ,
 
         getPositions () {
+            this.pending('getPositions' , true);
             Api.position.all((msg , data , code) => {
+                this.pending('getPositions' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     return ;
@@ -149,13 +151,13 @@ export default {
         getModules () {
             this.pending('getModules' , true);
             Api.module.all((msg , data , code) => {
+                this.pending('getModules' , false);
                 if (code !== TopContext.code.Success) {
                     this.error('error' , data);
                     return ;
                 }
                 this.modules = data;
             });
-            this.pending('getModules' , false);
         } ,
 
 

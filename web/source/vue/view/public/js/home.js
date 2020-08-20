@@ -67,100 +67,105 @@ export default {
     data () {
         return {
             val: {
-                fixed: false ,
-                navTypeList: false ,
+                fixed: false,
+                navTypeList: false,
                 mime: {
-                    key: 'image' ,
-                    value: '图片' ,
-                } ,
-                toTop: false ,
+                    key: 'image_subject',
+                    value: '图片专题',
+                },
+                toTop: false,
 
                 // 用户登录、注册表单相关字段
-                loginError: {...loginError} ,
-                registerError: {...registerError} ,
-                forgetError: {...forgetError} ,
-                loginMessage: {...loginMessage} ,
-                registerMessage: {...registerMessage} ,
-                forgetMessage: {...forgetMessage} ,
+                loginError: {...loginError},
+                registerError: {...registerError},
+                forgetError: {...forgetError},
+                loginMessage: {...loginMessage},
+                registerMessage: {...registerMessage},
+                forgetMessage: {...forgetMessage},
 
-                showPasswordForLogin: false ,
+                showPasswordForLogin: false,
 
-                showPasswordForRegister: false ,
-                showConfirmPasswordForRegister: false ,
+                showPasswordForRegister: false,
+                showConfirmPasswordForRegister: false,
 
-                showPasswordForForget: false ,
-                showConfirmPasswordForForget: false ,
+                showPasswordForForget: false,
+                showConfirmPasswordForForget: false,
 
                 pending: {
-                    userLogin: false ,
-                    userRegister: false ,
-                    updateUserPassword: false ,
-                    sendEmailCodeForPassword: false ,
-                    sendEmailCodeForRegister: false ,
-                } ,
+                    userLogin: false,
+                    userRegister: false,
+                    updateUserPassword: false,
+                    sendEmailCodeForPassword: false,
+                    sendEmailCodeForRegister: false,
+                },
                 focus: {
-                    usernameForLogin: false ,
-                    passwordForLogin: false ,
+                    usernameForLogin: false,
+                    passwordForLogin: false,
 
-                    emailForRegister: false ,
-                    passwordForRegister: false ,
-                    confirmPasswordForRegister: false ,
-                    captchaCodeForRegister: false ,
-                    emailCodeForRegister: false ,
+                    emailForRegister: false,
+                    passwordForRegister: false,
+                    confirmPasswordForRegister: false,
+                    captchaCodeForRegister: false,
+                    emailCodeForRegister: false,
 
-                    emailForForget: false ,
-                    passwordForForget: false ,
-                    confirmPasswordForForget: false ,
-                    emailCodeForForget: false ,
-                } ,
-                captchaForRegister: {} ,
+                    emailForForget: false,
+                    passwordForForget: false,
+                    confirmPasswordForForget: false,
+                    emailCodeForForget: false,
+                },
+                captchaForRegister: {},
                 /**
                  * login
                  * forget
                  * register
                  */
-                userFormType: 'login' ,
+                userFormType: 'login',
                 // 相关步骤
                 step: {
                     // 1. email - 发送电子邮箱
                     // 2. password - 修改密码
-                    password: 'email' ,
-                } ,
+                    password: 'email',
+                },
                 timer: {
-                    password: 0 ,
-                    register: 0 ,
-                } ,
-            } ,
-            dom: {} ,
-            ins: {} ,
+                    password: 0,
+                    register: 0,
+                },
+            },
+            dom: {},
+            ins: {},
             search: {
                 /**
                  * image
                  * video
                  * article
                  */
-                mime: 'image' ,
-            } ,
+                mime: 'image',
+            },
             mimeRange: {
-                image: '图片' ,
-                // video: '视频' ,
+                image_subject: '图片专题',
+                video_subject: '视频专题',
+                video: '视频',
+                image: '图片',
                 // article: '资讯' ,
                 // bbs: '论坛' ,
-            } ,
-            nav: [] ,
-            keepalive: true ,
-            count: 0 ,
-            loginForm: {...loginForm} ,
-            registerForm: {...registerForm} ,
-            forgetForm: {...forgetForm} ,
-            histories:[] ,
-            favorites:{
-                total_collection_group: 0 ,
-                collectionGroups: [] ,
-                collection_group: {...collectionGroup} ,
-            } ,
+            },
+            nav: [],
+            keepalive: true,
+            count: 0,
+            loginForm: {...loginForm},
+            registerForm: {...registerForm},
+            forgetForm: {...forgetForm},
+            histories: [],
+            favorites: {
+                total_collection_group: 0,
+                collectionGroups: [],
+                collection_group: {...collectionGroup},
+            },
             // 用户回调
-            userFormCallback: {...userFormCallback} ,
+            userFormCallback: {...userFormCallback},
+
+            // 模块列表
+            modules: [],
         };
     } ,
 
@@ -191,10 +196,13 @@ export default {
 
     mounted () {
         this.initDom();
-        this.initNavData();
         this.initEvent();
         this.initStyle();
         this.initToTop();
+
+        // 数据获取
+        this.getNavs();
+        this.getModules();
 
         if (G.s.exists('token')) {
             // 用户如果已经登录，则获取用户信息
@@ -207,6 +215,24 @@ export default {
     } ,
 
     methods: {
+
+        getModules () {
+            this.pending('getModules' , true);
+            Api.module.all((msg , data , code) => {
+                this.pending('getModules' , false);
+                if (code !== TopContext.code.Success) {
+                    this.errorHandle(msg , data , code);
+                    return ;
+                }
+                this.modules = data;
+            });
+        } ,
+
+        switchModule (module) {
+            this.hideListForModuleSwitch();
+            G.s.json('module' , module);
+            window.history.go(0);
+        } ,
 
         // 获取历史记录
         getHistories () {
@@ -361,7 +387,7 @@ export default {
 
         hideUserForm () {
             if (this.pending('userLogin') || this.pending('userRegister') || this.pending('updateUserPassword')) {
-                this.message('服务正在处理...请耐心等待');
+                this.message('info' , '服务正在处理...请耐心等待');
                 return ;
             }
             this.dom.userForm.endTransition('show' , () => {
@@ -448,7 +474,7 @@ export default {
 
         userLogin () {
             if (this.pending('userLogin')) {
-                this.message('请求中...请耐心等待');
+                this.message('info' , '请求中...请耐心等待');
                 return ;
             }
             this.pending('userLogin' , true);
@@ -458,7 +484,7 @@ export default {
                 if (code !== TopContext.code.Success) {
                     this.pending('userLogin' , false);
                     if (code !== TopContext.code.FormValidateFail) {
-                        this.message(msg);
+                        this.message('error' , msg);
                     } else {
                         this.val.loginError = {...data};
                     }
@@ -500,7 +526,7 @@ export default {
                     if (code === TopContext.code.AuthFailed) {
                         return ;
                     }
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 G.s.json('user' , data);
@@ -511,7 +537,7 @@ export default {
 
         userRegister () {
             if (this.pending('userRegister')) {
-                this.message('请求中...请耐心等待');
+                this.message('info' , '请求中...请耐心等待');
                 return ;
             }
             this.pending('userRegister' , true);
@@ -522,7 +548,7 @@ export default {
                     this.pending('userRegister' , false);
                     this.captchaForRegister();
                     if (G.isString(data)) {
-                        this.message(msg);
+                        this.message('error' , msg);
                         return ;
                     }
                     this.val.registerError = {...data};
@@ -555,7 +581,7 @@ export default {
                 this.pending('sendEmailCodeForPassword' , false);
                 if (code !== TopContext.code.Success) {
                     if (code !== TopContext.code.FormValidateFail) {
-                        this.message(msg);
+                        this.message('error' , msg);
                         return ;
                     }
                     this.val.forgetError = {...data};
@@ -583,7 +609,7 @@ export default {
                 this.pending('sendEmailCodeForRegister' , false);
                 if (code !== TopContext.code.Success) {
                     if (code !== TopContext.code.FormValidateFail) {
-                        this.message(msg);
+                        this.message('error' , msg);
                         return ;
                     }
                     this.val.registerError = {...data};
@@ -602,7 +628,7 @@ export default {
 
         updateUserPassword () {
             if (this.pending('updateUserPassword')) {
-                this.message('请求中...请耐心等待');
+                this.message('info' , '请求中...请耐心等待');
                 return ;
             }
             this.pending('updateUserPassword' , true);
@@ -612,7 +638,7 @@ export default {
                 if (code !== TopContext.code.Success) {
                     this.pending('updateUserPassword' , false);
                     if (G.isString(data)) {
-                        this.message(msg);
+                        this.message('error' , msg);
                         return ;
                     }
                     this.val.forgetError = {...data};
@@ -640,7 +666,7 @@ export default {
         searchEvent () {
             switch (this.val.mime.key)
             {
-                case 'image':
+                case 'image_subject':
                     this.push('/image_subject/search');
                     break;
             }
@@ -732,6 +758,7 @@ export default {
             this.dom.body = G(this.$refs.body);
             this.dom.toTop = G(this.$refs['to-top']);
             this.dom.userForm = G(this.$refs.userForm);
+            this.dom.listForModuleSwitch = G(this.$refs['list-for-module-switch']);
 
             // debugger
         } ,
@@ -766,10 +793,10 @@ export default {
             this.hideNavTypeList();
         } ,
 
-        initNavData () {
+        getNavs () {
             Api.home.nav((msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 const nav = G.tree.childrens(0 , data , null , false , true);
@@ -791,17 +818,18 @@ export default {
         } ,
 
         showNavTypeList () {
-            this._val('navTypeList' , true);
+            window.clearTimeout(this.val.navTypeListTimer);
             this.dom.navTypeList.removeClass('hide');
-            // 显示
             this.dom.navTypeList.startTransition('show');
         } ,
 
         hideNavTypeList () {
-            this._val('navTypeList' , false);
-            this.dom.navTypeList.endTransition('show' , () => {
-                this.dom.navTypeList.addClass('hide');
-            });
+            this.dom.navTypeList.removeClass('show');
+            this.dom.navTypeList.addClass('hide');
+            // this.dom.navTypeList.endTransition('show');
+            // this.val.navTypeListTimer = window.setTimeout(() => {
+            //     this.dom.navTypeList.addClass('hide');
+            // } , 300);
         } ,
 
         // 标题栏置顶
@@ -827,7 +855,7 @@ export default {
         } ,
 
         initEvent () {
-            this.dom.win.on('click' , this.hideNavTypeList.bind(this));
+            // this.dom.win.on('click' , this.hideNavTypeList.bind(this));
 
             this.dom.win.on('click' , this.hideHistoryCtrl.bind(this));
             this.dom.win.on('click' , this.hideUserCtrl.bind(this));
@@ -837,6 +865,16 @@ export default {
             this.dom.win.on('scroll' , this.fixedHeader.bind(this));
             this.dom.toTop.on('click' , this.toTopEvent.bind(this));
             this.dom.win.on('scroll' , this.initToTop.bind(this));
+        } ,
+
+        showListForModuleSwitch () {
+            this.dom.listForModuleSwitch.removeClass('hide');
+            this.dom.listForModuleSwitch.startTransition('show');
+        } ,
+
+        hideListForModuleSwitch () {
+            this.dom.listForModuleSwitch.addClass('hide');
+            this.dom.listForModuleSwitch.removeClass('show');
         } ,
     } ,
 }

@@ -5,6 +5,7 @@ const update = genUrl('nav/{id}');
 const show = genUrl('nav/{id}');
 const destroy = genUrl('nav/{id}');
 const destroyAll = genUrl('destroy_all_nav');
+const getByModuleId = genUrl('nav/{module_id}/get_by_module_id');
 
 export default {
     index (success , error) {
@@ -39,6 +40,10 @@ export default {
         return request(destroyAll , 'delete' , {
             ids: G.jsonEncode(idList)
         } , success , error)
+    } ,
+
+    getByModuleId (moduleId , success , error) {
+        return request(getByModuleId.replace('{module_id}' , moduleId) , 'get' , null , success , error);
     } ,
 
 };

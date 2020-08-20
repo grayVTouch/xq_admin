@@ -349,7 +349,7 @@ export default {
                     // 切换标签对应内容
                     this.switchTabItemByTabId(tab.tabId);
                     // 重新渲染标签对应内容
-                    this.reRender(tab.tabId , route , param);
+                    // this.reRender(tab.tabId , route , param);
                     return ;
                 }
             }

@@ -34,11 +34,13 @@ export default {
             recommend: {
                 limit: 5 ,
                 data: [] ,
+                type: 'pro' ,
             } ,
 
             newest: {
                 limit: 5 ,
                 data: [] ,
+                type: 'pro' ,
             } ,
         };
     } ,
@@ -170,7 +172,7 @@ export default {
             Api.image_subject.show(this.id , (msg , data , code) => {
                 if (code !== TopContext.code.Success) {
                     this.pending('getData' , false);
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.handleImageSubject(data);
@@ -258,11 +260,12 @@ export default {
         getNewestData (){
             this.pending('getNewestData' , true);
             Api.image_subject.newest({
-                limit: this.newest.limit
+                limit: this.newest.limit ,
+                type: this.newest.type ,
             } ,  (msg , data , code) => {
                 this.pending('getNewestData' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.newest.data = data;
@@ -273,11 +276,12 @@ export default {
         getRecommendData (){
             this.pending('getRecommendData' , true);
             Api.image_subject.recommend(this.id , {
-                limit: this.recommend.limit
+                limit: this.recommend.limit ,
+                type: this.recommend.type ,
             } ,  (msg , data , code) => {
                 this.pending('getRecommendData' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.recommend.data = data;

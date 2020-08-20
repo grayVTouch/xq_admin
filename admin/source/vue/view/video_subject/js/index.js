@@ -68,6 +68,12 @@ export default {
                         align: TopContext.table.alignCenter,
                     },
                     {
+                        title: '所属分类' ,
+                        slot: 'category_id' ,
+                        minWidth: TopContext.table.name ,
+                        align: TopContext.table.alignCenter ,
+                    } ,
+                    {
                         title: '视频系列' ,
                         slot: 'video_series_id' ,
                         minWidth: TopContext.table.name ,

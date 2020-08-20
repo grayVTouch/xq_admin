@@ -138,6 +138,7 @@
                                 <td>模块</td>
                                 <td>
                                     <my-select :data="modules" v-model="form.module_id"></my-select>
+                                    <my-loading v-if="val.pending.getModules"></my-loading>
                                     <span class="need">*</span>
                                     <div class="msg"></div>
                                     <div class="e-msg">{{ val.error.module_id }}</div>
@@ -148,9 +149,10 @@
                                 <td>位置</td>
                                 <td>
                                     <select v-model="form.position_id" class="form-select">
-                                        <option :value="0">请选择...</option>
+                                        <option value="">请选择...</option>
                                         <option v-for="v in positions" :value="v.id" :key="v.id">{{ v.name + `【${v.platform}】` }}</option>
                                     </select>
+                                    <my-loading v-if="val.pending.getPositions"></my-loading>
                                     <span class="need">*</span>
                                     <div class="msg"></div>
                                     <div class="e-msg">{{ val.error.position_id }}</div>

@@ -33,6 +33,17 @@
                         </td>
                     </tr>
 
+                    <tr :class="{error: val.error.category_id}">
+                        <td>所属分类：</td>
+                        <td>
+                            <my-deep-select :data="categories" v-model="form.category_id" @on-change="val.error.category_id = ''" :has="false"></my-deep-select>
+                            <my-loading v-if="val.pending.getCategories"></my-loading>
+                            <span class="need">*</span>
+                            <div class="msg">请务必在选择模块后操作</div>
+                            <div class="e-msg">{{ val.error.category_id }}</div>
+                        </td>
+                    </tr>
+
 
                     <tr :class="{error: val.error.video_series_id}">
                         <td>视频系列：</td>
@@ -166,15 +177,15 @@
                         </td>
                     </tr>
 
-                    <tr :class="{error: val.error.play_count}">
-                        <td>播放数</td>
-                        <td>
-                            <input type="number" v-model="form.play_count" @input="val.error.play_count = ''" class="form-text">
-                            <span class="msg">仅允许整数</span>
-                            <span class="need"></span>
-                            <span class="e-msg"></span>
-                        </td>
-                    </tr>
+<!--                    <tr :class="{error: val.error.play_count}">-->
+<!--                        <td>播放数</td>-->
+<!--                        <td>-->
+<!--                            <input type="number" v-model="form.play_count" @input="val.error.play_count = ''" class="form-text">-->
+<!--                            <span class="msg">仅允许整数</span>-->
+<!--                            <span class="need"></span>-->
+<!--                            <span class="e-msg"></span>-->
+<!--                        </td>-->
+<!--                    </tr>-->
 
                     <tr :class="{error: val.error.score}">
                         <td>评分</td>

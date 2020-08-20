@@ -60,7 +60,7 @@
         methods: {
             toPage (page) {
                 if (!G.isValid(page)) {
-                    this.message('请提供有效的页数');
+                    this.message('error' , '请提供有效的页数');
                     return ;
                 }
                 page = parseInt(page);

@@ -5,11 +5,10 @@
         <div class="focus-bar">
             
             <div class="background">
-
-                <div class="mask"></div>
+                <!-- 背景轮播图 -->
                 <div class="bg-image" :style="'background-image: url(\'' + background.image + '\')'"></div>
-
-
+                <!-- 背景轮播图遮罩层 -->
+                <div class="mask"></div>
             </div>
 
             <div class="content">
@@ -17,7 +16,7 @@
 
                     <div class="pic-play-transform">
                         <div class="images">
-                            <a class="link" v-for="v in homeSlideshow" :key="v.id" :href='v.link'><img :src="v.__path__" alt="" v-judge-img-size class="image judge-img-size"></a>
+                            <a class="link" v-for="v in homeSlideshow" :key="v.id" :href='v.link'><img :src="v.__path__" class="image" alt=""></a>
                         </div>
                         <div class="index"></div>
                         <div class="action prev"><i class="run-iconfont run-iconfont-prev01"></i></div>
@@ -28,7 +27,6 @@
 
                 <div class="box">
                     <div class="inner">
-
                         <a class="item" v-for="(v,k) in hotImages" :key="v.id" v-if="k < 6" target="_blank" :href="`#/image_subject/${v.id}/show`">
                             <img :src="v.thumb ? v.__thumb__ : $store.state.context.res.notFound" alt="" v-judge-img-size class="image judge-img-size">
                             <div class="info">
@@ -36,7 +34,6 @@
                                 <p class="desc">{{ v.description }}</p>
                             </div>
                         </a>
-
                     </div>
                 </div>
             </div>
@@ -47,28 +44,28 @@
         <div class="content-group">
 
             <!-- 图片 -->
-            <div class="group group-for-image">
+            <div class="group group-for-imageSubject">
                 <!-- 导航 -->
                 <div class="run-action-title">
-                    <div class="left">图片</div>
+                    <div class="left">图片专题</div>
                     <div class="right">
                         <div class="tags">
-                            <my-button class="tag" :class="{cur: group.image.curTag === 'newest'}" @click="newestInImageSubject">最新</my-button>
-                            <my-button class="tag" :class="{cur: group.image.curTag === 'hot'}" @click="getHotImageSubject">热门</my-button>
-                            <my-button class="tag" v-for="v in group.image.tag" :key="v.id" :class="{cur: group.image.curTag === 'tag_' + v.tag_id}" @click="getImageByTagId(v.tag_id)">{{ v.name }}</my-button>
-                            <my-link class="tag" href="#/image_subject/index">更多</my-link>
+                            <my-button class="tag" :class="{cur: group.imageSubject.curTag === 'newest'}" @click="newestInImageSubject">最新</my-button>
+                            <my-button class="tag" :class="{cur: group.imageSubject.curTag === 'hot'}" @click="getHotImageSubject">热门</my-button>
+                            <my-button class="tag" v-for="v in group.imageSubject.tag.data" :key="v.id" :class="{cur: group.imageSubject.curTag === 'tag_' + v.tag_id}" @click="getImageByTagId(v.tag_id)">{{ v.name }}</my-button>
+                            <my-link class="tag" :href="genUrl('/image_subject')">更多</my-link>
                         </div>
                         <div class="operation">
-                            <my-button class="prev" :class="{disabled: group.image.action.translateX === group.image.action.maxTranslateX}" @click="prevByGroup('image')"><my-icon icon="prev01" /></my-button>
-                            <my-button class="next" :class="{disabled: group.image.action.translateX === group.image.action.minTranslateX}" @click="nextByGroup('image')"><my-icon icon="next01" /></my-button>
+                            <my-button class="prev" :class="{disabled: group.imageSubject.action.translateX === group.imageSubject.action.maxTranslateX}" @click="prevByGroup('imageSubject')"><my-icon icon="prev01" /></my-button>
+                            <my-button class="next" :class="{disabled: group.imageSubject.action.translateX === group.imageSubject.action.minTranslateX}" @click="nextByGroup('imageSubject')"><my-icon icon="next01" /></my-button>
                         </div>
                     </div>
                 </div>
 
-                <div class="list" ref="list-for-image">
-                    <div class="loading" v-if="val.pending.images"><my-loading width="50" height="50"></my-loading></div>
-                    <div class="inner" ref="inner-for-image">
-                        <div class="item card-box" v-for="v in images" :key="v.id">
+                <div class="list" ref="list-for-imageSubject">
+                    <div class="loading" v-if="val.pending.image_subject"><my-loading width="50" height="50"></my-loading></div>
+                    <div class="inner" ref="inner-for-imageSubject">
+                        <div class="item card-box" v-for="v in imageSubjects.data" :key="v.id">
                             <!-- 封面 -->
                             <div class="thumb">
                                 <a class="link" target="_blank" :href="`#/image_subject/${v.id}/show`">
@@ -123,42 +120,38 @@
             </div>
 
             <!-- 视频 -->
-            <div class="group group-for-video">
+            <div class="group group-for-video-subject">
                 <!-- 导航 -->
                 <div class="run-action-title">
-                    <div class="left">视频</div>
+                    <div class="left">视频专题</div>
                     <div class="right">
                         <div class="tags">
-                            <my-button class="tag" :class="{cur: group.image.curTag === 'newest'}" @click="newestInImageSubject">最新</my-button>
-                            <my-button class="tag" :class="{cur: group.image.curTag === 'hot'}" @click="getHotImageSubject">热门</my-button>
-                            <my-button class="tag" v-for="v in group.image.tag" :key="v.id" :class="{cur: group.image.curTag === 'tag_' + v.tag_id}" @click="getImageByTagId(v.tag_id)">{{ v.name }}</my-button>
-                            <my-link class="tag" href="#/image_subject/index">更多</my-link>
+                            <my-button class="tag" :class="{cur: group.videoSubject.curTag === 'newest'}" @click="newestInVideoSubject">最新</my-button>
+                            <my-button class="tag" :class="{cur: group.videoSubject.curTag === 'hot'}" @click="hotInVideoSubject">热门</my-button>
+                            <my-button class="tag" v-for="v in group.videoSubject.tag.data" :key="v.id" :class="{cur: group.videoSubject.curTag === 'tag_' + v.tag_id}" @click="getVideoSubjectsByTagId(v.tag_id)">{{ v.name }}</my-button>
+                            <my-link class="tag" :href="genUrl('/video_subject/search')">更多</my-link>
                         </div>
                         <div class="operation">
-                            <my-button class="prev" :class="{disabled: group.image.action.translateX === group.image.action.maxTranslateX}" @click="prevByGroup('image')"><my-icon icon="prev01" /></my-button>
-                            <my-button class="next" :class="{disabled: group.image.action.translateX === group.image.action.minTranslateX}" @click="nextByGroup('image')"><my-icon icon="next01" /></my-button>
+                            <my-button class="prev" :class="{disabled: group.videoSubject.action.translateX === group.videoSubject.action.maxTranslateX}" @click="prevByGroup('videoSubject')"><my-icon icon="prev01" /></my-button>
+                            <my-button class="next" :class="{disabled: group.videoSubject.action.translateX === group.videoSubject.action.minTranslateX}" @click="nextByGroup('videoSubject')"><my-icon icon="next01" /></my-button>
                         </div>
                     </div>
                 </div>
 
-                <div class="list" ref="list-for-image">
-                    <div class="loading" v-if="val.pending.images"><my-loading width="50" height="50"></my-loading></div>
-                    <div class="inner" ref="inner-for-image">
-                        <div class="item card-box" v-for="v in images" :key="v.id">
+                <div class="list" ref="list-for-videoSubject">
+                    <div class="loading" v-if="val.pending.video_subject"><my-loading width="50" height="50"></my-loading></div>
+                    <div class="inner" ref="inner-for-videoSubject">
+                        <div class="item card-box" v-for="v in videoSubjects.data" :key="v.id">
                             <!-- 封面 -->
                             <div class="thumb">
-                                <a class="link" target="_blank" :href="`#/image_subject/${v.id}/show`">
+                                <a class="link" target="_blank" :href="genUrl(`/video_subject/${v.id}/show`)">
                                     <img :src="v.thumb ? v.__thumb__ : $store.state.context.res.notFound" v-judge-img-size class="image judge-img-size">
                                     <div class="mask">
                                         <div class="top">
-                                            <div class="type" v-if="v.type === 'pro'"><my-icon icon="zhuanyerenzheng" size="35" /></div>
-                                            <div class="praise" v-ripple @click.prevent="praiseImageSubjectByImageSubject(v)">
-                                                <my-loading size="16" v-if="val.pending.praiseImageSubjectByImageSubject"></my-loading>
-                                                <my-icon icon="shoucang2" :class="{'run-red': v.praised }" /> 喜欢
-                                            </div>
+                                            <div class="type"><my-icon icon="zhuanyerenzheng" size="35" /></div>
                                         </div>
                                         <div class="btm">
-                                            <div class="count">{{ v.images.length }}P</div>
+                                            <div class="count">{{ v.count }}</div>
                                         </div>
                                     </div>
                                 </a>
@@ -168,19 +161,10 @@
                                 <!-- 标签 -->
                                 <div class="tags">
                                     <span class="ico"><my-icon icon="icontag" size="18" /></span>
-
-                                    <a class="tag" target="_blank" v-for="tag in v.tags" :href="`#/image_subject/search?tag_id=${tag.tag_id}`">{{ tag.name }}</a>
+                                    <a class="tag" target="_blank" v-for="tag in v.tags" :href="genUrl(`/video_subject/search?tag_id=${tag.tag_id}`)">{{ tag.name }}</a>
                                 </div>
                                 <!-- 标题 -->
-                                <div class="title"><a target="_blank" :href="`#/image_subject/${v.id}/show`">{{ v.name }}</a></div>
-                                <!-- 发布者 -->
-                                <div class="user">
-                                    <div class="sender">
-                                        <span class="avatar-outer"><img :src="v.user.avatar ? v.user.__avatar__ : $store.state.context.res.avatar" alt="" class="image avatar"></span>
-                                        <a class="name">{{ v.user.nickname }}</a>
-                                    </div>
-                                    <div class="action"></div>
-                                </div>
+                                <div class="title"><a target="_blank" :href="genUrl(`/video_subject/${v.id}/show`)">{{ v.name }}</a></div>
                                 <!-- 统计信息 -->
                                 <div class="info">
                                     <div class="left"><my-icon icon="shijian" class="ico" mode="right" /> {{ v.create_time }}</div>
@@ -192,6 +176,8 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="empty" v-if="!val.pending.videoSubject && videoSubjects.data.length <= 0">暂无数据</div>
 
                     </div>
 

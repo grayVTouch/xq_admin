@@ -14,6 +14,7 @@ const tags = {
     total: 1 ,
     mode: 'strict' ,
     value: '' ,
+    type: 'pro' ,
 };
 
 const subjects = {
@@ -33,6 +34,7 @@ const images = {
     total: 0 ,
     page: 1 ,
     order: '' ,
+    type: 'pro' ,
 };
 
 export default {
@@ -148,7 +150,7 @@ export default {
             categoryId = parseInt(categoryId);
             Api.category.show(categoryId , (msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 if (this.categories.selectedIds.indexOf(categoryId) >= 0) {
@@ -165,7 +167,7 @@ export default {
             subjectId = parseInt(subjectId);
             Api.subject.show(subjectId , (msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 if (this.subjects.selectedIds.indexOf(subjectId) >= 0) {
@@ -182,7 +184,7 @@ export default {
             tagId = parseInt(tagId);
             Api.tag.show(tagId , (msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 if (this.tags.selectedIds.indexOf(tagId) >= 0) {
@@ -449,10 +451,11 @@ export default {
                 limit: this.tags.limit ,
                 page:  this.tags.page ,
                 value: this.tags.value ,
+                type: this.tags.type ,
             } , (msg , data , code) => {
                 this.pending('getTags' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.tags.page = data.current_page;
@@ -467,7 +470,7 @@ export default {
             Api.image_subject.categories((msg , data , code) => {
                 this.pending('getCategories' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.categories.data = data;
@@ -484,7 +487,7 @@ export default {
             } , (msg , data , code) => {
                 this.pending('getSubjects' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.subjects.total = data.total;
@@ -520,10 +523,11 @@ export default {
                 tag_ids: G.jsonEncode(this.tags.selectedIds) ,
                 value: this.images.value ,
                 order: this.images.order ,
+                type: this.images.type ,
             } , (msg , data , code) => {
                 this.pending('getWithPager' , false);
                 if (code !== TopContext.code.Success) {
-                    return this.message(msg);
+                    return this.message('error' , msg);
                     return ;
                 }
                 this.images.page = data.current_page;

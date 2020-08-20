@@ -1,17 +1,3 @@
-// import NotFoundView from '../view/error/404.vue';
-// import welcome from '../view/welcome/welcome.vue';
-// import home from '../view/public/home.vue';
-// import index from '../view/index/index.vue';
-// import indexForImageSubject from '../view/image_subject/index.vue';
-// import showForImageSubject from '../view/image_subject/show.vue';
-// import searchForImageSubject from '../view/image_subject/search.vue';
-// import indexForUser from '../view/user/index.vue';
-// import info from '../view/user/info.vue';
-// import password from '../view/user/password.vue';
-// import history from '../view/user/history.vue';
-// import favorites from '../view/user/favorites.vue';
-
-
 const NotFoundView = () => import('../view/error/404.vue');
 const welcome = () => import('../view/welcome/welcome.vue');
 const home  = () => import('../view/public/home.vue');
@@ -55,7 +41,7 @@ export default [
                 component: index
             } ,
             {
-                path: 'image_subject/index' ,
+                path: 'image_subject' ,
                 component: indexForImageSubject ,
             } ,
             {
@@ -103,6 +89,7 @@ export default [
             {
                 path: 'user' ,
                 component: indexForUser ,
+                redirect: '/user/info' ,
                 children: [
                     {
                         path: 'info' ,

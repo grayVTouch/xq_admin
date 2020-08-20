@@ -63,6 +63,7 @@
                                 <td>所属模块</td>
                                 <td>
                                     <my-select :data="modules" v-model="form.module_id" @change="moduleChangedEvent"></my-select>
+                                    <my-loading v-if="val.pending.getModules"></my-loading>
                                     <span class="need">*</span>
                                     <div class="msg"></div>
                                     <div class="e-msg">{{ val.error.module_id }}</div>
@@ -70,9 +71,10 @@
                             </tr>
 
                             <tr :class="{error: val.error.p_id}">
-                                <td>上级分类</td>
+                                <td>上级导航菜单</td>
                                 <td>
-                                    <my-deep-select :data="category" v-model="form.p_id" :has="true" :attr="val.attr"  @change="val.error.p_id = ''"></my-deep-select>
+                                    <my-deep-select :data="navs" v-model="form.p_id" :has="true" :attr="val.attr"  @change="val.error.p_id = ''"></my-deep-select>
+                                    <my-loading v-if="val.pending.getNavs"></my-loading>
                                     <span class="need">*</span>
                                     <div class="msg">请务必选择模块后操作</div>
                                     <div class="e-msg">{{ val.error.p_id }}</div>

@@ -54,7 +54,7 @@ export default {
             const self = this;
             this.ins.avatar = new Uploader(this.dom.uploaderMask.get(0) , {
                 // 上传地址
-                api: TopContext.fileApi ,
+                api: this.thumbApi() ,
                 // 上传字段
                 field: 'file' ,
                 // 模式：append-追加 override-覆盖
@@ -100,7 +100,7 @@ export default {
                     this.errorHandleAtUserChildren(msg , data , code);
                     return ;
                 }
-                this.message('操作成功');
+                this.message('success' , '操作成功');
             });
         } ,
     } ,

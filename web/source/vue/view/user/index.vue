@@ -2,10 +2,11 @@
     <div class="view">
         <div class="menu" :class="{fixed: fixedMenu}" ref="menu">
             <div class="inner">
-                <a v-ripple href="#/user/info" class="link" @click="current = 'info'" :class="{cur: current === 'info'}"><my-icon icon="yonghu" mode="right" />我的信息</a>
-                <a v-ripple href="#/user/password" class="link" @click="current = 'password'" :class="{cur: current === 'password'}"><my-icon icon="privilege" mode="right" />修改密码</a>
-                <a v-ripple href="#/user/history" class="link" @click="current = 'history'" :class="{cur: current === 'history'}"><my-icon icon="lishijilu" mode="right" />历史记录</a>
-                <a v-ripple href="#/user/favorites" class="link" @click="current = 'favorites'" :class="{cur: current === 'favorites'}"><my-icon icon="shoucang6" mode="right" />我的收藏</a>
+                <a v-ripple :href="genUrl('/user/info')" class="link" :class="{cur: current === 'info'}"><my-icon icon="yonghu" mode="right" />我的信息</a>
+                <a v-ripple :href="genUrl('/user/password')" class="link" :class="{cur: current === 'password'}"><my-icon icon="privilege" mode="right" />修改密码</a>
+                <a v-ripple :href="genUrl('/user/history')" class="link" :class="{cur: current === 'history'}"><my-icon icon="lishijilu" mode="right" />历史记录</a>
+                <a v-ripple :href="genUrl('/user/favorites')" class="link" :class="{cur: current === 'favorites'}"><my-icon icon="shoucang6" mode="right" />我的收藏</a>
+                <a v-ripple v-if="$store.state.user" :href="genUrl(`/channel/${$store.state.user.id}`)" class="link" :class="{cur: current === 'channel'}"><my-icon icon="ronghepindao" mode="right" />我的频道</a>
             </div>
         </div>
 

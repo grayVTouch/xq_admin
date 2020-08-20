@@ -12,24 +12,47 @@ class ImageSubjectModel extends Model
 {
     protected $table = 'xq_image_subject';
 
-    public static function getNewestByModuleIdAndLimit(int $module_id , int $limit = 0): Collection
+    public static function getNewestByFilterAndLimit(array $filter = [] , int $limit = 0): Collection
     {
-        return self::where([
-                ['module_id' , '=' , $module_id] ,
-                ['status' , '=' , 1] ,
-            ])
+        $filter['module_id'] = $filter['module_id'] ?? '';
+        $filter['type']      = $filter['type'] ?? '';
+
+        $where = [
+            ['status' , '=' , 1] ,
+        ];
+
+        if ($filter['module_id'] !== '') {
+            $where[] = ['module_id' , '=' , $filter['module_id']];
+        }
+
+        if ($filter['type'] !== '') {
+            $where[] = ['type' , '=' , $filter['type']];
+        }
+
+        return self::where($where)
             ->orderBy('create_time' , 'desc')
             ->orderBy('id' , 'asc')
             ->limit($limit)
             ->get();
     }
 
-    public static function getHotByModuleIdAndLimit(int $module_id , int $limit = 0): Collection
+    public static function getHotByFilterAndLimit(array $filter = [] , int $limit = 0): Collection
     {
-        return self::where([
-                ['module_id' , '=' , $module_id] ,
-                ['status' , '=' , 1] ,
-            ])
+        $filter['module_id'] = $filter['module_id'] ?? '';
+        $filter['type']      = $filter['type'] ?? '';
+
+        $where = [
+            ['status' , '=' , 1] ,
+        ];
+
+        if ($filter['module_id'] !== '') {
+            $where[] = ['module_id' , '=' , $filter['module_id']];
+        }
+
+        if ($filter['type'] !== '') {
+            $where[] = ['type' , '=' , $filter['type']];
+        }
+        return self::where($where)
             // 查看次数
             ->orderBy('view_count' , 'desc')
             // 点赞次数
@@ -42,12 +65,23 @@ class ImageSubjectModel extends Model
             ->get();
     }
 
-    public static function getHotWithPagerByModuleIdAndLimit(int $module_id , int $limit = 0): Paginator
+    public static function getHotWithPagerByFilterAndLimit(array $filter = [] , int $limit = 0): Paginator
     {
-        return self::where([
-            ['module_id' , '=' , $module_id] ,
+        $filter['module_id'] = $filter['module_id'] ?? '';
+        $filter['type']      = $filter['type'] ?? '';
+
+        $where = [
             ['status' , '=' , 1] ,
-        ])
+        ];
+
+        if ($filter['module_id'] !== '') {
+            $where[] = ['module_id' , '=' , $filter['module_id']];
+        }
+
+        if ($filter['type'] !== '') {
+            $where[] = ['type' , '=' , $filter['type']];
+        }
+        return self::where($where)
             // 查看次数
             ->orderBy('view_count' , 'desc')
             // 点赞次数
@@ -60,14 +94,25 @@ class ImageSubjectModel extends Model
     }
 
 
-    public static function getByModuleIdAndTagIdAndLimit(int $module_id , int $tag_id , int $limit = 0): Collection
+    public static function getByTagIdAndFilterAndLimit(int $tag_id , array $filter = [] , int $limit = 0): Collection
     {
+        $filter['module_id'] = $filter['module_id'] ?? '';
+        $filter['type']      = $filter['type'] ?? '';
+
+        $where = [
+            ['is.status' , '=' , 1] ,
+        ];
+
+        if ($filter['module_id'] !== '') {
+            $where[] = ['is.module_id' , '=' , $filter['module_id']];
+        }
+
+        if ($filter['type'] !== '') {
+            $where[] = ['is.type' , '=' , $filter['type']];
+        }
         return self::from('xq_image_subject as is')
             ->select('is.*')
-            ->where([
-                ['is.module_id' , '=' , $module_id] ,
-                ['is.status' , '=' , 1] ,
-            ])
+            ->where($where)
             ->whereExists(function($query) use($tag_id){
                 $query->select('id')
                     ->from('xq_relation_tag as rt')
@@ -84,14 +129,26 @@ class ImageSubjectModel extends Model
     }
 
     // 标签对应的图片专题-非严格模式匹配
-    public static function getByModuleIdAndTagIdsAndLimit(int $module_id , array $tag_ids = [] , int $limit = 0): Paginator
+    public static function getByTagIdsAndFilterAndLimit(array $tag_ids = [] , array $filter = [] , int $limit = 0): Paginator
     {
+        $filter['module_id'] = $filter['module_id'] ?? '';
+        $filter['type']      = $filter['type'] ?? '';
+
+        $where = [
+            ['is.status' , '=' , 1] ,
+        ];
+
+        if ($filter['module_id'] !== '') {
+            $where[] = ['is.module_id' , '=' , $filter['module_id']];
+        }
+
+        if ($filter['type'] !== '') {
+            $where[] = ['is.type' , '=' , $filter['type']];
+        }
+
         return self::from('xq_image_subject as is')
             ->select('is.*')
-            ->where([
-                ['is.module_id' , '=' , $module_id] ,
-                ['is.status' , '=' , 1] ,
-            ])
+            ->where($where)
             ->whereExists(function($query) use($tag_ids){
                 $query->select('id')
                     ->from('xq_relation_tag as rt')
@@ -107,14 +164,26 @@ class ImageSubjectModel extends Model
     }
 
     // 标签对应的图片专题-严格模式匹配
-    public static function getInStrictByModuleIdAndTagIdsAndLimit(int $module_id , array $tag_ids = [] , int $limit = 0): Paginator
+    public static function getInStrictByTagIdsAndFilterAndLimit(array $tag_ids = [] , array $filter = [] , int $limit = 0): Paginator
     {
+        $filter['module_id'] = $filter['module_id'] ?? '';
+        $filter['type']      = $filter['type'] ?? '';
+
+        $where = [
+            ['is.status' , '=' , 1] ,
+        ];
+
+        if ($filter['module_id'] !== '') {
+            $where[] = ['is.module_id' , '=' , $filter['module_id']];
+        }
+
+        if ($filter['type'] !== '') {
+            $where[] = ['is.type' , '=' , $filter['type']];
+        }
+
         return self::from('xq_image_subject as is')
             ->select('is.*')
-            ->where([
-                ['is.module_id' , '=' , $module_id] ,
-                ['is.status' , '=' , 1] ,
-            ])
+            ->where($where)
             ->whereExists(function($query) use($tag_ids){
                 $query->select('id')
                     ->selectRaw('count(id) as total')
@@ -132,84 +201,134 @@ class ImageSubjectModel extends Model
             ->paginate($limit);
     }
 
-    public static function getNewestWithPagerByModuleIdAndLimit(int $module_id , int $limit = 0): Paginator
+    public static function getNewestWithPagerByFilterAndLimit(array $filter = [] , int $limit = 0): Paginator
     {
-        return self::where([
-            ['module_id' , '=' , $module_id] ,
+        $filter['module_id'] = $filter['module_id'] ?? '';
+        $filter['type']      = $filter['type'] ?? '';
+
+        $where = [
             ['status' , '=' , 1] ,
-        ])
+        ];
+
+        if ($filter['module_id'] !== '') {
+            $where[] = ['module_id' , '=' , $filter['module_id']];
+        }
+
+        if ($filter['type'] !== '') {
+            $where[] = ['type' , '=' , $filter['type']];
+        }
+
+        return self::where($where)
             ->orderBy('create_time' , 'desc')
             ->orderBy('id' , 'asc')
             ->paginate($limit);
     }
 
-    public static function getWithPagerInStrictByModuleIdAndValueAndCategoryIdsAndSubjectIdsAndTagIdsAndOrderAndLimit(int $module_id , string $value = '' , array $category_ids = [] , array $subject_ids = [] , array $tag_ids = [] , $order = null , int $limit = 20)
+    public static function getWithPagerInStrictByFilterAndOrderAndLimit(array $filter = [] , $order = null , int $limit = 20)
     {
+        $filter['value']        = $filter['value'] ?? '';
+        $filter['module_id']    = $filter['module_id'] ?? '';
+        $filter['type']         = $filter['type'] ?? '';
+        $filter['category_ids'] = $filter['category_ids'] ?? [];
+        $filter['subject_ids']  = $filter['subject_ids'] ?? [];
+        $filter['tag_ids']      = $filter['tag_ids'] ?? [];
+
         $order = $order ?? ['field' => 'create_time' , 'value' => 'desc'];
-        $value = strtolower($value);
+        $value = strtolower($filter['value']);
+
         $where = [
-            ['is.module_id' , '=' , $module_id] ,
             ['is.status' , '=' , 1] ,
         ];
+
+        if ($filter['module_id'] !== '') {
+            $where[] = ['is.module_id' , '=' , $filter['module_id']];
+        }
+
+        if ($filter['type'] !== '') {
+            $where[] = ['is.type' , '=' , $filter['type']];
+        }
+
         $query = self::from('xq_image_subject as is')
             ->where($where);
-        if (!empty($category_ids)) {
-            $query->whereIn('category_id' , $category_ids);
+
+        if (!empty($filter['category_ids'])) {
+            $query->whereIn('category_id' , $filter['category_ids']);
         }
-        if (!empty($subject_ids)) {
-            $query->where('is.type' , 'pro')
-                ->whereIn('is.subject_id' , $subject_ids);
+
+        if (!empty($filter['subject_ids'])) {
+            $query->whereIn('is.subject_id' , $filter['subject_ids']);
         }
-        return $query->whereRaw('lower(is.name) like concat("%" , ? , "%")' , $value)
-            ->whereExists(function($query) use($tag_ids){
+
+        return $query->whereRaw("lower(is.name) like ?" , "%{$value}%")
+            ->whereExists(function($query) use($filter){
                 $query->select('id' , DB::raw('count(id) as total'))
                     ->from('xq_relation_tag')
                     ->where([
                         ['relation_type' , '=' , 'image_subject'] ,
                     ]);
-                if (!empty($tag_ids)) {
-                    $query->whereIn('tag_id' , $tag_ids)
+                if (!empty($filter['tag_ids'])) {
+                    $query->whereIn('tag_id' , $filter['tag_ids'])
                         ->groupBy('relation_id')
-                        ->having('total' , '=' , count($tag_ids));
+                        ->having('total' , '=' , count($filter['tag_ids']));
                 }
                 $query->whereRaw('relation_id = is.id');
             })
-            ->orderBy($order['field'] , $order['value'])
-            ->orderBy('id' , 'desc')
+            ->orderBy("is.{$order['field']}" , $order['value'])
+            ->orderBy('is.id' , 'desc')
             ->paginate($limit);
     }
 
-    public static function getWithPagerInLooseByModuleIdAndValueAndCategoryIdsAndSubjectIdsAndTagIdsAndOrderAndLimit(int $module_id , string $value = '' , array $category_ids = [] , array $subject_ids = [] , array $tag_ids = [] , $order = null , int $limit = 20)
+    public static function getWithPagerInLooseByFilterAndOrderAndLimit(array $filter = [] , $order = null , int $limit = 20)
     {
+        $filter['value']        = $filter['value'] ?? '';
+        $filter['module_id']    = $filter['module_id'] ?? '';
+        $filter['type']         = $filter['type'] ?? '';
+        $filter['category_ids'] = $filter['category_ids'] ?? [];
+        $filter['subject_ids']  = $filter['subject_ids'] ?? [];
+        $filter['tag_ids']      = $filter['tag_ids'] ?? [];
+
         $order = $order ?? ['field' => 'create_time' , 'value' => 'desc'];
-        $value = strtolower($value);
+        $value = strtolower($filter['value']);
+
         $where = [
-            ['is.module_id' , '=' , $module_id] ,
             ['is.status' , '=' , 1] ,
         ];
+
+        if ($filter['module_id'] !== '') {
+            $where[] = ['is.module_id' , '=' , $filter['module_id']];
+        }
+
+        if ($filter['type'] !== '') {
+            $where[] = ['is.type' , '=' , $filter['type']];
+        }
+
         $query = self::from('xq_image_subject as is')
             ->where($where);
-        if (!empty($category_ids)) {
-            $query->whereIn('category_id' , $category_ids);
+
+        if (!empty($filter['category_ids'])) {
+            $query->whereIn('category_id' , $filter['category_ids']);
         }
-        if (!empty($subject_ids)) {
-            $query->where('is.type' , 'pro')
-                ->whereIn('is.subject_id' , $subject_ids);
+
+        if (!empty($filter['subject_ids'])) {
+            $query->whereIn('is.subject_id' , $filter['subject_ids']);
         }
-        return $query->whereRaw('lower(is.name) like concat("%" , ? , "%")' , $value)
-            ->whereExists(function($query) use($tag_ids){
+
+        return $query->whereRaw("lower(is.name) like ?" , "%{$value}%")
+            ->whereExists(function($query) use($filter){
                 $query->select('id' , DB::raw('count(id) as total'))
                     ->from('xq_relation_tag')
                     ->where([
                         ['relation_type' , '=' , 'image_subject'] ,
                     ]);
-                if (!empty($tag_ids)) {
-                    $query->whereIn('tag_id' , $tag_ids);
+
+                if (!empty($filter['tag_ids'])) {
+                    $query->whereIn('tag_id' , $filter['tag_ids']);
                 }
+
                 $query->whereRaw('relation_id = is.id');
             })
-            ->orderBy($order['field'] , $order['value'])
-            ->orderBy('id' , 'desc')
+            ->orderBy("is.{$order['field']}" , $order['value'])
+            ->orderBy('is.id' , 'desc')
             ->paginate($limit);
     }
 
@@ -218,16 +337,33 @@ class ImageSubjectModel extends Model
         return self::where('id' , $id)->$mode($field , $step);
     }
 
-    public static function recommendExcludeSelfByModuleIdAndCategoryIdAndSubjectIdAndLimit(int $image_subject_id , int $module_id , int $category_id , int $subject_id , int $limit = 20): Collection
+    public static function recommendExcludeSelfByFilterAndLimit(int $self_id , array $filter = [] , int $limit = 20): Collection
     {
+        $filter['module_id']    = $filter['module_id'] ?? '';
+        $filter['category_id']  = $filter['category_id'] ?? '';
+        $filter['subject_id']   = $filter['subject_id'] ?? '';
+        $filter['type']         = $filter['type'] ?? '';
+
         $where = [
-            ['id' , '!=' , $image_subject_id] ,
-            ['module_id' , '=' , $module_id] ,
-            ['category_id' , '=' , $category_id] ,
+            ['id' , '!=' , $self_id] ,
         ];
-        if (empty($subject_id)) {
-            $where[] = ['subject_id' , '=' , $subject_id];
+
+        if ($filter['module_id'] !== '') {
+            $where[] = ['module_id' , '=' , $filter['module_id']];
         }
+
+        if ($filter['category_id'] !== '') {
+            $where[] = ['category_id' , '=' , $filter['category_id']];
+        }
+
+        if ($filter['subject_id'] !== '') {
+            $where[] = ['subject_id' , '=' , $filter['subject_id']];
+        }
+
+        if ($filter['type'] !== '') {
+            $where[] = ['type' , '=' , $filter['type']];
+        }
+
         return self::where($where)
             ->orderBy('view_count' , 'desc')
             ->orderBy('praise_count' , 'desc')

@@ -106,7 +106,9 @@ export default {
                 data: [] ,
             } ,
             form: G.copy(form)  ,
-            category: [] ,
+
+            navs: [] ,
+
             modules: [] ,
         };
     } ,
@@ -130,7 +132,9 @@ export default {
     methods: {
 
         getModules () {
+            this.pending('getModules' , true);
             Api.module.all((msg , data , code) => {
+                this.pending('getModules' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     return ;
@@ -139,17 +143,23 @@ export default {
             });
         } ,
 
-        moduleChangedEvent (moduleId) {
+        getNavs () {
+            this.pending('getNavs' , true);
+            Api.nav.getByModuleId(this.form.module_id ? this.form.module_id : 0 , (msg , data , code) => {
+                this.pending('getNavs' , false);
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , data);
+                    return ;
+                }
+                this.navs = this.getNavsExcludeSelfAndChildrenById(this.form.id , data);
+                console.log('过滤后数据' , G.jsonEncode(this.navs));
+            });
+        } ,
 
+        moduleChangedEvent (moduleId) {
             this.val.error.module_id = '';
             this.form.p_id = 0;
-            let category;
-            if (this.val.mode === 'edit') {
-                category = this.getCategoryExcludeSelfAndChildrenByIdAndModuleId(this.form.id , moduleId);
-            } else {
-                category = this.getCategoryByModuleId(moduleId);
-            }
-            this.category = category;
+            this.getNavs();
         } ,
 
 
@@ -270,18 +280,15 @@ export default {
             });
         } ,
 
-        getCategoryExcludeSelfAndChildrenByIdAndModuleId (id , moduleId) {
-            const selfAndChildren = G.t.childrens(id , this.table.data , null , true , false);
+        getNavsExcludeSelfAndChildrenById (id , data) {
+            const selfAndChildren = G.t.childrens(id , data , null , true , false);
             const selfAndChildrenIds = [];
             selfAndChildren.forEach((v) => {
                 selfAndChildrenIds.push(v.id);
             });
             const res = [];
-            this.table.data.forEach((v) => {
+            data.forEach((v) => {
                 if (G.contain(v.id , selfAndChildrenIds)) {
-                    return ;
-                }
-                if (v.module_id !== moduleId) {
                     return ;
                 }
                 res.push(v);
@@ -306,7 +313,7 @@ export default {
             this.error();
             this.form = G.copy(record);
             this.getModules();
-            this.category = this.getCategoryExcludeSelfAndChildrenByIdAndModuleId(record.id , this.form.module_id);
+            this.getNavs();
         } ,
 
         addEvent () {
@@ -315,6 +322,7 @@ export default {
             this.error();
             this.form = G.copy(form);
             this.getModules();
+            this.getNavs();
         } ,
 
 

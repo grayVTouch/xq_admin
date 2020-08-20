@@ -94,12 +94,12 @@ export default {
 
         changeThumb (channelThumb) {
             this.pending('changeThumb' , true);
-            Api.user.localUpdate(this.user.id , {
+            Api.user.localUpdate({
                 channel_thumb: channelThumb
             } , (msg , data , code) => {
                 this.pending('changeThumb' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.user = {...data};
@@ -108,12 +108,12 @@ export default {
 
         changeAvatar (avatar) {
             this.pending('changeAvatar' , true);
-            Api.user.localUpdate(this.user.id , {
+            Api.user.localUpdate({
                 avatar: avatar
             } , (msg , data , code) => {
                 this.pending('changeAvatar' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.user = {...data};
@@ -122,12 +122,12 @@ export default {
 
         changeNickname () {
             this.pending('changeNickname' , true);
-            Api.user.localUpdate(this.user.id , {
+            Api.user.localUpdate({
                 nickname: this.form.nickname
             } , (msg , data , code) => {
                 this.pending('changeNickname' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.user = {...data};
@@ -136,12 +136,12 @@ export default {
 
         changeDescription () {
             this.pending('changeDescription' , true);
-            Api.user.localUpdate(this.user.id , {
+            Api.user.localUpdate({
                 description: this.form.description
             } , (msg , data , code) => {
                 this.pending('changeDescription' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.user = {...data};

@@ -3,6 +3,7 @@
 
 namespace App\Customize\api\web_v1\util;
 
+
 use App\Customize\api\web_v1\handler\DiskHandler;
 use App\Customize\api\web_v1\model\DiskModel;
 use Core\Lib\File;
@@ -83,8 +84,8 @@ class FileUtil
         return format_path($prefix . '/' . $dir . '/' . $file);
     }
 
-    // 相对路径获取绝对路径
-    public static function getRealPath(string $relative_path = ''): string
+    // 根据负荷规则的相对路径获取绝对路径
+    public static function getRealPathByRelativePath(string $relative_path = ''): string
     {
         if (empty($relative_path)) {
             return '';
@@ -101,10 +102,30 @@ class FileUtil
         return format_path($disk->path . '/' . ltrim(str_replace($prefix , '' , $relative_path) , '/\\'));
     }
 
+
+    // 根据用户提供的路径生成符合规则的相对路径
+    public static function getRelativePath(string $path = ''): string
+    {
+        if (empty($path)) {
+            return '';
+        }
+        $prefix = self::prefix();
+        return $prefix . '/' . ltrim($path , '/');
+    }
+
+    // 通过给定的路径生成实际保存的绝对路径
+    public static function getRealPath(string $path = ''): string
+    {
+        return self::getRealPathByRelativePath(self::getRelativePath($path));
+    }
+
     // 删除文件（通过相对路径）
     public static function delete(string $relative_path = ''): void
     {
         $real_path = self::getRealPath($relative_path);
+        if (!File::exists($real_path)) {
+            return ;
+        }
         File::delete($real_path);
     }
 
@@ -122,7 +143,7 @@ class FileUtil
      * @return  string
      * @throws Exception
      */
-    public static function prefix(string $prefix = ''): string
+    public static function prefix(): string
     {
         $disk = self::disk();
         return $disk->prefix;
@@ -139,5 +160,12 @@ class FileUtil
         $res_url        = rtrim(config('my.res_url' , '') , '/');
         $relative_path  = ltrim($relative_path , '/');
         return $res_url . '/' . $relative_path;
+    }
+
+    // 检查文件是否存在
+    public static function exists(string $relative_path = ''): bool
+    {
+        $real_path = self::getRealPathByRelativePath($relative_path);
+        return File::exists($real_path);
     }
 }

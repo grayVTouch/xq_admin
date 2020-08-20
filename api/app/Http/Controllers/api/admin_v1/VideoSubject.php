@@ -41,7 +41,7 @@ class VideoSubject extends Base
         $param['end_time']          = $param['end_time'] ?? null;
         $param['status']          = $param['status'] ?? '';
         $param['count']          = $param['count'] ?? '';
-        $param['play_count']          = $param['play_count'] ?? '';
+        $param['category_id']          = $param['category_id'] ?? '';
         $param['video_series_id']          = $param['video_series_id'] ?? '';
         $param['video_company_id']          = $param['video_company_id'] ?? '';
         $param['module_id']          = $param['module_id'] ?? '';
@@ -65,7 +65,7 @@ class VideoSubject extends Base
         $param['end_time']          = $param['end_time'] ?? null;
         $param['status']          = $param['status'] ?? '';
         $param['count']          = $param['count'] ?? '';
-        $param['play_count']          = $param['play_count'] ?? '';
+        $param['category_id']          = $param['category_id'] ?? '';
         $param['video_series_id']          = $param['video_series_id'] ?? '';
         $param['video_company_id']          = $param['video_company_id'] ?? '';
         $param['module_id']          = $param['module_id'] ?? '';

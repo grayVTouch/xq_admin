@@ -15,4 +15,11 @@ class ModuleAction extends Action
         $res = ModuleHandler::handleAll($res);
         return self::success('' , $res);
     }
+
+    public static function default(Base $context , array $param = [])
+    {
+        $res = ModuleModel::getDefault();
+        $res = ModuleHandler::handle($res);
+        return self::success('' , $res);
+    }
 }

@@ -17,12 +17,9 @@ class NavModel extends Model
             ->get();
     }
 
-    public static function getAllByModuleIdAndPlatform(int $module_id , string $platform): Collection
+    public static function getByModuleId(int $module_id): Collection
     {
-        return self::where([
-                ['module_id' , '=' , $module_id] ,
-                ['platform' , '=' , $platform] ,
-            ])
+        return self::where('module_id' , $module_id)
             ->orderBy('weight' , 'desc')
             ->orderBy('id' , 'asc')
             ->get();

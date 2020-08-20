@@ -141,7 +141,7 @@
  * 相关推荐
  */
 .recommend {
-    background-color: var(--image-subject-index-background);
+    background-color: var(--line-background);
 }
 
 .recommend > .inner {

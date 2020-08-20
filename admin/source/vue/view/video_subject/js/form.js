@@ -1,10 +1,13 @@
 const form = {
     module_id: '' ,
     weight: 0 ,
+    category_id: '' ,
     video_series_id: '' ,
     video_company_id: '' ,
     status: 'completed' ,
     tags: [] ,
+    score: 0 ,
+    count: 0 ,
 };
 
 const videoSeries = {
@@ -158,12 +161,12 @@ export default {
                         minWidth: TopContext.table.number ,
                         align: TopContext.table.alignCenter,
                     },
-                    {
-                        title: '播放数',
-                        key: 'play_count',
-                        minWidth: TopContext.table.number ,
-                        align: TopContext.table.alignCenter,
-                    },
+                    // {
+                    //     title: '播放数',
+                    //     key: 'play_count',
+                    //     minWidth: TopContext.table.number ,
+                    //     align: TopContext.table.alignCenter,
+                    // },
                     {
                         title: '描述' ,
                         key: 'description' ,
@@ -236,6 +239,9 @@ export default {
 
             // 标签排行榜
             topTags: [] ,
+
+            // 分类
+            categories: [] ,
         };
     } ,
 
@@ -265,8 +271,8 @@ export default {
             });
         } ,
 
-        getTopTags (moduleId) {
-            Api.tag.topByModuleId(moduleId , (msg , data , code) => {
+        getTopTags () {
+            Api.tag.topByModuleId(this.form.module_id , (msg , data , code) => {
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
                     return ;
@@ -275,15 +281,31 @@ export default {
             });
         } ,
 
+        getCategories (callback) {
+            this.pending('getCategories' , true);
+            Api.category.searchByModuleId(this.form.module_id , (msg , data , code) => {
+                this.pending('getCategories' , false);
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , data);
+                    G.invoke(callback , null , false);
+                    return ;
+                }
+                this.categories = data;
+                this.$nextTick(() => {
+                    G.invoke(callback , null , true);
+                });
+            });
+        } ,
+
         // 模块发生变化的时候
         moduleChanged () {
             this.form.video_series_id = '';
             this.form.video_company_id = '';
-            this.form.video_series = g.copy(videoSeries.current);
-            this.form.video_company = g.copy(videoCompany.current);
-
+            this.form.video_series = G.copy(videoSeries.current);
+            this.form.video_company = G.copy(videoCompany.current);
             this.topTags = [];
-            this.getTopTags(moduleId);
+            this.getTopTags();
+            this.getCategories();
         },
 
         initDom () {
@@ -323,10 +345,10 @@ export default {
                     return ;
                 }
                 this.successHandle((keep) => {
+                    this.$emit('on-success');
                     if (keep) {
                         return ;
                     }
-                    this.$emit('on-success');
                     this.closeFormDrawer();
                 });
             };
@@ -348,7 +370,8 @@ export default {
             this._val('drawer' , true);
             this.getModules();
             if (this.mode === 'edit') {
-                this.getTopTags(this.form.module_id);
+                this.getTopTags();
+                this.getCategories();
             }
 
         } ,
@@ -362,8 +385,10 @@ export default {
             // 清除所有错误信息
             this.error({});
             this.ins.thumb.clearAll();
-            this.tags = [];
             this.form = G.copy(form);
+            this.tags = [];
+            this.topTags = [];
+            this.categories = [];
 
         } ,
 

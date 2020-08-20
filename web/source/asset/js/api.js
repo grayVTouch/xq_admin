@@ -8,6 +8,8 @@ import category from './../../api/category.js';
 import tag from './../../api/tag.js';
 import user from './../../api/user.js';
 import file from './../../api/file.js';
+import module from './../../api/module.js';
+import video_subject from './../../api/video_subject.js';
 
 window.Api = {
     misc ,
@@ -20,4 +22,6 @@ window.Api = {
     tag ,
     user ,
     file ,
+    module ,
+    video_subject ,
 };

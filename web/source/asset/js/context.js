@@ -10,11 +10,23 @@ import config from './config.js';
  * 全局上下文环境
  * ******************
  */
+// 接口 host
+const apiUrl = 'http://api.xq.test';
+// 资源 host
+const resUrl = 'http://res.xq.test';
+
 window.TopContext = {
     host: 'http://xq.test' ,
-    api: 'http://api.xq.test/api/web_v1' ,
+    api: apiUrl + '/api/web_v1' ,
     // // 图片上传 api
-    fileApi: 'http://api.xq.test/api/web_v1/upload' ,
+    fileApi: apiUrl + '/api/web_v1/upload' ,
+
+    // 图片上传 api
+    uploadApi: apiUrl + '/api/web_v1/upload' ,
+    uploadImageApi: apiUrl + '/api/web_v1/upload_image' ,
+    uploadVideoApi: apiUrl + '/api/web_v1/upload_video' ,
+    uploadSubtitleApi: apiUrl + '/api/web_v1/upload_subtitle' ,
+    uploadOfficeApi: apiUrl + '/api/web_v1/upload_office' ,
 
     code: {
         Success: 200 ,
@@ -22,9 +34,9 @@ window.TopContext = {
         FormValidateFail: 400 ,
     } ,
     res: {
-        logo: 'http://api.xq.test/upload/20200712/phjK4tBEQWX8BiIb0ue3kdpfcEwBOGQNCODkpbUK.png' ,
-        notFound: 'http://api.xq.test/upload/20200712/ecrT5SPDzkUQZWPit3qk3L5Vb9GYaoXLKoTiUBMY.jpeg' ,
-        avatar: 'http://api.xq.test/upload/20200712/VJ8BKpDWTy1oVg1XDgaSOufmGcwcA0zEx5Q6Qxgw.png' ,
+        logo: resUrl + '/preset/ico/logo.png' ,
+        notFound: resUrl + '/preset/image/404.jpg' ,
+        avatar: resUrl + '/preset/ico/logo.png' ,
 
         user: {
             password: '' ,
@@ -40,6 +52,10 @@ window.TopContext = {
         fixedTop: 105 ,
         headerH: 105 ,
         footerH: 130 ,
+        // 封面图 裁剪尺寸
+        thumbW: 960 ,
+        // 大图裁剪尺寸
+        imageW: 2160 ,
     } ,
 
     os: {

@@ -4,6 +4,13 @@ const allHotTags = {
     data: [] ,
     total: 0 ,
     value: '' ,
+    type: 'pro' ,
+};
+
+const partHotTags = {
+    limit: 5 ,
+    data: [] ,
+    type: 'pro' ,
 };
 
 const images = {
@@ -13,12 +20,14 @@ const images = {
     data: [] ,
     total: 0 ,
     end: false ,
+    type: 'pro' ,
 };
 
 const search = {
     mode: 'loose' ,
     tags: [] ,
     tagIds: [] ,
+    type: 'pro' ,
 };
 
 export default {
@@ -27,7 +36,7 @@ export default {
         return {
 
             // 热门标签（部分）
-            partHotTags: [] ,
+            partHotTags: G.copy(partHotTags) ,
             // 所有标签
             allHotTags: {...allHotTags} ,
             // 图片
@@ -46,10 +55,12 @@ export default {
 
     mounted () {
         this.initDom();
+        this.initEvent();
+
         this.getImageSubject();
         this.hotTags();
-        this.newestInImageSubject();
-        this.initEvent();
+        this.newestInImageSubjects();
+
         // 调试阶段打开
         // this.showTagSelector();
     } ,
@@ -133,7 +144,7 @@ export default {
                 this._val('selected_tag_' + tag.tag_id , false);
             }
             if (this.search.tags.length === 0) {
-                this.newestInImageSubject(true);
+                this.newestInImageSubjects(true);
                 return ;
             }
             this.getWithPagerInImageSubject(this.search.tagIds , this.search.mode , true);
@@ -142,7 +153,7 @@ export default {
         resetTagFilter () {
             this.search.tags = [];
             this.search.tagIds = [];
-            this.newestInImageSubject(true);
+            this.newestInImageSubjects(true);
         } ,
 
         unselectedTagByTagId (tagId) {
@@ -154,7 +165,7 @@ export default {
             this.search.tags.splice(index , 1);
             this.search.tagIds.splice(index , 1);
             if (this.search.tags.length === 0) {
-                this.newestInImageSubject(true);
+                this.newestInImageSubjects(true);
                 return ;
             }
             this.getWithPagerInImageSubject(this.search.tagIds , this.search.mode , true);
@@ -191,7 +202,7 @@ export default {
         getImageSubject () {
             Api.image_subject.imageSubject((msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.imageSubject = data;
@@ -199,7 +210,7 @@ export default {
         } ,
 
         // 图片-最新图片
-        newestInImageSubject (override = true) {
+        newestInImageSubjects (override = true) {
             if (override) {
                 this.pending('switchImages' , true);
                 this.images.page = 1;
@@ -210,11 +221,12 @@ export default {
             Api.image_subject.newestWithPager({
                 limit: this.images.limit ,
                 page:  this.images.page ,
+                type: this.images.type ,
             } , (msg , data , code) => {
                 this.pending('switchImages' , false);
                 if (code !== TopContext.code.Success) {
                     this.pending('images' , false);
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.images.page = data.current_page;
@@ -235,7 +247,7 @@ export default {
             });
         } ,
 
-        hotInImageSubject (override = true) {
+        hotInImageSubjects (override = true) {
             if (override) {
                 this.pending('switchImages' , true);
                 this.images.page = 1;
@@ -246,11 +258,12 @@ export default {
             Api.image_subject.hotWithPager({
                 limit: this.images.limit ,
                 page:  this.images.page ,
+                type: this.images.type ,
             } , (msg , data , code) => {
                 this.pending('switchImages' , false);
                 if (code !== TopContext.code.Success) {
                     this.pending('images' , false);
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.images.page = data.current_page;
@@ -271,13 +284,14 @@ export default {
         // 图片-热门标签
         hotTags () {
             Api.image_subject.hotTags({
-                limit: 10 ,
+                limit: partHotTags.limit ,
+                type: this.partHotTags.type ,
             } , (msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
-                this.partHotTags = data;
+                this.partHotTags.data = data;
             });
         } ,
 
@@ -298,11 +312,12 @@ export default {
                 tag_ids: G.jsonEncode(tagIds) ,
                 limit: this.images.limit ,
                 page: this.images.page ,
+                type: this.images.type ,
             } , (msg , data , code) => {
                 this.pending('switchImages' , false);
                 if (code !== TopContext.code.Success) {
                     this.pending('images' , false);
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.images.page = data.current_page;
@@ -338,10 +353,11 @@ export default {
                 limit: this.allHotTags.limit ,
                 page:  this.allHotTags.page ,
                 value: this.allHotTags.value ,
+                type: this.allHotTags.type ,
             } , (msg , data , code) => {
                 this.pending('hotTagsWithPager' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.allHotTags.page = data.current_page;
@@ -394,10 +410,10 @@ export default {
             switch (this.curTag)
             {
                 case 'newest':
-                    this.newestInImageSubject(false);
+                    this.newestInImageSubjects(false);
                     break;
                 case 'hot':
-                    this.hotInImageSubject(false);
+                    this.hotInImageSubjects(false);
                     break;
                 case 'more':
                     this.getWithPagerInImageSubject(this.search.tagIds , this.search.mode , false);

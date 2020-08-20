@@ -20,6 +20,15 @@ class Nav extends Base
         return success($res['message'] , $res['data']);
     }
 
+    public function getByModuleId(int $module_id)
+    {
+        $res = NavAction::getByModuleId($this , $module_id);
+        if ($res['code'] != 0) {
+            return error($res['message'] , $res['data'] , $res['code']);
+        }
+        return success($res['message'] , $res['data']);
+    }
+
     public function localUpdate($id)
     {
         $param = $this->request->post();

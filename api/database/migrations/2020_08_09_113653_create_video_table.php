@@ -28,6 +28,7 @@ class CreateVideoTable extends Migration
             $table->unsignedBigInteger('praise_count')->default(0)->comment('点赞数');
             $table->unsignedBigInteger('against_count')->default(0)->comment('反对数');
             $table->unsignedBigInteger('view_count')->default(0)->comment('观看次数');
+            $table->unsignedBigInteger('play_count')->default(0)->comment('播放数');
             $table->string('src' , 500)->default('')->comment('视频源');
             $table->tinyInteger('merge_video_subtitle')->default(0)->comment('合并字幕？0-否 1-是');
             $table->unsignedInteger('duration')->default(0)->comment('时长');
@@ -42,6 +43,7 @@ class CreateVideoTable extends Migration
             $table->tinyInteger('status')->default(1)->comment('状态：-1-审核不通过 0-审核中 1-审核通过');
             $table->tinyInteger('process_status')->default(0)->comment('处理处理状态：-1-处理失败 0-信息处理中 1-转码中 2-处理完成');
             $table->string('fail_reason' , 1000)->default('')->comment('失败原因，当 status=-1 时，必须提供');
+            $table->unsignedSmallInteger('index')->default(0)->comment('剧集索引，仅当 type=pro 的时候有效');
             $table->integer('weight')->default(0)->comment('权重');
             $table->dateTime('update_time')->nullable(true);
             $table->dateTime('create_time')->nullable(true);

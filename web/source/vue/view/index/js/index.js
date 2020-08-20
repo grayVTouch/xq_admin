@@ -1,3 +1,15 @@
+const imageSubjects = {
+    limit: 16 ,
+    data: [] ,
+    type: 'pro' ,
+};
+
+const videoSubjects = {
+    limit: 16 ,
+    data: [] ,
+    type: 'pro' ,
+};
+
 export default {
     name: "index" ,
     data () {
@@ -9,6 +21,10 @@ export default {
                 pending: {} ,
             } ,
 
+            imageSubjects: G.copy(imageSubjects) ,
+
+            videoSubjects: G.copy(videoSubjects) ,
+
             homeSlideshow: [] ,
 
             background: {
@@ -19,14 +35,12 @@ export default {
 
             // 最热门图片
             hotImages: [] ,
+
             // 最新图片
             newestImages: [] ,
 
-            // 图片专区
-            images: [] ,
-
             group: {
-                image: {
+                imageSubject: {
                     action: {
                         scrollWidth: 0 ,
                         clientWidth: 0 ,
@@ -35,13 +49,28 @@ export default {
                         minTranslateX: 0 ,
                     } ,
                     curTag: 'newest' ,
-                    tag: [] ,
+                    tag: {
+                        limit: 5 ,
+                        type: 'pro' ,
+                        data: [] ,
+                    } ,
+                } ,
+
+                videoSubject: {
+                    action: {
+                        scrollWidth: 0 ,
+                        clientWidth: 0 ,
+                        translateX: 0 ,
+                        maxTranslateX: 0 ,
+                        minTranslateX: 0 ,
+                    } ,
+                    curTag: 'newest' ,
+                    tag: {
+                        data: [] ,
+                        limit: 5 ,
+                    } ,
                 } ,
             } ,
-
-            //
-            initOnce: true ,
-
 
         };
     } ,
@@ -53,9 +82,12 @@ export default {
     //     next();
     // } ,
 
+
+
     mounted () {
         this.initDom();
         this.getHomeSlideshow();
+
         this.newestInImageSubject();
         this.hotInImageSubject((keep , data) => {
             if (!keep) {
@@ -63,7 +95,10 @@ export default {
             }
             this.hotImages = data;
         });
-        this.hotTags();
+
+        this.newestInVideoSubject();
+        this.hotTagsInImageSubject();
+        this.hotTagsInVideoSubject();
     } ,
 
     methods: {
@@ -89,9 +124,9 @@ export default {
                     return ;
                 }
                 this.handleImageSubject(data);
-                for (let i = 0; i <  this.images.length; ++i)
+                for (let i = 0; i <  this.imageSubjects.data.length; ++i)
                 {
-                    const cur = this.images[i];
+                    const cur = this.imageSubjects.data[i];
                     if (cur.id === data.id) {
                         this.images.splice(i , 1 ,data);
                         break;
@@ -105,7 +140,7 @@ export default {
             Api.image_subject.show(imageSubjectId , (msg , data , code) => {
                 this.pending('findImageSubjectByImageSubjectId' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     G.invoke(callback , null , false);
                     return ;
                 }
@@ -121,34 +156,38 @@ export default {
             });
         } ,
 
-        // 图片-最新图片
+        // 图片专题-最新图片
         newestInImageSubject () {
-            this.pending('images' , true);
-            this.group.image.curTag = 'newest';
-            Api.index.newestInImageSubject({
-                limit: this.val.limit
+            this.pending('image_subject' , true);
+            this.group.imageSubject.curTag = 'newest';
+            Api.image_subject.newest({
+                limit: this.imageSubjects.limit ,
+                type: this.imageSubjects.type ,
             } , (msg , data , code) => {
-                this.pending('images' , false);
+                this.pending('image_subject' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.newestImages = data;
-                this.images = data;
+                this.imageSubjects.data = data;
                 this.$nextTick(() => {
-                    this.initContentGroupContainerWidthByGroup('image');
+                    this.initContentGroupContainerWidthByGroup('imageSubject');
                 });
             });
         } ,
 
         // 图片-最热门的图片
         hotInImageSubject (callback) {
-            Api.index.hotInImageSubject({
-                limit: this.val.limit
+            this.pending('image_subject' , true);
+            Api.image_subject.hot({
+                limit: this.imageSubjects.limit ,
+                type: this.imageSubjects.type ,
             } , (msg , data , code) => {
+                this.pending('image_subject' , false);
                 if (code !== TopContext.code.Success) {
                     G.invoke(callback , this , false , data);
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 G.invoke(callback , this , true , data);
@@ -156,49 +195,124 @@ export default {
         } ,
 
         getHotImageSubject () {
-            this.pending('images' , true);
-            this.group.image.curTag = 'hot';
+            this.pending('image_subject' , true);
+            this.group.imageSubject.curTag = 'hot';
             this.hotInImageSubject((keep , data) => {
-                this.pending('images' , false);
+                this.pending('image_subject' , false);
                 if (!keep) {
                     return ;
                 }
-                this.images = data;
+                this.imageSubjects.data = data;
                 this.$nextTick(() => {
-                    this.initContentGroupContainerWidthByGroup('image');
+                    this.initContentGroupContainerWidthByGroup('imageSubject');
                 });
             })
         } ,
 
         // 图片-按标签分类获取的图片
         getImageByTagId (tagId) {
-            this.pending('images' , true);
-            this.group.image.curTag = 'tag_' + tagId;
-            Api.index.getImageByTagId(tagId , {
-                limit: this.val.limit
+            this.pending('image_subject' , true);
+            this.group.imageSubject.curTag = 'tag_' + tagId;
+            Api.image_subject.getByTagId(tagId , {
+                limit: this.imageSubjects.limit ,
+                type:  this.imageSubjects.type ,
             } , (msg , data , code) => {
-                this.pending('images' , false);
+                this.pending('image_subject' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
-                this.images = data;
+                this.imageSubjects.data = data;
                 this.$nextTick(() => {
-                    this.initContentGroupContainerWidthByGroup('image');
+                    this.initContentGroupContainerWidthByGroup('imageSubject');
                 });
             });
         } ,
 
         // 图片-按标签分类获取的图片
-        hotTags () {
-            Api.index.hotTags({
-                limit: 5 ,
+        hotTagsInImageSubject () {
+            this.pending('hotTagsInImageSubject' , true);
+            Api.image_subject.hotTags({
+                type: this.group.imageSubject.tag.type ,
+                limit: this.group.imageSubject.tag.limit ,
             } , (msg , data , code) => {
+                this.pending('hotTagsInImageSubject' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
-                this.group.image.tag = data;
+                this.group.imageSubject.tag.data = data;
+            });
+        } ,
+
+        // 图片专题-最新图片
+        newestInVideoSubject () {
+            this.pending('video_subject' , true);
+            this.group.videoSubject.curTag = 'newest';
+            Api.video_subject.newest({
+                limit: this.videoSubjects.limit ,
+                type: this.videoSubjects.type ,
+            } , (msg , data , code) => {
+                this.pending('video_subject' , false);
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , msg);
+                    return ;
+                }
+                this.videoSubjects.data = data;
+                this.$nextTick(() => {
+                    this.initContentGroupContainerWidthByGroup('videoSubject');
+                });
+            });
+        } ,
+
+        hotInVideoSubject () {
+            this.group.videoSubject.curTag = 'hot';
+            this.pending('video_subject' , true);
+            Api.video_subject.hot({
+                limit: this.videoSubjects.limit ,
+            } , (msg , data , code) => {
+                this.pending('video_subject' , false);
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , msg);
+                    return ;
+                }
+                this.videoSubjects.data = data;
+                this.$nextTick(() => {
+                    this.initContentGroupContainerWidthByGroup('videoSubject');
+                });
+            });
+        } ,
+
+        getVideoSubjectsByTagId (tagId) {
+            this.group.videoSubject.curTag = 'tag_' + tagId;
+            this.pending('video_subject' , true);
+            Api.video_subject.getByTagId(tagId , {
+                limit: this.videoSubjects.limit ,
+            } , (msg , data , code) => {
+                this.pending('video_subject' , false);
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , msg);
+                    return ;
+                }
+                this.videoSubjects.data = data;
+                this.$nextTick(() => {
+                    this.initContentGroupContainerWidthByGroup('videoSubject');
+                });
+            });
+        } ,
+
+        // 标签-视频专题
+        hotTagsInVideoSubject () {
+            this.pending('hotTagsInVideoSubject' , true);
+            Api.video_subject.hotTags({
+                limit: this.group.videoSubject.tag.limit ,
+            } , (msg , data , code) => {
+                this.pending('hotTagsInVideoSubject' , false);
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , msg);
+                    return ;
+                }
+                this.group.videoSubject.tag.data = data;
             });
         } ,
 
@@ -206,13 +320,13 @@ export default {
         getHomeSlideshow () {
             Api.index.homeSlideshow((msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message(msg);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.homeSlideshow = data;
                 this.$nextTick(() => {
                     this.initPicPlay_Transform();
-                    // this.initBackground();
+                    this.initBackground();
                 });
             });
         } ,
@@ -237,44 +351,52 @@ export default {
         // 首页幻灯片
         initPicPlay_Transform () {
 
-            console.log('initPicPlay_Transform ... !');
+            // console.log('initPicPlay_Transform ... !');
 
             this.ins.slidebar = new PicPlay_Transform(this.dom.slidebar.get(0) , {
                 // 动画过度时间
                 time: 400,
                 // 定时器时间
                 duration: this.background.duration ,
-                timer: false ,
+                timer: true ,
             })
         } ,
 
         prevByGroup (group) {
-            if (this.group.image.action.translateX >= this.group.image.action.maxTranslateX) {
+            if (this.group[group].action.translateX >= this.group[group].action.maxTranslateX) {
                 return ;
             }
-            this.group.image.action.translateX += this.group.image.action.clientWidth;
+            this.group[group].action.translateX += this.group[group].action.clientWidth;
             const inner = G(this.$refs['inner-for-' + group]);
             inner.css({
-                transform: 'translateX(' + this.group.image.action.translateX + 'px)'
+                transform: 'translateX(' + this.group[group].action.translateX + 'px)'
             });
         } ,
 
         nextByGroup (group) {
-            if (this.group.image.action.translateX <= this.group.image.action.minTranslateX) {
+            if (this.group[group].action.translateX <= this.group[group].action.minTranslateX) {
                 return ;
             }
-            this.group.image.action.translateX -= this.group.image.action.clientWidth;
+            this.group[group].action.translateX -= this.group[group].action.clientWidth;
             const inner = G(this.$refs['inner-for-' + group]);
             inner.css({
-                transform: 'translateX(' + this.group.image.action.translateX + 'px)'
+                transform: 'translateX(' + this.group[group].action.translateX + 'px)'
             });
         } ,
 
-        // 初始化内容分组的容器宽度
+        /**
+         * 初始化内容分组的容器宽度
+         *
+         * @param group image-subject | video-subject
+         */
         initContentGroupContainerWidthByGroup (group) {
-            const list = G(this.$refs['list-for-' + group]);
+            const list  = G(this.$refs['list-for-' + group]);
             const inner = G(this.$refs['inner-for-' + group]);
-            const items = inner.children();
+            const items = inner.children({
+                className: 'item' ,
+                tagName: 'div' ,
+            });
+            const listW = list.width();
             let width = 0;
             items.each((item) => {
                 item = G(item);
@@ -284,13 +406,12 @@ export default {
                 width: width + 'px' ,
                 transform: 'translateX(0px)'
             });
-            this.group.image.action.translateX = 0;
-            this.group.image.action.scrollWidth = width;
-            this.group.image.action.clientWidth = parseInt(list.width('content-box'));
-            this.group.image.action.maxTranslateX = 0;
-            this.group.image.action.minTranslateX = -(Math.ceil(this.group.image.action.scrollWidth / this.group.image.action.clientWidth) - 1) * this.group.image.action.clientWidth;
+            this.group[group].action.translateX = 0;
+            this.group[group].action.scrollWidth = width;
+            this.group[group].action.clientWidth = parseInt(list.width());
+            this.group[group].action.maxTranslateX = 0;
+            this.group[group].action.minTranslateX = -(Math.ceil(this.group[group].action.scrollWidth / this.group[group].action.clientWidth) - 1) * this.group[group].action.clientWidth;
         } ,
-
 
     } ,
 }

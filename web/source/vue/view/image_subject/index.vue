@@ -8,13 +8,13 @@
 
             <div class="content">
                 <div class="big-image">
-                    <a class="mask" :href="imageSubject.length > 0 ? imageSubject[0].link : 'javascript:;'"><img :src="imageSubject.length > 0 ? imageSubject[0].__path__ : $store.state.context.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
+                    <a class="mask" :href="imageSubject.length > 0 ? imageSubject[0].link : 'javascript:;'"><img :src="imageSubject.length > 0 ? imageSubject[0].__path__ : $store.state.context.res.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
                 </div>
                 <div class="small-image">
-                    <a class="mask" :href="imageSubject.length > 1 ? imageSubject[1].link : 'javascript:;'"><img :src="imageSubject.length > 1 ? imageSubject[1].__path__ : $store.state.context.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
-                    <a class="mask" :href="imageSubject.length > 2 ? imageSubject[2].link : 'javascript:;'"><img :src="imageSubject.length > 2 ? imageSubject[2].__path__ : $store.state.context.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
-                    <a class="mask" :href="imageSubject.length > 3 ? imageSubject[3].link : 'javascript:;'"><img :src="imageSubject.length > 3 ? imageSubject[3].__path__ : $store.state.context.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
-                    <a class="mask" :href="imageSubject.length > 4 ? imageSubject[4].link : 'javascript:;'"><img :src="imageSubject.length > 4 ? imageSubject[4].__path__ : $store.state.context.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
+                    <a class="mask" :href="imageSubject.length > 1 ? imageSubject[1].link : 'javascript:;'"><img :src="imageSubject.length > 1 ? imageSubject[1].__path__ : $store.state.context.res.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
+                    <a class="mask" :href="imageSubject.length > 2 ? imageSubject[2].link : 'javascript:;'"><img :src="imageSubject.length > 2 ? imageSubject[2].__path__ : $store.state.context.res.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
+                    <a class="mask" :href="imageSubject.length > 3 ? imageSubject[3].link : 'javascript:;'"><img :src="imageSubject.length > 3 ? imageSubject[3].__path__ : $store.state.context.res.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
+                    <a class="mask" :href="imageSubject.length > 4 ? imageSubject[4].link : 'javascript:;'"><img :src="imageSubject.length > 4 ? imageSubject[4].__path__ : $store.state.context.res.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
                 </div>
             </div>
         </div>
@@ -23,9 +23,9 @@
         <div class="content">
             <!-- 标签列表 -->
             <div class="run-tags horizontal" ref="tags-selector-in-docs">
-                <my-button class="tag" :class="{cur: curTag === 'newest' && search.tags.length < 1}" @click="newestInImageSubject">最新</my-button>
-                <my-button class="tag" :class="{cur: curTag === 'hot' && search.tags.length < 1}" @click="hotInImageSubject">热门</my-button>
-                <my-button class="tag" v-for="v in partHotTags" :key="v.id" :class="{cur: curTag === 'tag_' + v.tag_id && search.tags.length < 1}" @click="getWithPagerByTagIdInImageSubject(v.tag_id)">{{ v.name }}</my-button>
+                <my-button class="tag" :class="{cur: curTag === 'newest' && search.tags.length < 1}" @click="newestInImageSubjects">最新</my-button>
+                <my-button class="tag" :class="{cur: curTag === 'hot' && search.tags.length < 1}" @click="hotInImageSubjects">热门</my-button>
+                <my-button class="tag" v-for="v in partHotTags.data" :key="v.id" :class="{cur: curTag === 'tag_' + v.tag_id && search.tags.length < 1}" @click="getWithPagerByTagIdInImageSubject(v.tag_id)">{{ v.name }}</my-button>
                 <my-button class="tag more" :class="{cur: search.tags.length > 0}" @click="showTagSelector">
                     更多标签
                     <span class="number" v-if="search.tags.length > 0">
@@ -105,9 +105,9 @@
 
         <!-- 标签列表 -->
         <div class="run-tags vertical" ref="tags-selector-in-slidebar">
-            <my-button class="tag" :class="{cur: curTag === 'newest' && search.tags.length < 1}" @click="newestInImageSubject">最新</my-button>
-            <my-button class="tag" :class="{cur: curTag === 'hot' && search.tags.length < 1}" @click="hotInImageSubject">热门</my-button>
-            <my-button class="tag" v-for="v in partHotTags" :key="v.id" :class="{cur: curTag === 'tag_' + v.tag_id && search.tags.length < 1}" @click="getWithPagerByTagIdInImageSubject(v.tag_id)">{{ v.name }}</my-button>
+            <my-button class="tag" :class="{cur: curTag === 'newest' && search.tags.length < 1}" @click="newestInImageSubjects">最新</my-button>
+            <my-button class="tag" :class="{cur: curTag === 'hot' && search.tags.length < 1}" @click="hotInImageSubjects">热门</my-button>
+            <my-button class="tag" v-for="v in partHotTags.data" :key="v.id" :class="{cur: curTag === 'tag_' + v.tag_id && search.tags.length < 1}" @click="getWithPagerByTagIdInImageSubject(v.tag_id)">{{ v.name }}</my-button>
             <my-button class="tag more" :class="{cur: search.tags.length > 0}" @click="showTagSelector">
                 更多标签
                 <span class="number" v-if="search.tags.length > 0">
@@ -158,9 +158,10 @@
                         </div>
                         <div class="list run-tags horizontal" :class="{loading: val.pending.hotTagsWithPager}">
                             <div class="mask" v-if="val.pending.hotTagsWithPager"><my-loading></my-loading></div>
+                            <div class="empty" v-if="!val.pending.hotTagsWithPager && allHotTags.total <= 0">暂无相关记录</div>
                             <span class="tag" v-ripple v-for="v in allHotTags.data" :class="{selected: search.tagIds.indexOf(v.tag_id) >= 0}" :key="v.id" @click="filterByTag(v)">{{ v.name }}</span>
                         </div>
-                        <div class="pager">
+                        <div class="pager" v-if="allHotTags.total > 0">
                             <my-page :total="allHotTags.total" :limit="allHotTags.limit" :page="allHotTags.page" @on-change="tagPageEvent"></my-page>
                         </div>
                     </div>

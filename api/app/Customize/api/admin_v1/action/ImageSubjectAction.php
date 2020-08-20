@@ -61,7 +61,7 @@ class ImageSubjectAction extends Action
         $status_range   = array_keys(my_config('business.status_for_image_subject'));
 
         $validator = Validator::make($param , [
-            'name'          => 'required' ,
+//            'name'          => 'required' ,
             'user_id'       => 'required|integer' ,
             'module_id'     => 'required|integer' ,
             'category_id'   => 'required|integer' ,
@@ -196,7 +196,7 @@ class ImageSubjectAction extends Action
         $type_range = array_keys(my_config('business.type_for_image_subject'));
         $status_range = array_keys(my_config('business.status_for_image_subject'));
         $validator = Validator::make($param , [
-            'name'      => 'required' ,
+//            'name'      => 'required' ,
             'user_id'   => 'required|integer' ,
             'module_id' => 'required|integer' ,
             'category_id' => 'required|integer' ,

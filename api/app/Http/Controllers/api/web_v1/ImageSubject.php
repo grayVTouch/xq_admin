@@ -15,7 +15,8 @@ class ImageSubject extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['type']      = $param['type'] ?? '';
+        $param['limit']     = $param['limit'] ?? '';
         $res = ImageSubjectAction::newest($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -27,7 +28,8 @@ class ImageSubject extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['type']      = $param['type'] ?? '';
+        $param['limit']     = $param['limit'] ?? '';
         $res = ImageSubjectAction::hot($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -39,7 +41,8 @@ class ImageSubject extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['type']      = $param['type'] ?? '';
+        $param['limit']     = $param['limit'] ?? '';
         $res = ImageSubjectAction::hotWithPager($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -51,7 +54,8 @@ class ImageSubject extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['type']      = $param['type'] ?? '';
+        $param['limit']     = $param['limit'] ?? '';
         $res = ImageSubjectAction::newestWithPager($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -63,8 +67,11 @@ class ImageSubject extends Base
     public function getByTagId($tag_id)
     {
         $param = $this->request->query();
+
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['type']      = $param['type'] ?? '';
+        $param['limit']     = $param['limit'] ?? '';
+
         $res = ImageSubjectAction::getByTagId($this , $tag_id , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -76,10 +83,12 @@ class ImageSubject extends Base
     public function getWithPagerByTagIds()
     {
         $param = $this->request->query();
+
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['tag_ids'] = $param['tag_ids'] ?? '';
-        $param['mode'] = $param['mode'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['tag_ids']   = $param['tag_ids'] ?? '';
+        $param['mode']      = $param['mode'] ?? '';
+        $param['limit']     = $param['limit'] ?? '';
+
         $res = ImageSubjectAction::getWithPagerByTagIds($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -91,12 +100,16 @@ class ImageSubject extends Base
     public function hotTags()
     {
         $param = $this->request->query();
+
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['type']      = $param['type'] ?? '';
+        $param['limit']     = $param['limit'] ?? '';
+
         $res = ImageSubjectAction::hotTags($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }
+
         return success($res['message'] , $res['data']);
     }
 
@@ -179,7 +192,10 @@ class ImageSubject extends Base
     public function recommend(int $image_subject_id)
     {
         $param = $this->request->query();
+
+        $param['type']  = $param['type'] ?? '';
         $param['limit'] = $param['limit'] ?? '';
+
         $res = ImageSubjectAction::recommend($this , $image_subject_id , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);

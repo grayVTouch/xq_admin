@@ -5,6 +5,7 @@ namespace App\Customize\api\admin_v1\action;
 
 use App\Customize\api\admin_v1\handler\VideoSubjectHandler;
 use App\Customize\api\admin_v1\handler\UserHandler;
+use App\Customize\api\admin_v1\model\CategoryModel;
 use App\Customize\api\admin_v1\model\ModuleModel;
 use App\Customize\api\admin_v1\model\RelationTagModel;
 use App\Customize\api\admin_v1\model\TagModel;
@@ -44,11 +45,11 @@ class VideoSubjectAction extends Action
             'end_time'      => 'sometimes|date_format:Y-m-d' ,
             'status'        => ['required' , Rule::in($status_range)] ,
             'count'         => 'sometimes|integer' ,
-            'play_count'    => 'sometimes|integer' ,
             'weight'        => 'sometimes|integer' ,
-            'video_series_id' => 'required|integer' ,
-            'video_company_id' => 'required|integer' ,
-            'module_id'     => 'required|integer' ,
+            'video_series_id'   => 'required|integer' ,
+            'video_company_id'  => 'required|integer' ,
+            'module_id'         => 'required|integer' ,
+            'category_id'       => 'required|integer' ,
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
@@ -57,12 +58,21 @@ class VideoSubjectAction extends Action
         if (empty($video_subject)) {
             return self::error('视频专题不存在' , '' , 404);
         }
+
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
             return self::error('' , [
                 'module_id' => '模块不存在' ,
             ]);
         }
+
+        $category = CategoryModel::find($param['category_id']);
+        if (empty($category)) {
+            return self::error('' , [
+                'category_id' => '分类不存在' ,
+            ]);
+        }
+
         $video_series = VideoSeriesModel::find($param['video_series_id']);
         if (empty($video_series)) {
             return self::error('' , [
@@ -88,10 +98,10 @@ class VideoSubjectAction extends Action
                 'end_time' ,
                 'status' ,
                 'count' ,
-                'play_count' ,
                 'description' ,
                 'video_series_id' ,
                 'video_company_id' ,
+                'category_id' ,
                 'module_id' ,
                 'weight' ,
                 'create_time' ,
@@ -141,38 +151,50 @@ class VideoSubjectAction extends Action
     {
         $status_range = array_keys(my_config('business.status_for_video_subject'));
         $validator = Validator::make($param , [
-            'name'          => 'required' ,
-            'release_time'  => 'sometimes|date_format:Y-m-d' ,
-            'end_time'      => 'sometimes|date_format:Y-m-d' ,
-            'status'        => ['required' , Rule::in($status_range)] ,
-            'count'         => 'sometimes|integer' ,
-            'play_count'    => 'sometimes|integer' ,
-            'weight'        => 'sometimes|integer' ,
-            'video_series_id' => 'required|integer' ,
-            'video_company_id' => 'required|integer' ,
-            'module_id'     => 'required|integer' ,
+            'name'              => 'required' ,
+            'release_time'      => 'sometimes|date_format:Y-m-d' ,
+            'end_time'          => 'sometimes|date_format:Y-m-d' ,
+            'status'            => ['required' , Rule::in($status_range)] ,
+            'count'             => 'sometimes|integer' ,
+            'weight'            => 'sometimes|integer' ,
+            'video_series_id'   => 'required|integer' ,
+            'video_company_id'  => 'required|integer' ,
+            'module_id'         => 'required|integer' ,
+            'category_id'         => 'required|integer' ,
         ]);
+
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
+
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
             return self::error('' , [
                 'module_id' => '模块不存在' ,
             ]);
         }
+
         $video_series = VideoSeriesModel::find($param['video_series_id']);
         if (empty($video_series)) {
             return self::error('' , [
                 'video_series_id' => '视频系列不存在' ,
             ]);
         }
+
         $video_company = VideoCompanyModel::find($param['video_company_id']);
         if (empty($video_company)) {
             return self::error('' , [
                 'video_company_id' => '视频制作公司不存在' ,
             ]);
         }
+
+        $category = CategoryModel::find($param['category_id']);
+        if (empty($category)) {
+            return self::error('' , [
+                'category_id' => '分类不存在' ,
+            ]);
+        }
+
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $param['create_time'] = current_time();
         $tags = $param['tags'] === '' ? [] : json_decode($param['tags'] , true);
@@ -186,10 +208,10 @@ class VideoSubjectAction extends Action
                 'end_time',
                 'status',
                 'count',
-                'play_count',
                 'description',
                 'video_series_id',
                 'video_company_id',
+                'category_id',
                 'module_id',
                 'weight',
                 'create_time',

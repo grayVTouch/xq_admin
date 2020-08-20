@@ -572,10 +572,10 @@ export default {
                     return ;
                 }
                 this.successHandle((keep) => {
+                    this.$emit('on-success');
                     if (keep) {
                         return ;
                     }
-                    this.$emit('on-success');
                     this.closeFormDrawer();
                 });
             };

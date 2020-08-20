@@ -51,7 +51,7 @@
     width: 100%;
     height: 100%;
     z-index: 0;
-    background-image: var(--image-subject-index-background);
+    background-image: var(--line-background);
     background-repeat: repeat;
     background-position: center;
 }
@@ -276,7 +276,7 @@
 
 .tag-selector > .inner {
     width: 800px;
-    min-height: 400px;
+    /*min-height: 400px;*/
     position: absolute;
     left: 50%;
     top: 100%;
@@ -431,6 +431,14 @@
 
 .tag-selector > .inner .content > .tags .list {
     position: relative;
+}
+
+.tag-selector > .inner .content > .tags .list .empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    height: 80px;
 }
 
 .tag-selector > .inner .content > .tags .list.loading {

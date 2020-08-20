@@ -758,7 +758,7 @@
 
 .tag-selector > .inner {
     width: 800px;
-    min-height: 400px;
+    /*min-height: 400px;*/
     position: absolute;
     left: 50%;
     top: 100%;
@@ -913,6 +913,14 @@
 
 .tag-selector > .inner .content > .tags .list {
     position: relative;
+}
+
+.tag-selector > .inner .content > .tags .list .empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    height: 80px;
 }
 
 .tag-selector > .inner .content > .tags .list.loading {

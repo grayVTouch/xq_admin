@@ -4,6 +4,7 @@
 namespace App\Customize\api\admin_v1\handler;
 
 
+use App\Customize\api\admin_v1\model\CategoryModel;
 use App\Customize\api\admin_v1\model\ModuleModel;
 use App\Customize\api\admin_v1\model\RelationTagModel;
 use App\Customize\api\admin_v1\model\VideoCompanyModel;
@@ -32,12 +33,17 @@ class VideoSubjectHandler extends Handler
         $video_company = VideoCompanyModel::find($res->video_company_id);
         $video_company = VideoCompanyHandler::handle($video_company);
 
+        $category = CategoryModel::find($res->category_id);
+        $category = CategoryHandler::handle($category);
+
+
         $tags = RelationTagModel::getByRelationTypeAndRelationId('video_subject' , $res->id);
 
         $res->module = $module;
         $res->video_series = $video_series;
         $res->video_company = $video_company;
         $res->tags = $tags;
+        $res->category = $category;
 
         $res->__thumb__ = empty($res->thumb) ? '' : FileUtil::url($res->thumb);
         $res->__status__ = empty($res->status) ? '' : get_value('business.status_for_video_subject' , $res->status);

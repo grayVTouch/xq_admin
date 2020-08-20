@@ -29,6 +29,7 @@ class CreateUserTable extends Migration
             $table->string('email' , 50)->default('')->comment('电子邮件');
             $table->unsignedBigInteger('user_group_id')->default(0)->comment('xq_user_group.id');
             $table->string('channel_thumb' , 500)->default('')->comment('频道封面');
+            $table->string('description' , 1000)->default('')->comment('描述');
             $table->datetime('update_time')->nullable(true);
             $table->datetime('create_time')->nullable(true);
             $table->index('username');

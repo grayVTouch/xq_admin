@@ -30,10 +30,22 @@ class NavAction extends Action
         return self::success('' , $res);
     }
 
+    public static function getByModuleId(Base $context , int $module_id , array $param = []): array
+    {
+        $res = NavModel::getByModuleId($module_id);
+        $res = NavHandler::handleAll($res);
+        $res = obj_to_array($res);
+        $res = Category::childrens(0 , $res , [
+            'id'    => 'id' ,
+            'p_id'  => 'p_id' ,
+        ] , false , false);
+        return self::success('' , $res);
+    }
+
     public static function localUpdate(Base $context , $id , array $param = [])
     {
         $platform_range = array_keys(my_config('business.platform'));
-        $bool_range = array_keys(my_config('business.bool_for_int'));
+        $bool_range     = array_keys(my_config('business.bool_for_int'));
         $validator = Validator::make($param , [
             'weight'    => 'sometimes|integer',
             'p_id'    => 'sometimes|integer',

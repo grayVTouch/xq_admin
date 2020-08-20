@@ -17,4 +17,12 @@ class ModuleModel extends Model
             ->orderBy('id' , 'asc')
             ->get();
     }
+
+    public static function getDefault(): ?ModuleModel
+    {
+        return self::where([
+            ['enable' , '=' , 1] ,
+            ['default' , '=' , 1] ,
+        ])->first();
+    }
 }

@@ -12,6 +12,8 @@ const incrementViewCount = `${TopContext.api}/image_subject/{image_subject_id}/i
 const recommend = `${TopContext.api}/image_subject/{image_subject_id}/recommend`;
 const newest = `${TopContext.api}/image_subject/newest`;
 const hot = `${TopContext.api}/image_subject/hot`;
+const getByTagId = `${TopContext.api}/image_subject/{tag_id}/get_by_tag_id`;
+const getByTagIds = `${TopContext.api}/image_subject/get_by_tag_ids`;
 
 export default {
 
@@ -71,5 +73,12 @@ export default {
         return request(hot , 'get' , data , success , error);
     } ,
 
+    getByTagId (tagId , data , success , error) {
+        return request(getByTagId.replace('{tag_id}' , tagId), 'get' , data , success , error);
+    } ,
+
+    getByTagIds (data , success , error) {
+        return request(getByTagIds , 'get' , data , success , error);
+    } ,
 
 };

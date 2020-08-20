@@ -69,8 +69,10 @@ class ImageSubjectHandler extends Handler
         } else {
             $res->collected = CollectionModel::findByModuleIdAndUserIdAndRelationTypeAndRelationId($res->module_id , $user->id , 'image_subject' , $res->id) ? 1 : 0;
             $res->praised = PraiseModel::findByModuleIdAndUserIdAndRelationTypeAndRelationId($res->module_id , $user->id , 'image_subject' , $res->id) ? 1 : 0;
-            $res->collect_count = CollectionModel::countByModuleIdAndRelationTypeAndRelationId($res->module_id , 'image_subject' , $res->id);
         }
+
+        // 收藏数量
+        $res->collect_count = CollectionModel::countByModuleIdAndRelationTypeAndRelationId($res->module_id , 'image_subject' , $res->id);
 
         $res->format_time = date('Y-m-d H:i' , strtotime($res->create_time));
 

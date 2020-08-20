@@ -121,11 +121,11 @@ export default {
                     return ;
                 }
                 this.successHandle((keep) => {
+                    self.$emit('on-success');
                     if (keep) {
                         return ;
                     }
                     self.closeFormDrawer();
-                    self.$emit('on-success');
                 });
             };
             this.pending('submit' , true);

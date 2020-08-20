@@ -123,6 +123,15 @@
     font-weight: bold;
 }
 
+.main > .header .navigation .nav-top > .inner > .c-inner .logo .module {
+    font-size: 12px;
+    color: var(--font-color);
+}
+
+.main > .header .navigation .nav-top > .inner > .c-inner .logo .module .link:hover {
+    text-decoration: underline;
+}
+
 /*** 顶部导航栏 top search ***/
 .main > .header .navigation .nav-top > .inner > .c-inner .search {
     position: absolute;
@@ -179,7 +188,7 @@
     height: 100%;
     border: none;
     padding-left: 40px;
-    padding-right: 70px;
+    padding-right: 90px;
     transition: all 0.3s;
 }
 
@@ -201,7 +210,7 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 70px;
+    width: 90px;
     height: 100%;
     font-size: 14px;
     transition: all 0.3s;
@@ -242,7 +251,8 @@
     background-color: #565656;
     position: absolute;
     opacity: 0;
-    bottom: -20px;
+    /*bottom: -20px;*/
+    bottom: 0;
     width: 100%;
 
     /*height: 0;*/
@@ -253,7 +263,7 @@
 }
 
 .main > .header .navigation .nav-top > .inner > .c-inner .search .inner .type .list.show {
-    bottom: -5px;
+    /*bottom: -5px;*/
     opacity: 1;
     transform: translateY(100%) scale(1 , 1);
 }
@@ -266,8 +276,8 @@
 
 .main > .header .navigation .nav-top > .inner > .c-inner .search .inner .type .list li {
     text-align: center;
-    height: 30px;
-    line-height: 30px;
+    height: 40px;
+    line-height: 40px;
     min-width: 55px;
     transition: all 0.3s;
     cursor: pointer;
@@ -897,20 +907,92 @@
      * **********************
      */
 .main > .header .navigation .nav-btm {
-    display: flex;
-    justify-content: space-between;
     width: 100%;
     height: 42px;
     line-height: 42px;
     font-size: 14px;
 }
 
-.main > .header .navigation .nav-btm .inner .item {
+.main > .header .navigation .nav-btm > .inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.main > .header .navigation .nav-btm > .inner > .item {
     margin: 0;
 }
 
-.main > .header .navigation .nav-btm .inner .menu {
-    width: 100%;
+.main > .header .navigation .nav-btm > .inner > .item.menu {
+    /*width: 100%;*/
+}
+
+.main > .header .navigation .nav-btm > .inner > .item.actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.main > .header .navigation .nav-btm > .inner > .item.actions > * {
+    margin: 0;
+}
+
+.main > .header .navigation .nav-btm > .inner > .item.actions .module {
+    padding: 0 20px;
+    font-size: 12px;
+    color: #ccc;
+}
+
+.main > .header .navigation .nav-btm > .inner > .item.actions .module:hover {
+    text-decoration: underline;
+}
+
+.main > .header .navigation .nav-btm > .inner > .actions .module-switch {
+    position: relative;
+}
+
+.main > .header .navigation .nav-btm > .inner > .actions .module-switch:hover .action {
+    background-color: var(--box-background-color-hover);
+}
+
+.main > .header .navigation .nav-btm > .inner > .actions .module-switch .action {
+    width: 60px;
+    line-height: 39px;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.main > .header .navigation .nav-btm > .inner > .actions .module-switch .list {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50% , 100%) scale(0.8 , 0.8);
+    opacity: 0;
+    background-color: var(--box-background-color);
+    transition: all 0.3s;
+    padding: 10px 0;
+}
+
+.main > .header .navigation .nav-btm > .inner > .actions .module-switch .list.show {
+    opacity: 1;
+    transform: translate(-50% , 100%) scale(1 , 1);
+}
+
+.main > .header .navigation .nav-btm > .inner > .actions .module-switch .list .item {
+    text-align: center;
+    white-space: nowrap;
+    padding: 0 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.main > .header .navigation .nav-btm > .inner > .actions .module-switch .list .item:hover {
+    background-color: var(--box-background-color-hover);
 }
 
 
@@ -1090,6 +1172,11 @@
     line-height: 45px;
     position: relative;
     background-color: rgba(64, 64, 64, 0.5);
+    transition: all 0.3s;
+}
+
+.user-form .user-form-item .form .form-inner .line .top:focus-within {
+    background-color: rgba(64, 64, 64, 0.8);
 }
 
 .user-form .user-form-item .form .form-inner .line .top .left {

@@ -13,8 +13,8 @@
             <nav class="nav">
                 <h2 class="title">请选择模块</h2>
                 <div class="module">
-                    <ul class="list" v-if="!val.pending.loading">
-                        <li v-for="v in module" class="item"><a href="javascript:void(0);" class="link" @click="toHome(v)">{{ v.name }}</a></li>
+                    <ul class="list" v-if="!val.pending.getModules">
+                        <li v-for="v in modules" class="item"><a class="link" href="javascript:void(0);" @click="toHome(v)">{{ v.name }}</a></li>
                     </ul>
                     <div class="loading" v-else>
                         <my-loading></my-loading>
@@ -34,33 +34,21 @@
         data () {
             return {
                 val: {
-                    pending: {
-                        loading: false ,
-                    } ,
-                    module: false ,
-                    // 模块显示
-                    showModule: false ,
+                    pending: {} ,
                 } ,
                 dom: {} ,
-                module: [] ,
-                once: true ,
+                modules: [] ,
             };
         } ,
 
-        beforeRouteEnter (to , from , next) {
-            next((vm) => {
-                if (vm.once) {
-                    vm.once = false;
-                } else {
-                    vm.getModuleData();
-                }
-            });
+        beforeRouteUpdate () {
+            this.getModules();
         } ,
 
         mounted () {
             this.initDom();
             this.showModule();
-            this.getModuleData();
+            this.getModules();
         } ,
 
         methods: {
@@ -76,15 +64,15 @@
                 this.dom.center.endTransition('show');
             } ,
 
-            getModuleData () {
-                this.pending('loading' , true);
-                Api.welcome.module((msg , data , code) => {
-                    this.pending('loading' , false);
+            getModules () {
+                this.pending('getModules' , true);
+                Api.module.all((msg , data , code) => {
+                    this.pending('getModules' , false);
                     if (code !== TopContext.code.Success) {
-                        this.message(msg);
+                        this.message('error' , msg);
                         return ;
                     }
-                    this.module = data;
+                    this.modules = data;
                 });
             } ,
 

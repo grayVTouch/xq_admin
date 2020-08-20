@@ -307,7 +307,7 @@
                                     <div class="run-title">
                                         <div class="left">图片列表</div>
                                         <div class="right">
-                                            <my-table-button type="error" :loading="val.pending['destroyAll']" @click="destroyAllEvent">删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
+                                            <my-table-button type="error" :loading="val.pending['destroyAll']" v-if="val.selectedIds.length > 0" @click="destroyAllEvent">删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
                                         </div>
                                     </div>
                                     <div>
@@ -323,7 +323,7 @@
                                 </div>
 
                                 <div class="line">
-                                    <my-table-button type="error" :loading="val.pending['destroyAll']" @click="destroyAllEvent">删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
+                                    <my-table-button type="error" :loading="val.pending['destroyAll']" v-if="val.selectedIds.length > 0" @click="destroyAllEvent">删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
                                 </div>
                             </div>
                         </div>

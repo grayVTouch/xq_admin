@@ -91,6 +91,12 @@ return [
         'register' => '用户注册' ,
     ] ,
 
+    'status_for_video_subject' => [
+        'making' => '连载中' ,
+        'completed' => '已完结' ,
+        'terminated' => '已终止' ,
+    ] ,
+
     'mode_for_file' => [
         'ratio' ,
         'fix' ,

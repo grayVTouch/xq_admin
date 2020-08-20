@@ -38,20 +38,15 @@
                 if (files.length < 1) {
                     return ;
                 }
-                const tarFile = files[0];
-                const formData = G.formData('file' , tarFile);
-
-                console.log(formData , tarFile);
-
-                this.upload(formData);
+                this.upload(files[0]);
             } ,
 
-            upload (data) {
+            upload (file) {
                 this.pending('upload' , true);
-                Api.file.upload(data , (msg , data , code) => {
+                Api.file.upload(file , (msg , data , code) => {
                     this.pending('upload' , false);
                     if (code !== TopContext.code.Success) {
-                        this.message(msg);
+                        this.message('error' , msg);
                         return ;
                     }
                     this.$emit('success' , data);
