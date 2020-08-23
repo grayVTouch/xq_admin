@@ -28,7 +28,7 @@
                                 <td>名称：</td>
                                 <td>
                                     <input type="text" class="form-text" v-model="form.name" @input="val.error.name = ''">
-                                    <span class="need">*</span>
+                                    <span class="need"></span>
                                     <div class="msg"></div>
                                     <div class="e-msg">{{ val.error.name }}</div>
                                 </td>
@@ -89,6 +89,16 @@
                                     <span class="need">*</span>
                                     <div class="msg">请务必在选择模块后操作；输入关联主体id、名称可查询</div>
                                     <div class="e-msg">{{ val.error.video_subject_id }}</div>
+                                </td>
+                            </tr>
+
+                            <tr :class="{error: val.error.index}">
+                                <td>视频索引</td>
+                                <td>
+                                    <input type="number" v-model="form.index" @input="val.error.index = ''" class="form-text">
+                                    <span class="need">*</span>
+                                    <div class="msg">仅允许整数</div>
+                                    <div class="e-msg">{{ val.error.index }}</div>
                                 </td>
                             </tr>
 

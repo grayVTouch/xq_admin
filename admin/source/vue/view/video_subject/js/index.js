@@ -224,10 +224,6 @@ export default {
         handleData (data) {
             data.forEach((v) => {
                 this.pending(`delete_${v.id}` , false);
-
-                v.video_series = v.video_series ? v.video_series : {};
-                v.video_company = v.video_company ? v.video_company : {};
-                v.module = v.module ? v.module : {};
             });
         } ,
 

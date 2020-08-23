@@ -45,6 +45,12 @@ export default {
                         tooltip: true ,
                     } ,
                     {
+                        title: '视频索引' ,
+                        key: 'index' ,
+                        minWidth: TopContext.table.number ,
+                        align: TopContext.table.alignCenter ,
+                    } ,
+                    {
                         title: '封面' ,
                         slot: 'thumb' ,
                         minWidth: TopContext.table.name ,

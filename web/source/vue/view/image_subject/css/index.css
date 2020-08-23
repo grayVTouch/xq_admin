@@ -190,6 +190,7 @@
 
 .view > .content > .list {
     position: relative;
+    min-height: 555px;
 }
 
 .view > .content > .list > .loading {
@@ -203,6 +204,18 @@
     height: 100%;
     background-color: rgba(0,0,0,0.6);
     z-index: 10;
+}
+
+.view > .content > .list > .empty {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50% , -50%);
+
+    /*height: 200px;*/
+    /*display: flex;*/
+    /*align-items: center;*/
+    /*justify-content: center;*/
 }
 
 .view > .content > .list > .inner {

@@ -76,4 +76,24 @@ class VideoModel extends Model
         return self::where('process_status' , $process_status)
             ->count();
     }
+
+    // 检查剧集是否已经存在
+    public static function findByVideoSubjectIdAndIndex(int $video_subject_id , int $index): ?VideoModel
+    {
+        return self::where([
+            ['type' , '=' , 'pro'] ,
+            ['video_subject_id' , '=' , $video_subject_id] ,
+            ['index' , '=' , $index] ,
+        ])->first();
+    }
+
+    public static function findExcludeSelfByVideoIdAndVideoSubjectIdAndIndex(int $video_id , int $video_subject_id , int $index): ?VideoModel
+    {
+        return self::where([
+            ['type' , '=' , 'pro'] ,
+            ['id' , '!=' , $video_id] ,
+            ['video_subject_id' , '=' , $video_id] ,
+            ['index' , '=' , $index] ,
+        ])->first();
+    }
 }

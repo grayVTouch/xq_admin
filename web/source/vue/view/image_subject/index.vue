@@ -43,6 +43,8 @@
                     <my-loading width="50" height="50"></my-loading>
                 </div>
 
+                <div class="empty" v-if="!val.pending.switchImages && images.data.length <= 0"><my-icon icon="empty" size="40"></my-icon></div>
+
                 <div class="inner">
                     <div class="item card-box" v-for="v in images.data" :key="v.id">
                         <!-- 封面 -->
@@ -97,9 +99,9 @@
 
             </div>
 
-            <div class="loading">
+            <div class="loading" v-if="images.total > 0">
                 <my-loading v-if="!val.pending.switchImages && val.pending.images"></my-loading>
-                <span class="end" v-if="images.end">到底了</span>
+                <span class="end" v-if="images.data.length === images.total">到底了</span>
             </div>
         </div>
 

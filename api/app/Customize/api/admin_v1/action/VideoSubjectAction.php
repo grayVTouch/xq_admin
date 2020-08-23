@@ -46,8 +46,8 @@ class VideoSubjectAction extends Action
             'status'        => ['required' , Rule::in($status_range)] ,
             'count'         => 'sometimes|integer' ,
             'weight'        => 'sometimes|integer' ,
-            'video_series_id'   => 'required|integer' ,
-            'video_company_id'  => 'required|integer' ,
+            'video_series_id'   => 'sometimes|integer' ,
+            'video_company_id'  => 'sometimes|integer' ,
             'module_id'         => 'required|integer' ,
             'category_id'       => 'required|integer' ,
         ]);
@@ -73,20 +73,28 @@ class VideoSubjectAction extends Action
             ]);
         }
 
-        $video_series = VideoSeriesModel::find($param['video_series_id']);
-        if (empty($video_series)) {
-            return self::error('' , [
-                'video_series_id' => '视频系列不存在' ,
-            ]);
+        $video_series = null;
+        if (!empty($param['video_series_id'])) {
+            $video_series = VideoSeriesModel::find($param['video_series_id']);
+            if (empty($video_series)) {
+                return self::error('' , [
+                    'video_series_id' => '视频系列不存在' ,
+                ]);
+            }
         }
-        $video_company = VideoCompanyModel::find($param['video_company_id']);
-        if (empty($video_company)) {
-            return self::error('' , [
-                'video_company_id' => '视频制作公司不存在' ,
-            ]);
+
+        $video_company = null;
+        if (!empty($param['video_company_id'])) {
+            $video_company = VideoCompanyModel::find($param['video_company_id']);
+            if (empty($video_company)) {
+                return self::error('' , [
+                    'video_company_id' => '视频制作公司不存在' ,
+                ]);
+            }
         }
+
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
-        $param['create_time'] = current_time();
+        $param['update_time'] = current_time();
         $tags = $param['tags'] === '' ? [] : json_decode($param['tags'] , true);
         try {
             DB::beginTransaction();
@@ -104,7 +112,7 @@ class VideoSubjectAction extends Action
                 'category_id' ,
                 'module_id' ,
                 'weight' ,
-                'create_time' ,
+                'update_time' ,
             ]));
             ResourceUtil::used($param['thumb']);
             if ($video_subject->thumb !== $param['thumb']) {
@@ -157,8 +165,8 @@ class VideoSubjectAction extends Action
             'status'            => ['required' , Rule::in($status_range)] ,
             'count'             => 'sometimes|integer' ,
             'weight'            => 'sometimes|integer' ,
-            'video_series_id'   => 'required|integer' ,
-            'video_company_id'  => 'required|integer' ,
+            'video_series_id'   => 'sometimes|integer' ,
+            'video_company_id'  => 'sometimes|integer' ,
             'module_id'         => 'required|integer' ,
             'category_id'         => 'required|integer' ,
         ]);
@@ -174,18 +182,24 @@ class VideoSubjectAction extends Action
             ]);
         }
 
-        $video_series = VideoSeriesModel::find($param['video_series_id']);
-        if (empty($video_series)) {
-            return self::error('' , [
-                'video_series_id' => '视频系列不存在' ,
-            ]);
+        $video_series = null;
+        if (!empty($param['video_series_id'])) {
+            $video_series = VideoSeriesModel::find($param['video_series_id']);
+            if (empty($video_series)) {
+                return self::error('' , [
+                    'video_series_id' => '视频系列不存在' ,
+                ]);
+            }
         }
 
-        $video_company = VideoCompanyModel::find($param['video_company_id']);
-        if (empty($video_company)) {
-            return self::error('' , [
-                'video_company_id' => '视频制作公司不存在' ,
-            ]);
+        $video_company = null;
+        if (!empty($param['video_company_id'])) {
+            $video_company = VideoCompanyModel::find($param['video_company_id']);
+            if (empty($video_company)) {
+                return self::error('' , [
+                    'video_company_id' => '视频制作公司不存在' ,
+                ]);
+            }
         }
 
         $category = CategoryModel::find($param['category_id']);

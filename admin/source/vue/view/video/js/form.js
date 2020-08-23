@@ -10,6 +10,7 @@ const form = {
     weight: 0 ,
     status: 0 ,
     merge_video_subtitle: 0 ,
+    index: 0 ,
 };
 
 const users = {
@@ -403,6 +404,7 @@ export default {
                 this.error({video_subject_id: '请选择模块后操作'});
                 return ;
             }
+            this.error({video_subject_id: ''} , false);
             this.searchVideoSubject();
             this._val('modalForSubject' , true);
         } ,

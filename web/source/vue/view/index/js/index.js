@@ -158,13 +158,13 @@ export default {
 
         // 图片专题-最新图片
         newestInImageSubject () {
-            this.pending('image_subject' , true);
+            this.pending('imageSubject' , true);
             this.group.imageSubject.curTag = 'newest';
             Api.image_subject.newest({
                 limit: this.imageSubjects.limit ,
                 type: this.imageSubjects.type ,
             } , (msg , data , code) => {
-                this.pending('image_subject' , false);
+                this.pending('imageSubject' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , msg);
                     return ;
@@ -179,12 +179,12 @@ export default {
 
         // 图片-最热门的图片
         hotInImageSubject (callback) {
-            this.pending('image_subject' , true);
+            this.pending('imageSubject' , true);
             Api.image_subject.hot({
                 limit: this.imageSubjects.limit ,
                 type: this.imageSubjects.type ,
             } , (msg , data , code) => {
-                this.pending('image_subject' , false);
+                this.pending('imageSubject' , false);
                 if (code !== TopContext.code.Success) {
                     G.invoke(callback , this , false , data);
                     this.message('error' , msg);
@@ -195,10 +195,10 @@ export default {
         } ,
 
         getHotImageSubject () {
-            this.pending('image_subject' , true);
+            this.pending('imageSubject' , true);
             this.group.imageSubject.curTag = 'hot';
             this.hotInImageSubject((keep , data) => {
-                this.pending('image_subject' , false);
+                this.pending('imageSubject' , false);
                 if (!keep) {
                     return ;
                 }
@@ -211,13 +211,13 @@ export default {
 
         // 图片-按标签分类获取的图片
         getImageByTagId (tagId) {
-            this.pending('image_subject' , true);
+            this.pending('imageSubject' , true);
             this.group.imageSubject.curTag = 'tag_' + tagId;
             Api.image_subject.getByTagId(tagId , {
                 limit: this.imageSubjects.limit ,
                 type:  this.imageSubjects.type ,
             } , (msg , data , code) => {
-                this.pending('image_subject' , false);
+                this.pending('imageSubject' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , msg);
                     return ;
@@ -247,13 +247,13 @@ export default {
 
         // 图片专题-最新图片
         newestInVideoSubject () {
-            this.pending('video_subject' , true);
+            this.pending('videoSubject' , true);
             this.group.videoSubject.curTag = 'newest';
             Api.video_subject.newest({
                 limit: this.videoSubjects.limit ,
                 type: this.videoSubjects.type ,
             } , (msg , data , code) => {
-                this.pending('video_subject' , false);
+                this.pending('videoSubject' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , msg);
                     return ;
@@ -267,11 +267,11 @@ export default {
 
         hotInVideoSubject () {
             this.group.videoSubject.curTag = 'hot';
-            this.pending('video_subject' , true);
+            this.pending('videoSubject' , true);
             Api.video_subject.hot({
                 limit: this.videoSubjects.limit ,
             } , (msg , data , code) => {
-                this.pending('video_subject' , false);
+                this.pending('videoSubject' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , msg);
                     return ;
@@ -285,11 +285,11 @@ export default {
 
         getVideoSubjectsByTagId (tagId) {
             this.group.videoSubject.curTag = 'tag_' + tagId;
-            this.pending('video_subject' , true);
+            this.pending('videoSubject' , true);
             Api.video_subject.getByTagId(tagId , {
                 limit: this.videoSubjects.limit ,
             } , (msg , data , code) => {
-                this.pending('video_subject' , false);
+                this.pending('videoSubject' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , msg);
                     return ;
@@ -350,9 +350,6 @@ export default {
 
         // 首页幻灯片
         initPicPlay_Transform () {
-
-            // console.log('initPicPlay_Transform ... !');
-
             this.ins.slidebar = new PicPlay_Transform(this.dom.slidebar.get(0) , {
                 // 动画过度时间
                 time: 400,
@@ -402,6 +399,7 @@ export default {
                 item = G(item);
                 width += item.getTW();
             });
+            width = width < listW ? listW : width;
             inner.css({
                 width: width + 'px' ,
                 transform: 'translateX(0px)'

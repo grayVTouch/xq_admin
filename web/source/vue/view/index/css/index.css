@@ -253,7 +253,9 @@
     margin-top: 20px;
     box-sizing: border-box;
     position: relative;
+    min-height: 515px;
 }
+
 
 .view .content-group > .group > .list .loading {
     position: absolute;
@@ -266,6 +268,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.view .content-group > .group > .list .empty {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50% , -50%);
 }
 
 .view .content-group > .group > .list .inner {

@@ -91,6 +91,7 @@ Route::prefix('web_v1')
             Route::get('/video_subject/hot' , 'VideoSubject@hot');
             Route::get('/video_subject/{tag_id}/get_by_tag_id' , 'VideoSubject@getByTagId');
             Route::get('/video_subject/get_by_tag_ids' , 'VideoSubject@getByTagIds');
+            Route::get('/video_subject/{id}' , 'VideoSubject@show');
 
         });
 

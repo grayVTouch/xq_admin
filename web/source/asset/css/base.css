@@ -65,15 +65,24 @@
 
 .run-tags  .tag {
     flex: 0 0 auto;
-    height: 30px;
-    line-height: 30px;
-    padding: 0 20px;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 22px;
     font-size: 12px;
     background-color: #5d5d5d;
     transition: all 0.3s;
-    vertical-align: middle;
     color: #fff;
     cursor: pointer;
+    display: inline-block;
+}
+
+.run-tags  .border-tag {
+    border: 1px solid #ccc;
+    margin-right: 5px;
+}
+
+.run-tags  .border-tag:nth-last-of-type(1) {
+    margin-right: 0;
 }
 
 .run-tags  .tag:nth-last-of-type(1) {
@@ -104,7 +113,7 @@
     background-color: #828282;
 }
 
-.run-tags  .tag:hover {
+.run-tags .tag:hover {
     background-color: #828282;
 }
 

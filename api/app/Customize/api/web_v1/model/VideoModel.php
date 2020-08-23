@@ -13,6 +13,8 @@ class VideoModel extends Model
     public static function getByVideoSubjectId(int $video_subject_id): Collection
     {
         return self::where('video_subject_id' , $video_subject_id)
+            ->orderBy('index' , 'asc')
+            ->orderBy('id' , 'asc')
             ->get();
     }
 

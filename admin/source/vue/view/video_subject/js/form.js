@@ -585,7 +585,7 @@ export default {
     watch: {
         data (data) {
             if (G.isEmptyObject(data)) {
-                this.form = G.copy(form , true);
+                this.form = G.copy(form);
             } else {
                 this.form = data;
             }

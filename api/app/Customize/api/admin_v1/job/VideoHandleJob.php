@@ -200,6 +200,7 @@ class VideoHandleJob implements ShouldQueue
             'preview_width'     => $video_preview['width'] ,
             'preview_height'    => $video_preview['height'] ,
             'preview_duration'  => $video_preview['duration'] ,
+            'preview_line_count' => $video_preview['count'] ,
             'preview_count'     => $preview_count ,
             'thumb_for_program' => $video_first_frame_filename ,
             'duration'          => $video_info['duration'] ,
@@ -252,18 +253,14 @@ class VideoHandleJob implements ShouldQueue
         }
 
         if ($save_origin_video || $save_origin) {
-            $filename = $video->src;
+            $filename           = FileUtil::getRelativePath($this->genMediaSuffix('mp4'));
+            $transcoded_file    = FileUtil::getRealPathByRelativePath($filename);
+            $ffmpeg = FFmpeg::create()->input($video_src);
             if ($merge_video_subtitle) {
-                $filename           = FileUtil::getRelativePath($this->genMediaSuffix('mp4'));
-                $transcoded_file    = FileUtil::getRealPathByRelativePath($filename);
-
-                FFmpeg::create()
-                    ->input($video_src)
-                    ->subtitle($first_video_subtitle_file)
-                    ->save($transcoded_file);
-
-                $video_info = FFprobe::create($transcoded_file)->coreInfo();
+                $ffmpeg->subtitle($first_video_subtitle_file);
             }
+            $ffmpeg->save($transcoded_file);
+            $video_info = FFprobe::create($transcoded_file)->coreInfo();
             VideoSrcModel::insert([
                 'video_id'      => $video->id ,
                 'src'           => $filename ,
@@ -298,7 +295,7 @@ class VideoHandleJob implements ShouldQueue
                     continue ;
                 }
                 $video_subtitle_file = FileUtil::getRealPathByRelativePath($v->src);
-                $video_subtitle_convert_filename = FileUtil::getRelativePath($this->genMediaSuffix('.vtt'));
+                $video_subtitle_convert_filename = FileUtil::getRelativePath($this->genMediaSuffix('vtt'));
                 $video_subtitle_convert_file = FileUtil::getRealPathByRelativePath($video_subtitle_convert_filename);
                 FFmpeg::create()
                     ->input($video_subtitle_file)

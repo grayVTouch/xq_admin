@@ -37,10 +37,13 @@ export default {
 
             // 热门标签（部分）
             partHotTags: G.copy(partHotTags) ,
+
             // 所有标签
             allHotTags: {...allHotTags} ,
+
             // 图片
             images: {...images} ,
+
             // 焦点图片
             imageSubject: [] ,
             curTag: '' ,

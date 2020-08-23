@@ -40,6 +40,7 @@ class CreateVideoTable extends Migration
             $table->unsignedInteger('preview_height')->default(0)->comment('视频预览：单个画面尺寸：高');
             $table->unsignedInteger('preview_duration')->default(0)->comment('视频预览：单个画面间隔时间');
             $table->unsignedInteger('preview_count')->default(0)->comment('视频预览：合成的画面数量');
+            $table->unsignedInteger('preview_line_count')->default(0)->comment('视频预览：单行最大合并画面数量');
             $table->tinyInteger('status')->default(1)->comment('状态：-1-审核不通过 0-审核中 1-审核通过');
             $table->tinyInteger('process_status')->default(0)->comment('处理处理状态：-1-处理失败 0-信息处理中 1-转码中 2-处理完成');
             $table->string('fail_reason' , 1000)->default('')->comment('失败原因，当 status=-1 时，必须提供');

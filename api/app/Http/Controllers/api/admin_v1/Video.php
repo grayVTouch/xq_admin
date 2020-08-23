@@ -45,6 +45,7 @@ class video extends Base
         $param['thumb']         = $param['thumb'] ?? '';
         $param['description']   = $param['description'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
+        $param['index']        = $param['index'] ?? '';
         $param['view_count']    = $param['view_count'] ?? '';
         $param['praise_count']  = $param['praise_count'] ?? '';
         $param['against_count']  = $param['against_count'] ?? '';
@@ -71,6 +72,7 @@ class video extends Base
         $param['thumb']         = $param['thumb'] ?? '';
         $param['description']   = $param['description'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
+        $param['index']        = $param['index'] ?? '';
         $param['view_count']    = $param['view_count'] ?? '';
         $param['praise_count']  = $param['praise_count'] ?? '';
         $param['against_count']  = $param['against_count'] ?? '';

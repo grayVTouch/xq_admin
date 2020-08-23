@@ -16,6 +16,7 @@ const myFocusUser = () => import('../view/channel/my_focus_user.vue');
 const focusMeUser = () => import('../view/channel/focus_me_user.vue');
 const indexForCollectionGroup = () => import('../view/collection_group/index.vue');
 const imageForcollectionGroup = () => import('../view/collection_group/image.vue');
+const showForVideoSubject = () => import('../view/video_subject/show.vue');
 
 
 export default [
@@ -108,6 +109,11 @@ export default [
                         component: favorites
                     } ,
                 ] ,
+            } ,
+            {
+                path: 'video_subject/:id/show' ,
+                component: showForVideoSubject ,
+                props: true ,
             } ,
         ] ,
     } ,

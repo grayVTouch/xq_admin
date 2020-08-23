@@ -63,7 +63,8 @@
                 </div>
 
                 <div class="list" ref="list-for-imageSubject">
-                    <div class="loading" v-if="val.pending.image_subject"><my-loading width="50" height="50"></my-loading></div>
+                    <div class="loading" v-if="val.pending.imageSubject"><my-loading width="50" height="50"></my-loading></div>
+                    <div class="empty" v-if="!val.pending.imageSubject && imageSubjects.data.length <= 0"><my-icon icon="empty" size="40"></my-icon></div>
                     <div class="inner" ref="inner-for-imageSubject">
                         <div class="item card-box" v-for="v in imageSubjects.data" :key="v.id">
                             <!-- 封面 -->
@@ -139,7 +140,10 @@
                 </div>
 
                 <div class="list" ref="list-for-videoSubject">
-                    <div class="loading" v-if="val.pending.video_subject"><my-loading width="50" height="50"></my-loading></div>
+                    <div class="loading" v-if="val.pending.videoSubject"><my-loading width="50" height="50"></my-loading></div>
+                    <div class="empty" v-if="!val.pending.videoSubject && videoSubjects.data.length <= 0">
+                        <my-icon icon="empty" size="40"></my-icon>
+                    </div>
                     <div class="inner" ref="inner-for-videoSubject">
                         <div class="item card-box" v-for="v in videoSubjects.data" :key="v.id">
                             <!-- 封面 -->
@@ -176,9 +180,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="empty" v-if="!val.pending.videoSubject && videoSubjects.data.length <= 0">暂无数据</div>
-
                     </div>
 
                 </div>

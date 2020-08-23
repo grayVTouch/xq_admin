@@ -12,6 +12,7 @@ import menuItem from '../../vue/view/public/common/item.vue';
 import button from '../../vue/view/public/common/button.vue';
 import link from '../../vue/view/public/common/link.vue';
 import uploader from '../../vue/view/public/common/uploader.vue';
+import video from '../../vue/view/public/common/video.vue';
 
 Vue.component('my-loading' , loading);
 Vue.component('my-avatar' , avatar);
@@ -26,4 +27,5 @@ Vue.component('my-menu-item' , menuItem);
 Vue.component('my-link' , link);
 Vue.component('my-button' , button);
 Vue.component('my-uploader' , uploader);
+Vue.component('my-video' , video);
 

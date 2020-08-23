@@ -41,7 +41,6 @@ class VideoAction extends Action
         $status_range   = array_keys(my_config('business.status_for_video'));
         $bool_range     = array_keys(my_config('business.bool_for_int'));
         $validator = Validator::make($param , [
-            'name'          => 'required' ,
             'user_id'       => 'required|integer' ,
             'module_id'     => 'required|integer' ,
             'category_id'   => 'required|integer' ,
@@ -51,6 +50,7 @@ class VideoAction extends Action
             'view_count'    => 'sometimes|integer' ,
             'praise_count'  => 'sometimes|integer' ,
             'against_count' => 'sometimes|integer' ,
+            'index'         => 'sometimes|integer' ,
             'merge_video_subtitle' => ['required' , 'integer' , Rule::in($bool_range)] ,
             'status'        => ['required' , 'integer' , Rule::in($status_range)] ,
         ]);
@@ -68,19 +68,19 @@ class VideoAction extends Action
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error($validator->errors()->first() , [
+            return self::error('表单错误，请检查' , [
                 'module_id' => '模块不存在'
             ]);
         }
         $category = CategoryModel::find($param['category_id']);
         if (empty($category)) {
-            return self::error($validator->errors()->first() , [
+            return self::error('表单错误，请检查' , [
                 'category_id' => '分类不存在' ,
             ]);
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error($validator->errors()->first() , [
+            return self::error('表单错误，请检查' , [
                 'user_id' => '用户不存在'
             ]);
         }
@@ -88,13 +88,22 @@ class VideoAction extends Action
         if ($param['type'] === 'pro') {
             $video_subject = VideoSubjectModel::find($param['video_subject_id']);
             if (empty($video_subject)) {
-                return self::error($validator->errors()->first() , [
+                return self::error('表单错误，请检查' , [
                     'video_subject_id' => '专题不存在' ,
                 ]);
             }
+            if (VideoModel::findExcludeSelfByVideoIdAndVideoSubjectIdAndIndex($video->id , $video_subject->id , $param['index'])) {
+                return self::error('表单错误，请检查' , [
+                    'index' => '索引已经存在' ,
+                ]);
+            }
+        } else {
+            $param['video_subject_id']  = 0;
+            $param['index']             = 0;
         }
+
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error($validator->errors()->first() , [
+            return self::error('表单错误，请检查' , [
                 'fail_reason' => '请提供失败原因' ,
             ]);
         }
@@ -120,6 +129,7 @@ class VideoAction extends Action
                 'thumb' ,
                 'description' ,
                 'weight' ,
+                'index' ,
                 'view_count' ,
                 'praise_count' ,
                 'against_count' ,
@@ -166,7 +176,6 @@ class VideoAction extends Action
         $bool_range     = array_keys(my_config('business.bool_for_int'));
 
         $validator = Validator::make($param , [
-            'name'      => 'required' ,
             'user_id'   => 'required|integer' ,
             'module_id' => 'required|integer' ,
             'category_id' => 'required|integer' ,
@@ -176,6 +185,7 @@ class VideoAction extends Action
             'view_count'    => 'sometimes|integer' ,
             'praise_count'  => 'sometimes|integer' ,
             'against_count'  => 'sometimes|integer' ,
+            'index'  => 'sometimes|integer' ,
             'status'        => ['required' , 'integer' , Rule::in($status_range)] ,
             'merge_video_subtitle' => ['required' , 'integer' , Rule::in($bool_range)] ,
         ]);
@@ -184,19 +194,19 @@ class VideoAction extends Action
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error($validator->errors()->first() , [
+            return self::error('表单错误，请检查' , [
                 'module_id' => '模块不存在'
             ]);
         }
         $category = CategoryModel::find($param['category_id']);
         if (empty($category)) {
-            return self::error($validator->errors()->first() , [
+            return self::error('表单错误，请检查' , [
                 'category_id' => '分类不存在' ,
             ]);
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error($validator->errors()->first() , [
+            return self::error('表单错误，请检查' , [
                 'user_id' => '用户不存在'
             ]);
         }
@@ -204,13 +214,21 @@ class VideoAction extends Action
         if ($param['type'] === 'pro') {
             $video_subject = VideoSubjectModel::find($param['video_subject_id']);
             if (empty($video_subject)) {
-                return self::error($validator->errors()->first() , [
+                return self::error('表单错误，请检查' , [
                     'video_subject_id' => '专题不存在' ,
                 ]);
             }
+            if (VideoModel::findByVideoSubjectIdAndIndex($video_subject->id , $param['index'])) {
+                return self::error('表单错误，请检查' , [
+                    'index' => '索引已经存在' ,
+                ]);
+            }
+        } else {
+            $param['video_subject_id']  = 0;
+            $param['index']             = 0;
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error($validator->errors()->first() , [
+            return self::error('表单错误，请检查' , [
                 'fail_reason' => '请提供失败原因' ,
             ]);
         }
@@ -232,6 +250,7 @@ class VideoAction extends Action
                 'thumb' ,
                 'description' ,
                 'weight' ,
+                'index' ,
                 'view_count' ,
                 'praise_count' ,
                 'against_count' ,
