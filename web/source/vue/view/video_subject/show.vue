@@ -108,7 +108,7 @@
                             <div class="image-mask"><img src="http://res.xq.test/upload/20200822/20200822112112FbbqUS.jpeg" v-judge-img-size class="image judge-img-size"></div>
                         </div>
                         <div class="info">
-                            <div class="name">无暇之夜</div>
+                            <div class="name">test</div>
                             <div class="subject">Pink Pineapple</div>
                             <div class="statistics">1000次观看</div>
                         </div>

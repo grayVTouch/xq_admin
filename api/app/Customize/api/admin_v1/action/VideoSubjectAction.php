@@ -112,7 +112,7 @@ class VideoSubjectAction extends Action
                 'category_id' ,
                 'module_id' ,
                 'weight' ,
-                'update_time' ,
+//                'update_time' ,
             ]));
             ResourceUtil::used($param['thumb']);
             if ($video_subject->thumb !== $param['thumb']) {
@@ -288,14 +288,14 @@ class VideoSubjectAction extends Action
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
-        $res = VideoCompanyModel::find($ids);
+        $res = VideoSubjectModel::find($ids);
         try {
             DB::beginTransaction();
             foreach ($res as $v)
             {
                 ResourceUtil::delete($v->thumb);
                 RelationTagModel::delByRelationTypeAndRelationId('video_subject' , $v->id);
-                VideoCompanyModel::destroy($v->id);
+                VideoSubjectModel::destroy($v->id);
             }
             DB::commit();
             return self::success();
