@@ -11,7 +11,7 @@
  Target Server Version : 80017
  File Encoding         : 65001
 
- Date: 13/08/2020 17:45:39
+ Date: 26/08/2020 22:24:46
 */
 
 SET NAMES utf8mb4;
@@ -29,7 +29,7 @@ CREATE TABLE `failed_jobs`  (
   `exception` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `failed_at` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for jobs
@@ -127,13 +127,12 @@ CREATE TABLE `xq_admin`  (
   INDEX `xq_admin_username_index`(`username`) USING BTREE,
   INDEX `xq_admin_phone_index`(`phone`) USING BTREE,
   INDEX `xq_admin_email_index`(`email`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '后台用户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '后台用户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_admin
 -- ----------------------------
-INSERT INTO `xq_admin` VALUES (1, 'admin', '$2y$10$syNm9DuO7dHYMA4xLZcTp.xuxGMLRAUKXdYcd20s29D6vmQ8mwDXO', 'secret', NULL, '', '2020-08-12 23:22:36', '127.0.0.1', '', '', 1, 1, NULL, '2020-08-11 22:18:37');
-INSERT INTO `xq_admin` VALUES (2, 'fsadfas', '$2y$10$a94isKxvHE6elYCen8b9b.kpn9LWnTJ/7BcJ56Xawpz5MrpavWdtC', 'secret', NULL, '', NULL, '', '', '', 35, 0, NULL, NULL);
+INSERT INTO `xq_admin` VALUES (1, 'yueshu', '$2y$10$uCY0bF62k.c/L3aqvMbtWuKUYTs9sP2h64myiw4PoKg4AxVlfXcou', 'secret', NULL, 'upload/20200816/20200816174450wBSMda.jpg', '2020-08-26 21:44:58', '127.0.0.1', '', '', 1, 1, NULL, '2020-08-11 22:18:37');
 
 -- ----------------------------
 -- Table structure for xq_admin_land_log
@@ -170,7 +169,7 @@ CREATE TABLE `xq_admin_permission`  (
   `update_time` datetime(0) NULL DEFAULT NULL,
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 24 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '后台用户-权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '后台用户-权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_admin_permission
@@ -189,15 +188,13 @@ INSERT INTO `xq_admin_permission` VALUES (11, '系统管理', 'System', 'system'
 INSERT INTO `xq_admin_permission` VALUES (12, '视频系列', '', '/video_series/index', '', 'view', 'GET', 1, 1, 1, 5, '', '', 989, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
 INSERT INTO `xq_admin_permission` VALUES (13, '视频制作公司', '', '/video_company/index', '', 'view', 'GET', 1, 1, 1, 5, '', '', 988, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
 INSERT INTO `xq_admin_permission` VALUES (14, '视频专题', '', '/video_subject/index', '', 'view', 'GET', 1, 1, 1, 5, '', '', 987, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
-INSERT INTO `xq_admin_permission` VALUES (15, '视频列表', '', '/video/index', '', 'view', 'GET', 1, 1, 1, 5, '', '', 986, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
+INSERT INTO `xq_admin_permission` VALUES (15, '视频列表', '', '/video/index', '', 'view', 'GET', 1, 1, 1, 5, '', '', 1986, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
 INSERT INTO `xq_admin_permission` VALUES (16, '角色列表', '', '/role/index', '', 'view', 'GET', 1, 1, 1, 10, '', '', 985, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
 INSERT INTO `xq_admin_permission` VALUES (17, '权限列表', '', '/admin_permission/index', '', 'view', 'GET', 1, 1, 1, 10, '', '', 984, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
 INSERT INTO `xq_admin_permission` VALUES (18, '存储管理', '', '/disk/index', '', 'view', 'GET', 1, 1, 1, 11, '', '', 983, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
 INSERT INTO `xq_admin_permission` VALUES (19, '导航菜单', '', '/nav/index', '', 'view', 'GET', 1, 1, 1, 11, '', '', 982, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
 INSERT INTO `xq_admin_permission` VALUES (20, '系统位置', '', '/position/index', '', 'view', 'GET', 1, 1, 1, 11, '', '', 981, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
 INSERT INTO `xq_admin_permission` VALUES (21, '定点图片', '', '/image_at_position/index', '', 'view', 'GET', 1, 1, 1, 11, '', '', 980, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
-INSERT INTO `xq_admin_permission` VALUES (22, '测试权限', '', 'ff', '', 'view', 'GET', 1, 0, 1, 11, '', '', 0, NULL, NULL);
-INSERT INTO `xq_admin_permission` VALUES (23, '二级菜单', '', 'second', '', 'view', 'GET', 1, 1, 1, 22, '', '', 0, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for xq_admin_token
@@ -212,7 +209,7 @@ CREATE TABLE `xq_admin_token`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `xq_admin_token_token_unique`(`token`) USING BTREE,
   INDEX `xq_admin_token_user_id_index`(`user_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '后台用户 token 表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '后台用户 token 表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_admin_token
@@ -220,6 +217,14 @@ CREATE TABLE `xq_admin_token`  (
 INSERT INTO `xq_admin_token` VALUES (1, 1, 'JV6jT2Zx299190rS3ca8Pqb920YT42S0', '2020-08-18 22:19:53', NULL);
 INSERT INTO `xq_admin_token` VALUES (2, 1, '6WLW3488e13t6Q676976Z868926vd7aj', '2020-08-18 23:28:09', NULL);
 INSERT INTO `xq_admin_token` VALUES (3, 1, '0T543CB829Pq8130hOFJA7UJAjs6S0Z4', '2020-08-19 23:22:36', NULL);
+INSERT INTO `xq_admin_token` VALUES (4, 1, '7PBj5D9R05b31v16V884v6KDF6lylQ15', '2020-08-20 18:30:08', NULL);
+INSERT INTO `xq_admin_token` VALUES (5, 1, '3469sKq4v2f1290e453U203so11aJKPX', '2020-08-22 21:52:27', NULL);
+INSERT INTO `xq_admin_token` VALUES (6, 1, 'WzAS70x75B23TE40LzynvmVI12u5TQ6O', '2020-08-23 15:23:50', NULL);
+INSERT INTO `xq_admin_token` VALUES (7, 1, 'h2wE1I6531f9I5865FSjbBR9d2P3c3o6', '2020-08-25 11:46:19', NULL);
+INSERT INTO `xq_admin_token` VALUES (8, 1, '0163a9Ub7Eu75194391ti3D6q28wF65o', '2020-08-30 20:48:25', NULL);
+INSERT INTO `xq_admin_token` VALUES (9, 1, '9250txN8657Gy8mwJ58HXL075475997U', '2020-08-31 20:41:34', NULL);
+INSERT INTO `xq_admin_token` VALUES (10, 1, 'bzK49P8N2tUbLE35BXD6401Aaym5lf07', '2020-09-02 15:13:49', NULL);
+INSERT INTO `xq_admin_token` VALUES (11, 1, '03B7376O2733nIp154a1Oen6290523O4', '2020-09-02 21:44:58', NULL);
 
 -- ----------------------------
 -- Table structure for xq_category
@@ -236,7 +241,7 @@ CREATE TABLE `xq_category`  (
   `update_time` datetime(0) NULL DEFAULT NULL,
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '分类表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '分类表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_category
@@ -260,7 +265,12 @@ CREATE TABLE `xq_collection`  (
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `unique`(`user_id`, `relation_type`, `relation_id`, `module_id`, `collection_group_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '我的收藏' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '我的收藏' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of xq_collection
+-- ----------------------------
+INSERT INTO `xq_collection` VALUES (1, 2, 1, 'image_subject', 6, 1, '2020-08-16 16:13:45');
 
 -- ----------------------------
 -- Table structure for xq_collection_group
@@ -273,7 +283,13 @@ CREATE TABLE `xq_collection_group`  (
   `module_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_module.id',
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '收藏-分组表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '收藏-分组表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of xq_collection_group
+-- ----------------------------
+INSERT INTO `xq_collection_group` VALUES (1, '123', 2, 1, '2020-08-16 16:13:45');
+INSERT INTO `xq_collection_group` VALUES (2, 'ytyt', 2, 1, '2020-08-23 22:04:32');
 
 -- ----------------------------
 -- Table structure for xq_disk
@@ -310,7 +326,12 @@ CREATE TABLE `xq_email_code`  (
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `xq_email_code_email_type_unique`(`email`, `type`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '邮箱验证码' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '邮箱验证码' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of xq_email_code
+-- ----------------------------
+INSERT INTO `xq_email_code` VALUES (1, 'A576236148946@126.com', '6870', 'register', 1, '2020-08-15 22:11:44', '2020-08-15 22:11:44', '2020-08-15 22:11:44');
 
 -- ----------------------------
 -- Table structure for xq_focus_user
@@ -339,7 +360,28 @@ CREATE TABLE `xq_history`  (
   `time` time(0) NULL DEFAULT NULL COMMENT '创建时间',
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '活动记录' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '活动记录' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of xq_history
+-- ----------------------------
+INSERT INTO `xq_history` VALUES (1, 2, 'image_subject', 2, 1, '2020-08-16', '15:35:02', '2020-08-16 15:35:02');
+INSERT INTO `xq_history` VALUES (2, 2, 'image_subject', 6, 1, '2020-08-16', '16:13:54', '2020-08-16 16:13:54');
+INSERT INTO `xq_history` VALUES (3, 2, 'image_subject', 6, 1, '2020-08-17', '14:52:50', '2020-08-17 14:52:50');
+INSERT INTO `xq_history` VALUES (4, 2, 'image_subject', 7, 1, '2020-08-17', '12:14:58', '2020-08-17 12:14:58');
+INSERT INTO `xq_history` VALUES (5, 2, 'image_subject', 5, 1, '2020-08-17', '12:15:19', '2020-08-17 12:15:19');
+INSERT INTO `xq_history` VALUES (6, 2, 'image_subject', 4, 1, '2020-08-17', '14:53:58', '2020-08-17 14:53:58');
+INSERT INTO `xq_history` VALUES (7, 2, 'image_subject', 7, 1, '2020-08-18', '16:26:31', '2020-08-18 16:26:31');
+INSERT INTO `xq_history` VALUES (8, 2, 'image_subject', 4, 1, '2020-08-18', '16:26:40', '2020-08-18 16:26:40');
+INSERT INTO `xq_history` VALUES (9, 2, 'image_subject', 6, 1, '2020-08-18', '17:22:54', '2020-08-18 17:22:54');
+INSERT INTO `xq_history` VALUES (10, 2, 'image_subject', 6, 1, '2020-08-20', '13:25:59', '2020-08-20 13:25:59');
+INSERT INTO `xq_history` VALUES (11, 2, 'image_subject', 2, 1, '2020-08-22', '21:42:26', '2020-08-22 21:42:26');
+INSERT INTO `xq_history` VALUES (12, 2, 'image_subject', 7, 1, '2020-08-22', '23:58:15', '2020-08-22 23:58:15');
+INSERT INTO `xq_history` VALUES (13, 2, 'image_subject', 7, 1, '2020-08-23', '21:53:43', '2020-08-23 21:53:43');
+INSERT INTO `xq_history` VALUES (14, 2, 'image_subject', 6, 1, '2020-08-23', '22:04:12', '2020-08-23 22:04:12');
+INSERT INTO `xq_history` VALUES (15, 2, 'image_subject', 7, 1, '2020-08-24', '20:42:34', '2020-08-24 20:42:34');
+INSERT INTO `xq_history` VALUES (16, 2, 'image_subject', 7, 1, '2020-08-25', '14:33:46', '2020-08-25 14:33:46');
+INSERT INTO `xq_history` VALUES (17, 2, 'image_subject', 6, 1, '2020-08-26', '22:00:54', '2020-08-26 22:00:54');
 
 -- ----------------------------
 -- Table structure for xq_image
@@ -351,12 +393,42 @@ CREATE TABLE `xq_image`  (
   `path` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '路径',
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '图片专题包含的图片' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 35 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '图片专题包含的图片' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_image
 -- ----------------------------
-INSERT INTO `xq_image` VALUES (3, 2, 'upload/20200812/20200812231542bEmnhn.png', NULL);
+INSERT INTO `xq_image` VALUES (5, 2, 'upload/20200816/20200816154738beFXBs.jpg', NULL);
+INSERT INTO `xq_image` VALUES (6, 2, 'upload/20200816/20200816154739JAanOi.jpg', NULL);
+INSERT INTO `xq_image` VALUES (7, 2, 'upload/20200816/20200816154739dbsRFk.jpg', NULL);
+INSERT INTO `xq_image` VALUES (8, 2, 'upload/20200816/20200816154739UaeahX.jpg', NULL);
+INSERT INTO `xq_image` VALUES (9, 2, 'upload/20200816/20200816154740YQoLRV.jpg', NULL);
+INSERT INTO `xq_image` VALUES (10, 3, 'upload/20200816/20200816154906iQpsgv.jpg', NULL);
+INSERT INTO `xq_image` VALUES (11, 3, 'upload/20200816/20200816154906IyPKKK.jpg', NULL);
+INSERT INTO `xq_image` VALUES (12, 3, 'upload/20200816/20200816154906DkeccS.jpg', NULL);
+INSERT INTO `xq_image` VALUES (13, 3, 'upload/20200816/20200816154907vgkZqu.jpg', NULL);
+INSERT INTO `xq_image` VALUES (14, 3, 'upload/20200816/20200816154907jcbJne.jpg', NULL);
+INSERT INTO `xq_image` VALUES (15, 4, 'upload/20200816/20200816155006OGQGqW.jpg', NULL);
+INSERT INTO `xq_image` VALUES (16, 4, 'upload/20200816/20200816155007nPKUUn.jpg', NULL);
+INSERT INTO `xq_image` VALUES (17, 4, 'upload/20200816/20200816155007xXazfN.jpg', NULL);
+INSERT INTO `xq_image` VALUES (18, 4, 'upload/20200816/20200816155007JWDDbN.jpg', NULL);
+INSERT INTO `xq_image` VALUES (19, 5, 'upload/20200816/20200816155033Mhezwk.jpg', NULL);
+INSERT INTO `xq_image` VALUES (20, 5, 'upload/20200816/20200816155033wHJsvl.jpg', NULL);
+INSERT INTO `xq_image` VALUES (21, 5, 'upload/20200816/20200816155034OZInVc.jpg', NULL);
+INSERT INTO `xq_image` VALUES (22, 5, 'upload/20200816/20200816155034wYqhoG.jpg', NULL);
+INSERT INTO `xq_image` VALUES (23, 6, 'upload/20200816/20200816155114JQglnr.jpg', NULL);
+INSERT INTO `xq_image` VALUES (24, 6, 'upload/20200816/20200816155114OvCnmn.jpg', NULL);
+INSERT INTO `xq_image` VALUES (25, 6, 'upload/20200816/20200816155115uvFsvx.jpg', NULL);
+INSERT INTO `xq_image` VALUES (26, 6, 'upload/20200816/20200816155115WThXWf.jpg', NULL);
+INSERT INTO `xq_image` VALUES (27, 7, 'upload/20200816/20200816155548xaTZyo.jpg', NULL);
+INSERT INTO `xq_image` VALUES (28, 7, 'upload/20200816/20200816155549vVqhMq.jpg', NULL);
+INSERT INTO `xq_image` VALUES (29, 7, 'upload/20200816/20200816155549sneIxY.jpg', NULL);
+INSERT INTO `xq_image` VALUES (30, 7, 'upload/20200816/20200816155549MZjaZn.jpg', NULL);
+INSERT INTO `xq_image` VALUES (31, 7, 'upload/20200816/20200816155550HoYIyr.jpg', NULL);
+INSERT INTO `xq_image` VALUES (32, 7, 'upload/20200816/20200816155550XctcnK.jpg', NULL);
+INSERT INTO `xq_image` VALUES (33, 8, 'upload/20200818/20200818114724XSraFe.png', NULL);
+INSERT INTO `xq_image` VALUES (34, 8, 'upload/20200818/20200818114724XQyvND.jpg', NULL);
+INSERT INTO `xq_image` VALUES (35, 8, 'upload/20200818/20200818114724DCSAdA.jpg', NULL);
 
 -- ----------------------------
 -- Table structure for xq_image_at_position
@@ -371,7 +443,18 @@ CREATE TABLE `xq_image_at_position`  (
   `link` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '跳转链接',
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '定点图片' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '定点图片' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of xq_image_at_position
+-- ----------------------------
+INSERT INTO `xq_image_at_position` VALUES (1, 1, 1, 'web', 'upload/20200816/20200816152601sVJjMF.jpg', '', NULL);
+INSERT INTO `xq_image_at_position` VALUES (2, 1, 1, 'web', 'upload/20200816/20200816152608gKYWnH.jpg', '', NULL);
+INSERT INTO `xq_image_at_position` VALUES (3, 2, 1, 'web', 'upload/20200816/20200816152749rucBDZ.jpg', '', NULL);
+INSERT INTO `xq_image_at_position` VALUES (4, 2, 1, 'web', 'upload/20200816/20200816152757kMrlhH.jpg', '', NULL);
+INSERT INTO `xq_image_at_position` VALUES (5, 2, 1, 'web', 'upload/20200816/20200816152803RZcFyu.jpg', '', NULL);
+INSERT INTO `xq_image_at_position` VALUES (6, 2, 1, 'web', 'upload/20200816/20200816152813KEDCGL.jpg', '', NULL);
+INSERT INTO `xq_image_at_position` VALUES (7, 2, 1, 'web', 'upload/20200816/20200816152825NhUlHN.jpg', '', NULL);
 
 -- ----------------------------
 -- Table structure for xq_image_subject
@@ -398,12 +481,18 @@ CREATE TABLE `xq_image_subject`  (
   INDEX `xq_image_subject_module_id_index`(`module_id`) USING BTREE,
   INDEX `xq_image_subject_category_id_index`(`category_id`) USING BTREE,
   INDEX `xq_image_subject_subject_id_index`(`subject_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '图片专题表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '图片专题表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_image_subject
 -- ----------------------------
-INSERT INTO `xq_image_subject` VALUES (2, 'test', 1, 1, 1, 'misc', 0, 'upload/20200812/20200812231819VkkYPC.jpg', '', 0, 0, 0, 0, '', NULL, '2020-08-12 23:15:44');
+INSERT INTO `xq_image_subject` VALUES (2, '琉璃神社 2019 01', 2, 1, 1, 'pro', 1, 'upload/20200816/20200816154812fJZowq.jpg', '', 0, 9, 0, 1, '', NULL, '2020-08-16 15:47:58');
+INSERT INTO `xq_image_subject` VALUES (3, '琉璃神社 2019 02', 2, 1, 2, 'pro', 1, 'upload/20200816/20200816154854LJTQDg.jpg', '', 0, 1, 0, 1, '', NULL, '2020-08-16 15:49:15');
+INSERT INTO `xq_image_subject` VALUES (4, '琉璃神社 2019 03', 2, 1, 2, 'pro', 1, 'upload/20200816/20200816154959FyuMDi.jpg', '', 0, 4, 0, 1, '', NULL, '2020-08-16 15:50:11');
+INSERT INTO `xq_image_subject` VALUES (5, '琉璃神社 2019 04', 2, 1, 2, 'pro', 1, 'upload/20200816/20200816155024ZKfUrt.jpg', '', 0, 3, 0, 1, '', NULL, '2020-08-16 15:50:39');
+INSERT INTO `xq_image_subject` VALUES (6, '琉璃神社 2019 05', 2, 1, 2, 'pro', 1, 'upload/20200816/20200816155105ogZYFC.jpg', '', 0, 34, 1, 1, '', NULL, '2020-08-16 15:51:25');
+INSERT INTO `xq_image_subject` VALUES (7, '琉璃神社 2019 06', 2, 1, 2, 'pro', 1, 'upload/20200816/20200816155534zKDvmW.jpg', '', 0, 151, 1, 1, '', NULL, '2020-08-16 15:55:54');
+INSERT INTO `xq_image_subject` VALUES (8, '', 2, 1, 1, 'misc', 0, '', '', 0, 0, 0, 1, 'fff', NULL, '2020-08-18 11:47:45');
 
 -- ----------------------------
 -- Table structure for xq_image_subject_comment
@@ -452,13 +541,13 @@ CREATE TABLE `xq_module`  (
   `default` int(11) NOT NULL DEFAULT 0 COMMENT '默认？0-否 1-是 记录中仅能有一个是默认的',
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '模块表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '模块表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_module
 -- ----------------------------
-INSERT INTO `xq_module` VALUES (1, '开发模式', '', 1, 1, '$2y$10$1mzoDzEnc/LVc9skDdYLl.vuUGrKHjhsULBYHWTxZOBV8EUc2ZoLG', 0, 0, '2020-08-11 22:18:37');
-INSERT INTO `xq_module` VALUES (2, '用户模式', '描述', 1, 0, '', 0, 1, '2020-08-11 22:18:37');
+INSERT INTO `xq_module` VALUES (1, '开发模式', '', 1, 0, '$2y$10$1mzoDzEnc/LVc9skDdYLl.vuUGrKHjhsULBYHWTxZOBV8EUc2ZoLG', 0, 1, '2020-08-11 22:18:37');
+INSERT INTO `xq_module` VALUES (2, '用户模式', '描述', 1, 0, '', 0, 0, '2020-08-11 22:18:37');
 
 -- ----------------------------
 -- Table structure for xq_nav
@@ -476,19 +565,26 @@ CREATE TABLE `xq_nav`  (
   `platform` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '平台：app | android | ios | web | mobile',
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '菜单表-区分不同平台' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '菜单表-区分不同平台' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_nav
 -- ----------------------------
 INSERT INTO `xq_nav` VALUES (1, '首页', '/index', 0, 1, 1, 0, 1, 'web', NULL);
 INSERT INTO `xq_nav` VALUES (2, '视频专区', '/video', 0, 1, 1, 0, 1, 'web', NULL);
-INSERT INTO `xq_nav` VALUES (3, '图片专区', '/image', 0, 1, 1, 0, 1, 'web', NULL);
+INSERT INTO `xq_nav` VALUES (3, '图片专区', '/image_subject', 0, 1, 1, 0, 1, 'web', NULL);
 INSERT INTO `xq_nav` VALUES (4, '用户中心', '/user', 0, 1, 1, 0, 1, 'web', NULL);
 INSERT INTO `xq_nav` VALUES (5, '首页', '/index', 0, 1, 1, 0, 2, 'web', NULL);
 INSERT INTO `xq_nav` VALUES (6, '视频专区', '/video', 0, 1, 1, 0, 2, 'web', NULL);
 INSERT INTO `xq_nav` VALUES (7, '图片专区', '/image', 0, 1, 1, 0, 2, 'web', NULL);
 INSERT INTO `xq_nav` VALUES (8, '用户中心', '/user', 0, 1, 1, 0, 2, 'web', NULL);
+INSERT INTO `xq_nav` VALUES (9, '图片详情', '/image_subject/:id/show', 3, 0, 1, 0, 1, 'web', NULL);
+INSERT INTO `xq_nav` VALUES (10, '用户信息', '/user/info', 4, 0, 1, 0, 1, 'web', NULL);
+INSERT INTO `xq_nav` VALUES (11, '修改密码', '/user/password', 4, 0, 1, 0, 1, 'web', NULL);
+INSERT INTO `xq_nav` VALUES (12, '历史记录', '/user/history', 4, 0, 1, 0, 1, 'web', NULL);
+INSERT INTO `xq_nav` VALUES (13, '我的收藏', '/user/favorites', 4, 0, 1, 0, 1, 'web', NULL);
+INSERT INTO `xq_nav` VALUES (14, '搜索【图片专区】', '/image_subject/search', 3, 0, 1, 0, 1, 'web', NULL);
+INSERT INTO `xq_nav` VALUES (15, '二次元', '/image_subject/search?category_id=1', 3, 1, 1, 0, 1, 'web', NULL);
 
 -- ----------------------------
 -- Table structure for xq_position
@@ -523,7 +619,13 @@ CREATE TABLE `xq_praise`  (
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `unique`(`user_id`, `relation_type`, `relation_id`, `module_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '点赞表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '点赞表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of xq_praise
+-- ----------------------------
+INSERT INTO `xq_praise` VALUES (5, 2, 'image_subject', 6, 1, '2020-08-23 22:04:27');
+INSERT INTO `xq_praise` VALUES (6, 2, 'image_subject', 7, 1, '2020-08-24 20:43:04');
 
 -- ----------------------------
 -- Table structure for xq_region
@@ -537,7 +639,7 @@ CREATE TABLE `xq_region`  (
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `xq_region_p_id_index`(`p_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6910 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '全球地区表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6909 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '全球地区表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_region
@@ -7465,12 +7567,22 @@ CREATE TABLE `xq_relation_tag`  (
   `relation_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '对应关联表中的 id',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `unique`(`module_id`, `relation_type`, `relation_id`, `tag_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '关联标签' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '关联标签' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_relation_tag
 -- ----------------------------
-INSERT INTO `xq_relation_tag` VALUES (1, 3, 2, 'one', 'video_subject', 1);
+INSERT INTO `xq_relation_tag` VALUES (3, 12, 1, '琉璃神社', 'image_subject', 2);
+INSERT INTO `xq_relation_tag` VALUES (4, 13, 1, '2月份', 'image_subject', 3);
+INSERT INTO `xq_relation_tag` VALUES (5, 14, 1, '3月份', 'image_subject', 4);
+INSERT INTO `xq_relation_tag` VALUES (6, 14, 1, '3月份', 'image_subject', 5);
+INSERT INTO `xq_relation_tag` VALUES (7, 15, 1, '5月份', 'image_subject', 6);
+INSERT INTO `xq_relation_tag` VALUES (8, 12, 1, '琉璃神社', 'image_subject', 7);
+INSERT INTO `xq_relation_tag` VALUES (11, 18, 1, '穹妹', 'image_subject', 8);
+INSERT INTO `xq_relation_tag` VALUES (15, 21, 1, '温馨', 'video_subject', 4);
+INSERT INTO `xq_relation_tag` VALUES (16, 22, 1, '治愈', 'video_subject', 4);
+INSERT INTO `xq_relation_tag` VALUES (17, 23, 1, '家庭', 'video_subject', 4);
+INSERT INTO `xq_relation_tag` VALUES (18, 24, 1, '亲情', 'video_subject', 4);
 
 -- ----------------------------
 -- Table structure for xq_resource
@@ -7483,20 +7595,125 @@ CREATE TABLE `xq_resource`  (
   `used` tinyint(4) NULL DEFAULT 0 COMMENT '已使用？0-否 1-是',
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 155 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_resource
 -- ----------------------------
-INSERT INTO `xq_resource` VALUES (3, 'upload/20200812/20200812231542bEmnhn.png', 0, 1, '2020-08-12 23:15:42');
-INSERT INTO `xq_resource` VALUES (5, 'upload/20200812/20200812231819VkkYPC.jpg', 0, 1, '2020-08-12 23:18:19');
-INSERT INTO `xq_resource` VALUES (6, 'upload/20200813/20200813113422NXzxNz.mp4', 1, 1, '2020-08-13 11:34:22');
-INSERT INTO `xq_resource` VALUES (7, 'upload/20200813/20200813173441YOs0p6.jpeg', 1, 1, '2020-08-13 17:34:42');
+INSERT INTO `xq_resource` VALUES (3, 'upload/20200812/20200812231542bEmnhn.png', 1, 1, '2020-08-12 23:15:42');
+INSERT INTO `xq_resource` VALUES (5, 'upload/20200812/20200812231819VkkYPC.jpg', 1, 1, '2020-08-12 23:18:19');
 INSERT INTO `xq_resource` VALUES (8, 'upload/20200813/20200813173441mFmbUr.mp4', 0, 1, '2020-08-13 17:34:43');
-INSERT INTO `xq_resource` VALUES (9, 'upload/20200813/20200813173441pnVwIj.jpeg', 1, 1, '2020-08-13 17:35:34');
-INSERT INTO `xq_resource` VALUES (10, 'upload/20200813/202008131742282843aY.jpeg', 0, 1, '2020-08-13 17:42:28');
 INSERT INTO `xq_resource` VALUES (11, 'upload/20200813/20200813174228zVfbIp.mp4', 0, 1, '2020-08-13 17:42:29');
-INSERT INTO `xq_resource` VALUES (12, 'upload/20200813/20200813174228TWAvjH.jpeg', 0, 1, '2020-08-13 17:43:19');
+INSERT INTO `xq_resource` VALUES (13, 'upload/20200815/20200815092359KccQQE.ass', 0, 0, '2020-08-15 09:23:59');
+INSERT INTO `xq_resource` VALUES (14, 'upload/20200815/20200815092529WoWxxV.ass', 0, 0, '2020-08-15 09:25:29');
+INSERT INTO `xq_resource` VALUES (15, 'upload/20200815/20200815092529xxWIwJ.ass', 0, 0, '2020-08-15 09:25:29');
+INSERT INTO `xq_resource` VALUES (16, 'upload/20200815/20200815093306MGfFaK.ass', 0, 0, '2020-08-15 09:33:06');
+INSERT INTO `xq_resource` VALUES (17, 'upload/20200815/20200815093342kzKEge.ass', 0, 0, '2020-08-15 09:33:42');
+INSERT INTO `xq_resource` VALUES (18, 'upload/20200815/20200815093459GCMsMp.ass', 0, 0, '2020-08-15 09:34:59');
+INSERT INTO `xq_resource` VALUES (19, 'upload/20200815/20200815093609MNALZL.ass', 0, 0, '2020-08-15 09:36:09');
+INSERT INTO `xq_resource` VALUES (20, 'upload/20200815/20200815093745aKxRrR.ass', 0, 0, '2020-08-15 09:37:45');
+INSERT INTO `xq_resource` VALUES (21, 'upload/20200815/20200815093752jVPiLh.ass', 0, 0, '2020-08-15 09:37:52');
+INSERT INTO `xq_resource` VALUES (22, 'upload/20200815/20200815094251RiueqW.ass', 0, 0, '2020-08-15 09:42:51');
+INSERT INTO `xq_resource` VALUES (23, 'upload/20200815/20200815094819UoXKCE.ass', 0, 0, '2020-08-15 09:48:19');
+INSERT INTO `xq_resource` VALUES (24, 'upload/20200815/20200815094830ZpYxQF.ass', 0, 0, '2020-08-15 09:48:30');
+INSERT INTO `xq_resource` VALUES (25, 'upload/20200815/20200815095243jXgKpk.ass', 0, 0, '2020-08-15 09:52:43');
+INSERT INTO `xq_resource` VALUES (26, 'upload/20200815/20200815100559cXZwJe.ass', 0, 0, '2020-08-15 10:05:59');
+INSERT INTO `xq_resource` VALUES (27, 'upload/20200815/20200815100605axkBux.ass', 0, 0, '2020-08-15 10:06:05');
+INSERT INTO `xq_resource` VALUES (28, 'upload/20200815/20200815100657JVEMsQ.ass', 0, 1, '2020-08-15 10:06:57');
+INSERT INTO `xq_resource` VALUES (31, 'upload/20200815/20200815102631IxDAun.mp4', 0, 1, '2020-08-15 10:26:32');
+INSERT INTO `xq_resource` VALUES (33, 'upload/20200815/20200815102821yasbrb.ass', 0, 0, '2020-08-15 10:28:21');
+INSERT INTO `xq_resource` VALUES (34, 'upload/20200815/20200815102908CdoSLD.ass', 0, 1, '2020-08-15 10:29:08');
+INSERT INTO `xq_resource` VALUES (41, 'upload/20200815/20200815103845acnWSt.mp4', 0, 1, '2020-08-15 10:38:45');
+INSERT INTO `xq_resource` VALUES (50, 'upload/20200815/20200815161303YVtene.jpeg', 0, 0, '2020-08-15 16:13:03');
+INSERT INTO `xq_resource` VALUES (51, 'upload/20200815/20200815161303yLJcij.mkv', 0, 0, '2020-08-15 16:13:03');
+INSERT INTO `xq_resource` VALUES (53, 'upload/20200815/20200815161423zKHicZ.mkv', 0, 1, '2020-08-15 16:14:24');
+INSERT INTO `xq_resource` VALUES (56, 'upload/20200815/20200815163231xYcpXR.mp4', 0, 1, '2020-08-15 16:32:32');
+INSERT INTO `xq_resource` VALUES (69, 'upload/20200815/20200815184030NIvgCv.jpeg', 1, 1, '2020-08-15 18:40:31');
+INSERT INTO `xq_resource` VALUES (70, 'upload/20200815/20200815184031OXVkKO.mp4', 1, 1, '2020-08-15 18:40:32');
+INSERT INTO `xq_resource` VALUES (71, 'upload/20200815/20200815184548iTbnBv.jpeg', 1, 1, '2020-08-15 18:45:48');
+INSERT INTO `xq_resource` VALUES (72, 'upload/20200815/20200815185932rflENW.ass', 0, 0, '2020-08-15 18:59:32');
+INSERT INTO `xq_resource` VALUES (73, 'upload/20200815/20200815214606AsbJtL.ass', 0, 0, '2020-08-15 21:46:06');
+INSERT INTO `xq_resource` VALUES (74, 'upload/20200815/20200815214652OJuGtx.ass', 0, 0, '2020-08-15 21:46:52');
+INSERT INTO `xq_resource` VALUES (76, 'upload/20200816/20200816152422SxXaAQ.jpg', 0, 1, '2020-08-16 15:24:22');
+INSERT INTO `xq_resource` VALUES (77, 'upload/20200816/20200816152601sVJjMF.jpg', 0, 1, '2020-08-16 15:26:01');
+INSERT INTO `xq_resource` VALUES (78, 'upload/20200816/20200816152608gKYWnH.jpg', 0, 1, '2020-08-16 15:26:08');
+INSERT INTO `xq_resource` VALUES (79, 'upload/20200816/20200816152749rucBDZ.jpg', 0, 1, '2020-08-16 15:27:49');
+INSERT INTO `xq_resource` VALUES (80, 'upload/20200816/20200816152757kMrlhH.jpg', 0, 1, '2020-08-16 15:27:57');
+INSERT INTO `xq_resource` VALUES (81, 'upload/20200816/20200816152803RZcFyu.jpg', 0, 1, '2020-08-16 15:28:03');
+INSERT INTO `xq_resource` VALUES (82, 'upload/20200816/20200816152813KEDCGL.jpg', 0, 1, '2020-08-16 15:28:13');
+INSERT INTO `xq_resource` VALUES (83, 'upload/20200816/20200816152825NhUlHN.jpg', 0, 1, '2020-08-16 15:28:26');
+INSERT INTO `xq_resource` VALUES (84, 'upload/20200816/20200816153349XnXuse.jpg', 1, 1, '2020-08-16 15:33:49');
+INSERT INTO `xq_resource` VALUES (85, 'upload/20200816/20200816154000PagYYN.jpg', 1, 1, '2020-08-16 15:40:00');
+INSERT INTO `xq_resource` VALUES (86, 'upload/20200816/20200816154142TLXmfE.png', 0, 1, '2020-08-16 15:41:42');
+INSERT INTO `xq_resource` VALUES (87, 'upload/20200816/20200816154719zoJsyo.jpg', 1, 1, '2020-08-16 15:47:19');
+INSERT INTO `xq_resource` VALUES (88, 'upload/20200816/20200816154738beFXBs.jpg', 0, 1, '2020-08-16 15:47:38');
+INSERT INTO `xq_resource` VALUES (89, 'upload/20200816/20200816154739JAanOi.jpg', 0, 1, '2020-08-16 15:47:39');
+INSERT INTO `xq_resource` VALUES (90, 'upload/20200816/20200816154739dbsRFk.jpg', 0, 1, '2020-08-16 15:47:39');
+INSERT INTO `xq_resource` VALUES (91, 'upload/20200816/20200816154739UaeahX.jpg', 0, 1, '2020-08-16 15:47:39');
+INSERT INTO `xq_resource` VALUES (92, 'upload/20200816/20200816154740YQoLRV.jpg', 0, 1, '2020-08-16 15:47:40');
+INSERT INTO `xq_resource` VALUES (93, 'upload/20200816/20200816154812fJZowq.jpg', 0, 1, '2020-08-16 15:48:12');
+INSERT INTO `xq_resource` VALUES (94, 'upload/20200816/20200816154854LJTQDg.jpg', 0, 1, '2020-08-16 15:48:54');
+INSERT INTO `xq_resource` VALUES (95, 'upload/20200816/20200816154906iQpsgv.jpg', 0, 1, '2020-08-16 15:49:06');
+INSERT INTO `xq_resource` VALUES (96, 'upload/20200816/20200816154906IyPKKK.jpg', 0, 1, '2020-08-16 15:49:06');
+INSERT INTO `xq_resource` VALUES (97, 'upload/20200816/20200816154906DkeccS.jpg', 0, 1, '2020-08-16 15:49:06');
+INSERT INTO `xq_resource` VALUES (98, 'upload/20200816/20200816154907vgkZqu.jpg', 0, 1, '2020-08-16 15:49:07');
+INSERT INTO `xq_resource` VALUES (99, 'upload/20200816/20200816154907jcbJne.jpg', 0, 1, '2020-08-16 15:49:07');
+INSERT INTO `xq_resource` VALUES (100, 'upload/20200816/20200816154959FyuMDi.jpg', 0, 1, '2020-08-16 15:49:59');
+INSERT INTO `xq_resource` VALUES (101, 'upload/20200816/20200816155006OGQGqW.jpg', 0, 1, '2020-08-16 15:50:06');
+INSERT INTO `xq_resource` VALUES (102, 'upload/20200816/20200816155007nPKUUn.jpg', 0, 1, '2020-08-16 15:50:07');
+INSERT INTO `xq_resource` VALUES (103, 'upload/20200816/20200816155007xXazfN.jpg', 0, 1, '2020-08-16 15:50:07');
+INSERT INTO `xq_resource` VALUES (104, 'upload/20200816/20200816155007JWDDbN.jpg', 0, 1, '2020-08-16 15:50:08');
+INSERT INTO `xq_resource` VALUES (105, 'upload/20200816/20200816155024ZKfUrt.jpg', 0, 1, '2020-08-16 15:50:24');
+INSERT INTO `xq_resource` VALUES (106, 'upload/20200816/20200816155033Mhezwk.jpg', 0, 1, '2020-08-16 15:50:33');
+INSERT INTO `xq_resource` VALUES (107, 'upload/20200816/20200816155033wHJsvl.jpg', 0, 1, '2020-08-16 15:50:33');
+INSERT INTO `xq_resource` VALUES (108, 'upload/20200816/20200816155034OZInVc.jpg', 0, 1, '2020-08-16 15:50:34');
+INSERT INTO `xq_resource` VALUES (109, 'upload/20200816/20200816155034wYqhoG.jpg', 0, 1, '2020-08-16 15:50:34');
+INSERT INTO `xq_resource` VALUES (110, 'upload/20200816/20200816155105ogZYFC.jpg', 0, 1, '2020-08-16 15:51:05');
+INSERT INTO `xq_resource` VALUES (111, 'upload/20200816/20200816155114JQglnr.jpg', 0, 1, '2020-08-16 15:51:14');
+INSERT INTO `xq_resource` VALUES (112, 'upload/20200816/20200816155114OvCnmn.jpg', 0, 1, '2020-08-16 15:51:14');
+INSERT INTO `xq_resource` VALUES (113, 'upload/20200816/20200816155115uvFsvx.jpg', 0, 1, '2020-08-16 15:51:15');
+INSERT INTO `xq_resource` VALUES (114, 'upload/20200816/20200816155115WThXWf.jpg', 0, 1, '2020-08-16 15:51:15');
+INSERT INTO `xq_resource` VALUES (115, 'upload/20200816/20200816155534zKDvmW.jpg', 0, 1, '2020-08-16 15:55:34');
+INSERT INTO `xq_resource` VALUES (116, 'upload/20200816/20200816155548xaTZyo.jpg', 0, 1, '2020-08-16 15:55:48');
+INSERT INTO `xq_resource` VALUES (117, 'upload/20200816/20200816155549vVqhMq.jpg', 0, 1, '2020-08-16 15:55:49');
+INSERT INTO `xq_resource` VALUES (118, 'upload/20200816/20200816155549sneIxY.jpg', 0, 1, '2020-08-16 15:55:49');
+INSERT INTO `xq_resource` VALUES (119, 'upload/20200816/20200816155549MZjaZn.jpg', 0, 1, '2020-08-16 15:55:49');
+INSERT INTO `xq_resource` VALUES (120, 'upload/20200816/20200816155550HoYIyr.jpg', 0, 1, '2020-08-16 15:55:50');
+INSERT INTO `xq_resource` VALUES (121, 'upload/20200816/20200816155550XctcnK.jpg', 0, 1, '2020-08-16 15:55:50');
+INSERT INTO `xq_resource` VALUES (122, 'upload/20200816/20200816165812gyQfXK.jpg', 0, 0, '2020-08-16 16:58:12');
+INSERT INTO `xq_resource` VALUES (123, 'upload/20200816/20200816174450wBSMda.jpg', 0, 1, '2020-08-16 17:44:50');
+INSERT INTO `xq_resource` VALUES (124, 'upload/20200816/20200816174536DLzmuC.jpg', 0, 1, '2020-08-16 17:45:36');
+INSERT INTO `xq_resource` VALUES (125, 'upload/20200816/20200816174654JxgKXE.png', 1, 1, '2020-08-16 17:46:54');
+INSERT INTO `xq_resource` VALUES (126, 'upload/20200818/20200818114724XSraFe.png', 0, 1, '2020-08-18 11:47:24');
+INSERT INTO `xq_resource` VALUES (127, 'upload/20200818/20200818114724XQyvND.jpg', 0, 1, '2020-08-18 11:47:24');
+INSERT INTO `xq_resource` VALUES (128, 'upload/20200818/20200818114724DCSAdA.jpg', 0, 1, '2020-08-18 11:47:24');
+INSERT INTO `xq_resource` VALUES (129, 'upload/20200819/20200819164817jJMgkr.jpg', 0, 0, '2020-08-19 16:48:17');
+INSERT INTO `xq_resource` VALUES (130, 'upload/20200819/20200819165044QaHJdn.jpg', 1, 1, '2020-08-19 16:50:44');
+INSERT INTO `xq_resource` VALUES (131, 'upload/20200821/20200821172055rCIkDK.avi', 1, 1, '2020-08-21 17:20:55');
+INSERT INTO `xq_resource` VALUES (132, 'upload/20200821/20200821172400iIKQYk.jpeg', 1, 1, '2020-08-21 17:24:00');
+INSERT INTO `xq_resource` VALUES (133, 'upload/20200821/20200821172401GaNSNW.mp4', 0, 1, '2020-08-21 17:24:02');
+INSERT INTO `xq_resource` VALUES (134, 'upload/20200821/20200821172802iiSqZq.jpeg', 1, 1, '2020-08-21 17:28:03');
+INSERT INTO `xq_resource` VALUES (135, 'upload/20200821/20200821173648WFhkOt.avi', 1, 1, '2020-08-21 17:36:48');
+INSERT INTO `xq_resource` VALUES (136, 'upload/20200821/20200821174002WkrzRi.jpeg', 0, 0, '2020-08-21 17:40:02');
+INSERT INTO `xq_resource` VALUES (137, 'upload/20200821/20200821174003XSfRZX.mp4', 0, 0, '2020-08-21 17:40:03');
+INSERT INTO `xq_resource` VALUES (138, 'upload/20200821/20200821174224pzOwHp.jpeg', 1, 1, '2020-08-21 17:42:24');
+INSERT INTO `xq_resource` VALUES (139, 'upload/20200821/20200821174225FbjswJ.mp4', 1, 1, '2020-08-21 17:42:25');
+INSERT INTO `xq_resource` VALUES (140, 'upload/20200821/20200821174610ZjbQvS.jpeg', 1, 1, '2020-08-21 17:46:11');
+INSERT INTO `xq_resource` VALUES (141, 'upload/20200822/20200822111904pwwHfa.ass', 1, 1, '2020-08-22 11:19:04');
+INSERT INTO `xq_resource` VALUES (142, 'upload/20200822/20200822111944bpqWiX.mp4', 0, 1, '2020-08-22 11:19:44');
+INSERT INTO `xq_resource` VALUES (143, 'upload/20200822/20200822112112FbbqUS.jpeg', 0, 1, '2020-08-22 11:21:13');
+INSERT INTO `xq_resource` VALUES (144, 'upload/20200822/20200822112114xIroXf.mp4', 0, 1, '2020-08-22 11:21:14');
+INSERT INTO `xq_resource` VALUES (145, 'upload/20200822/20200822112159AjgDry.ass', 1, 1, '2020-08-22 11:21:59');
+INSERT INTO `xq_resource` VALUES (146, 'upload/20200822/20200822112202mvrlpu.mp4', 0, 1, '2020-08-22 11:22:02');
+INSERT INTO `xq_resource` VALUES (147, 'upload/20200822/20200822112607JQBOBv.jpeg', 0, 1, '2020-08-22 11:26:07');
+INSERT INTO `xq_resource` VALUES (148, 'upload/20200822/20200822112858NNMBaZ..vtt', 1, 0, '2020-08-22 11:28:58');
+INSERT INTO `xq_resource` VALUES (149, 'upload/20200822/20200822112859xcdUxN.jpeg', 0, 0, '2020-08-22 11:28:59');
+INSERT INTO `xq_resource` VALUES (150, 'upload/20200822/20200822112900TurtxY.mp4', 0, 0, '2020-08-22 11:29:01');
+INSERT INTO `xq_resource` VALUES (151, 'upload/20200822/20200822121620UByYay.jpeg', 0, 1, '2020-08-22 12:16:20');
+INSERT INTO `xq_resource` VALUES (152, 'upload/20200822/20200822121622UGprFQ.mp4', 0, 1, '2020-08-22 12:16:23');
+INSERT INTO `xq_resource` VALUES (153, 'upload/20200822/20200822122120xJtLRq.jpeg', 0, 1, '2020-08-22 12:21:20');
+INSERT INTO `xq_resource` VALUES (154, 'upload/20200822/20200822122418bqwfWI.vtt', 1, 0, '2020-08-22 12:24:19');
+INSERT INTO `xq_resource` VALUES (155, 'upload/20200823/20200823215655lkvfsz.png', 0, 1, '2020-08-23 21:56:55');
 
 -- ----------------------------
 -- Table structure for xq_role
@@ -7508,27 +7725,12 @@ CREATE TABLE `xq_role`  (
   `weight` int(11) NOT NULL DEFAULT 0 COMMENT '权重',
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 36 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 35 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_role
 -- ----------------------------
 INSERT INTO `xq_role` VALUES (1, '超级管理员', 0, '2020-08-11 22:18:37');
-INSERT INTO `xq_role` VALUES (21, 'one', 0, NULL);
-INSERT INTO `xq_role` VALUES (22, 'test', 0, NULL);
-INSERT INTO `xq_role` VALUES (23, 'test', 0, NULL);
-INSERT INTO `xq_role` VALUES (24, 'one', 0, NULL);
-INSERT INTO `xq_role` VALUES (25, '陈学龙', 0, NULL);
-INSERT INTO `xq_role` VALUES (26, 'hah', 0, NULL);
-INSERT INTO `xq_role` VALUES (27, '我很好', 0, NULL);
-INSERT INTO `xq_role` VALUES (28, '我非常好', 0, NULL);
-INSERT INTO `xq_role` VALUES (29, '我很好', 0, NULL);
-INSERT INTO `xq_role` VALUES (30, '我很好！！！', 0, NULL);
-INSERT INTO `xq_role` VALUES (31, 'one two', 0, NULL);
-INSERT INTO `xq_role` VALUES (32, 'test', 0, NULL);
-INSERT INTO `xq_role` VALUES (33, '555', 0, NULL);
-INSERT INTO `xq_role` VALUES (34, 'one', 0, NULL);
-INSERT INTO `xq_role` VALUES (35, 'ffafsdf', 0, NULL);
 
 -- ----------------------------
 -- Table structure for xq_role_permission
@@ -7559,12 +7761,12 @@ CREATE TABLE `xq_subject`  (
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `xq_subject_name_unique`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '主体表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '主体表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_subject
 -- ----------------------------
-INSERT INTO `xq_subject` VALUES (1, 'test', 'fsd', 'upload/20200812/20200812213658MFRrio.png', '[{\"field\":\"test\",\"value\":\"\"},{\"field\":\"fds\",\"value\":\"\"}]', 0, 1, NULL, NULL);
+INSERT INTO `xq_subject` VALUES (1, '琉璃神社', '', 'upload/20200816/20200816154142TLXmfE.png', '[{\"field\":\"名称\",\"value\":\"琉璃神社\"},{\"field\":\"简介\",\"value\":\"专注 hacg \"}]', 0, 1, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for xq_tag
@@ -7580,15 +7782,31 @@ CREATE TABLE `xq_tag`  (
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `name_module_id`(`name`, `module_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '标签表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 24 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '标签表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_tag
 -- ----------------------------
-INSERT INTO `xq_tag` VALUES (1, 'fasf', 0, 0, 1, NULL, '2020-08-11 23:56:40');
-INSERT INTO `xq_tag` VALUES (2, 'faf', 0, 0, 1, NULL, '2020-08-11 23:56:42');
-INSERT INTO `xq_tag` VALUES (3, 'one', 0, 1, 2, NULL, '2020-08-12 21:35:39');
-INSERT INTO `xq_tag` VALUES (4, 'two', 0, 1, 2, NULL, '2020-08-12 21:35:42');
+INSERT INTO `xq_tag` VALUES (5, '火影忍者', 0, 0, 1, NULL, NULL);
+INSERT INTO `xq_tag` VALUES (6, '海贼王', 0, 1, 1, NULL, NULL);
+INSERT INTO `xq_tag` VALUES (7, '犬夜叉', 0, 0, 1, NULL, NULL);
+INSERT INTO `xq_tag` VALUES (8, '死神', 0, 0, 1, NULL, NULL);
+INSERT INTO `xq_tag` VALUES (9, '银魂', 0, 0, 1, NULL, NULL);
+INSERT INTO `xq_tag` VALUES (10, '格莱普尼尔', 0, 0, 1, NULL, NULL);
+INSERT INTO `xq_tag` VALUES (11, 'Darling in the FrontXXX', 0, 0, 1, NULL, NULL);
+INSERT INTO `xq_tag` VALUES (12, '琉璃神社', 0, 2, 1, NULL, '2020-08-16 15:46:59');
+INSERT INTO `xq_tag` VALUES (13, '2月份', 0, 1, 1, NULL, '2020-08-16 15:48:41');
+INSERT INTO `xq_tag` VALUES (14, '3月份', 0, 2, 1, NULL, '2020-08-16 15:49:46');
+INSERT INTO `xq_tag` VALUES (15, '5月份', 0, 1, 1, NULL, '2020-08-16 15:51:23');
+INSERT INTO `xq_tag` VALUES (16, '动漫', 0, 1, 1, NULL, '2020-08-16 17:46:12');
+INSERT INTO `xq_tag` VALUES (17, '二次元', 0, 1, 1, NULL, '2020-08-16 17:46:17');
+INSERT INTO `xq_tag` VALUES (18, '穹妹', 0, 1, 1, NULL, '2020-08-18 11:47:43');
+INSERT INTO `xq_tag` VALUES (19, '热血', 0, 1, 1, NULL, '2020-08-19 16:48:27');
+INSERT INTO `xq_tag` VALUES (20, 'sex', 0, 1, 1, NULL, '2020-08-21 17:21:46');
+INSERT INTO `xq_tag` VALUES (21, '温馨', 0, 1, 1, NULL, '2020-08-22 11:17:24');
+INSERT INTO `xq_tag` VALUES (22, '治愈', 0, 1, 1, NULL, '2020-08-22 11:17:30');
+INSERT INTO `xq_tag` VALUES (23, '家庭', 0, 1, 1, NULL, '2020-08-22 11:17:35');
+INSERT INTO `xq_tag` VALUES (24, '亲情', 0, 1, 1, NULL, '2020-08-22 11:17:38');
 
 -- ----------------------------
 -- Table structure for xq_timer_task_log
@@ -7600,13 +7818,14 @@ CREATE TABLE `xq_timer_task_log`  (
   `log` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '内容',
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '定时任务日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '定时任务日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_timer_task_log
 -- ----------------------------
 INSERT INTO `xq_timer_task_log` VALUES (1, 'resource:clear', '【start: 2020-08-12 23:14:06】 资源清理任务开始执行...删除完毕【end: 2020-08-12 23:14:06】，耗费时间：0 s', '2020-08-12 23:14:06');
 INSERT INTO `xq_timer_task_log` VALUES (2, 'resource:clear', '【start: 2020-08-12 23:18:55】 资源清理任务开始执行...删除完毕【end: 2020-08-12 23:18:58】，耗费时间：3 s', '2020-08-12 23:18:58');
+INSERT INTO `xq_timer_task_log` VALUES (3, 'resource:clear', '【start: 2020-08-15 22:07:09】 资源清理任务开始执行...删除完毕【end: 2020-08-15 22:07:12】，耗费时间：3 s', '2020-08-15 22:07:12');
 
 -- ----------------------------
 -- Table structure for xq_user
@@ -7626,18 +7845,19 @@ CREATE TABLE `xq_user`  (
   `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '电子邮件',
   `user_group_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_user_group.id',
   `channel_thumb` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '频道封面',
+  `description` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '描述',
   `update_time` datetime(0) NULL DEFAULT NULL,
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `xq_user_username_index`(`username`) USING BTREE,
   INDEX `xq_user_phone_index`(`phone`) USING BTREE,
   INDEX `xq_user_email_index`(`email`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '平台用户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '平台用户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_user
 -- ----------------------------
-INSERT INTO `xq_user` VALUES (1, 'test', '', '$2y$10$uAY9GdfXDRMXQOONMVETy.CD.ZwCg4FftTzQGxcok622W6aIFmM/m', 'secret', NULL, '', NULL, '', '', '', 0, '', NULL, NULL);
+INSERT INTO `xq_user` VALUES (2, 'yueshu', '', '$2y$10$5DeRQCaJ8NnCUhAPLzhZqe.TU928en1TrsrtLaX6yrXWKnwQ.gvEq', 'secret', '0000-00-00', 'upload/20200816/20200816152422SxXaAQ.jpg', '2020-08-24 20:42:10', '192.168.3.100', '', 'A576236148946@126.com', 0, 'upload/20200816/20200816165812gyQfXK.jpg', '爱生活，爱技术', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for xq_user_group
@@ -7694,7 +7914,18 @@ CREATE TABLE `xq_user_token`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `xq_user_token_token_unique`(`token`) USING BTREE,
   INDEX `xq_user_token_user_id_index`(`user_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '平台用户 token 表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '平台用户 token 表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of xq_user_token
+-- ----------------------------
+INSERT INTO `xq_user_token` VALUES (1, 2, '4u33hr0n088E08JlTpezh5488652eb37', '2020-08-22 22:12:20', NULL);
+INSERT INTO `xq_user_token` VALUES (2, 2, '5jb312hHu37w36rk68c7A0445tM83HjP', '2020-08-23 15:24:29', NULL);
+INSERT INTO `xq_user_token` VALUES (3, 2, 'L060rW9GgU37Q154MJzwvkOJXgh1Sez1', '2020-08-24 10:20:48', NULL);
+INSERT INTO `xq_user_token` VALUES (4, 2, 'KZ23m065Qi5TE09A7098uc3B4T9v69fv', '2020-08-24 14:52:20', NULL);
+INSERT INTO `xq_user_token` VALUES (5, 2, '30K77tk19S2357216j7w0A27b2F9v250', '2020-08-25 15:58:59', NULL);
+INSERT INTO `xq_user_token` VALUES (6, 2, 'O907PbObpA3B3YT66hql8q431d53fg3N', '2020-08-30 22:04:03', NULL);
+INSERT INTO `xq_user_token` VALUES (7, 2, '49M4D37w620M70574747G5mB06w2hd53', '2020-08-31 20:42:10', NULL);
 
 -- ----------------------------
 -- Table structure for xq_video
@@ -7713,6 +7944,8 @@ CREATE TABLE `xq_video`  (
   `against_count` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '反对数',
   `view_count` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '观看次数',
   `src` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '视频源',
+  `index` smallint(255) UNSIGNED NULL DEFAULT 0 COMMENT '剧集索引，仅当 type=pro 的时候有效',
+  `merge_video_subtitle` tinyint(4) NOT NULL DEFAULT 0 COMMENT '合并字幕？0-否 1-是',
   `duration` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '时长',
   `type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '类别：pro-专题 misc-杂类',
   `video_subject_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_video_subject.id',
@@ -7722,19 +7955,23 @@ CREATE TABLE `xq_video`  (
   `preview_height` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '视频预览：单个画面尺寸：高',
   `preview_duration` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '视频预览：单个画面间隔时间',
   `preview_count` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '视频预览：合成的画面数量',
+  `preview_line_count` int(255) UNSIGNED NULL DEFAULT 0 COMMENT '视频预览：单行最大合并画面数量',
+  `is_hd` tinyint(255) NULL DEFAULT 0 COMMENT '高清视频？0-否 1-是',
   `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '状态：-1-审核不通过 0-审核中 1-审核通过',
+  `play_count` bigint(255) UNSIGNED NULL DEFAULT 0 COMMENT '播放数量',
   `process_status` tinyint(4) NOT NULL DEFAULT 0 COMMENT '处理处理状态：-1-处理失败 0-信息处理中 1-转码中 2-处理完成',
   `fail_reason` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '失败原因，当 status=-1 时，必须提供',
   `weight` int(11) NOT NULL DEFAULT 0 COMMENT '权重',
   `update_time` datetime(0) NULL DEFAULT NULL,
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_video
 -- ----------------------------
-INSERT INTO `xq_video` VALUES (7, 'test', '', 1, 1, 4, '', 'upload/20200813/202008131742282843aY.jpeg', 0, 0, 0, 'upload/20200813/20200813113422NXzxNz.mp4', 301, 'misc', 0, 'upload/20200813/20200813174228zVfbIp.mp4', 'upload/20200813/20200813174228TWAvjH.jpeg', 160, 90, 1, 301, 0, 2, '', 0, '2020-08-13 11:34:24', '2020-08-13 11:34:24');
+INSERT INTO `xq_video` VALUES (12, '听爸爸的话 01', '', 2, 1, 4, '', 'upload/20200822/20200822112112FbbqUS.jpeg', 0, 0, 0, 'upload/20200822/20200822111944bpqWiX.mp4', 1, 0, 1417, 'pro', 4, 'upload/20200822/20200822112114xIroXf.mp4', 'upload/20200822/20200822112607JQBOBv.jpeg', 160, 90, 1, 1417, 5, 0, 1, 0, 2, '', 0, '2020-08-22 11:20:59', '2020-08-22 11:20:59');
+INSERT INTO `xq_video` VALUES (13, '听爸爸的话 02', '', 2, 1, 4, '', 'upload/20200822/20200822121620UByYay.jpeg', 0, 0, 0, 'upload/20200822/20200822112202mvrlpu.mp4', 2, 0, 1417, 'pro', 4, 'upload/20200822/20200822121622UGprFQ.mp4', 'upload/20200822/20200822122120xJtLRq.jpeg', 160, 90, 1, 1416, 5, 0, 1, 0, 2, '', 0, '2020-08-22 11:22:04', '2020-08-22 11:22:04');
 
 -- ----------------------------
 -- Table structure for xq_video_comment
@@ -7789,7 +8026,8 @@ CREATE TABLE `xq_video_company`  (
 -- ----------------------------
 -- Records of xq_video_company
 -- ----------------------------
-INSERT INTO `xq_video_company` VALUES (1, 'test', '', '', 1, '中国', 2, 0, '2020-08-11 22:22:31');
+INSERT INTO `xq_video_company` VALUES (1, '测试公司', 'upload/20200816/20200816174536DLzmuC.jpg', '', 1, '中国', 1, 0, '2020-08-11 22:22:31');
+INSERT INTO `xq_video_company` VALUES (2, 'Pink Pineapple', '', '', 5771, '日本', 1, 0, '2020-08-23 11:16:27');
 
 -- ----------------------------
 -- Table structure for xq_video_series
@@ -7802,12 +8040,16 @@ CREATE TABLE `xq_video_series`  (
   `weight` int(11) NOT NULL DEFAULT 0 COMMENT '权重',
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频系列表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频系列表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_video_series
 -- ----------------------------
-INSERT INTO `xq_video_series` VALUES (1, 'test', 2, 0, '2020-08-11 22:22:18');
+INSERT INTO `xq_video_series` VALUES (1, '初音岛', 1, 0, '2020-08-11 22:22:18');
+INSERT INTO `xq_video_series` VALUES (2, '火影忍者', 1, 0, '2020-08-19 16:45:29');
+INSERT INTO `xq_video_series` VALUES (3, '海贼王', 1, 0, '2020-08-19 16:45:54');
+INSERT INTO `xq_video_series` VALUES (4, '死神', 1, 0, '2020-08-19 16:46:02');
+INSERT INTO `xq_video_series` VALUES (5, '银魂', 1, 0, '2020-08-19 16:46:06');
 
 -- ----------------------------
 -- Table structure for xq_video_src
@@ -7825,12 +8067,13 @@ CREATE TABLE `xq_video_src`  (
   `definition` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '清晰度: 360P|480P|720P|1080P|2K|4K ... 等',
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频源（不同清晰度）' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频源（不同清晰度）' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_video_src
 -- ----------------------------
-INSERT INTO `xq_video_src` VALUES (5, 7, 'upload/20200813/20200813113422NXzxNz.mp4', 301, 640, 360, '', 16481575, '原画', '2020-08-13 17:43:19');
+INSERT INTO `xq_video_src` VALUES (16, 12, 'upload/20200822/20200822112607KOYVwF.mp4', 1418, 1280, 720, '', 159207861, '原画', '2020-08-22 11:28:58');
+INSERT INTO `xq_video_src` VALUES (17, 13, 'upload/20200822/20200822122120xdcWeY.mp4', 1417, 1280, 720, '', 147887376, '原画', '2020-08-22 12:24:18');
 
 -- ----------------------------
 -- Table structure for xq_video_subject
@@ -7845,20 +8088,20 @@ CREATE TABLE `xq_video_subject`  (
   `end_time` date NULL DEFAULT NULL COMMENT '完结时间',
   `status` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'completed' COMMENT '状态：making-制作中 completed-已完结 terminated-已终止（部分完成）',
   `count` smallint(5) UNSIGNED NOT NULL DEFAULT 0 COMMENT '视频数量',
-  `play_count` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '播放数量',
   `description` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '描述',
+  `category_id` bigint(20) UNSIGNED NULL DEFAULT 0 COMMENT 'xq_category.id',
   `video_series_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_video_series.id',
   `video_company_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_video_company.id',
   `module_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_module.id',
   `weight` int(11) NOT NULL DEFAULT 0 COMMENT '权重',
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频专题' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频专题' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of xq_video_subject
 -- ----------------------------
-INSERT INTO `xq_video_subject` VALUES (1, 'fdsfds', '', 0.00, '2020-08-11', '2020-08-11', 'completed', 0, 0, '', 1, 1, 2, 0, '2020-08-12 21:35:51');
+INSERT INTO `xq_video_subject` VALUES (4, '听爸爸的话', 'upload/20200823/20200823215655lkvfsz.png', 0.00, '2020-08-22', '2020-08-22', 'completed', 1000, '', 4, 1, 2, 1, 0, '2020-08-22 11:17:51');
 
 -- ----------------------------
 -- Table structure for xq_video_subtitle
@@ -7871,6 +8114,13 @@ CREATE TABLE `xq_video_subtitle`  (
   `src` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '字幕源',
   `create_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频字幕-仅支持 .vtt 格式' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频字幕-仅支持 .vtt 格式' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of xq_video_subtitle
+-- ----------------------------
+INSERT INTO `xq_video_subtitle` VALUES (11, 7, '简体中文', 'upload/20200815/20200815104145jNYQjU.ass', '2020-08-13 11:34:24');
+INSERT INTO `xq_video_subtitle` VALUES (17, 12, '简体中文', 'upload/20200822/20200822112858NNMBaZ.vtt', '2020-08-22 11:20:59');
+INSERT INTO `xq_video_subtitle` VALUES (18, 13, '简体中文', 'upload/20200822/20200822122418bqwfWI.vtt', '2020-08-22 11:22:04');
 
 SET FOREIGN_KEY_CHECKS = 1;
