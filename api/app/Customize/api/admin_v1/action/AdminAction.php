@@ -128,7 +128,7 @@ class AdminAction extends Action
                 'email' ,
                 'role_id' ,
             ]));
-            ResourceUtil::used($res->avatar);
+            ResourceUtil::used($param['avatar']);
             DB::commit();
             return self::success('' , $id);
         } catch(Exception $e) {
