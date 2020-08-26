@@ -1,5 +1,6 @@
 const videoSubject = {
-
+    // 当前播放的视频
+    current: {} ,
     videos: [] ,
 };
 
@@ -65,6 +66,7 @@ export default {
         } ,
 
         initVideoPlayer () {
+            const self = this;
             const playlist = [];
             this.videoSubject.videos.forEach((v) => {
                 const definition = [];
@@ -112,14 +114,23 @@ export default {
                 // 当前播放索引
                 index: 1 ,
                 // 静音
-                muted: true ,
+                muted: false ,
                 // 音量大小
                 volume: 1 ,
                 // 开启字幕
                 enableSubtitle: true ,
                 // definition: '480P' ,
                 // 当视频播放结束时的回调
-                ended: null ,
+                ended () {
+                    // 自动播放下一集
+                    this.next();
+                } ,
+
+                switch (index) {
+                    // console.log('switch video');
+                    self.videoSubject.current = self.videoSubject.videos[index - 1];
+
+                } ,
             });
         } ,
 
@@ -148,6 +159,7 @@ export default {
         } ,
 
         handleData (data) {
+            data.current = {};
             data.videos = data.videos ? data.videos : [];
             data.videos.forEach((v) => {
                 v.videos           = v.videos ? v.videos : [];

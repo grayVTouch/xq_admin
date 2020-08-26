@@ -219,13 +219,16 @@ class VideoHandleJob implements ShouldQueue
         $save_origin_video  = my_config('app.save_origin_video');
         // 用于判断是否有必要保留原视频（不受用户设置影响）
         $save_origin        = true;
-
+        // 是否高清视频
+        $is_hd              = false;
         foreach ($video_transcoding['specification'] as $k => $v)
         {
             if ($video_info['width'] < $v['w']) {
                 continue ;
             }
-
+            if ($v['is_hd']) {
+                $is_hd = true;
+            }
             $save_origin        = false;
             $filename           = FileUtil::getRelativePath($this->genMediaSuffix('mp4'));
             $transcoded_file    = FileUtil::getRealPathByRelativePath($filename);
@@ -250,6 +253,12 @@ class VideoHandleJob implements ShouldQueue
                 'create_time'   => date('Y-m-d H:i:s') ,
             ]);
             ResourceUtil::create($filename , 1);
+        }
+
+        if ($is_hd) {
+            VideoModel::updateById($video->id , [
+                'is_hd' => 1
+            ]);
         }
 
         if ($save_origin_video || $save_origin) {

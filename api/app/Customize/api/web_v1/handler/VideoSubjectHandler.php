@@ -4,6 +4,10 @@
 namespace App\Customize\api\web_v1\handler;
 
 
+use App\Customize\api\web_v1\handler\VideoCompanyHandler;
+use App\Customize\api\web_v1\handler\VideoSeriesHandler;
+use App\Customize\api\web_v1\model\VideoSeriesModel;
+use App\Customize\api\web_v1\model\VideoCompanyModel;
 use App\Customize\api\web_v1\model\CollectionModel;
 use App\Customize\api\web_v1\model\PraiseModel;
 use App\Customize\api\web_v1\model\RelationTagModel;
@@ -11,8 +15,6 @@ use App\Customize\api\web_v1\model\CategoryModel;
 use App\Customize\api\web_v1\model\VideoModel;
 use App\Customize\api\web_v1\model\VideoSubjectModel;
 use App\Customize\api\web_v1\model\ModuleModel;
-use App\Customize\api\web_v1\model\SubjectModel;
-use App\Customize\api\web_v1\model\UserModel;
 use App\Customize\api\web_v1\util\FileUtil;
 use stdClass;
 use function api\web_v1\get_value;
@@ -31,13 +33,25 @@ class VideoSubjectHandler extends Handler
         $module = ModuleModel::find($res->module_id);
         $module = ModuleHandler::handle($module);
 
+        $video_series = VideoSeriesModel::find($res->video_series_id);
+        $video_series = VideoSeriesHandler::handle($video_series);
+
+        $video_company = VideoCompanyModel::find($res->video_company_id);
+        $video_company = VideoCompanyHandler::handle($video_company);
+
+        $category = CategoryModel::find($res->category_id);
+        $category = CategoryHandler::handle($category);
+
         $videos = VideoModel::getByVideoSubjectId($res->id);
         $videos = VideoHandler::handleAll($videos);
 
         $tags = RelationTagModel::getByRelationTypeAndRelationId('video_subject' , $res->id);
 
         $res->module = $module;
+        $res->video_series = $video_series;
+        $res->video_company = $video_company;
         $res->tags = $tags;
+        $res->category = $category;
         $res->videos = $videos;
 
         $res->__thumb__ = empty($res->thumb) ? '' : FileUtil::url($res->thumb);

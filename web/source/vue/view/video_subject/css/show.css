@@ -139,6 +139,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
     margin-top: 15px;
+    box-sizing: border-box;
+    padding-right: 10px;
 }
 
 .view > .info .video-subject > .info .two-column-layout > div:nth-of-type(1) ,
