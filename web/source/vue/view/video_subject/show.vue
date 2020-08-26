@@ -77,35 +77,36 @@
                 <!-- 索引范围 -->
                 <div class="index-range run-space-between">
                     <div class="left">
-                        <div class="item cur">1-30</div>
-                        <div class="item">31-60</div>
-                        <div class="item">61-90</div>
-                        <div class="item">91-120</div>
+                        <div class="item" v-ripple v-for="(v,k) in indexRange.group.index" :key="k" :id="v.min + '-' + v.max">{{ v.min + '-' + v.max }}</div>
+<!--                        <div class="item cur">151-180</div>-->
                     </div>
-                    <div class="right">
-                        <div class="item more">加载更多<my-icon icon="arrow"></my-icon>
+                    <div class="right" >
+<!--                        <div class="item more" v-if="videoSubject.videos.length > 120" @click="val.loadMoreIndex = true">加载更多<my-icon icon="arrow"></my-icon>-->
+                        <div class="item more" :class="{cur: indexRange.current === 'more'}" v-ripple @click.stop="showMoreIndex">
+                            <template v-if="indexRange.current === 'more'">{{ indexRange.range }}</template>
+                            <template v-else>加载更多</template>
+                            <my-icon icon="arrow" :class="{spread: !val.loadMoreIndex}"></my-icon>
                         </div>
                     </div>
-                    <div class="more-index hide">
-                        <div class="item">121-150</div>
-                        <div class="item">151-180</div>
-                        <div class="item">181-210</div>
-                        <div class="item">211-240</div>
-                        <div class="item">241-270</div>
-                        <div class="item">121-150</div>
-                        <div class="item">151-180</div>
-                        <div class="item">181-210</div>
-                        <div class="item">211-240</div>
-                        <div class="item">241-270</div>
+                    <div class="more-index" v-if="val.loadMoreIndex" @click.stop>
+                        <div class="item" v-ripple v-for="(v,k) in indexRange.group.other" :key="k" :id="v.min + '-' + v.max">{{ v.min + '-' + v.max }}</div>
+<!--                        <div class="item">151-180</div>-->
                     </div>
                 </div>
 
                 <!-- 索引 -->
                 <div class="indexs">
 
-                    <div class="item" v-for="v in 30">
+                    <div class="item" v-for="v in videoSubject.videos" :key="v.id" @mouseenter="showVideo(v)" @mouseleave="hideVideo(v)">
                         <div class="thumb">
-                            <div class="image-mask"><img src="http://res.xq.test/upload/20200822/20200822112112FbbqUS.jpeg" v-judge-img-size class="image judge-img-size"></div>
+                            <div class="image-mask" v-show="v.show_type === 'image' || !v.video_loaded"><img :src="v.__thumb__" v-judge-img-size class="image judge-img-size" alt=""></div>
+                            <div class="video-mask" :ref="'video-mask-' + v.id" v-show="v.show_type === 'video' && v.video_loaded">
+                                <video :ref="'video-' + v.id" loop="loop" autoplay="autoplay" muted="muted"></video>
+                            </div>
+                            <div class="info">HD {{ v.__duration__ }}</div>
+                            <div class="progress" v-if="!v.video_loaded && v.show_type === 'video'">
+                                <div class="ratio" :style="'transform: scaleX(' + v.video_loaded_ratio + ')'"></div>
+                            </div>
                         </div>
                         <div class="info">
                             <div class="name">test</div>

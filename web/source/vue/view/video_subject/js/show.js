@@ -3,6 +3,27 @@ const videoSubject = {
     videos: [] ,
 };
 
+const indexRange = {
+    // 当前索引类型
+    current: '' ,
+    // 当前选择的剧集范围
+    range: '1-30' ,
+    // 分割的集数
+    split: 30 ,
+    // 正常显示的剧集分组数量
+    indexGroupCount: 3 ,
+    // 剧集分组
+    group: {
+        index: [
+            // {
+            //     min: 1 ,
+            //     max: 30 ,
+            // } ,
+        ] ,
+        other: [] ,
+    } ,
+};
+
 export default {
     name: "show" ,
 
@@ -11,9 +32,17 @@ export default {
     data () {
         return {
             dom: {} ,
-            val: {} ,
+            val: {
+                // 加载更多剧集
+                loadMoreIndex: false ,
+            } ,
+
             ins: {} ,
+
             videoSubject: G.copy(videoSubject) ,
+
+            // 当前索引范围
+            indexRange: G.copy(indexRange) ,
         };
     } ,
 
@@ -21,10 +50,12 @@ export default {
         this.initDom();
         this.initIns();
         this.getData();
+        this.initEvent();
     } ,
 
     methods: {
         initDom () {
+            this.dom.win = G(window);
             this.dom.videoContainer = G(this.$refs['video-container']);
 
         } ,
@@ -99,10 +130,17 @@ export default {
                 if (code !== TopContext.code.Success) {
                     return this.errorHandleAtHomeChildren(msg , data , code);
                 }
-
+                // 数据处理
                 this.handleData(data);
 
+                // console.log(G.jsonEncode(data));
+                // debugger
+
+                // 生成剧集信息
+                this.generateIndexRange(data.count);
+
                 this.videoSubject = data;
+
                 this.$nextTick(() => {
                     this.initVideoPlayer();
                 });
@@ -114,7 +152,94 @@ export default {
             data.videos.forEach((v) => {
                 v.videos           = v.videos ? v.videos : [];
                 v.video_subtitles  = v.video_subtitles ? v.video_subtitles : [];
+
+                // 当前显示的元素类型
+                v.show_type = 'image';
+                // 视频是否加载完成
+                v.video_loaded = false;
+                // 视频是否已经初始化（避免重复初始化）
+                v.init_video_preview = false;
+                // 视频加载进度
+                v.video_loaded_ratio = 0;
             });
+        } ,
+
+        generateIndexRange (count) {
+            const range = this.indexRange.indexGroupCount * this.indexRange.split;
+            let i = 1;
+            let obj;
+            let groupCount = 1;
+            while (i <= count)
+            {
+                if (!obj) {
+                    obj = {
+                        min: i ,
+                        max: i ,
+                    };
+                }
+                if (i >= groupCount * this.indexRange.split || i === count) {
+                    obj.max = i;
+                    if (groupCount <= this.indexRange.indexGroupCount) {
+                        this.indexRange.group.index.push(obj);
+                    } else {
+                        this.indexRange.group.other.push(obj);
+                    }
+                    groupCount++;
+                    obj = null;
+                }
+                i++;
+            }
+        } ,
+
+        showMoreIndex () {
+            this._val('loadMoreIndex' , true);
+        } ,
+
+        hideMoreIndex () {
+            this._val('loadMoreIndex' , false);
+        } ,
+
+        initEvent () {
+            this.dom.win.on('click' , this.hideMoreIndex.bind(this));
+        } ,
+
+        showVideo (record) {
+            const video = G(this.$refs['video-' + record.id]);
+            record.show_type = 'video';
+            if (record.video_loaded) {
+                video.native('currentTime' , 0);
+                video.origin('play');
+            } else {
+                if (!record.init_video_preview) {
+                    record.init_video_preview = true;
+                    G.ajax({
+                        url: record.__simple_preview__ ,
+                        method: 'get' ,
+                        // 下载事件
+                        progress (e) {
+                            if (!e.lengthComputable) {
+                                return ;
+                            }
+                            record.video_loaded_ratio = e.loaded / e.total;
+                        } ,
+                        success () {
+                            video.on('loadeddata' , () => {
+                                record.video_loaded = true;
+                                record.video_loaded_ratio = 1;
+                            });
+                            video.native('src' , record.__simple_preview__);
+                        } ,
+                    });
+                }
+            }
+        } ,
+
+        hideVideo (record) {
+            record.show_type = 'image';
+            if (record.video_loaded) {
+                const video = G(this.$refs['video-' + record.id]);
+                video.origin('pause');
+            }
         } ,
 
     } ,

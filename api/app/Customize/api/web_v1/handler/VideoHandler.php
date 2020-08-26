@@ -10,6 +10,7 @@ use App\Customize\api\web_v1\model\VideoModel;
 use App\Customize\api\web_v1\util\FileUtil;
 use stdClass;
 use function core\convert_obj;
+use function core\format_time;
 
 class VideoHandler extends Handler
 {
@@ -29,6 +30,8 @@ class VideoHandler extends Handler
         $model->videos = $videos;
         $model->video_subtitles = $video_subtitles;
 
+        $model->__src__               = empty($model->src) ? '' : FileUtil::url($model->src);
+        $model->__duration__          = empty($model->duration) ? 0 : format_time($model->duration , 'HH:II:SS');
         $model->__preview__         = empty($model->preview) ? '' : FileUtil::url($model->preview);
         $model->__simple_preview__  = empty($model->simple_preview) ? '' : FileUtil::url($model->simple_preview);
         $model->__thumb__ = empty($model->thumb) ?
