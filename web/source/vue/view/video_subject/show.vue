@@ -77,27 +77,27 @@
                 <!-- 索引范围 -->
                 <div class="index-range run-space-between">
                     <div class="left">
-                        <div class="item" v-ripple v-for="(v,k) in indexRange.group.index" :key="k" :id="v.min + '-' + v.max" :class="{cur: videoSubject.current.index >= v.min && videoSubject.current.index <= v.max}">{{ v.min + '-' + v.max }}</div>
+                        <div class="item" v-ripple v-for="(v,k) in indexRange.group.index" :key="k" :class="{cur: indexRange.current.value === `${v.min}-${v.max}`}" @click="switchIndexRangeByMinAndMax(v.min , v.max)">{{ v.min + '-' + v.max }}</div>
 <!--                        <div class="item cur">151-180</div>-->
                     </div>
                     <div class="right" >
 <!--                        <div class="item more" v-if="videoSubject.videos.length > 120" @click="val.loadMoreIndex = true">加载更多<my-icon icon="arrow"></my-icon>-->
-                        <div class="item more" :class="{cur: indexRange.current === 'more'}" v-ripple @click.stop="showMoreIndex">
-                            <template v-if="indexRange.current === 'more'">{{ indexRange.range }}</template>
+                        <div class="item more" :class="{cur: indexRange.current.more}" v-ripple @click.stop="showMoreIndex" v-if="videoSubject.max_index > indexRange.split * indexRange.indexGroupCount">
+                            <template v-if="indexRange.current.more">{{ indexRange.current.min + '-' + indexRange.current.max }}</template>
                             <template v-else>加载更多</template>
                             <my-icon icon="arrow" :class="{spread: !val.loadMoreIndex}"></my-icon>
                         </div>
                     </div>
                     <div class="more-index" v-if="val.loadMoreIndex" @click.stop>
-                        <div class="item" v-ripple v-for="(v,k) in indexRange.group.other" :class="{cur: videoSubject.current.index >= v.min && videoSubject.current.index <= v.max}" :key="k" :id="v.min + '-' + v.max">{{ v.min + '-' + v.max }}</div>
+                        <div class="item" v-ripple v-for="(v,k) in indexRange.group.other" :key="k" :class="{cur: indexRange.current.value === `${v.min}-${v.max}`}" @click="switchIndexRangeByMinAndMax(v.min , v.max)">{{ v.min + '-' + v.max }}</div>
 <!--                        <div class="item">151-180</div>-->
                     </div>
                 </div>
 
                 <!-- 索引 -->
-                <div class="indexs">
+                <div class="indexs" :class="{pending: val.pending.videosInRange , empty: !val.pending.videosInRange && indexRange.videos.length === 0}">
 
-                    <div class="item" v-for="v in videoSubject.videos" :class="{cur: v.id === videoSubject.current.id}" :key="v.id" @mouseenter="showVideo(v)" @mouseleave="hideVideo(v)" @click="ins.videoPlayer.index(v.index)">
+                    <div class="item" v-for="v in indexRange.videos" :class="{cur: v.id === videoSubject.current.id}" :key="v.id" @mouseenter="showVideo(v)" @mouseleave="hideVideo(v)" @click="ins.videoPlayer.index(v.index)">
                         <div class="thumb">
                             <div class="image-mask" v-show="v.show_type === 'image' || !v.video_loaded"><img :src="v.__thumb__" v-judge-img-size class="image judge-img-size" alt=""></div>
                             <div class="video-mask" :ref="'video-mask-' + v.id" v-show="v.show_type === 'video' && v.video_loaded">
@@ -115,6 +115,8 @@
                         </div>
                     </div>
 
+                    <div class="pending" v-if="val.pending.videosInRange"><my-loading></my-loading></div>
+                    <div class="empty" v-if="!val.pending.videosInRange && indexRange.videos.length === 0"><my-icon icon="empty" size="40"></my-icon></div>
                 </div>
 
             </div>
@@ -123,13 +125,13 @@
                 <div class="title">系列视频</div>
                 <div class="list">
 
-                    <div class="series" v-for="v in 3">
-                        <div class="thumb"><img src="http://res.xq.test/upload/20200822/20200822112112FbbqUS.jpeg" class="judge-img-size" v-judge-img-size alt=""></div>
+                    <div class="video-subject" v-for="v in videoSubjectsInSeries" :key="v.id" @click="linkAndRefresh(`/video_subject/${v.id}/show`)">
+                        <div class="thumb"><img :src="v.__thumb__ ? v.__thumb__ : $store.state.context.res.notFound" class="judge-img-size" v-judge-img-size alt=""></div>
                         <div class="info">
-                            <div class="name">犬夜叉 完结版</div>
+                            <div class="name">{{ v.name }}</div>
                             <div class="statistics">
-                                <div class="index-count">全26话</div>
-                                <div class="statistics">100播放</div>
+                                <div class="index-count">全{{ v.count }}话</div>
+                                <div class="statistics">{{ v.play_count }}播放</div>
                             </div>
                         </div>
                     </div>

@@ -53,4 +53,14 @@ class VideoModel extends Model
             ])
             ->sum('against_count');
     }
+
+    public static function findByVideoSubjectIdAndMinIndexAndMaxIndex(int $video_subject_id , int $min , int $max): Collection
+    {
+        return self::where([
+                ['video_subject_id' , '=' , $video_subject_id] ,
+                ['index' , '>=' , $min] ,
+                ['index' , '<=' , $max] ,
+            ])
+            ->get();
+    }
 }

@@ -57,6 +57,12 @@ Vue.mixin({
             window.open(url , type);
         } ,
 
+        linkAndRefresh (url) {
+            url = this.genUrl(url);
+            this.link(url , '_self');
+            // window.history.go(0);
+        } ,
+
         pending (key , val) {
             if (!G.isValid(val)) {
                 return this.val.pending[key];

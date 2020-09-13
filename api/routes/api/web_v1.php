@@ -92,6 +92,12 @@ Route::prefix('web_v1')
             Route::get('/video_subject/{tag_id}/get_by_tag_id' , 'VideoSubject@getByTagId');
             Route::get('/video_subject/get_by_tag_ids' , 'VideoSubject@getByTagIds');
             Route::get('/video_subject/{id}' , 'VideoSubject@show');
+            Route::get('/video_subject/{id}/videos_in_range' , 'VideoSubject@videosInRange');
+
+            /**
+             * 视频系列
+             */
+            Route::get('/video_subject/{id}/video_subjects' , 'VideoSubject@videoSubjectsInSeries');
 
         });
 

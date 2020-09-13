@@ -25,6 +25,9 @@ class CreateVideoSubjectTable extends Migration
             $table->date('end_time')->nullable(true)->comment('完结时间');
             $table->string('status' , 30)->default('completed')->comment('状态：making-制作中 completed-已完结 terminated-已终止（部分完成）');
             $table->unsignedSmallInteger('count')->default(0)->comment('视频数量');
+            $table->unsignedSmallInteger('min_index')->default(1)->comment('视频剧集的开始');
+            $table->unsignedSmallInteger('max_index')->default(1)->comment('视频剧集的结束');
+            $table->unsignedSmallInteger('index_split_count')->default(30)->comment('剧集切割的数量');
             $table->unsignedBigInteger('play_count')->default(0)->comment('播放数量');
             $table->string('description' , 1000)->default('')->comment('描述');
             $table->unsignedBigInteger('video_series_id')->default(0)->comment('xq_video_series.id');

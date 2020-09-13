@@ -1,3 +1,6 @@
+import nav from './nav.js';
+import position from './position.js';
+
 const loginForm = {
     username: '' ,
     password: '' ,
@@ -63,6 +66,10 @@ const collectionGroup = {
 
 export default {
     name: "home" ,
+
+    mixins: [
+        position ,
+    ] ,
 
     data () {
         return {
@@ -149,7 +156,9 @@ export default {
                 // article: '资讯' ,
                 // bbs: '论坛' ,
             },
-            nav: [],
+            // 导航菜单
+            nav ,
+            // 是否缓存路由
             keepalive: true,
             count: 0,
             loginForm: {...loginForm},
@@ -180,16 +189,16 @@ export default {
     // } ,
 
     beforeRouteUpdate (to , from , next) {
-        this.initPosition(to.path);
-        // 找到当前路由所在位置
-        const position = this.getNavByPath(to.fullPath);
-        // const position = this.getNavByPath(to.path);
+        this.initPosition(to.fullPath);
+        const position = this.$store.state.position;
+        // 菜单失去焦点
+        this.ins.nav.blur();
+        // 菜单获取焦点
         if (position.length > 0) {
-            // console.log(to.path , position , position[position.length - 1].value);
-            this.ins.nav.focusById(position[position.length - 1].value);
-        } else {
-            // 没有选中项
-            this.ins.nav.blur();
+            const first = position[0];
+            const last  = position[position.length - 1];
+            const ids   = first.route === last.route ?  [first.route] : [first.route , last.route];
+            this.ins.nav.focusByIds(ids);
         }
         next();
     } ,
@@ -232,6 +241,246 @@ export default {
             this.hideListForModuleSwitch();
             G.s.json('module' , module);
             window.history.go(0);
+        } ,
+
+        userInfo (callback) {
+            this.pending('userInfo' , true);
+            Api.user.info((msg , data , code) => {
+                this.pending('userInfo' , false);
+                if (code !== TopContext.code.Success) {
+                    G.invoke(callback , null , false);
+                    if (code === TopContext.code.AuthFailed) {
+                        return ;
+                    }
+                    this.message('error' , msg);
+                    return ;
+                }
+                G.s.json('user' , data);
+                this.initUser();
+                G.invoke(callback , null , true);
+            });
+        } ,
+
+        /**
+         * *****************
+         * 搜索事件
+         * *****************
+         */
+        searchEvent () {
+            switch (this.val.mime.key)
+            {
+                case 'image_subject':
+                    this.push('/image_subject/search');
+                    break;
+            }
+        } ,
+
+        initDom () {
+            this.dom.win = G(window);
+            this.dom.body = G(document.body);
+            this.dom.root = G(this.$el);
+            this.dom.navTypeList = G(this.$refs['nav-type-list']);
+            this.dom.navMenu = G(this.$refs['nav-menu']);
+            this.dom.body = G(this.$refs.body);
+            this.dom.toTop = G(this.$refs['to-top']);
+            this.dom.userForm = G(this.$refs.userForm);
+            this.dom.listForModuleSwitch = G(this.$refs['list-for-module-switch']);
+        } ,
+
+        initNav () {
+            this.initPosition(this.$route.fullPath);
+
+            const self      = this;
+            const position  = this.$store.state.position;
+            const first     = position[0];
+            const last      = position[position.length - 1];
+            const ids       = position.length > 0 ?
+                (
+                    first.route === last.route ?
+                    [first.route] :
+                    [first.route , last.route]
+                ) :
+                [];
+            // console.log(this.$route.fullPath , position);
+            this.ins.nav    = new Nav(this.dom.navMenu.get(0) , {
+                click (id) {
+                    self.link(self.genUrl(id) , '_self');
+                } ,
+                // 是否选中项
+                focus: true ,
+                // 是否选中顶级项
+                topFocus: true ,
+                // 初始选中的项
+                ids ,
+            });
+
+            // 分类需要修改（区分不同的事物主体，而不再是一套分类适用于所有事物）
+            // 比如，视频、图片、视频专题、图片专题等，他们不允许共用一套分类！
+            // 需要为他们分别设计单独的分类体系
+        } ,
+
+        initStyle () {
+            // this.dom.body.startTransition('show');
+        } ,
+
+        switchSearchType (key , value) {
+            this.search.mime = key;
+            this._val('mime' , {
+                key ,
+                value ,
+            });
+            this.hideNavTypeList();
+        } ,
+
+        getNavs () {
+            Api.home.nav((msg , data , code) => {
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , msg);
+                    return ;
+                }
+                let appendImageSubjectNav = [];
+                let appendVideoSubjectNav = [];
+                let maxId = this.getMaxIdAtPosition();
+
+                const imageSubjectNav = this.findCurrentByRoute('/image_subject');
+                const videoSubjectNav = this.findCurrentByRoute('/video_subject');
+                // id / p_id 转换成客户端体系
+                const mappings = [];
+                const findInMappingsByOldId = (oldId) => {
+                    for (let i = 0; i < mappings.length; ++i)
+                    {
+                        const cur = mappings[i];
+                        if (cur.oldId === oldId) {
+                            return cur;
+                        }
+                    }
+                    throw new Error('未找到 id = ' + oldId + '的映射项');
+                };
+
+                data.forEach((v) => {
+                    const mapping = {
+                        oldId: v.id ,
+                        newId: ++maxId ,
+                        oldParentId: v.p_id ,
+                        newParentId: undefined ,
+                    };
+                    switch (v.type)
+                    {
+                        case 'image_subject':
+                            mapping.newParentId = v.p_id === 0 ? imageSubjectNav.id : findInMappingsByOldId(v.p_id).newId;
+                            appendImageSubjectNav.push({
+                                id: mapping.newId ,
+                                name: v.name ,
+                                parentId: mapping.newParentId ,
+                                route: '/image_subject/search?category_id=' + v.value ,
+                                hidden: false ,
+                                isBuiltIn: false ,
+                            });
+                            break;
+                        case 'video_subject':
+                            mapping.newParentId = v.p_id === 0 ? videoSubjectNav.id : findInMappingsByOldId(v.p_id).newId;
+                            appendVideoSubjectNav.push({
+                                id: mapping.newId ,
+                                name: v.name ,
+                                parentId: mapping.newParentId ,
+                                route: '/video_subject/search?category_id=' + v.value ,
+                                hidden: false ,
+                                isBuiltIn: false ,
+                            });
+                            break;
+                        default:
+                            throw new Error('不支持的动态菜单类型');
+                    }
+                    mappings.push(mapping);
+                });
+                const field = {id: 'id' , p_id: 'parentId'};
+
+                appendImageSubjectNav = G.tree.childrens(imageSubjectNav.id , appendImageSubjectNav , field , false , true);
+                appendVideoSubjectNav = G.tree.childrens(videoSubjectNav.id , appendVideoSubjectNav , field , false , true);
+
+                // 请使用下面这种方式来触发节点更新
+                appendImageSubjectNav.forEach((v) => {
+                    imageSubjectNav.children.push(v);
+                });
+
+                appendVideoSubjectNav.forEach((v) => {
+                    videoSubjectNav.children.push(v);
+                });
+
+                // 初始化获取获取当前路由所在具体位置
+                this.$nextTick(() => {
+                    this.initNav();
+                });
+            });
+
+        } ,
+
+        mimeTypeEvent () {
+            if (this.val.navTypeList) {
+                this.hideNavTypeList();
+            } else {
+                this.showNavTypeList();
+            }
+        } ,
+
+        showNavTypeList () {
+            window.clearTimeout(this.val.navTypeListTimer);
+            this.dom.navTypeList.removeClass('hide');
+            this.dom.navTypeList.startTransition('show');
+        } ,
+
+        hideNavTypeList () {
+            this.dom.navTypeList.removeClass('show');
+            this.dom.navTypeList.addClass('hide');
+            // this.dom.navTypeList.endTransition('show');
+            // this.val.navTypeListTimer = window.setTimeout(() => {
+            //     this.dom.navTypeList.addClass('hide');
+            // } , 300);
+        } ,
+
+        // 标题栏置顶
+        fixedHeader () {
+            const scrollTop = window.pageYOffset;
+            this.val.fixed = scrollTop >= 60;
+        } ,
+
+        initToTop () {
+            const y = window.pageYOffset;
+            if (y === 0) {
+                this.dom.toTop.endTransition('show' , () => {
+                    this.dom.toTop.removeClass('hide');
+                });
+            } else {
+                this.dom.toTop.removeClass('hide');
+                this.dom.toTop.startTransition('show');
+            }
+        } ,
+
+        toTopEvent () {
+            G.scrollTo(300 , 'y' , 0 , 0);
+        } ,
+
+        initEvent () {
+            // this.dom.win.on('click' , this.hideNavTypeList.bind(this));
+
+            this.dom.win.on('click' , this.hideHistoryCtrl.bind(this));
+            this.dom.win.on('click' , this.hideUserCtrl.bind(this));
+            this.dom.win.on('click' , this.hideFavoritesCtrl.bind(this));
+            this.dom.root.on('scroll' , this.fixedHeader.bind(this));
+
+            this.dom.win.on('scroll' , this.fixedHeader.bind(this));
+            this.dom.toTop.on('click' , this.toTopEvent.bind(this));
+            this.dom.win.on('scroll' , this.initToTop.bind(this));
+        } ,
+
+        showListForModuleSwitch () {
+            this.dom.listForModuleSwitch.removeClass('hide');
+            this.dom.listForModuleSwitch.startTransition('show');
+        } ,
+
+        hideListForModuleSwitch () {
+            this.dom.listForModuleSwitch.addClass('hide');
+            this.dom.listForModuleSwitch.removeClass('show');
         } ,
 
         // 获取历史记录
@@ -517,24 +766,6 @@ export default {
             });
         } ,
 
-        userInfo (callback) {
-            this.pending('userInfo' , true);
-            Api.user.info((msg , data , code) => {
-                this.pending('userInfo' , false);
-                if (code !== TopContext.code.Success) {
-                    G.invoke(callback , null , false);
-                    if (code === TopContext.code.AuthFailed) {
-                        return ;
-                    }
-                    this.message('error' , msg);
-                    return ;
-                }
-                G.s.json('user' , data);
-                this.initUser();
-                G.invoke(callback , null , true);
-            });
-        } ,
-
         userRegister () {
             if (this.pending('userRegister')) {
                 this.message('info' , '请求中...请耐心等待');
@@ -656,225 +887,6 @@ export default {
                     this.showUserForm('login');
                 } , 1000);
             });
-        } ,
-
-        /**
-         * *****************
-         * 搜索事件
-         * *****************
-         */
-        searchEvent () {
-            switch (this.val.mime.key)
-            {
-                case 'image_subject':
-                    this.push('/image_subject/search');
-                    break;
-            }
-        } ,
-
-        initPosition (path) {
-            const position = this.getPositionByPath(path);
-            this.dispatch('position' , position);
-        } ,
-
-        getPositionByPath (path) {
-            const res = [];
-            let current = this.findCurrentByPath(path);
-            while (current !== false)
-            {
-                res.push(current);
-                current = this.findCurrentById(current.p_id);
-            }
-            res.reverse();
-            return res;
-        } ,
-        
-        getNavByPath (path) {
-            const position = this.getPositionByPath(path);
-            const res = [];
-            for (let i = 0; i < position.length; ++i)
-            {
-                let cur = position[i];
-                if (cur.is_menu) {
-                    res.push(cur);
-                }
-            }
-            return res;
-        } , 
-
-        // 找到当前路由所在菜单项
-        findCurrentByPath (path , data) {
-            data = data ? data : this.nav;
-            let res = false;
-            for (let i = 0; i < data.length; ++i)
-            {
-                const cur = data[i];
-                // let route = G.getUri(cur.link);
-                let route = cur.value;
-                // 搜索1：完整匹配
-                if (route === path) {
-                    res = cur;
-                    break;
-                }
-                route = route.replace(/\/:\w+(\/?)/g , '/.+?$1');
-                route = route.replace(/(\/|\?)/g , '\$1');
-                if (new RegExp('^' + route + '$').test(path)) {
-                    res = cur;
-                    break;
-                }
-                // 循环匹配
-                res = this.findCurrentByPath(path , cur.children);
-                if (res !== false) {
-                    break;
-                }
-            }
-            return res;
-        } ,
-
-        findCurrentById (id , data) {
-            data = data ? data : this.nav;
-            let res = false;
-            for (let i = 0; i < data.length; ++i)
-            {
-                const cur = data[i];
-                if (cur.id === id) {
-                    res = cur;
-                    break;
-                }
-                res = this.findCurrentById(id , cur.children);
-                if (res !== false) {
-                    break;
-                }
-            }
-            return res;
-        } ,
-
-        initDom () {
-            this.dom.win = G(window);
-            this.dom.body = G(document.body);
-            this.dom.root = G(this.$el);
-            this.dom.navTypeList = G(this.$refs['nav-type-list']);
-            this.dom.navMenu = G(this.$refs['nav-menu']);
-            this.dom.body = G(this.$refs.body);
-            this.dom.toTop = G(this.$refs['to-top']);
-            this.dom.userForm = G(this.$refs.userForm);
-            this.dom.listForModuleSwitch = G(this.$refs['list-for-module-switch']);
-
-            // debugger
-        } ,
-
-        initIns () {
-            const self = this;
-            // const position = this.getNavByPath(this.$route.path);
-            const position = this.getNavByPath(this.$route.fullPath);
-            this.ins.nav = new Nav(this.dom.navMenu.get(0) , {
-                click (id) {
-                    // self.push(id);
-                } ,
-                // 是否选中项
-                focus: true ,
-                // 是否选中顶级项
-                topFocus: true ,
-                // 初始选中的项
-                ids: position.length > 0 ? [position[position.length - 1].value] : [] ,
-            });
-        } ,
-
-        initStyle () {
-            // this.dom.body.startTransition('show');
-        } ,
-
-        switchSearchType (key , value) {
-            this.search.mime = key;
-            this._val('mime' , {
-                key ,
-                value ,
-            });
-            this.hideNavTypeList();
-        } ,
-
-        getNavs () {
-            Api.home.nav((msg , data , code) => {
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
-                    return ;
-                }
-                const nav = G.tree.childrens(0 , data , null , false , true);
-                this.nav = nav;
-                // 初始化获取获取当前路由所在具体位置
-                this.initPosition(this.$route.path);
-                this.$nextTick(() => {
-                    this.initIns();
-                });
-            });
-        } ,
-
-        mimeTypeEvent () {
-            if (this.val.navTypeList) {
-                this.hideNavTypeList();
-            } else {
-                this.showNavTypeList();
-            }
-        } ,
-
-        showNavTypeList () {
-            window.clearTimeout(this.val.navTypeListTimer);
-            this.dom.navTypeList.removeClass('hide');
-            this.dom.navTypeList.startTransition('show');
-        } ,
-
-        hideNavTypeList () {
-            this.dom.navTypeList.removeClass('show');
-            this.dom.navTypeList.addClass('hide');
-            // this.dom.navTypeList.endTransition('show');
-            // this.val.navTypeListTimer = window.setTimeout(() => {
-            //     this.dom.navTypeList.addClass('hide');
-            // } , 300);
-        } ,
-
-        // 标题栏置顶
-        fixedHeader () {
-            const scrollTop = window.pageYOffset;
-            this.val.fixed = scrollTop >= 60;
-        } ,
-
-        initToTop () {
-            const y = window.pageYOffset;
-            if (y === 0) {
-                this.dom.toTop.endTransition('show' , () => {
-                    this.dom.toTop.removeClass('hide');
-                });
-            } else {
-                this.dom.toTop.removeClass('hide');
-                this.dom.toTop.startTransition('show');
-            }
-        } ,
-
-        toTopEvent () {
-            G.scrollTo(300 , 'y' , 0 , 0);
-        } ,
-
-        initEvent () {
-            // this.dom.win.on('click' , this.hideNavTypeList.bind(this));
-
-            this.dom.win.on('click' , this.hideHistoryCtrl.bind(this));
-            this.dom.win.on('click' , this.hideUserCtrl.bind(this));
-            this.dom.win.on('click' , this.hideFavoritesCtrl.bind(this));
-            this.dom.root.on('scroll' , this.fixedHeader.bind(this));
-
-            this.dom.win.on('scroll' , this.fixedHeader.bind(this));
-            this.dom.toTop.on('click' , this.toTopEvent.bind(this));
-            this.dom.win.on('scroll' , this.initToTop.bind(this));
-        } ,
-
-        showListForModuleSwitch () {
-            this.dom.listForModuleSwitch.removeClass('hide');
-            this.dom.listForModuleSwitch.startTransition('show');
-        } ,
-
-        hideListForModuleSwitch () {
-            this.dom.listForModuleSwitch.addClass('hide');
-            this.dom.listForModuleSwitch.removeClass('show');
         } ,
     } ,
 }

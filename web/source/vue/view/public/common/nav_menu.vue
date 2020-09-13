@@ -1,7 +1,7 @@
 <template>
     <div class="__nav__">
         <div class="list">
-            <my-nav-menu-item v-for="v in data" :key="v.id" :item="v"></my-nav-menu-item>
+            <my-nav-menu-item v-for="v in data" :key="v.route" :item="v"></my-nav-menu-item>
         </div>
     </div>
 </template>

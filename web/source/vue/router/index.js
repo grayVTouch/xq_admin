@@ -25,6 +25,9 @@ router.beforeEach((to , from , next) => {
             return ;
         }
     }
+    // 切换路由的时候滚动条重置到 0 的位置
+    G.scrollTo(0 , 'y' , 0 , 0);
+    // 进入路由对应组件
     next();
 });
 

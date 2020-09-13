@@ -4,6 +4,7 @@
 namespace App\Customize\api\web_v1\action;
 
 use App\Customize\api\web_v1\handler\CollectionGroupHandler;
+use App\Customize\api\web_v1\handler\VideoHandler;
 use App\Customize\api\web_v1\handler\VideoSubjectHandler;
 use App\Customize\api\web_v1\handler\RelationTagHandler;
 use App\Customize\api\web_v1\handler\SubjectHandler;
@@ -11,6 +12,8 @@ use App\Customize\api\web_v1\model\CategoryModel;
 use App\Customize\api\web_v1\model\CollectionGroupModel;
 use App\Customize\api\web_v1\model\CollectionModel;
 use App\Customize\api\web_v1\model\HistoryModel;
+use App\Customize\api\web_v1\model\VideoModel;
+use App\Customize\api\web_v1\model\VideoSeriesModel;
 use App\Customize\api\web_v1\model\VideoSubjectModel;
 use App\Customize\api\web_v1\model\ModuleModel;
 use App\Customize\api\web_v1\model\PraiseModel;
@@ -375,6 +378,44 @@ class VideoSubjectAction extends Action
         $limit = $param['limit'] ? $param['limit'] : my_config('app.limit');
 
         $res = VideoSubjectModel::recommendExcludeSelfByFilterAndLimit($video_subject->id , $param , $limit);
+        $res = VideoSubjectHandler::handleAll($res);
+        return self::success('' , $res);
+    }
+
+    public static function videosInRange(Base $context , int $video_subject_id , array $param = [])
+    {
+        $validator = Validator::make($param , [
+            'min' => 'required|integer' ,
+            'max' => 'required|integer' ,
+        ]);
+
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first() , get_form_error($validator));
+        }
+
+        $video_subject = VideoSubjectModel::find($video_subject_id);
+        if (empty($video_subject)) {
+            return self::error('记录不存在' , null , 404);
+        }
+
+        $res = VideoModel::findByVideoSubjectIdAndMinIndexAndMaxIndex($video_subject->id , $param['min'] , $param['max']);
+        $res = VideoHandler::handleAll($res);
+        return self::success('' , $res);
+    }
+
+    public static function videoSubjectsInSeries(Base $base , int $video_series_id , array $param = []): array
+    {
+        $validator = Validator::make($param , [
+            'video_subject_id' => 'required|integer' ,
+        ]);
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first() , get_form_error($validator));
+        }
+        $video_series = VideoSeriesModel::find($video_series_id);
+        if (empty($video_series_id)) {
+            return self::error('视频系列不存在' , '' , 404);
+        }
+        $res = VideoSubjectModel::getByVideoSeriesIdAndExcludeVideoSubjectId($video_series->id , $param['video_subject_id']);
         $res = VideoSubjectHandler::handleAll($res);
         return self::success('' , $res);
     }

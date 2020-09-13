@@ -8,7 +8,8 @@ class Test extends Controller
 {
     public function one()
     {
-        var_dump('我非常好');
+//        var_dump('我非常好');
+        var_dump(request()->post());
     }
 
     public function two()

@@ -49,6 +49,10 @@ export default {
 
     } ,
 
+    beforeRouteUpdate (to , from , next) {
+        this.reload();
+    } ,
+
     mounted () {
         this.initDom();
         this.initEvent();

@@ -26,7 +26,7 @@ class NavHandler extends Handler
         }
         $res->nav = $nav;
 
-        $res->__platform__ = get_value('business.platform' , $res->platform);
+//        $res->__platform__ = get_value('business.platform' , $res->platform);
 
         return $res;
     }

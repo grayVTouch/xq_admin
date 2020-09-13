@@ -403,6 +403,10 @@
     text-overflow: ellipsis;
 }
 
+.view > .recommend .video-index .index-range .more-index .item::after {
+    display: none;
+}
+
 .view > .recommend .video-index .index-range .more-index .item:nth-of-type(1) ,
 .view > .recommend .video-index .index-range .more-index .item:nth-of-type(2) ,
 .view > .recommend .video-index .index-range .more-index .item:nth-of-type(3) ,
@@ -410,6 +414,8 @@
 {
     margin-top: 0;
 }
+
+
 
 /**
  * ***********************************
@@ -420,6 +426,7 @@
     max-height: 432px;
     overflow: hidden;
     overflow-y: auto;
+    position: relative;
 }
 
 .view > .recommend .video-index .indexs::-webkit-scrollbar-thumb {
@@ -524,6 +531,33 @@
     margin-bottom: 8px;
 }
 
+.view > .recommend .video-index .indexs.pending ,
+.view > .recommend .video-index .indexs.empty
+{
+    min-height: 80px;
+}
+
+.view > .recommend .video-index .indexs .pending {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0 , 0 , 0 , 0.6);
+}
+
+.view > .recommend .video-index .indexs .empty
+{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50% , -50%);
+}
+
+
 /*** 视频系列 ***/
 .view > .recommend .video-series {
 
@@ -534,7 +568,7 @@
     margin-bottom: 0;
 }
 
-.view > .recommend .video-series .list .series {
+.view > .recommend .video-series .list .video-subject {
     display: flex;
     justify-content: flex-start;
     align-items: stretch;
@@ -545,25 +579,25 @@
     cursor: pointer;
 }
 
-.view > .recommend .video-series .list .series:hover {
+.view > .recommend .video-series .list .video-subject:hover {
     background-color: #393d48;
 }
 
-.view > .recommend .video-series .list .series:nth-last-of-type(1) {
+.view > .recommend .video-series .list .video-subject:nth-last-of-type(1) {
     margin-bottom: 0;
 }
 
-.view > .recommend .video-series .list .series > * {
+.view > .recommend .video-series .list .video-subject > * {
     margin: 0;
 }
 
-.view > .recommend .video-series .list .series .thumb {
+.view > .recommend .video-series .list .video-subject .thumb {
     position: relative;
     width: 150px;
     height: 84px;
 }
 
-.view > .recommend .video-series .list .series .info {
+.view > .recommend .video-series .list .video-subject .info {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -572,17 +606,17 @@
     /*box-sizing: border-box;*/
 }
 
-.view > .recommend .video-series .list .series .info > * {
+.view > .recommend .video-series .list .video-subject .info > * {
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.view > .recommend .video-series .list .series .info .name {
+.view > .recommend .video-series .list .video-subject .info .name {
     font-size: 14px;
 }
 
-.view > .recommend .video-series .list .series .info .statistics {
+.view > .recommend .video-series .list .video-subject .info .statistics {
     font-size: 12px;
 }

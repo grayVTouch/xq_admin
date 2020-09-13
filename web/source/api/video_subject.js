@@ -7,6 +7,8 @@ const hot = `${TopContext.api}/video_subject/hot`;
 const hotTags = `${TopContext.api}/video_subject/hot_tags`;
 const getByTagId = `${TopContext.api}/video_subject/{tag_id}/get_by_tag_id`;
 const getByTagIds = `${TopContext.api}/video_subject/get_by_tag_ids`;
+const videosInRange = `${TopContext.api}/video_subject/{id}/videos_in_range`;
+const videoSubjects = `${TopContext.api}/video_subject/{id}/video_subjects`;
 
 export default {
 
@@ -38,5 +40,12 @@ export default {
         return request(getByTagIds , 'get' , data , success , error);
     } ,
 
+    videosInRange (id , data , success , error) {
+        return request(videosInRange.replace('{id}' , id), 'get' , data , success , error);
+    } ,
+
+    videoSubjects (id , data , success , error) {
+        return request(videoSubjects.replace('{id}' , id), 'get' , data , success , error);
+    } ,
 
 };

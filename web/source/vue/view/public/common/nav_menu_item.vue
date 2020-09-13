@@ -1,11 +1,12 @@
 <template>
-    <div class="item" :data-id="item.value" v-if="item.is_menu">
-        <a class="action" :href="`#${item.value}`" v-ripple>
+    <div class="item" :data-id="item.route" v-if="!item.hidden">
+<!--    <div class="item" :data-id="item.route" v-if="true">-->
+        <div class="action" v-ripple>
             <div class="text">{{ item.name }}</div>
             <div class="ico hide"><i class="icon run-iconfont run-iconfont-arrow"></i></div>
-        </a>
+        </div>
         <div class="list">
-            <my-nav-menu-item v-for="v in item.children" :key="v.id" :item="v"></my-nav-menu-item>
+            <my-nav-menu-item v-for="v in item.children" :key="v.route" :item="v"></my-nav-menu-item>
         </div>
     </div>
 </template>

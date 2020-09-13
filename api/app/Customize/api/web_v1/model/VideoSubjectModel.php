@@ -308,4 +308,13 @@ class VideoSubjectModel extends Model
             ->limit($limit)
             ->get();
     }
+
+    public static function getByVideoSeriesIdAndExcludeVideoSubjectId(int $video_series_id , int $exclude_video_subject_id): Collection
+    {
+        return self::where([
+                ['id' , '!=' , $exclude_video_subject_id] ,
+                ['video_series_id' , '=' , $video_series_id] ,
+            ])
+            ->get();
+    }
 }

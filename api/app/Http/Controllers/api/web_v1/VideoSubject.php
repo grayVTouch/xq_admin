@@ -199,4 +199,26 @@ class VideoSubject extends Base
         return success($res['message'] , $res['data']);
     }
 
+    public function videosInRange(int $video_subject_id)
+    {
+        $param = $this->request->query();
+        $param['max'] = $param['max'] ?? '';
+        $param['min'] = $param['min'] ?? '';
+        $res = VideoSubjectAction::videosInRange($this , $video_subject_id , $param);
+        if ($res['code'] !== 0) {
+            return error($res['message'] , $res['data'] , $res['code']);
+        }
+        return success($res['message'] , $res['data']);
+    }
+
+    public function videoSubjectsInSeries(int $video_series_id)
+    {
+        $param = $this->request->post();
+        $param['video_subject_id'] = $param['video_subject_id'] ?? '';
+        $res = VideoSubjectAction::videoSubjectsInSeries($this , $video_series_id , $param);
+        if ($res['code'] !== 0) {
+            return error($res['message'] , $res['data'] , $res['code']);
+        }
+        return success($res['message'] , $res['data']);
+    }
 }
