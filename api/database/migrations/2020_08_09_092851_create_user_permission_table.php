@@ -19,10 +19,14 @@ class CreateUserPermissionTable extends Migration
             $table->id();
             $table->string('name' , 255)->default('')->comment('名称');
             $table->string('description' , 500)->default('')->comment('描述');
-            $table->tinyInteger('enable')->default(1)->comment('启用？0-否 1-是');
+            $table->tinyInteger('is_enabled')->default(1)->comment('启用？0-否 1-是');
             $table->unsignedBigInteger('module_id')->default(0)->comment('xq_module.id');
-            $table->datetime('update_time')->nullable(true);
-            $table->datetime('create_time')->nullable(true);
+
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '平台用户-权限表'");
     }

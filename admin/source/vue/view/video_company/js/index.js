@@ -306,7 +306,7 @@ export default {
         editEvent (record) {
             this._val('mode' , 'edit');
             this.form = record;
-            this.ins.thumb.render(this.form.__thumb__);
+            this.ins.thumb.render(this.form.thumb);
             this.getModules();
             this.countries.current = {
                 id:   record.country_id ,
@@ -401,7 +401,7 @@ export default {
             this.searchCountry();
             this._val('modalForCountry' , true);
         } ,
-        
+
         updateCountryEvent (row , index) {
             this.error({country_id: ''} , false);
             this.form.country_id = row.id;
@@ -410,6 +410,6 @@ export default {
             this._val('modalForCountry' , false);
             this.countries.data = [];
         } ,
-        
+
     } ,
 }

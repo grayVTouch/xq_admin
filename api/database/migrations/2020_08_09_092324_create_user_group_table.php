@@ -20,9 +20,14 @@ class CreateUserGroupTable extends Migration
             $table->string('name' , 255)->default('')->comment('组名');
             $table->unsignedBigInteger('p_id')->default(0)->comment('xq_user_group.id');
             $table->unsignedBigInteger('module_id')->default(0)->comment('xq_module.id');
-            $table->datetime('update_time')->nullable(true);
-            $table->datetime('create_time')->nullable(true);
+
+            $table->timestamps();
+
             $table->unique('name');
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '平台用户组表'");
     }

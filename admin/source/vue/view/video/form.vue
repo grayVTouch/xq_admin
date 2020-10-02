@@ -342,11 +342,11 @@
                                     <div>
                                         <Table style="width: 100%;" border :columns="videos.field" :data="videos.data" @on-selection-change="selectedVideoEvent">
                                             <template v-slot:src="{row,index}">
-                                                <video muted="muted" controls :src="row.src ? row.__src__ : $store.state.context.res.notFound" :height="$store.state.context.table.videoH"></video>
+                                                <video muted="muted" controls :src="row.src ? row.src : $store.state.context.res.notFound" :height="$store.state.context.table.videoH"></video>
                                             </template>
                                             <template v-slot:action="{row,index}">
                                                 <my-table-button :loading="val.pending['delete_' + row.id]" @click="destroyVideoEvent(index , row)">删除</my-table-button>
-                                                <my-table-button @click="link(row.__src__ , '_blank')">预览</my-table-button>
+                                                <my-table-button @click="link(row.src , '_blank')">预览</my-table-button>
                                             </template>
                                         </Table>
                                     </div>
@@ -398,7 +398,7 @@
                         </div>
                         <div class="list">
                             <Table border :loading="val.pending.searchUser" :data="users.data" :columns="users.field" @on-row-click="updateUserEvent">
-                                <template v-slot:avatar="{row,index}"><img :src="row.avatar ? row.__avatar__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
+                                <template v-slot:avatar="{row,index}"><img :src="row.avatar ? row.avatar : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
                                 <template v-slot:action="{row,index}">
                                     <my-table-button>选择</my-table-button>
                                 </template>
@@ -425,7 +425,7 @@
                         </div>
                         <div class="list">
                             <Table border  :loading="val.pending.searchVideoSubject" :data="videoSubjects.data" :columns="videoSubjects.field" @on-row-click="updateVideoSubjectEvent">
-                                <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
+                                <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
                                 <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
                                 <template v-slot:action="{row,index}">
                                     <my-table-button>选择</my-table-button>

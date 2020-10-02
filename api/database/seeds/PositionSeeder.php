@@ -18,13 +18,13 @@ class PositionSeeder extends Seeder
                 'name' => '首页幻灯片' ,
                 'value' => 'home_slideshow' ,
                 'platform' => 'web' ,
-                'create_time' => $datetime
+                'created_at' => $datetime
             ] ,
             [
                 'name' => '图片专题' ,
                 'value' => 'image_subject' ,
                 'platform' => 'web' ,
-                'create_time' => $datetime
+                'created_at' => $datetime
             ] ,
         ]);
     }

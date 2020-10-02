@@ -20,7 +20,14 @@ class CreateUserGroupPermissionTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_group_id')->default(0)->comment('xq_user_group.id');
             $table->unsignedBigInteger('user_permission_id')->default(0)->comment('xq_user_permission.id');
+
+            $table->timestamps();
+
             $table->unique(['user_permission_id' , 'user_group_id'] , 'permission');
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '用户组-用户权限 关联表'");
     }

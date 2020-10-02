@@ -13,7 +13,7 @@
                     <div class="inner">
                         <div class="top">
                             <my-avatar
-                                    :src="$store.state.user.__avatar__"
+                                    :src="$store.state.user.avatar"
                                     :mask="true"
                                     :top-val="$store.state.user.username"
                                     :btm-val="$store.state.user.role ? $store.state.user.role.name : '无'"
@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="line menus" ref="menus">
-                    <my-menu :list="$store.state.permissionWithStructure"></my-menu>
+                    <my-menu :data="$store.state.position"></my-menu>
                 </div>
 
                 <div class="line desc" ref="desc">{{ $store.state.context.os.name }}</div>
@@ -91,7 +91,7 @@
                             <div class="user" @mouseenter="showUserCtrl" @mouseleave="hideUserCtrl">
                                 <div class="ctrl">
                                     <div class="avatar">
-                                        <my-avatar :src="$store.state.user.__avatar__"></my-avatar>
+                                        <my-avatar :src="$store.state.user.avatar"></my-avatar>
                                     </div>
                                     <div class="username">{{ $store.state.user.username }}</div>
                                 </div>

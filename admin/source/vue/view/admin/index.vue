@@ -129,7 +129,7 @@
                     <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
                         <template v-slot:role_id="{row,index}">{{ row.role ? `${row.role.name}【${row.role.id}】` : `unknow【${row.role_id}】` }}</template>
                         <template v-slot:avatar="{row,index}">
-                            <img :src="row.avatar ? row.__avatar__ : $store.state.context.res.notFound" @click="link(row.__avatar__ , '__blank')" :height="$store.state.context.table.imageH" class="image">
+                            <img :src="row.avatar ? row.avatar : $store.state.context.res.notFound" @click="link(row.avatar , '__blank')" :height="$store.state.context.table.imageH" class="image">
                         </template>
                         <template v-slot:is_root="{row,index}">
                             <b :class="{green: row.is_root === 1 , red: row.is_root === 0}">{{ row.__is_root__ }}</b>

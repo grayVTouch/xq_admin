@@ -1,0 +1,26 @@
+<?php
+
+
+namespace App\Customize\api\admin\handler;
+
+
+use App\Customize\api\admin\model\PositionModel;
+use stdClass;
+use function api\admin\get_value;
+use function core\convert_obj;
+
+class PositionHandler extends Handler
+{
+    public static function handle(?PositionModel $model): ?stdClass
+    {
+        if (empty($model)) {
+            return null;
+        }
+        $res = convert_obj($model);
+
+        $res->__platform__ = get_value('business.platform' , $res->platform);
+
+        return $res;
+    }
+
+}

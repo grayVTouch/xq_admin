@@ -26,8 +26,12 @@ class CreateVideoCommentTable extends Migration
             $table->unsignedBigInteger('praise_count')->default(0)->comment('获赞次数');
             $table->unsignedBigInteger('against_count')->default(0)->comment('反对次数');
             $table->tinyInteger('status')->default(1)->comment('状态：-1-审核不通过 0-审核中 1-审核通过');
-            $table->dateTime('update_time')->nullable(true);
-            $table->dateTime('create_time')->nullable(true);
+
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '视频评论'");
     }

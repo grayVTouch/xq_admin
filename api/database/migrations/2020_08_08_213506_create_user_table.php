@@ -30,11 +30,16 @@ class CreateUserTable extends Migration
             $table->unsignedBigInteger('user_group_id')->default(0)->comment('xq_user_group.id');
             $table->string('channel_thumb' , 500)->default('')->comment('频道封面');
             $table->string('description' , 1000)->default('')->comment('描述');
-            $table->datetime('update_time')->nullable(true);
-            $table->datetime('create_time')->nullable(true);
+
+            $table->timestamps();
+
             $table->index('username');
             $table->index('phone');
             $table->index('email');
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '平台用户表'");
     }

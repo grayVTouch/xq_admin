@@ -217,7 +217,7 @@
 }
 
 .main > .header .navigation .nav-top > .inner > .c-inner .search .inner .type:hover {
-    background-color: #717171;
+    background-color: rgba(113,113,113,0.5);
 }
 
 .main > .header .navigation .nav-top > .inner > .c-inner .search .inner .type .current {

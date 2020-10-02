@@ -1,0 +1,40 @@
+<?php
+
+
+namespace App\Customize\api\admin\handler;
+
+
+use App\Customize\api\admin\model\ImageAtPositionModel;
+use App\Customize\api\admin\model\ModuleModel;
+use App\Customize\api\admin\model\PositionModel;
+use App\Customize\api\admin\util\FileUtil;
+use stdClass;
+use function api\admin\get_value;
+use function core\convert_obj;
+
+class ImageAtPositionHandler extends Handler
+{
+    public static function handle(?ImageAtPositionModel $model): ?stdClass
+    {
+        if (empty($model)) {
+            return null;
+        }
+        $res = convert_obj($model);
+
+        $module = ModuleModel::find($res->module_id);
+        $module = ModuleHandler::handle($module);
+
+
+        $position = PositionModel::find($res->position_id);
+        $position = PositionHandler::handle($position);
+
+        $res->position = $position;
+        $res->module = $module;
+        $res->__platform = get_value('business.platform' , $res->platform);
+
+
+
+        return $res;
+    }
+
+}

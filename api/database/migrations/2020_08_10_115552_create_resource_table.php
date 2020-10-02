@@ -17,10 +17,17 @@ class CreateResourceTable extends Migration
     {
         Schema::create($this->table , function (Blueprint $table) {
             $table->id();
-            $table->string('path' , 1000)->default('')->comment('资源相对路径');
-            $table->tinyInteger('used')->default(0)->comment('已使用？0-否 1-是');
-            $table->tinyInteger('is_delete')->default(0)->comment('已删除？0-否 1-是');
-            $table->dateTime('create_time')->nullable(true);
+            $table->string('url' , 1000)->default('')->comment('资源绝对网络路径');
+            $table->string('path' , 1000)->default('')->comment('资源绝对本地磁盘路径');
+            $table->string('disk')->default('')->comment('存储介质: local-本地存储 aliyun-阿里云 qiniu-七牛云');
+            $table->tinyInteger('is_used')->default(0)->comment('已使用？0-否 1-是');
+            $table->tinyInteger('is_deleted')->default(0)->comment('已删除？0-否 1-是');
+
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
     }
 

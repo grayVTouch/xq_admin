@@ -32,7 +32,7 @@ CREATE TABLE `xq_nav`  (
   `weight` int(11) NOT NULL DEFAULT 0 COMMENT '权重',
   `module_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_module.id',
   `platform` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '平台：app | android | ios | web | mobile',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '菜单表-区分不同平台' ROW_FORMAT = Dynamic;
 

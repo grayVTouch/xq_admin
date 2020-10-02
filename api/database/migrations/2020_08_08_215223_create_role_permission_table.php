@@ -19,8 +19,14 @@ class CreateRolePermissionTable extends Migration
             $table->id();
             $table->unsignedBigInteger('role_id')->default(0)->comment('xq_role.id');
             $table->unsignedBigInteger('admin_permission_id')->default(0)->comment('xq_admin_permission.id');
-            $table->datetime('create_time')->nullable(true);
+
+            $table->timestamps();
+
             $table->unique(['role_id' , 'admin_permission_id']);
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '角色-权限-关联表'");
     }

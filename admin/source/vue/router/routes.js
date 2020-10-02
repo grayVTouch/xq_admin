@@ -1,7 +1,14 @@
-const NotFoundView = () => import('../view/error/404.vue');
-const login = () => import('../view/login/login.vue');
-const index = () => import('../view/index/index.vue');
-const pannel = () => import('../view/pannel/pannel.vue');
+/**
+ * 同步加载
+ */
+import login from '@vue/view/login/login.vue';
+import index from '@vue/view/index/index.vue';
+import pannel from '@vue/view/pannel/pannel.vue';
+import NotFoundView from '@vue/view/error/404.vue';
+
+/**
+ * 异步加载
+ */
 const indexForAdminPermission = () => import('../view/admin_permission/index.vue');
 const indexForRole = () => import('../view/role/index.vue');
 const indexForModule = () => import('../view/module/index.vue');
@@ -25,101 +32,122 @@ export default [
     {
         name: '404' ,
         path: '/404' ,
-        component: NotFoundView
+        component: NotFoundView ,
+        async: false ,
     } ,
     {
         name: 'login' ,
         path: '/login' ,
-        component: login
+        component: login ,
+        async: false ,
     } ,
     {
         name: 'home' ,
         path: '/' ,
-        component: index
+        component: index ,
+        async: false ,
     } ,
 
     {
         path: '/pannel' ,
-        component: pannel
+        component: pannel ,
+        async: false ,
     } ,
 
     {
         path: '/admin_permission/index' ,
-        component: indexForAdminPermission
+        component: indexForAdminPermission ,
+        async: true ,
     } ,
 
     {
         path: '/role/index' ,
-        component: indexForRole
+        component: indexForRole ,
+        async: true ,
     } ,
     {
         path: '/module/index' ,
-        component: indexForModule
+        component: indexForModule ,
+        async: true ,
     } ,
     {
         path: '/tag/index' ,
-        component: indexForTag
+        component: indexForTag ,
+        async: true ,
     } ,
     {
         path: '/category/index' ,
-        component: indexForCategory
+        component: indexForCategory ,
+        async: true ,
     } ,
 
     {
         path: '/subject/index' ,
-        component: indexForSubject
+        component: indexForSubject ,
+        async: true ,
     } ,
 
     {
         path: '/image_subject/index' ,
-        component: indexForImageSubject
+        component: indexForImageSubject ,
+        async: true ,
     } ,
 
     {
         path: '/user/index' ,
-        component: indexForUser
+        component: indexForUser ,
+        async: true ,
     } ,
 
     {
         path: '/admin/index' ,
-        component: indexForAdmin
+        component: indexForAdmin ,
+        async: true ,
     } ,
 
     {
         path: '/position/index' ,
-        component: indexForPosition
+        component: indexForPosition ,
+        async: true ,
     } ,
 
     {
         path: '/image_at_position/index' ,
-        component: indexForImageAtPosition
+        component: indexForImageAtPosition ,
+        async: true ,
     } ,
 
     {
         path: '/nav/index' ,
-        component: indexForNav
+        component: indexForNav ,
+        async: true ,
     } ,
 
     {
         path: '/video/index' ,
-        component: indexForVideo
+        component: indexForVideo ,
+        async: true ,
     } ,
     {
         path: '/video_series/index' ,
-        component: indexForVideoSeries
+        component: indexForVideoSeries ,
+        async: true ,
     } ,
     {
         path: '/video_subject/index' ,
-        component: indexForVideoSubject
+        component: indexForVideoSubject ,
+        async: true ,
     } ,
     {
         path: '/video_company/index' ,
-        component: indexForVideoCompany
+        component: indexForVideoCompany ,
+        async: true ,
     } ,
 
     {
         path: '/disk/index' ,
         component: indexForDisk ,
+        async: true ,
     } ,
 
 ];

@@ -298,7 +298,7 @@ export default {
     watch: {
         form (form , oldVal) {
             this.val.birthday = form.birthday;
-            this.ins.avatar.render(form.__avatar__);
+            this.ins.avatar.render(form.avatar);
         } ,
     } ,
 }

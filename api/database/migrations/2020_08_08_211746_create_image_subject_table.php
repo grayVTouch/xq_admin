@@ -29,13 +29,19 @@ class CreateImageSubjectTable extends Migration
             $table->integer('weight')->default(0)->comment('权重');
             $table->unsignedBigInteger('view_count')->default(0)->comment('浏览次数');
             $table->unsignedBigInteger('praise_count')->default(0)->comment('获赞次数');
+
             $table->tinyInteger('status')->default(0)->comment('审核状态：-1-审核失败 0-待审核 1-审核通过');
             $table->string('fail_reason' , 1000)->default('')->comment('失败原因，当 status=-1 时，必须提供');
-            $table->datetime('update_time')->nullable(true);
-            $table->datetime('create_time')->nullable(true);
+
+            $table->timestamps();
+
             $table->index('module_id');
             $table->index('category_id');
             $table->index('subject_id');
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '图片专题表'");
     }

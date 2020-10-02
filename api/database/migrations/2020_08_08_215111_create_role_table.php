@@ -19,7 +19,12 @@ class CreateRoleTable extends Migration
             $table->id();
             $table->string('name' , 255)->default('')->comment('名称');
             $table->integer('weight')->default(0)->comment('权重');
-            $table->datetime('create_time')->nullable(true);
+
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '角色表'");
     }

@@ -139,7 +139,7 @@
 
                     <Table border :height="$store.state.context.table.height"  :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
                         <template v-slot:thumb="{row,index}">
-                            <img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image" @click="link(row.__thumb__)">
+                            <img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image" @click="link(row.thumb)">
                         </template>
                         <template v-slot:user_id="{row,index}">
                             {{ row.user ? `${row.user.username}【${row.user.id}】` : `unknow【${row.user_id}】` }}

@@ -22,9 +22,19 @@ class CreateTagTable extends Migration
             $table->integer('weight')->default(0)->comment('权重');
             $table->unsignedBigInteger('count')->default(0)->comment('使用次数');
             $table->unsignedBigInteger('module_id')->default(0)->comment('xq_module.id');
-            $table->datetime('update_time')->nullable(true);
-            $table->datetime('create_time')->nullable(true);
+
+            $table->unsignedBigInteger('user_id')->default(0)->comment('xq_user.id，发布者用户id');
+            $table->tinyInteger('status')->default(0)->comment('状态： -1-审核不通过 0-待审核 1-审核通过');
+            $table->string('fail_reason' , 255)->default('')->comment('失败原因，当status=-1时，必须提供');
+
+            $table->timestamps();
+
+
             $table->unique(['name' , 'module_id'] , 'name_module_id');
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '标签表'");
     }

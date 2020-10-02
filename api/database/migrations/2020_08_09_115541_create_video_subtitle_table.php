@@ -20,7 +20,12 @@ class CreateVideoSubtitleTable extends Migration
             $table->unsignedBigInteger('video_id')->default(0)->comment('xq_video.id');
             $table->string('name' , 255)->default('')->comment('名称');
             $table->string('src' , 500)->default('')->comment('字幕源');
-            $table->dateTime('create_time')->nullable(true);
+
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '视频字幕-仅支持 .vtt 格式'");
     }

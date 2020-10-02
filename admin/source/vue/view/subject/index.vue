@@ -99,7 +99,7 @@
                     <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
                         <template v-slot:name="{row,index}">{{ row.name + `【${row.module ? row.module.name : 'unknow'}】` }}</template>
 <!--                        <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>-->
-                        <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" class="image" :height="$store.state.context.table.imageH" @click.stop="link(row.__thumb__)"></template>
+                        <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" class="image" :height="$store.state.context.table.imageH" @click.stop="link(row.thumb)"></template>
                         <template v-slot:attr="{row,index}">
                             <Poptip placement="right" width="400" title="关联主体属性" :transfer="true" trigger="hover">
                                 <Button>悬浮可查看详情</Button>

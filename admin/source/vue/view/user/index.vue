@@ -117,7 +117,7 @@
 
                     <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
                         <template v-slot:avatar="{row,index}">
-                            <img :src="row.avatar ? row.__avatar__ : $store.state.context.res.notFound" @click="link(row.__avatar__ , '__blank')" :height="$store.state.context.table.imageH" class="image">
+                            <img :src="row.avatar ? row.avatar : $store.state.context.res.notFound" @click="link(row.avatar , '__blank')" :height="$store.state.context.table.imageH" class="image">
                         </template>
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>

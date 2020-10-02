@@ -19,24 +19,22 @@ class ModuleSeeder extends Seeder
             [
                 'id' => 1 ,
                 'name' => '开发模式' ,
-                'enable' => 1 ,
+                'is_enabled' => 1 ,
                 'auth' => 1 ,
-                'auth_password' => Hash::make(config('my.module_auth_password')) ,
                 'description' => '' ,
                 'weight' => 0 ,
                 'default' => 0 ,
-                'create_time' => $datetime ,
+                'created_at' => $datetime ,
             ] ,
             [
                 'id' => 2 ,
                 'name' => '用户模式' ,
-                'enable' => 1 ,
+                'is_enabled' => 1 ,
                 'auth' => 0 ,
-                'auth_password' => '' ,
                 'description' => '描述' ,
                 'weight' => 0 ,
                 'default' => 1 ,
-                'create_time' => $datetime ,
+                'created_at' => $datetime ,
             ] ,
         ]);
     }

@@ -22,8 +22,14 @@ class CreateCollectionTable extends Migration
             $table->string('relation_type' , 255)->default('')->comment('关联类型: 比如 image_subject-图片专题');
             $table->unsignedBigInteger('relation_id')->default(0)->comment('关联表id');
             $table->unsignedBigInteger('module_id')->default(0)->comment('xq_module.id');
-            $table->datetime('create_time')->nullable(true);
+
+            $table->timestamps();
+
             $table->unique(['user_id' , 'relation_type' , 'relation_id' , 'module_id' , 'collection_group_id'] , 'unique');
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '我的收藏'");
     }

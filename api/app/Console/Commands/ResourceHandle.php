@@ -60,9 +60,9 @@ class ResourceHandle extends Command
                 $last = $v;
                 if ($v->is_delete == 0) {
                     // 未删除 未使用
-                    $create_time = strtotime($v->create_time);
+                    $created_at = strtotime($v->created_at);
                     // 未被删除
-                    if ($create_time + $this->duration > $time) {
+                    if ($created_at + $this->duration > $time) {
                         continue ;
                     }
                 }

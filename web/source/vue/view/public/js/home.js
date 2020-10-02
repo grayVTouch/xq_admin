@@ -272,6 +272,9 @@ export default {
                 case 'image_subject':
                     this.push('/image_subject/search');
                     break;
+                case 'video_subject':
+                    this.push('/video_subject/search');
+                    break;
             }
         } ,
 

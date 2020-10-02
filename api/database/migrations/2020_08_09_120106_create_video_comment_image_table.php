@@ -22,7 +22,12 @@ class CreateVideoCommentImageTable extends Migration
             $table->unsignedBigInteger('video_subject_id')->default(0)->comment('缓存字段，xq_video.video_subject_id');
             $table->unsignedBigInteger('video_comment_id')->default(0)->comment('xq_video_comment.id');
             $table->string('path' , 500)->default('')->comment('路径');
-            $table->dateTime('create_time')->nullable(true);
+
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '视频评论-图片'");
     }

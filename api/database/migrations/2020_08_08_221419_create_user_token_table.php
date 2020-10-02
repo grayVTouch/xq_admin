@@ -20,9 +20,15 @@ class CreateUserTokenTable extends Migration
             $table->unsignedBigInteger('user_id')->default(0)->comment('xq_user.id');
             $table->string('token' , 255)->default('')->comment('token');
             $table->datetime('expired')->nullable(false)->comment('过期时间');
-            $table->datetime('create_time')->nullable(true);
+
+            $table->timestamps();
+
             $table->index('user_id');
             $table->unique('token');
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '平台用户 token 表'");
     }

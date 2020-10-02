@@ -607,7 +607,7 @@ export default {
             } else {
                 this.form = data;
             }
-            this.ins.thumb.render(this.form.__thumb__);
+            this.ins.thumb.render(this.form.thumb);
         } ,
         form: {
             deep: true ,

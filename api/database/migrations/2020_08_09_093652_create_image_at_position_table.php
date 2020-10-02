@@ -22,7 +22,12 @@ class CreateImageAtPositionTable extends Migration
             $table->string('platform' , 255)->default('')->comment('缓存字段，xq_position.platform');
             $table->string('path' , 500)->default('')->comment('路径');
             $table->string('link' , 500)->default('')->comment('跳转链接');
-            $table->datetime('create_time')->nullable(true);
+
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '定点图片'");
     }

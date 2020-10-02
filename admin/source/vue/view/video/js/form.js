@@ -673,8 +673,8 @@ export default {
                 this.form = data;
             }
             // 仅在外界传入的时候初始化图片
-            this.ins.thumb.render(this.form.__thumb__);
-            // this.ins.video.render(form.__src__);
+            this.ins.thumb.render(this.form.thumb);
+            // this.ins.video.render(form.src);
         } ,
 
         form: {

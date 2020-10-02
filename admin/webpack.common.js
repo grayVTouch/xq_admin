@@ -10,6 +10,7 @@ const path = require('path');
 // 自己需要的部分
 // const CleanWebpackPlugin = require('clean-webpack-plugin');
 
+
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
@@ -36,12 +37,12 @@ module.exports = {
         new VueLoaderPlugin() ,
         new MiniCssExtractPlugin({
             filename: "[name].css",
-            chunkFilename: "[id].css"
+            chunkFilename: "[name]-[id].css"
         })
     ],
     output: {
         filename: 'js/[name].js',
-        path: path.resolve(__dirname, 'compiled')
+        path: path.resolve(__dirname, 'dist')
     } ,
     module: {
         rules: [
@@ -56,7 +57,7 @@ module.exports = {
                             plugins: [
                                 // 提升运行速度 详情请查看 https://webpack.js.org/loaders/babel-loader/#root
                                 '@babel/plugin-transform-runtime' ,
-                                // 支持动态导入语法
+                                // 支持动态导入语法 import()
                                 '@babel/plugin-syntax-dynamic-import' ,
                                 // iview 组件动态加载
                                 [
@@ -135,6 +136,12 @@ module.exports = {
             'vue': 'vue/dist/vue.esm.js' ,
             'vue-router': 'vue-router/dist/vue-router.esm.js' ,
             'vuex': 'vuex/dist/vuex.esm.js' ,
+
+            '@asset': path.resolve(__dirname , './source/asset') ,
+            '@api': path.resolve(__dirname , './source/api') ,
+            '@plugin': path.resolve(__dirname , './source/plugin') ,
+            '@vue': path.resolve(__dirname , './source/vue') ,
         }
-    }
+    } ,
+
 };

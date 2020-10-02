@@ -26,7 +26,7 @@ CREATE TABLE `xq_region`  (
   `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '地区名称',
   `p_id` bigint(20) UNSIGNED NULL DEFAULT NULL COMMENT 'xq_region.id',
   `type` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '地区类型：country-国家 state-州|邦|省份 region-地区',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `p_id`(`p_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 6910 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '全球地区' ROW_FORMAT = Dynamic;

@@ -2,7 +2,9 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/app/Customize/api/admin/plugin/extra" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/app/Customize/api/admin_v1/plugin/extra" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/app/Customize/api/web/plugin/extra" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/app/Customize/api/web_v1/plugin/extra" vcs="Git" />
   </component>
 </project>

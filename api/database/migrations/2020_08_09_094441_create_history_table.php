@@ -24,7 +24,12 @@ class CreateHistoryTable extends Migration
             $table->unsignedBigInteger('module_id')->default(0)->comment('xq_module.id');
             $table->date('date')->nullable(true)->comment('创建日期');
             $table->time('time')->nullable(true)->comment('创建时间');
-            $table->datetime('create_time')->nullable(true);
+
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '活动记录'");
     }

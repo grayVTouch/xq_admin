@@ -17,16 +17,16 @@ const resUrl = 'http://res.xq.test';
 
 window.TopContext = {
     host: 'http://xq.test' ,
-    api: apiUrl + '/api/web_v1' ,
+    api: apiUrl + '/api/web' ,
     // // 图片上传 api
-    fileApi: apiUrl + '/api/web_v1/upload' ,
+    fileApi: apiUrl + '/api/web/upload' ,
 
     // 图片上传 api
-    uploadApi: apiUrl + '/api/web_v1/upload' ,
-    uploadImageApi: apiUrl + '/api/web_v1/upload_image' ,
-    uploadVideoApi: apiUrl + '/api/web_v1/upload_video' ,
-    uploadSubtitleApi: apiUrl + '/api/web_v1/upload_subtitle' ,
-    uploadOfficeApi: apiUrl + '/api/web_v1/upload_office' ,
+    uploadApi: apiUrl + '/api/web/upload' ,
+    uploadImageApi: apiUrl + '/api/web/upload_image' ,
+    uploadVideoApi: apiUrl + '/api/web/upload_video' ,
+    uploadSubtitleApi: apiUrl + '/api/web/upload_subtitle' ,
+    uploadOfficeApi: apiUrl + '/api/web/upload_office' ,
 
     code: {
         Success: 200 ,

@@ -255,7 +255,7 @@
                     </div>
                     <div class="list">
                         <Table border  :loading="val.pending.searchVideoSeries" :data="videoSeries.data" :columns="videoSeries.field" @on-row-click="updateVideoSeriesEvent">
-                            <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
+                            <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
                             <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
                             <template v-slot:action="{row,index}">
                                 <my-table-button>选择</my-table-button>
@@ -283,7 +283,7 @@
                     </div>
                     <div class="list">
                         <Table border  :loading="val.pending.searchVideoCompany" :data="videoCompany.data" :columns="videoCompany.field" @on-row-click="updateVideoCompanyEvent">
-                            <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
+                            <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
                             <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
                             <template v-slot:action="{row,index}">
                                 <my-table-button>选择</my-table-button>

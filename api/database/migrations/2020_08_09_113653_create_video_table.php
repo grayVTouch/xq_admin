@@ -47,8 +47,12 @@ class CreateVideoTable extends Migration
             $table->string('fail_reason' , 1000)->default('')->comment('失败原因，当 status=-1 时，必须提供');
             $table->unsignedSmallInteger('index')->default(0)->comment('剧集索引，仅当 type=pro 的时候有效');
             $table->integer('weight')->default(0)->comment('权重');
-            $table->dateTime('update_time')->nullable(true);
-            $table->dateTime('create_time')->nullable(true);
+
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '视频表'");
     }

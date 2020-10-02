@@ -21,8 +21,14 @@ class CreateRegionTable extends Migration
             $table->string('name' , 255)->default('')->comment('地区名称');
             $table->unsignedBigInteger('p_id')->default(0)->comment('xq_region.id');
             $table->string('type' , 50)->default('')->comment('地区类型：country-国家 state-州|邦|省份 region-地区');
-            $table->dateTime('create_time')->nullable(true);
+
+            $table->timestamps();
+
             $table->index('p_id');
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '全球地区表'");
     }

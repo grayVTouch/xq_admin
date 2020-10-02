@@ -18,7 +18,7 @@ class AdminSeeder extends Seeder
             'password' => Hash::make(config('my.admin_password')) ,
             'is_root' => 1 ,
             'role_id' => 1 ,
-            'create_time' => date('Y-m-d H:i:s')
+            'created_at' => date('Y-m-d H:i:s')
         ]);
     }
 }

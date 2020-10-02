@@ -21,7 +21,12 @@ class CreateAdminLandLogTable extends Migration
             $table->unsignedBigInteger('user_id')->default(0)->comment('xq_user.id');
             $table->string('ip' , 100)->default('')->comment('登录ip');
             $table->unsignedBigInteger('duration')->default(0)->comment('登录时长，单位：s');
-            $table->datetime('create_time')->nullable(true);
+
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '管理员登录日志表'");
     }

@@ -28,11 +28,16 @@ class CreateAdminTable extends Migration
             $table->string('email' , 50)->default('')->comment('电子邮件');
             $table->unsignedBigInteger('role_id')->default(0)->comment('xq_role.id');
             $table->tinyInteger('is_root')->default(0)->comment('是否超级管理员：0-否 1-是');
-            $table->datetime('update_time')->nullable(true);
-            $table->datetime('create_time')->nullable(true);
+
+            $table->timestamps();
+
             $table->index('username');
             $table->index('phone');
             $table->index('email');
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '后台用户表'");
     }

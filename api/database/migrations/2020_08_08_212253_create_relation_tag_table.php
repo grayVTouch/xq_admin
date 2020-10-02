@@ -23,7 +23,14 @@ class CreateRelationTagTable extends Migration
             $table->string('name' , 255)->default('')->comment('缓存字段，xq_tag.name');
             $table->string('relation_type' , 255)->default('')->comment('关联类型： image_subject-图片专题 video_subject-视频专题 ...等');
             $table->unsignedBigInteger('relation_id')->default(0)->comment('对应关联表中的 id');
+
+            $table->timestamps();
+
             $table->unique(['module_id' , 'relation_type' , 'relation_id' , 'tag_id'] , 'unique');
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '关联标签'");
     }

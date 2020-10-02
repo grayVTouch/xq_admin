@@ -1,11 +1,11 @@
 <template>
-    <div class="item" :data-id="item.id" v-if="item.type === 'view' && item.is_menu && item.enable">
+    <div class="item" :data-id="item.id" v-if="!item.hidden">
 
         <!-- 测试 -->
         <div class="function run-action-feedback">
             <div class="icon">
                 <span class="text" v-if="item.floor > 1"></span>
-                <img :src="item.__s_ico__" class="image">
+                <img :src="item.sIco" class="image" alt="">
             </div>
             <div class="explain">
                 <div class="in">

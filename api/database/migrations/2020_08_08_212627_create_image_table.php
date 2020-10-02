@@ -20,7 +20,12 @@ class CreateImageTable extends Migration
             $table->id();
             $table->unsignedBigInteger('image_subject_id')->default(0)->comment('xq_image_subject.id');
             $table->string('path' , 500)->default('')->comment('路径');
-            $table->datetime('create_time')->nullable(true);
+
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '图片专题包含的图片'");
     }

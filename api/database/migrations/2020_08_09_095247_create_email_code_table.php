@@ -20,11 +20,16 @@ class CreateEmailCodeTable extends Migration
             $table->string('email' , 30)->default('')->comment('邮箱');
             $table->string('code' , 30)->default('')->comment('验证码');
             $table->string('type' , 30)->default('')->comment('类型，比如：login-登录验证码 register-注册验证码 password-修改密码验证码 等');
-            $table->tinyInteger('used')->default(0)->comment('是否被使用过？0-否 1-是');
+            $table->tinyInteger('is_used')->default(0)->comment('是否被使用过？0-否 1-是');
             $table->datetime('send_time')->nullable(true)->comment('发送时间');
-            $table->datetime('update_time')->nullable(true);
-            $table->datetime('create_time')->nullable(true);
+
+            $table->timestamps();
+
             $table->unique(['email' , 'type']);
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '邮箱验证码'");
     }

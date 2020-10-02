@@ -128,7 +128,7 @@ export default {
                 {
                     const cur = this.imageSubjects.data[i];
                     if (cur.id === data.id) {
-                        this.images.splice(i , 1 ,data);
+                        this.imageSubjects.data.splice(i , 1 ,data);
                         break;
                     }
                 }

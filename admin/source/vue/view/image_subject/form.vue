@@ -344,7 +344,7 @@
                         </div>
                         <div class="list">
                             <Table border :loading="val.pending.searchUser" :data="users.data" :columns="users.field" @on-row-click="updateUserEvent">
-                                <template v-slot:avatar="{row,index}"><img :src="row.avatar ? row.__avatar__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
+                                <template v-slot:avatar="{row,index}"><img :src="row.avatar ? row.avatar : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
                                 <template v-slot:action="{row,index}"><my-table-button>选择</my-table-button></template>
                             </Table>
                         </div>
@@ -369,7 +369,7 @@
                         </div>
                         <div class="list">
                             <Table border  :loading="val.pending.searchSubject" :data="subjects.data" :columns="subjects.field" @on-row-click="updateSubjectEvent">
-                                <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.__thumb__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
+                                <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
                                 <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
                                 <template v-slot:action="{row,index}"><my-table-button>选择</my-table-button></template>
                             </Table>

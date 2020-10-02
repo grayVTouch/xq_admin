@@ -23,7 +23,7 @@ class CreateVideoSubjectTable extends Migration
             $table->decimal('score' , 13 , 2)->default(0)->comment('评分');
             $table->date('release_time')->nullable(true)->comment('发布时间');
             $table->date('end_time')->nullable(true)->comment('完结时间');
-            $table->string('status' , 30)->default('completed')->comment('状态：making-制作中 completed-已完结 terminated-已终止（部分完成）');
+            $table->string('end_status' , 30)->default('completed')->comment('完结状态：making-制作中 completed-已完结 terminated-已终止（部分完成）');
             $table->unsignedSmallInteger('count')->default(0)->comment('视频数量');
             $table->unsignedSmallInteger('min_index')->default(1)->comment('视频剧集的开始');
             $table->unsignedSmallInteger('max_index')->default(1)->comment('视频剧集的结束');
@@ -34,7 +34,16 @@ class CreateVideoSubjectTable extends Migration
             $table->unsignedBigInteger('video_company_id')->default(0)->comment('xq_video_company.id');
             $table->unsignedBigInteger('module_id')->default(0)->comment('xq_module.id');
             $table->integer('weight')->default(0)->comment('权重');
-            $table->datetime('create_time')->nullable(true);
+
+            $table->unsignedBigInteger('user_id')->default(0)->comment('xq_user.id，发布者用户id');
+            $table->tinyInteger('status')->default(0)->comment('状态： -1-审核不通过 0-待审核 1-审核通过');
+            $table->string('fail_reason' , 255)->default('')->comment('失败原因，当status=-1时，必须提供');
+
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '视频专题'");
     }

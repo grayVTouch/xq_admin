@@ -10,8 +10,8 @@ class TimerTaskLogModel extends Model
     //
     protected $table = 'xq_timer_task_log';
 
-    public static function log(string $type , string $log , string $create_time): int
+    public static function log(string $type , string $log , string $created_at): int
     {
-        return self::insertGetId(compact('type' , 'log' , 'create_time'));
+        return self::insertGetId(compact('type' , 'log' , 'created_at'));
     }
 }

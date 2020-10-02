@@ -20,12 +20,17 @@ class CreateModuleTable extends Migration
             $table->id();
             $table->string('name' , 255)->default('')->comment('名称');
             $table->string('description' , 500)->default('')->comment('描述');
-            $table->tinyInteger('enable')->default(1)->comment('启用？0-否 1-是');
+            $table->tinyInteger('is_enabled')->default(1)->comment('启用？0-否 1-是');
             $table->tinyInteger('auth')->default(0)->comment('认证？0-否 1-是');
-            $table->string('auth_password')->default('')->comment('认证密码？当 auth=1 时，要求提供认证密码');
             $table->integer('weight')->default(0)->comment('权重');
             $table->integer('default')->default(0)->comment('默认？0-否 1-是 记录中仅能有一个是默认的');
-            $table->datetime('create_time')->nullable(true);
+
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
+
         });
         DB::statement("alter table {$this->table} comment '模块表'");
     }

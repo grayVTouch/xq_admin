@@ -25,7 +25,12 @@ class CreateVideoSrcTable extends Migration
             $table->string('display_aspect_ratio' , 50)->default('')->comment('长宽比，比如：16:9');
             $table->unsignedBigInteger('size')->default(0)->comment('大小，单位：Byte');
             $table->string('definition' , 255)->default('')->comment('清晰度: 360P|480P|720P|1080P|2K|4K ... 等');
-            $table->dateTime('create_time')->nullable(true);
+
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '视频源（不同清晰度）'");
     }

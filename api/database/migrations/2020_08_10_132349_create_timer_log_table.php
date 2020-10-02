@@ -20,7 +20,12 @@ class CreateTimerLogTable extends Migration
             $table->id();
             $table->string('type' , 255)->default('')->comment('类型');
             $table->longText('log')->comment('内容');
-            $table->dateTime('create_time')->nullable(true);
+
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '定时任务日志表'");
     }

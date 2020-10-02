@@ -3,7 +3,7 @@
         <!-- 导航内容 -->
         <div class="nav" :class="{fixed: fixed}" ref="nav">
             <div class="left">
-                <img :src="topRoute.__b_ico__" class="image">
+                <img :src="topRoute.bIco" class="image" alt="">
                 <span class="cn">{{ topRoute.cn }}</span>
                 <span class="delimiter">/</span>
                 <span class="en">{{ topRoute.en }}</span>
@@ -16,7 +16,7 @@
             <div class="right">
                 <!-- 面包屑 -->
                 <template v-for="(v,k) in position">
-                    <span v-ripple class="text" :class="{'run-cursor-not-allow': !v.enable || !v.is_view }" @click="open(v)">{{ v.cn }}</span>
+                    <span v-ripple class="text" :class="{'run-cursor-not-allow':  !v.view }" @click="open(v)">{{ v.cn }}</span>
                     <span class="delimiter" v-if="!(k == position.length - 1)">/</span>
                 </template>
             </div>

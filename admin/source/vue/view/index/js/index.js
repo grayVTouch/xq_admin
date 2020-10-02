@@ -23,12 +23,18 @@ export default {
                 // 视图之间传递的参数
                 params: [] ,
             } ,
+
+            // 客户端位置：带数据结构
+            positions: [] ,
+            // 客户端位置：不带数据结构
+            flatPosition: [] ,
         };
     } ,
 
     mounted () {
         this.initDom();
         this.initValue();
+        this.initPosition();
         this.initTab();
         this.initStyle();
         this.initEvent();
@@ -44,6 +50,18 @@ export default {
     ] ,
 
     methods: {
+        /**
+         * 处理当前位置
+         */
+        initPosition () {
+            const positions = G.copy(this.$store.state.position , true);
+            G.tree.handle(positions);
+            G.tree.uHandle(positions , (v) => {
+                console.log('当前处理的单元' , v.path);
+            });
+            this.positions = positions;
+            this.flatPosition = G.tree.flat(positions);
+        } ,
 
         initDom () {
             this.dom.tabItemstainer = G(this.$el);
@@ -150,7 +168,7 @@ export default {
                     const topRoute = self.topRoute(id);
                     let route = self.findRouteById(id);
                     let text = self.genTabName(topRoute , route);
-                    self.open(text , route.value);
+                    self.open(text , route.path);
                 }
             });
         } ,
@@ -403,7 +421,7 @@ export default {
             // 移除标签对应内容
             this.dom.tabItems.remove(this.findTabItemByTabId(tabId));
         } ,
-        
+
         // 关闭标签页（删除标签 + 标签对应内容）
         closeTabByTabId (tabId) {
             this.ins.tab.closeTab(tabId);
@@ -441,18 +459,18 @@ export default {
             tabItem.highlight('hide' , tabItem.parent().children().get() , true);
         } ,
 
-        // 组件
+        // 获取当前路由
         component (route) {
             let emptyPage = null;
             for (let i = 0; i < routes.length; ++i)
             {
                 let v = routes[i];
                 if (v.path == route) {
-                    return v.component;
+                    return v;
                 }
                 if (v.name === '404') {
                     // 默认错误页面
-                    emptyPage = v.component;
+                    emptyPage = v;
                 }
             }
             return emptyPage;
@@ -464,22 +482,27 @@ export default {
 
             // 组件重新挂载的时候，滚动条切换到顶部
             // G.scrollTo(0 , 'y' , 0 , 0);
-
             // 这个仅适用于 动态导入的组件
-            component().then((module) => {
-                // 注意 module.default ！
-                // 具体原因请查看 import 语法解释
-                // 我知道为什么是 default 了！！
-                // 请查看组件的具体导出 js
-                // 你会看到 export default {} 这样的字样
-                // 所以，这边使用 default 来获取组件
-                let component = this.newComponent(module.default , route , param , tabId);
+            if (component.async) {
+                // 异步路由
+                const asyncComponent = component.component();
+                asyncComponent.then((module) => {
+                    // 注意 module.default ！
+                    // 具体原因请查看 import 语法解释
+                    // 我知道为什么是 default 了！！
+                    // 请查看组件的具体导出 js
+                    // 你会看到 export default {} 这样的字样
+                    // 所以，这边使用 default 来获取组件
+                    let component = this.newComponent(module.default , route , param , tabId);
                     component = new component();
                     component.$mount(container);
-            });
-            // component = this.newComponent(component , route , param , id);
-            // component = new component();
-            // component.$mount(container);
+                });
+            } else {
+                // 同步路由
+                let syncComponent = this.newComponent(component.component , route , param , tabId);
+                syncComponent = new syncComponent();
+                syncComponent.$mount(container);
+            }
         } ,
 
         // 重新渲染
@@ -510,7 +533,6 @@ export default {
             route = this.findRouteByRoute(route);
             let topRoute = this.topRoute(route.id);
             let position = this.position(route.id);
-            // console.log('position' , position);
             let mixins = {
                 // store: this.$store ,
                 data () {

@@ -1,7 +1,7 @@
 <?php
 
-use App\Model\RoleModel;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class RoleSeeder extends Seeder
 {
@@ -13,11 +13,11 @@ class RoleSeeder extends Seeder
     public function run()
     {
         //
-        RoleModel::insert([
+        DB::table('xq_role')->insert([
             'id' => 1 ,
             'name' => '超级管理员' ,
             'weight' => 0 ,
-            'create_time' => date('Y-m-d H:i:s')
+            'created_at' => date('Y-m-d H:i:s')
         ]);
     }
 }

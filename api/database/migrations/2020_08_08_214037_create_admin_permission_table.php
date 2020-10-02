@@ -26,13 +26,17 @@ class CreateAdminPermissionTable extends Migration
             $table->string('method' , 100)->default('GET')->comment('请求方法：仅在 type=api 的时候有效！GET|POST|PUT|PATCH|DELETE ...');
             $table->tinyInteger('is_menu')->default(0)->comment('仅在 type=view 的时候有效，是否在菜单列表显示：0-否 1-是');
             $table->tinyInteger('is_view')->default(0)->comment('仅在 type=view 的时候有效，是否是一个视图：0-否 1-是');
-            $table->tinyInteger('enable')->default(1)->comment('是否启用：0-否 1-是');
+            $table->tinyInteger('is_enabled')->default(1)->comment('是否启用：0-否 1-是');
             $table->unsignedBigInteger('p_id')->default(0)->comment('xq_admin_permission.id');
             $table->string('s_ico' , 500)->default('')->comment('小图标');
             $table->string('b_ico' , 500)->default('')->comment('大图标');
             $table->integer('weight')->default(0)->comment('权重');
-            $table->datetime('update_time')->nullable(true);
-            $table->datetime('create_time')->nullable(true);
+
+            $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
         });
         DB::statement("alter table {$this->table} comment '后台用户-权限表'");
     }

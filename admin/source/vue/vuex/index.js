@@ -1,3 +1,6 @@
+
+import position from '@asset/js/position.js';
+
 /**
  * @author running
  */
@@ -9,7 +12,8 @@ export default new Vuex.Store({
         // 当前登录用户权限
         permission: [] ,
 
-        permissionWithStructure: [] ,
+        // 当前位置
+        position ,
 
         context: TopContext ,
 
@@ -33,6 +37,10 @@ export default new Vuex.Store({
         areaDomHInContent (state , payload) {
             state.areaDomHInContent = payload;
         } ,
+
+        position (state , payload) {
+            state.position = payload;
+        } ,
     } ,
     actions: {
         user (context , payload) {
@@ -41,6 +49,10 @@ export default new Vuex.Store({
 
         permission (context , payload) {
             context.commit('permission' , payload);
+        } ,
+
+        position (context , payload) {
+            context.commit('position' , payload);
         } ,
 
         permissionWithStructure (context , payload) {

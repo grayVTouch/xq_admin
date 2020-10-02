@@ -102,7 +102,7 @@ INSERT INTO `migrations` VALUES (328, '2020_08_09_120106_create_video_comment_im
 INSERT INTO `migrations` VALUES (329, '2020_08_09_155627_create_disk_table', 1);
 INSERT INTO `migrations` VALUES (330, '2020_08_10_110255_create_region_table', 1);
 INSERT INTO `migrations` VALUES (331, '2020_08_10_115552_create_resource_table', 1);
-INSERT INTO `migrations` VALUES (332, '2020_08_10_132349_create_timer_log_table', 1);
+INSERT INTO `migrations` VALUES (332, '2020_08_10_132349_created_atr_log_table', 1);
 
 -- ----------------------------
 -- Table structure for xq_admin
@@ -121,8 +121,8 @@ CREATE TABLE `xq_admin`  (
   `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '电子邮件',
   `role_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_role.id',
   `is_root` tinyint(4) NOT NULL DEFAULT 0 COMMENT '是否超级管理员：0-否 1-是',
-  `update_time` datetime(0) NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `xq_admin_username_index`(`username`) USING BTREE,
   INDEX `xq_admin_phone_index`(`phone`) USING BTREE,
@@ -143,7 +143,7 @@ CREATE TABLE `xq_admin_land_log`  (
   `user_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_user.id',
   `ip` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '登录ip',
   `duration` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '登录时长，单位：s',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '管理员登录日志表' ROW_FORMAT = Dynamic;
 
@@ -166,8 +166,8 @@ CREATE TABLE `xq_admin_permission`  (
   `s_ico` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '小图标',
   `b_ico` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '大图标',
   `weight` int(11) NOT NULL DEFAULT 0 COMMENT '权重',
-  `update_time` datetime(0) NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '后台用户-权限表' ROW_FORMAT = Dynamic;
 
@@ -205,7 +205,7 @@ CREATE TABLE `xq_admin_token`  (
   `user_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_user.id',
   `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'token',
   `expired` datetime(0) NOT NULL COMMENT '过期时间',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `xq_admin_token_token_unique`(`token`) USING BTREE,
   INDEX `xq_admin_token_user_id_index`(`user_id`) USING BTREE
@@ -238,8 +238,8 @@ CREATE TABLE `xq_category`  (
   `enable` tinyint(4) NOT NULL DEFAULT 1 COMMENT '是否启用：0-否 1-是',
   `weight` int(11) NOT NULL DEFAULT 0 COMMENT '权重',
   `module_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_module.id',
-  `update_time` datetime(0) NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '分类表' ROW_FORMAT = Dynamic;
 
@@ -262,7 +262,7 @@ CREATE TABLE `xq_collection`  (
   `relation_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '关联类型: 比如 image_subject-图片专题',
   `relation_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '关联表id',
   `module_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_module.id',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `unique`(`user_id`, `relation_type`, `relation_id`, `module_id`, `collection_group_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '我的收藏' ROW_FORMAT = Dynamic;
@@ -281,7 +281,7 @@ CREATE TABLE `xq_collection_group`  (
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
   `user_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_user.id',
   `module_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_module.id',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '收藏-分组表' ROW_FORMAT = Dynamic;
 
@@ -301,7 +301,7 @@ CREATE TABLE `xq_disk`  (
   `os` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '操作系统：windows | linux | mac',
   `prefix` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '路径前缀，用于区分不同磁盘，请提供 disk_c 诸如这样的字符串',
   `default` tinyint(4) NOT NULL DEFAULT 0 COMMENT '默认？0-否 1-是',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `xq_disk_prefix_unique`(`prefix`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '本地磁盘表' ROW_FORMAT = Dynamic;
@@ -322,8 +322,8 @@ CREATE TABLE `xq_email_code`  (
   `type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '类型，比如：login-登录验证码 register-注册验证码 password-修改密码验证码 等',
   `used` tinyint(4) NOT NULL DEFAULT 0 COMMENT '是否被使用过？0-否 1-是',
   `send_time` datetime(0) NULL DEFAULT NULL COMMENT '发送时间',
-  `update_time` datetime(0) NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `xq_email_code_email_type_unique`(`email`, `type`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '邮箱验证码' ROW_FORMAT = Dynamic;
@@ -341,7 +341,7 @@ CREATE TABLE `xq_focus_user`  (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_user.id',
   `focus_user_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_user.id',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `xq_focus_user_user_id_focus_user_id_unique`(`user_id`, `focus_user_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '关注的用户' ROW_FORMAT = Dynamic;
@@ -358,7 +358,7 @@ CREATE TABLE `xq_history`  (
   `module_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_module.id',
   `date` date NULL DEFAULT NULL COMMENT '创建日期',
   `time` time(0) NULL DEFAULT NULL COMMENT '创建时间',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '活动记录' ROW_FORMAT = Dynamic;
 
@@ -391,7 +391,7 @@ CREATE TABLE `xq_image`  (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `image_subject_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_image_subject.id',
   `path` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '路径',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 35 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '图片专题包含的图片' ROW_FORMAT = Dynamic;
 
@@ -441,7 +441,7 @@ CREATE TABLE `xq_image_at_position`  (
   `platform` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '缓存字段，xq_position.platform',
   `path` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '路径',
   `link` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '跳转链接',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '定点图片' ROW_FORMAT = Dynamic;
 
@@ -475,8 +475,8 @@ CREATE TABLE `xq_image_subject`  (
   `praise_count` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '获赞次数',
   `status` tinyint(4) NOT NULL DEFAULT 0 COMMENT '审核状态：-1-审核失败 0-待审核 1-审核通过',
   `fail_reason` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '失败原因，当 status=-1 时，必须提供',
-  `update_time` datetime(0) NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `xq_image_subject_module_id_index`(`module_id`) USING BTREE,
   INDEX `xq_image_subject_category_id_index`(`category_id`) USING BTREE,
@@ -507,8 +507,8 @@ CREATE TABLE `xq_image_subject_comment`  (
   `praise_count` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '获赞次数',
   `against_count` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '反对次数',
   `status` tinyint(4) NOT NULL DEFAULT 0 COMMENT '审核状态：-1-审核不通过 0-审核中 1-审核通过',
-  `update_time` datetime(0) NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '图片专题评论' ROW_FORMAT = Dynamic;
 
@@ -522,7 +522,7 @@ CREATE TABLE `xq_image_subject_comment_image`  (
   `image_subject_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_image_subject.id',
   `image_subject_comment_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_image_subject_comment.id',
   `path` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '路径',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '图片专题评论-图片表' ROW_FORMAT = Dynamic;
 
@@ -539,7 +539,7 @@ CREATE TABLE `xq_module`  (
   `auth_password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '认证密码？当 auth=1 时，要求提供认证密码',
   `weight` int(11) NOT NULL DEFAULT 0 COMMENT '权重',
   `default` int(11) NOT NULL DEFAULT 0 COMMENT '默认？0-否 1-是 记录中仅能有一个是默认的',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '模块表' ROW_FORMAT = Dynamic;
 
@@ -563,7 +563,7 @@ CREATE TABLE `xq_nav`  (
   `weight` int(11) NOT NULL DEFAULT 0 COMMENT '权重',
   `module_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_module.id',
   `platform` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '平台：app | android | ios | web | mobile',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '菜单表-区分不同平台' ROW_FORMAT = Dynamic;
 
@@ -596,7 +596,7 @@ CREATE TABLE `xq_position`  (
   `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '位置',
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '描述',
   `platform` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '平台：当前预备的有 app|android|ios|web|mobile 等，后期可扩充',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '位置表' ROW_FORMAT = Dynamic;
 
@@ -616,7 +616,7 @@ CREATE TABLE `xq_praise`  (
   `relation_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '关联类型: 比如 image_subject-图片专题',
   `relation_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '关联表id',
   `module_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_module.id',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `unique`(`user_id`, `relation_type`, `relation_id`, `module_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '点赞表' ROW_FORMAT = Dynamic;
@@ -636,7 +636,7 @@ CREATE TABLE `xq_region`  (
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '地区名称',
   `p_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_region.id',
   `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '地区类型：country-国家 state-州|邦|省份 region-地区',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `xq_region_p_id_index`(`p_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 6909 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '全球地区表' ROW_FORMAT = Dynamic;
@@ -7593,7 +7593,7 @@ CREATE TABLE `xq_resource`  (
   `path` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '资源相对路径',
   `is_delete` tinyint(4) NOT NULL DEFAULT 0 COMMENT '已删除？0-否 1-是',
   `used` tinyint(4) NULL DEFAULT 0 COMMENT '已使用？0-否 1-是',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 155 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
@@ -7723,7 +7723,7 @@ CREATE TABLE `xq_role`  (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
   `weight` int(11) NOT NULL DEFAULT 0 COMMENT '权重',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 35 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
 
@@ -7740,7 +7740,7 @@ CREATE TABLE `xq_role_permission`  (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `role_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_role.id',
   `admin_permission_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_admin_permission.id',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `xq_role_permission_role_id_admin_permission_id_unique`(`role_id`, `admin_permission_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '角色-权限-关联表' ROW_FORMAT = Dynamic;
@@ -7757,8 +7757,8 @@ CREATE TABLE `xq_subject`  (
   `attr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'json:其他属性',
   `weight` int(11) NOT NULL DEFAULT 0 COMMENT '权重',
   `module_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_module.id',
-  `update_time` datetime(0) NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `xq_subject_name_unique`(`name`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '主体表' ROW_FORMAT = Dynamic;
@@ -7778,8 +7778,8 @@ CREATE TABLE `xq_tag`  (
   `weight` int(11) NOT NULL DEFAULT 0 COMMENT '权重',
   `count` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '使用次数',
   `module_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_module.id',
-  `update_time` datetime(0) NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `name_module_id`(`name`, `module_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 24 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '标签表' ROW_FORMAT = Dynamic;
@@ -7816,7 +7816,7 @@ CREATE TABLE `xq_timer_task_log`  (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '类型',
   `log` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '内容',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '定时任务日志表' ROW_FORMAT = Dynamic;
 
@@ -7846,8 +7846,8 @@ CREATE TABLE `xq_user`  (
   `user_group_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_user_group.id',
   `channel_thumb` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '频道封面',
   `description` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '描述',
-  `update_time` datetime(0) NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `xq_user_username_index`(`username`) USING BTREE,
   INDEX `xq_user_phone_index`(`phone`) USING BTREE,
@@ -7868,8 +7868,8 @@ CREATE TABLE `xq_user_group`  (
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '组名',
   `p_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_user_group.id',
   `module_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_module.id',
-  `update_time` datetime(0) NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `xq_user_group_name_unique`(`name`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '平台用户组表' ROW_FORMAT = Dynamic;
@@ -7896,8 +7896,8 @@ CREATE TABLE `xq_user_permission`  (
   `description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '描述',
   `enable` tinyint(4) NOT NULL DEFAULT 1 COMMENT '启用？0-否 1-是',
   `module_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_module.id',
-  `update_time` datetime(0) NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '平台用户-权限表' ROW_FORMAT = Dynamic;
 
@@ -7910,7 +7910,7 @@ CREATE TABLE `xq_user_token`  (
   `user_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_user.id',
   `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'token',
   `expired` datetime(0) NOT NULL COMMENT '过期时间',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `xq_user_token_token_unique`(`token`) USING BTREE,
   INDEX `xq_user_token_user_id_index`(`user_id`) USING BTREE
@@ -7962,8 +7962,8 @@ CREATE TABLE `xq_video`  (
   `process_status` tinyint(4) NOT NULL DEFAULT 0 COMMENT '处理处理状态：-1-处理失败 0-信息处理中 1-转码中 2-处理完成',
   `fail_reason` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '失败原因，当 status=-1 时，必须提供',
   `weight` int(11) NOT NULL DEFAULT 0 COMMENT '权重',
-  `update_time` datetime(0) NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频表' ROW_FORMAT = Dynamic;
 
@@ -7987,8 +7987,8 @@ CREATE TABLE `xq_video_comment`  (
   `praise_count` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '获赞次数',
   `against_count` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '反对次数',
   `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '状态：-1-审核不通过 0-审核中 1-审核通过',
-  `update_time` datetime(0) NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `updated_at` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频评论' ROW_FORMAT = Dynamic;
 
@@ -8002,7 +8002,7 @@ CREATE TABLE `xq_video_comment_image`  (
   `video_subject_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '缓存字段，xq_video.video_subject_id',
   `video_comment_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_video_comment.id',
   `path` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '路径',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频评论-图片' ROW_FORMAT = Dynamic;
 
@@ -8019,7 +8019,7 @@ CREATE TABLE `xq_video_company`  (
   `country` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '缓存字段，xq_region.name',
   `module_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_module.id',
   `weight` int(11) NOT NULL DEFAULT 0 COMMENT '权重',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频制作公司表' ROW_FORMAT = Dynamic;
 
@@ -8038,7 +8038,7 @@ CREATE TABLE `xq_video_series`  (
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
   `module_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_module.id',
   `weight` int(11) NOT NULL DEFAULT 0 COMMENT '权重',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频系列表' ROW_FORMAT = Dynamic;
 
@@ -8065,7 +8065,7 @@ CREATE TABLE `xq_video_src`  (
   `display_aspect_ratio` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '长宽比，比如：16:9',
   `size` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '大小，单位：Byte',
   `definition` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '清晰度: 360P|480P|720P|1080P|2K|4K ... 等',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频源（不同清晰度）' ROW_FORMAT = Dynamic;
 
@@ -8094,7 +8094,7 @@ CREATE TABLE `xq_video_subject`  (
   `video_company_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_video_company.id',
   `module_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_module.id',
   `weight` int(11) NOT NULL DEFAULT 0 COMMENT '权重',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频专题' ROW_FORMAT = Dynamic;
 
@@ -8112,7 +8112,7 @@ CREATE TABLE `xq_video_subtitle`  (
   `video_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_video.id',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
   `src` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '字幕源',
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `created_at` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频字幕-仅支持 .vtt 格式' ROW_FORMAT = Dynamic;
 
