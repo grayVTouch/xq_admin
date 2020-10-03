@@ -1,7 +1,22 @@
 <?php
 
 return [
+    // 资源url
     'res_url' => 'http://res.xq.test' ,
+
+    /**
+     * 当前的磁盘存储方式
+     *
+     * local - 本地磁盘
+     * cloud - 云存储
+     */
+    'disk' => 'local' ,
+
+    // 相关目录
+    'dir' => [
+        'image' => '非专题图片' ,
+        'video' => '非专题视频' ,
+    ] ,
 
     // 每页显示记录数
     'limit' => 20 ,

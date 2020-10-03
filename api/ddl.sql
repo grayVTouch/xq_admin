@@ -556,8 +556,8 @@ CREATE TABLE `xq_region`  (
 delete from xq_nav;
 alter table xq_nav auto_increment=1;
 insert into `xq_nav` (id , name , value , p_id , is_menu , enable , module_id , platform , created_at) values
-(1 , '首页' , '/index' , 0 , 1 , 1 , 3 , 'web' , current_time()) ,
-(2 , '图片专区' , '/image_subject/index' , 0 , 1 , 1 , 3 , 'web' , current_time()) ,
-(3 , '二次元' , '/image_subject/search?category_id=37' , 2 , 1 , 1 , 3 , 'web' , current_time()) ,
-(4 , '三次元' , '/image_subject/search?category_id=38' , 2 , 1 , 1 , 3 , 'web' , current_time()) ,
-(5 , '琉璃神社' , '/image_subject/search?category_id=39' , 3 , 1 , 1 , 3 , 'web' , current_time());
+(1 , '首页' , '/index' , 0 , 1 , 1 , 3 , 'web' , current_datetime()) ,
+(2 , '图片专区' , '/image_subject/index' , 0 , 1 , 1 , 3 , 'web' , current_datetime()) ,
+(3 , '二次元' , '/image_subject/search?category_id=37' , 2 , 1 , 1 , 3 , 'web' , current_datetime()) ,
+(4 , '三次元' , '/image_subject/search?category_id=38' , 2 , 1 , 1 , 3 , 'web' , current_datetime()) ,
+(5 , '琉璃神社' , '/image_subject/search?category_id=39' , 3 , 1 , 1 , 3 , 'web' , current_datetime());

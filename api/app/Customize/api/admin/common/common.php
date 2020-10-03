@@ -5,14 +5,17 @@ namespace api\admin;
 
 use Illuminate\Contracts\Validation\Validator;
 use Exception;
-use App\Customize\api\admin\util\FileUtil;
-use function core\format_path;
+use stdClass;
 use function extra\config;
+
 /**
+ * 成功响应
+ *
+ * @author running
+ *
  * @param string $data
  * @param int $code
  * @return \Illuminate\Http\JsonResponse
- *@author running
  *
  */
 function success($message = '' , $data = '' , $code = 200)
@@ -21,6 +24,8 @@ function success($message = '' , $data = '' , $code = 200)
 }
 
 /**
+ * 失败响应
+ *
  * @author running
  *
  * @param string $data
@@ -33,6 +38,9 @@ function error($message = '' , $data = '' , $code = 400)
 }
 
 /**
+ *
+ * json 响应
+ *
  * @author running
  *
  * @param $data
@@ -47,6 +55,14 @@ function json($message , $data , $code)
     ] , $code);
 }
 
+/**
+ * 表单错误
+ *
+ * @author running
+ *
+ * @param Validator $validator
+ * @return array
+ */
 function get_form_error(Validator $validator)
 {
     $res = [];
@@ -58,11 +74,31 @@ function get_form_error(Validator $validator)
     return $res;
 }
 
-function user()
+/**
+ * 用户信息获取
+ *
+ * @return mixed
+ * @throws \Illuminate\Contracts\Container\BindingResolutionException
+ */
+function user(): ?stdClass
 {
-    return app()->make('user');
+    try {
+        return app()->make('user');
+    } catch (Exception $e) {
+        return null;
+    }
 }
 
+/**
+ * 获取排序字段
+ *
+ * @author running
+ *
+ * @param string $order
+ * @param string $delimiter
+ * @return array
+ * @throws Exception
+ */
 function parse_order(string $order = '' , $delimiter = '|')
 {
     if (empty($order)) {
@@ -75,13 +111,48 @@ function parse_order(string $order = '' , $delimiter = '|')
     ];
 }
 
-function my_config($key , $value = [])
+/**
+ * 获取配置值
+ *
+ * @author running
+ *
+ * @param string $key
+ * @param array $value
+ * @return mixed|string
+ * @throws Exception
+ */
+function my_config(string $key , array $value = [])
 {
     $dir = __DIR__ . '/../config';
     return config($dir , $key , $value);
 }
 
-function get_value($key , $value)
+
+/**
+ * 获取配置项 key 列表
+ *
+ * @author running
+ *
+ * @param string $key
+ * @return array
+ * @throws Exception
+ */
+function my_config_keys(string $key)
+{
+    return array_keys(my_config($key));
+}
+
+/**
+ * 获取配置项 key 映射的 value
+ *
+ * @author running
+ *
+ * @param string $key
+ * @param $value
+ * @return mixed|string
+ * @throws Exception
+ */
+function get_config_key_mapping_value(string $key , $value)
 {
     $range = my_config($key);
     foreach ($range as $k => $v)
@@ -91,20 +162,4 @@ function get_value($key , $value)
         }
     }
     return '';
-}
-
-// 获取资源路径前缀
-function res_path_prefix(): string
-{
-    $path = Storage::disk()->getAdapter()->getPathPrefix();
-    return format_path($path);
-}
-
-// 获取资源的真实路径（仅适用于本地文件系统保存的资源）
-function res_realpath(string $relative_path = ''): string
-{
-    if (empty($relative_path)) {
-        return '';
-    }
-    return format_path(Storage::path($relative_path));
 }

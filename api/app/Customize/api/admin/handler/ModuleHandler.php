@@ -3,22 +3,22 @@
 
 namespace App\Customize\api\admin\handler;
 
-
-use App\Customize\api\admin\model\ModuleModel;
+use App\Customize\api\admin\model\Model;
 use stdClass;
-use function api\admin\get_value;
-use function core\convert_obj;
+use function api\admin\get_config_key_mapping_value;
+
+use function core\convert_object;
 
 class ModuleHandler extends Handler
 {
-    public static function handle(?ModuleModel $model): ?stdClass
+    public static function handle(?Model $model , array $with = []): ?stdClass
     {
         if (empty($model)) {
             return null;
         }
-        $res = convert_obj($model);
+        $res = convert_object($model);
 
-        $res->__enable__ = get_value('business.bool_for_int' , $res->enable);
+        $res->__is_enabled__ = get_config_key_mapping_value('business.bool_for_int' , $res->is_enabled);
 
         return $res;
     }

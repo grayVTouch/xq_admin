@@ -31,7 +31,7 @@ use function api\web\get_form_error;
 use function api\web\my_config;
 use function api\web\user;
 use function core\array_unit;
-use function core\current_time;
+use function core\current_datetime;
 use function core\random;
 
 class UserAction extends Action
@@ -328,7 +328,7 @@ class UserAction extends Action
 
     public static function histories(Base $context , array $param = []): array
     {
-        $relation_type_range = array_keys(my_config('business.relation_type_for_history'));
+        $relation_type_range = my_config_keys('business.relation_type_for_history');
         $validator = Validator::make($param , [
             'module_id'             => 'required|integer' ,
             'relation_type' => ['sometimes' , Rule::in($relation_type_range)] ,
@@ -388,7 +388,7 @@ class UserAction extends Action
 
     public static function collectionGroupWithJudge(Base $context , array $param = []): array
     {
-        $relation_type_range = array_keys(my_config('business.relation_type_for_collection'));
+        $relation_type_range = my_config_keys('business.relation_type_for_collection');
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
             'relation_type' => ['required' , Rule::in($relation_type_range)] ,
@@ -424,7 +424,7 @@ class UserAction extends Action
 
     public static function collectionGroup(Base $context , array $param = []): array
     {
-        $relation_type_range = array_keys(my_config('business.relation_type_for_collection'));
+        $relation_type_range = my_config_keys('business.relation_type_for_collection');
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
             'relation_type' => ['sometimes' , Rule::in($relation_type_range)] ,
@@ -444,8 +444,8 @@ class UserAction extends Action
 
     public static function collectionHandle(Base $context , array $param = [])
     {
-        $relation_type_range = array_keys(my_config('business.relation_type_for_collection'));
-        $action_range = array_keys(my_config('business.bool_for_int'));
+        $relation_type_range = my_config_keys('business.relation_type_for_collection');
+        $action_range = my_config_keys('business.bool_for_int');
         $validator = Validator::make($param , [
             'module_id'             => 'required|integer' ,
             'collection_group_id'   => 'required|integer' ,
@@ -496,8 +496,8 @@ class UserAction extends Action
     //
     public static function praiseHandle(Base $context , array $param = [])
     {
-        $relation_type_range = array_keys(my_config('business.relation_type_for_praise'));
-        $action_range = array_keys(my_config('business.bool_for_int'));
+        $relation_type_range = my_config_keys('business.relation_type_for_praise');
+        $action_range = my_config_keys('business.bool_for_int');
         $validator = Validator::make($param , [
             'module_id'             => 'required|integer' ,
             'action'                => ['required' , Rule::in($action_range)] ,
@@ -543,7 +543,7 @@ class UserAction extends Action
 
     public static function record(Base $context , array $param = [])
     {
-        $relation_type_range = array_keys(my_config('business.relation_type_for_history'));
+        $relation_type_range = my_config_keys('business.relation_type_for_history');
         $validator = Validator::make($param , [
             'module_id'             => 'required|integer' ,
             'relation_type' => ['required' , Rule::in($relation_type_range)] ,
@@ -586,7 +586,7 @@ class UserAction extends Action
 
     public static function createAndJoinCollectionGroup(Base $context , array $param = [])
     {
-        $relation_type_range = array_keys(my_config('business.relation_type_for_collection'));
+        $relation_type_range = my_config_keys('business.relation_type_for_collection');
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
             'relation_type' => ['required' , Rule::in($relation_type_range)] ,
@@ -625,7 +625,7 @@ class UserAction extends Action
                 'module_id' => $module->id ,
                 'user_id' => $user->id ,
                 'name' => $param['name'] ,
-                'created_at' => current_time() ,
+                'created_at' => current_datetime() ,
             ]);
             CollectionModel::insertGetId([
                 'module_id' => $module->id ,
@@ -633,7 +633,7 @@ class UserAction extends Action
                 'collection_group_id' => $id ,
                 'relation_type' => $param['relation_type'] ,
                 'relation_id' => $relation->id ,
-                'created_at' => current_time() ,
+                'created_at' => current_datetime() ,
             ]);
             $collection_group = CollectionGroupModel::find($id);
             $collection_group = CollectionGroupHandler::handle($collection_group);
@@ -668,14 +668,14 @@ class UserAction extends Action
             'module_id' => $module->id ,
             'user_id' => $user->id ,
             'name' => $param['name'] ,
-            'created_at' => current_time() ,
+            'created_at' => current_datetime() ,
         ]);
         return self::success('' , $res);
     }
 
     public static function joinCollectionGroup(Base $context , array $param = [])
     {
-        $relation_type_range = array_keys(my_config('business.relation_type_for_collection'));
+        $relation_type_range = my_config_keys('business.relation_type_for_collection');
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
             'relation_type' => ['required' , Rule::in($relation_type_range)] ,
@@ -714,7 +714,7 @@ class UserAction extends Action
             'collection_group_id' => $collection_group->id ,
             'relation_type' => $param['relation_type'] ,
             'relation_id' => $relation->id ,
-            'created_at' => current_time() ,
+            'created_at' => current_datetime() ,
         ]);
         $collection_group = CollectionGroupHandler::handle($collection_group);
         CollectionGroupUtil::handle($collection_group , $param['relation_type'] , $relation->id);
@@ -777,7 +777,7 @@ class UserAction extends Action
 
     public static function update(Base $context , array $param = [])
     {
-        $sex_range = array_keys(my_config('business.sex_for_user'));
+        $sex_range = my_config_keys('business.sex_for_user');
         $validator = Validator::make($param , [
             'sex' => ['required' , Rule::in($sex_range)] ,
             'email' => 'sometimes|email' ,
@@ -857,7 +857,7 @@ class UserAction extends Action
 
     public static function collections(Base $context , array $param = []): array
     {
-        $relation_type_range = array_keys(my_config('business.relation_type_for_collection'));
+        $relation_type_range = my_config_keys('business.relation_type_for_collection');
         $validator = Validator::make($param , [
             'module_id' => 'required' ,
             'collection_group_id' => 'required' ,
@@ -911,7 +911,7 @@ class UserAction extends Action
 
     public static function focusHandle(Base $context , array $param = []): array
     {
-        $bool_range = array_keys(my_config('business.bool_for_int'));
+        $bool_range = my_config_keys('business.bool_for_int');
         $validator = Validator::make($param , [
             'user_id' => 'required|integer' ,
             'action' => ['required' , Rule::in($bool_range)] ,
@@ -936,7 +936,7 @@ class UserAction extends Action
             FocusUserModel::insertGetId([
                 'user_id' => $user->id ,
                 'focus_user_id' => $focus_user->id ,
-                'created_at' => current_time() ,
+                'created_at' => current_datetime() ,
             ]);
         } else {
             // 取消关注
@@ -985,7 +985,7 @@ class UserAction extends Action
         if (empty($user)) {
             return self::error('用户不存在' , '' , 404);
         }
-        $relation_type_range = array_keys(my_config('business.relation_type_for_collection'));
+        $relation_type_range = my_config_keys('business.relation_type_for_collection');
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
             'relation_type' => ['sometimes' , Rule::in($relation_type_range)] ,
@@ -1005,7 +1005,7 @@ class UserAction extends Action
     // 局部更新
     public static function localUpdate(Base $context , array $param = [])
     {
-        $sex_range = array_keys(my_config('business.sex_for_user'));
+        $sex_range = my_config_keys('business.sex_for_user');
         $validator = Validator::make($param , [
             'sex' => ['sometimes' , Rule::in($sex_range)] ,
             'email' => 'sometimes|email' ,

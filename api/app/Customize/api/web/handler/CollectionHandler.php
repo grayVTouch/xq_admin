@@ -9,17 +9,18 @@ use App\Customize\api\web\model\CollectionModel;
 use App\Customize\api\web\model\ImageSubjectModel;
 use App\Customize\api\web\model\UserModel;
 use App\Customize\api\web\util\CollectionGroupUtil;
+use App\Model\Model;
 use stdClass;
-use function core\convert_obj;
+use function core\convert_object;
 
 class CollectionHandler extends Handler
 {
-    public static function handle(?CollectionModel $model): ?stdClass
+    public static function handle(?Model $model , array $with = []): ?stdClass
     {
         if (empty($model)) {
             return null;
         }
-        $model = convert_obj($model);
+        $model = convert_object($model);
 
         $user = UserModel::find($model->user_id);
         $user = UserHandler::handle($user);

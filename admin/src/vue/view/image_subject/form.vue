@@ -313,7 +313,7 @@
                                     <div>
                                         <Table border :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" style="width: 100%;">
                                             <template v-slot:path="{row,index}">
-                                                <img :src="row.path ? row.__path__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image" @click.stop="link(row.__path__)">
+                                                <img :src="row.src ? row.src : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image" @click.stop="link(row.__path__)">
                                             </template>
                                             <template v-slot:action="{row,index}">
                                                 <my-table-button :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)">删除</my-table-button>

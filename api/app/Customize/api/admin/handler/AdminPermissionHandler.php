@@ -5,22 +5,23 @@ namespace App\Customize\api\admin\handler;
 
 
 use App\Customize\api\admin\model\AdminPermissionModel;
+use App\Customize\api\admin\model\Model;
 use App\Customize\api\admin\util\FileUtil;
 use stdClass;
 use Traversable;
-use function core\convert_obj;
+use function core\convert_object;
 
 class AdminPermissionHandler extends Handler
 {
-    public static function handle(?AdminPermissionModel $model , bool $deep = true): ?stdClass
+    public static function handle(?Model $model , array $with = [] , bool $deep = true): ?stdClass
     {
         if (empty($model)) {
             return null;
         }
-        $model = convert_obj($model);
+        $model = convert_object($model);
         if ($deep) {
             $permission = $model->p_id ? AdminPermissionModel::find($model->p_id) : null;
-            $permission = self::handle($permission , false);
+            $permission = self::handle($permission , $with , false);
         } else {
             $permission = null;
         }

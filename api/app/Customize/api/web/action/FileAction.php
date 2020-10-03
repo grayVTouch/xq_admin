@@ -61,7 +61,7 @@ class FileAction extends Action
             $mode = $param['m'];
         }
         if (in_array($mode , $mode_range)) {
-            $realpath = FileUtil::getRealPathByRelativePath($path);
+            $realpath = FileUtil::getRealPathByRelativePathWithPrefix($path);
             $image_processor = new ImageProcessor(FileUtil::dir($dir));
             $res = $image_processor->compress($realpath , [
                 'mode' => $mode ,

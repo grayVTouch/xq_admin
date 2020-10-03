@@ -1,26 +1,28 @@
 
-import './asset/css/vars.css';
-import './asset/css/base.css';
-import './asset/css/iview.css';
+import '@asset/css/vars.css';
+import '@asset/css/base.css';
+import '@asset/css/iview.css';
 
 /**
  * **************************
  * 注意：以下加载有严格顺序
  * **************************
  */
-import './asset/js/context.js';
-import './asset/js/common.js';
-import './asset/js/api.js';
+import '@asset/js/context.js';
+import '@asset/js/common.js';
+import '@asset/js/api.js';
 
-import './asset/js/vue.js';
-import './asset/js/mixin.js';
-import './asset/js/directive.js';
-import './asset/js/iview.js';
+import '@asset/js/vue.js';
+import '@asset/js/mixin.js';
+import '@asset/js/directive.js';
+import '@asset/js/iview.js';
 
-import './asset/js/my_view.js';
+import '@asset/js/my_view.js';
 
-import './asset/js/my_plugin.js';
-import router from './vue/router';
+import '@asset/js/my_plugin.js';
+
+import router from '@vue/router/index.js';
+
 import app from './app.vue';
 
 const debug = true;

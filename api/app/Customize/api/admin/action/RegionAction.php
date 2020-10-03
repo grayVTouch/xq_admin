@@ -9,6 +9,7 @@ use App\Http\Controllers\api\admin\Base;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use function api\admin\my_config;
+use function api\admin\my_config_keys;
 use function api\web\get_form_error;
 
 class RegionAction extends Action
@@ -22,7 +23,7 @@ class RegionAction extends Action
 
     public static function search(Base $context , array $param = [])
     {
-        $type_range = array_keys(my_config('business.type_for_region'));
+        $type_range = my_config_keys('business.type_for_region');
         $validator = Validator::make($param , [
             'type' => ['sometimes' , Rule::in($type_range)] ,
         ]);

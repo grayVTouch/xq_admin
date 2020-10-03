@@ -88,8 +88,8 @@
                 <div class="table">
 
                     <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
-                        <template v-slot:enable="{row,index}"><my-switch v-model="row.enable" :loading="val.pending['enable_' + row.id]" :extra="{field: 'enable' , data: row}" @on-change="updateBoolValEvent" /></template>
-                        <template v-slot:default="{row,index}"><my-switch v-model="row.default" :loading="val.pending['default_' + row.id]" :extra="{field: 'default' , data: row}" @on-change="updateBoolValEvent" /></template>
+                        <template v-slot:enable="{row,index}"><my-switch v-model="row.is_enabled" :loading="val.pending['enable_' + row.id]" :extra="{field: 'enable' , data: row}" @on-change="updateBoolValEvent" /></template>
+                        <template v-slot:default="{row,index}"><my-switch v-model="row.is_default" :loading="val.pending['default_' + row.id]" :extra="{field: 'default' , data: row}" @on-change="updateBoolValEvent" /></template>
                         <template v-slot:auth="{row,index}"><my-switch v-model="row.auth" :loading="val.pending['auth_' + row.id]" :extra="{field: 'auth' , data: row}" @on-change="updateBoolValEvent" /></template>
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
@@ -133,48 +133,37 @@
                                     <div class="e-msg">{{ val.error.description }}</div>
                                 </td>
                             </tr>
-                            <tr :class="{error: val.error.enable}">
+                            <tr :class="{error: val.error.is_enabled}">
                                 <td>启用？</td>
                                 <td>
-                                    <RadioGroup v-model="form.enable"  @input="val.error.enable = ''">
+                                    <RadioGroup v-model="form.is_enabled"  @input="val.error.is_enabled = ''">
                                         <Radio v-for="(v,k) in $store.state.business.bool_for_int" :key="k" :label="parseInt(k)">{{ v }}</Radio>
                                     </RadioGroup>
                                     <span class="need">*</span>
                                     <div class="msg">默认：开启</div>
-                                    <div class="e-msg">{{ val.error.enable }}</div>
+                                    <div class="e-msg">{{ val.error.is_enabled }}</div>
                                 </td>
                             </tr>
-                            <tr :class="{error: val.error.default}">
+                            <tr :class="{error: val.error.is_default}">
                                 <td>默认？</td>
                                 <td>
-                                    <RadioGroup v-model="form.default"  @input="val.error.default = ''">
+                                    <RadioGroup v-model="form.is_default"  @input="val.error.is_default = ''">
                                         <Radio v-for="(v,k) in $store.state.business.bool_for_int" :key="k" :label="parseInt(k)">{{ v }}</Radio>
                                     </RadioGroup>
                                     <span class="need">*</span>
                                     <div class="msg">默认：否</div>
-                                    <div class="e-msg">{{ val.error.default }}</div>
+                                    <div class="e-msg">{{ val.error.is_default }}</div>
                                 </td>
                             </tr>
-                            <tr :class="{error: val.error.auth}">
+                            <tr :class="{error: val.error.is_auth}">
                                 <td>认证？</td>
                                 <td>
-                                    <RadioGroup v-model="form.auth"  @input="val.error.auth = ''">
+                                    <RadioGroup v-model="form.is_auth"  @input="val.error.is_auth = ''">
                                         <Radio v-for="(v,k) in $store.state.business.bool_for_int" :key="k" :label="parseInt(k)">{{ v }}</Radio>
                                     </RadioGroup>
                                     <span class="need">*</span>
                                     <div class="msg">默认：否</div>
                                     <div class="e-msg">{{ val.error.auth }}</div>
-                                </td>
-                            </tr>
-                            <tr :class="{error: val.error.auth_password}" v-show="form.auth">
-                                <td>认证密码</td>
-                                <td>
-                                    <input type="text" v-model="form.auth_password" @input="val.error.auth_password=''" class="form-text">
-                                    <span class="need"></span>
-                                    <div class="msg">
-                                        <template v-if="val.mode === 'edit'">为空，则使用原密码</template>
-                                    </div>
-                                    <div class="e-msg">{{ val.error.auth_password }}</div>
                                 </td>
                             </tr>
                             <tr :class="{error: val.error.weight}">

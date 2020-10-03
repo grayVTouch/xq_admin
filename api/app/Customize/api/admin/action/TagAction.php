@@ -12,7 +12,7 @@ use function api\admin\get_form_error;
 use function api\admin\my_config;
 use function api\admin\parse_order;
 use function core\array_unit;
-use function core\current_time;
+use function core\current_datetime;
 
 class TagAction extends Action
 {
@@ -99,7 +99,7 @@ class TagAction extends Action
             return self::success('' , $tag);
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
-        $param['created_at'] = current_time();
+        $param['created_at'] = current_datetime();
         $id = TagModel::insertGetId(array_unit($param , [
             'name' ,
             'weight' ,

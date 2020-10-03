@@ -6,7 +6,7 @@ namespace App\Customize\api\admin\handler;
 
 use App\Customize\api\admin\model\RegionModel;
 use stdClass;
-use function core\convert_obj;
+use function core\convert_object;
 
 class RegionHandler extends Handler
 {
@@ -15,7 +15,7 @@ class RegionHandler extends Handler
         if (empty($model)) {
             return null;
         }
-        $res = convert_obj($model);
+        $res = convert_object($model);
 
         if ($deep) {
             $region = $res->p_id ? RegionModel::find($res->p_id) : null;

@@ -21,9 +21,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use function api\admin\get_form_error;
 use function api\admin\my_config;
+use function api\admin\my_config_keys;
 use function api\admin\parse_order;
 use function core\array_unit;
-use function core\current_time;
+use function core\current_datetime;
 
 class VideoSubjectAction extends Action
 {
@@ -38,7 +39,7 @@ class VideoSubjectAction extends Action
 
     public static function update(Base $context , $id , array $param = [])
     {
-        $status_range = array_keys(my_config('business.status_for_video_subject'));
+        $status_range = my_config_keys('business.status_for_video_subject');
         $validator = Validator::make($param , [
             'name'          => 'required' ,
             'release_time'  => 'sometimes|date_format:Y-m-d' ,
@@ -94,7 +95,7 @@ class VideoSubjectAction extends Action
         }
 
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
-        $param['updated_at'] = current_time();
+        $param['updated_at'] = current_datetime();
         $tags = $param['tags'] === '' ? [] : json_decode($param['tags'] , true);
         try {
             DB::beginTransaction();
@@ -157,7 +158,7 @@ class VideoSubjectAction extends Action
 
     public static function store(Base $context , array $param = [])
     {
-        $status_range = array_keys(my_config('business.status_for_video_subject'));
+        $status_range = my_config_keys('business.status_for_video_subject');
         $validator = Validator::make($param , [
             'name'              => 'required' ,
             'release_time'      => 'sometimes|date_format:Y-m-d' ,
@@ -210,7 +211,7 @@ class VideoSubjectAction extends Action
         }
 
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
-        $param['created_at'] = current_time();
+        $param['created_at'] = current_datetime();
         $tags = $param['tags'] === '' ? [] : json_decode($param['tags'] , true);
         try {
             DB::beginTransaction();

@@ -16,19 +16,21 @@ use App\Customize\api\web\model\VideoModel;
 use App\Customize\api\web\model\VideoSubjectModel;
 use App\Customize\api\web\model\ModuleModel;
 use App\Customize\api\web\util\FileUtil;
+use App\Model\Model;
 use stdClass;
+use function api\admin\get_config_key_mapping_value;
 use function api\web\get_value;
 use function api\web\user;
-use function core\convert_obj;
+use function core\convert_object;
 
 class VideoSubjectHandler extends Handler
 {
-    public static function handle(?VideoSubjectModel $model): ?stdClass
+    public static function handle(?Model $model , array $with = []): ?stdClass
     {
         if (empty($model)) {
             return null;
         }
-        $res = convert_obj($model);
+        $res = convert_object($model);
 
         $module = ModuleModel::find($res->module_id);
         $module = ModuleHandler::handle($module);
@@ -55,7 +57,7 @@ class VideoSubjectHandler extends Handler
         $res->videos = $videos;
 
 
-        $res->__status__ = get_value('business.status_for_video_subject' , $res->status);
+        $res->__status__ = get_config_key_mapping_value('business.status_for_video_subject' , $res->status);
 
         // 点赞数
         $res->play_count = VideoModel::sumPlayCountByVideoSubjectId($res->id);

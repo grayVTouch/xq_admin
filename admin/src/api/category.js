@@ -7,6 +7,7 @@ const destroy = genUrl('category/{id}');
 const destroyAll = genUrl('destroy_all_category');
 const categoryExcludeSelfAndChildren = genUrl('category/{id}/all');
 const searchByModuleId = genUrl('search_category_by_module_id');
+const search = genUrl('search_category');
 
 export default {
     index (success , error) {
@@ -17,6 +18,10 @@ export default {
         return request(searchByModuleId , 'get' , {
             module_id: moduleId
         } , success , error);
+    } ,
+
+    search (data , success , error) {
+        return request(search , 'get' , data , success , error);
     } ,
 
     localUpdate (id , data , success , error) {

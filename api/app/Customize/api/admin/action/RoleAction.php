@@ -20,7 +20,7 @@ use function api\admin\get_form_error;
 use function api\admin\my_config;
 use function api\admin\parse_order;
 use function core\array_unit;
-use function core\convert_obj;
+use function core\convert_object;
 use function core\obj_to_array;
 
 class RoleAction extends Action

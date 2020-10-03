@@ -27,7 +27,7 @@ class FileAction extends Action
         }
         $dir        = date('Ymd');
         $path       = FileUtil::upload($file , $dir);
-        $real_path  = FileUtil::getRealPathByRelativePath($path);
+        $real_path  = FileUtil::getRealPathByRelativePathWithPrefix($path);
         $url        = FileUtil::url($path);
         ResourceUtil::create($url , $real_path , 'local');
         return self::success('' , $url);
@@ -48,7 +48,7 @@ class FileAction extends Action
         }
         $dir        = date('Ymd');
         $path       = FileUtil::upload($file , $dir);
-        $real_path  = FileUtil::getRealPathByRelativePath($path);
+        $real_path  = FileUtil::getRealPathByRelativePathWithPrefix($path);
         $url        = FileUtil::url($path);
         if (empty($param['m'])) {
             if (!empty($param['w'])) {
@@ -65,7 +65,7 @@ class FileAction extends Action
             $mode = $param['m'];
         }
         if (in_array($mode , $mode_range)) {
-            $real_path          = FileUtil::getRealPathByRelativePath($path);
+            $real_path          = FileUtil::getRealPathByRelativePathWithPrefix($path);
             $image_handle_dir   = FileUtil::dir($dir);
             $image_processor    = new ImageProcessor($image_handle_dir);
             $real_path = $image_processor->compress($real_path , [
@@ -94,7 +94,7 @@ class FileAction extends Action
         }
         $dir        = date('Ymd');
         $path       = FileUtil::upload($file , $dir);
-        $real_path  = FileUtil::getRealPathByRelativePath($path);
+        $real_path  = FileUtil::getRealPathByRelativePathWithPrefix($path);
         $url        = FileUtil::url($path);
         ResourceUtil::create($url , $real_path , 'local');
         return self::success('' , $url);
@@ -116,7 +116,7 @@ class FileAction extends Action
 //        }
         $dir        = date('Ymd');
         $path       = FileUtil::upload($file , $dir);
-        $real_path  = FileUtil::getRealPathByRelativePath($path);
+        $real_path  = FileUtil::getRealPathByRelativePathWithPrefix($path);
         $url        = FileUtil::url($path);
         ResourceUtil::create($url , $real_path , 'local');
         return self::success('' , $url);
@@ -133,7 +133,7 @@ class FileAction extends Action
         }
         $dir        = date('Ymd');
         $path       = FileUtil::upload($file , $dir);
-        $real_path  = FileUtil::getRealPathByRelativePath($path);
+        $real_path  = FileUtil::getRealPathByRelativePathWithPrefix($path);
         $url        = FileUtil::url($path);
         ResourceUtil::create($url , $real_path , 'local');
         return self::success('' , $url);

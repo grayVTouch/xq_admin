@@ -29,11 +29,11 @@ class ModuleModel extends Model
             ->paginate($limit);
     }
 
-    public static function setNotDefaultByExcludeId(int $exclude_id)
+    public static function setNotDefaultByExcludeId(int $exclude_id): int
     {
         return self::where('id' , '!=' , $exclude_id)
             ->update([
-                'default' => 0 ,
+                'is_default' => 0 ,
             ]);
     }
 }

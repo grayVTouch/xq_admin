@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Validator;
 use Mews\Captcha\Facades\Captcha;
 use function api\web\get_form_error;
 use function api\web\my_config;
-use function core\current_time;
+use function core\current_datetime;
 use function core\random;
 
 class MiscAction extends Action
@@ -34,11 +34,11 @@ class MiscAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
-        $type_range = array_keys(my_config('business.email_code_type'));
+        $type_range = my_config_keys('business.email_code_type');
         if (!in_array($type , $type_range)) {
             return self::error('不支持的验证码类型，当前支持的类型有：' . implode(',' , '' , $type_range));
         }
-        $timestamp = current_time();
+        $timestamp = current_datetime();
         $code = random(4 , 'number' , true);
         switch ($type)
         {

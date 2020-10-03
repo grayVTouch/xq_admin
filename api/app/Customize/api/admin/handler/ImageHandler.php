@@ -6,17 +6,18 @@ namespace App\Customize\api\admin\handler;
 
 use App\Customize\api\admin\model\ImageModel;
 use App\Customize\api\admin\util\FileUtil;
+use App\Customize\api\admin\model\Model;
 use stdClass;
-use function core\convert_obj;
+use function core\convert_object;
 
 class ImageHandler extends Handler
 {
-    public static function handle(?ImageModel $model): ?stdClass
+    public static function handle(?Model $model , array $with = []): ?stdClass
     {
         if (empty($model)) {
             return null;
         }
-        $res = convert_obj($model);
+        $res = convert_object($model);
 
         return $res;
     }

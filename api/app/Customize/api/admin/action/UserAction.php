@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use function api\admin\get_form_error;
 use function api\admin\my_config;
+use function api\admin\my_config_keys;
 use function api\admin\parse_order;
 use function core\array_unit;
 
@@ -42,7 +43,7 @@ class UserAction extends Action
 
     public static function update(Base $context , $id , array $param = [])
     {
-        $sex_range = array_keys(my_config('business.sex_for_user'));
+        $sex_range = my_config_keys('business.sex_for_user');
 
         $validator = Validator::make($param , [
             'username'  => 'required' ,
@@ -95,7 +96,7 @@ class UserAction extends Action
 
     public static function store(Base $context , array $param = [])
     {
-        $sex_range = array_keys(my_config('business.sex_for_user'));
+        $sex_range = my_config_keys('business.sex_for_user');
 
         $validator = Validator::make($param , [
             'username' => 'required' ,

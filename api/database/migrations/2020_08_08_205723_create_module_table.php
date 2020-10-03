@@ -21,9 +21,9 @@ class CreateModuleTable extends Migration
             $table->string('name' , 255)->default('')->comment('名称');
             $table->string('description' , 500)->default('')->comment('描述');
             $table->tinyInteger('is_enabled')->default(1)->comment('启用？0-否 1-是');
-            $table->tinyInteger('auth')->default(0)->comment('认证？0-否 1-是');
+            $table->tinyInteger('is_auth')->default(0)->comment('认证？0-否 1-是');
+            $table->integer('is_default')->default(0)->comment('默认？0-否 1-是 记录中仅能有一个是默认的');
             $table->integer('weight')->default(0)->comment('权重');
-            $table->integer('default')->default(0)->comment('默认？0-否 1-是 记录中仅能有一个是默认的');
 
             $table->timestamps();
 

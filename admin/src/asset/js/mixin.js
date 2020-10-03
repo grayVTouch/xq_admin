@@ -1,5 +1,5 @@
 
-import store from '../../vue/vuex/index.js';
+import store from '@vue/vuex/index.js';
 
 /**
  * ****************

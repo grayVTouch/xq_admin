@@ -5,17 +5,18 @@ namespace App\Customize\api\admin\handler;
 
 
 use App\Customize\api\admin\model\RoleModel;
+use App\Customize\api\admin\model\Model;
 use stdClass;
-use function core\convert_obj;
+use function core\convert_object;
 
 class RoleHandler extends Handler
 {
-    public static function handle(?RoleModel $model): ?stdClass
+    public static function handle(?Model $model , array $with = []): ?stdClass
     {
         if (empty($model)) {
             return null;
         }
-        $res = convert_obj($model);
+        $res = convert_object($model);
         return $res;
     }
 

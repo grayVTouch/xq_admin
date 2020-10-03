@@ -19,7 +19,7 @@ class CreateImageTable extends Migration
         Schema::create($this->table , function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('image_subject_id')->default(0)->comment('xq_image_subject.id');
-            $table->string('path' , 500)->default('')->comment('路径');
+            $table->string('src' , 500)->default('')->comment('图片源');
 
             $table->timestamps();
 

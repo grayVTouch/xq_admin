@@ -5,20 +5,22 @@ namespace App\Customize\api\web\handler;
 
 
 use App\Customize\api\web\model\PositionModel;
+use App\Model\Model;
 use stdClass;
+use function api\admin\get_config_key_mapping_value;
 use function api\web\get_value;
-use function core\convert_obj;
+use function core\convert_object;
 
 class PositionHandler extends Handler
 {
-    public static function handle(?PositionModel $model): ?stdClass
+    public static function handle(?Model $model , array $with = []): ?stdClass
     {
         if (empty($model)) {
             return null;
         }
-        $res = convert_obj($model);
+        $res = convert_object($model);
 
-        $res->__platform__ = get_value('business.platform' , $res->platform);
+        $res->__platform__ = get_config_key_mapping_value('business.platform' , $res->platform);
 
         return $res;
     }

@@ -8,18 +8,19 @@ use App\Customize\api\web\model\VideoSubtitleModel;
 use App\Customize\api\web\model\VideoSrcModel;
 use App\Customize\api\web\model\VideoModel;
 use App\Customize\api\web\util\FileUtil;
+use App\Model\Model;
 use stdClass;
-use function core\convert_obj;
+use function core\convert_object;
 use function core\format_time;
 
 class VideoHandler extends Handler
 {
-    public static function handle(?VideoModel $model): ?stdClass
+    public static function handle(?Model $model , array $with = []): ?stdClass
     {
         if (empty($model)) {
             return null;
         }
-        $model = convert_obj($model);
+        $model = convert_object($model);
 
         $videos = VideoSrcModel::getByVideoId($model->id);
         $videos = VideoSrcHandler::handleAll($videos);

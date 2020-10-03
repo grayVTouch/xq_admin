@@ -13,12 +13,14 @@ class AdminSeeder extends Seeder
      */
     public function run()
     {
+        $datetime = date('Y-m-d H:i:s');
         AdminModel::insert([
             'username' => config('my.admin_username') ,
             'password' => Hash::make(config('my.admin_password')) ,
             'is_root' => 1 ,
             'role_id' => 1 ,
-            'created_at' => date('Y-m-d H:i:s')
+            'updated_at' =>  $datetime ,
+            'created_at' => $datetime ,
         ]);
     }
 }

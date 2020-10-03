@@ -13,9 +13,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use function api\admin\get_form_error;
 use function api\admin\my_config;
+use function api\admin\my_config_keys;
 use function api\admin\parse_order;
 use function core\array_unit;
-use function core\current_time;
+use function core\current_datetime;
 
 class ModuleAction extends Action
 {
@@ -30,53 +31,36 @@ class ModuleAction extends Action
 
     public static function update(Base $context , $id , array $param = [])
     {
-        $bool_for_int = array_keys(my_config('business.bool_for_int'));
+        $bool_for_int = my_config_keys('business.bool_for_int');
 
         $validator = Validator::make($param , [
             'name'          => 'required' ,
-            'enable'        => ['required' , Rule::in($bool_for_int)] ,
-            'default'       => ['required' , Rule::in($bool_for_int)] ,
-            'auth'          => ['required' , Rule::in($bool_for_int)] ,
-            'auth_password' => 'sometimes|min:4' ,
+            'is_enabled'    => ['required' , Rule::in($bool_for_int)] ,
+            'is_default'    => ['required' , Rule::in($bool_for_int)] ,
+            'is_auth'       => ['required' , Rule::in($bool_for_int)] ,
         ]);
-
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
-
         $res = ModuleModel::find($id);
-
         if (empty($res)) {
             return self::error('模块不存在' , '' , 404);
         }
-
-        $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
-        $param['auth_password'] = $param['auth'] ?
-            ($param['auth_password'] === '' ?
-                $res->auth_password :
-                Hash::make($param['auth_password'])
-            ) :
-            '';
-
+        $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         try {
             DB::beginTransaction();
-
             ModuleModel::updateById($res->id , array_unit($param , [
                 'name' ,
                 'description' ,
-                'enable' ,
-                'auth' ,
-                'auth_password' ,
+                'is_enabled' ,
+                'is_auth' ,
+                'is_default' ,
                 'weight' ,
-                'default' ,
             ]));
-
-            if ($param['default']) {
+            if ($param['is_default']) {
                 ModuleModel::setNotDefaultByExcludeId($res->id);
             }
-
             DB::commit();
-
             return self::success();
         } catch(Exception $e) {
 
@@ -88,11 +72,11 @@ class ModuleAction extends Action
 
     public static function localUpdate(Base $context , $id , array $param = [])
     {
-        $bool_for_int = array_keys(my_config('business.bool_for_int'));
+        $bool_for_int = my_config_keys('business.bool_for_int');
 
         $validator = Validator::make($param , [
-            'enable'        => ['sometimes' , Rule::in($bool_for_int)] ,
-            'auth'          => ['sometimes' , Rule::in($bool_for_int)] ,
+            'is_enabled'        => ['sometimes' , Rule::in($bool_for_int)] ,
+            'is_auth'          => ['sometimes' , Rule::in($bool_for_int)] ,
             'auth_password' => 'sometimes|min:4' ,
         ]);
 
@@ -108,10 +92,10 @@ class ModuleAction extends Action
 
         $param['name']   = $param['name'] === '' ? $res->name : $param['name'];
         $param['weight'] = $param['weight'] === '' ? $res->weight : $param['weight'];
-        $param['enable'] = $param['enable'] === '' ? $res->enable : $param['enable'];
-        $param['default'] = $param['default'] === '' ? $res->default : $param['default'];
-        $param['auth_password'] = $param['auth'] !== '' ?
-            ($param['auth'] ?
+        $param['is_enabled'] = $param['is_enabled'] === '' ? $res->enable : $param['is_enabled'];
+        $param['is_default'] = $param['is_default'] === '' ? $res->default : $param['is_default'];
+        $param['auth_password'] = $param['is_auth'] !== '' ?
+            ($param['is_auth'] ?
                 ($param['auth_password'] === '' ?
                     $res->auth_password :
                     Hash::make($param['auth_password'])
@@ -126,14 +110,14 @@ class ModuleAction extends Action
             ModuleModel::updateById($res->id , array_unit($param , [
                 'name' ,
                 'description' ,
-                'enable' ,
-                'auth' ,
+                'is_enabled' ,
+                'is_auth' ,
                 'auth_password' ,
                 'weight' ,
-                'default' ,
+                'is_default' ,
             ]));
 
-            if ($param['default']) {
+            if ($param['is_default']) {
                 ModuleModel::setNotDefaultByExcludeId($res->id);
             }
 
@@ -150,13 +134,13 @@ class ModuleAction extends Action
 
     public static function store(Base $context , array $param = [])
     {
-        $bool_for_int = array_keys(my_config('business.bool_for_int'));
+        $bool_for_int = my_config_keys('business.bool_for_int');
 
         $validator = Validator::make($param , [
             'name'          => 'required' ,
-            'enable'        => ['required' , Rule::in($bool_for_int)] ,
-            'default'       => ['required' , Rule::in($bool_for_int)] ,
-            'auth'          => ['required' , Rule::in($bool_for_int)] ,
+            'is_enabled'        => ['required' , Rule::in($bool_for_int)] ,
+            'is_default'       => ['required' , Rule::in($bool_for_int)] ,
+            'is_auth'          => ['required' , Rule::in($bool_for_int)] ,
             'auth_password' => 'sometimes|min:4' ,
         ]);
 
@@ -164,7 +148,7 @@ class ModuleAction extends Action
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
 
-        if ($param['auth']) {
+        if ($param['is_auth']) {
             if (empty($param['auth_password'])) {
                 return self::error('表单错误' , [
                     'auth_password' => '请提供认证密码' ,
@@ -173,8 +157,8 @@ class ModuleAction extends Action
         }
 
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
-        $param['auth_password'] = $param['auth'] ? Hash::make($param['auth_password']) : '';
-        $param['created_at']   = current_time();
+        $param['auth_password'] = $param['is_auth'] ? Hash::make($param['auth_password']) : '';
+        $param['created_at']   = current_datetime();
 
         try {
             DB::beginTransaction();
@@ -182,14 +166,14 @@ class ModuleAction extends Action
             $id = ModuleModel::insertGetId(array_unit($param , [
                 'name' ,
                 'description' ,
-                'enable' ,
-                'auth' ,
+                'is_enabled' ,
+                'is_auth' ,
                 'auth_password' ,
                 'weight' ,
-                'default' ,
+                'is_default' ,
             ]));
 
-            if ($param['default']) {
+            if ($param['is_default']) {
                 ModuleModel::setNotDefaultByExcludeId($id);
             }
 

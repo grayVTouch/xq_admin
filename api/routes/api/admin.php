@@ -138,6 +138,7 @@ Route::prefix('admin')
              */
             Route::get('category' , 'Category@index');
             Route::get('search_category_by_module_id' , 'Category@searchByModuleId');
+            Route::get('search_category' , 'Category@search');
             Route::get('category/{id}/all' , 'Category@allExcludeSelfAndChildren');
             Route::get('category/{id}' , 'Category@show');
             Route::patch('category/{id}' , 'Category@localUpdate');

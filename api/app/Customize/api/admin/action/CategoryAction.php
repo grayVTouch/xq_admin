@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use function api\admin\get_form_error;
 use function api\admin\my_config;
+use function api\admin\my_config_keys;
 use function core\array_unit;
 use function core\obj_to_array;
 
@@ -30,12 +31,9 @@ class CategoryAction extends Action
         return self::success('' , $res);
     }
 
-    public static function searchByModuleId(Base $context , int $module_id , array $param = [])
+    public static function search(Base $context , array $param = [])
     {
-        if (empty($module_id)) {
-            return self::success('' , []);
-        }
-        $res = CategoryModel::getAllByModuleId($module_id);
+        $res = CategoryModel::getByFilter($param);
         $res = CategoryHandler::handleAll($res);
         $res = obj_to_array($res);
         $res = Category::childrens(0 , $res , [
@@ -47,7 +45,7 @@ class CategoryAction extends Action
 
     public static function localUpdate(Base $context , $id , array $param = [])
     {
-        $bool_range = array_keys(my_config('business.bool_for_int'));
+        $bool_range = my_config_keys('business.bool_for_int');
         $validator = Validator::make($param , [
             'enable'   => ['sometimes', Rule::in($bool_range)],
             'weight'    => 'sometimes|integer',
@@ -81,7 +79,7 @@ class CategoryAction extends Action
 
     public static function update(Base $context , $id , array $param = [])
     {
-        $bool_range = array_keys(my_config('business.bool_for_int'));
+        $bool_range = my_config_keys('business.bool_for_int');
         $validator = Validator::make($param , [
             'name'    => 'required',
             'enable'   => ['required', Rule::in($bool_range)],
@@ -110,7 +108,7 @@ class CategoryAction extends Action
 
     public static function store(Base $context , array $param = [])
     {
-        $bool_range = array_keys(my_config('business.bool_for_int'));
+        $bool_range = my_config_keys('business.bool_for_int');
         $validator = Validator::make($param , [
             'name'    => 'required',
             'enable'  => ['required', Rule::in($bool_range)],

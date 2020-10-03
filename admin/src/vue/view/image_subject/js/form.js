@@ -21,6 +21,7 @@ const users = {
             title: 'id' ,
             key: 'id' ,
             center: TopContext.table.alignCenter ,
+            width: TopContext.table.id ,
         } ,
         {
             title: '名称' ,
@@ -191,7 +192,10 @@ export default {
 
         getCategories (moduleId , callback) {
             this.pending('getCategories' , true);
-            Api.category.searchByModuleId(moduleId , (msg , data , code) => {
+            Api.category.search({
+                module_id: moduleId ,
+                type: 'image_subject' ,
+            } , (msg , data , code) => {
                 this.pending('getCategories' , false);
                 if (code !== TopContext.code.Success) {
                     this.message('error' , data);
@@ -265,6 +269,7 @@ export default {
                 uploaded (file , data , code) {
                     if (code !== TopContext.code.Success) {
                         this.status(file.id , false);
+                        console.log('图片上传失败' , data);
                         return ;
                     }
                     this.status(file.id , true);
@@ -283,6 +288,7 @@ export default {
                 uploaded (file , data , code) {
                     if (code !== TopContext.code.Success) {
                         this.status(file.id , false);
+                        console.log('图片上传失败' , data);
                         return ;
                     }
                     this.status(file.id , true);

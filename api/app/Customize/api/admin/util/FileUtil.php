@@ -86,7 +86,7 @@ class FileUtil
     }
 
     // 根据负荷规则的相对路径获取绝对路径
-    public static function getRealPathByRelativePath(string $relative_path = ''): string
+    public static function getRealPathByRelativePathWithPrefix(string $relative_path = ''): string
     {
         if (empty($relative_path)) {
             return '';
@@ -105,7 +105,7 @@ class FileUtil
 
 
     // 根据用户提供的路径生成符合规则的相对路径
-    public static function getRelativePath(string $path = ''): string
+    public static function generateRelativePathWithPrefix(string $path = ''): string
     {
         if (empty($path)) {
             return '';
@@ -121,15 +121,16 @@ class FileUtil
      * @return string
      * @throws Exception
      */
-    public static function getRealPath(string $relative_path = ''): string
+    public static function getRealPathByRelativePathWithoutPrefix(string $path = ''): string
     {
-        return self::getRealPathByRelativePath(self::getRelativePath($relative_path));
+        $path = self::generateRelativePathWithPrefix($path);
+        return self::getRealPathByRelativePathWithPrefix($path);
     }
 
     // 删除文件（通过相对路径）
     public static function delete(string $relative_path = ''): void
     {
-        $real_path = self::getRealPath($relative_path);
+        $real_path = self::getRealPathByRelativePathWithoutPrefix($relative_path);
         if (!File::exists($real_path)) {
             return ;
         }
@@ -165,14 +166,14 @@ class FileUtil
     /**
      * 从相对路径生成访问网络地址
      *
-     * @param  string $relative_path
+     * @param  string $path
      * @return string
      */
-    public static function url(string $relative_path = '')
+    public static function url(string $path = '')
     {
         $res_url        = my_config('app.res_url');
         $res_url        = rtrim($res_url , '/');
-        $relative_path  = ltrim($relative_path , '/');
+        $relative_path  = ltrim($path , '/');
         return $res_url . '/' . $relative_path;
     }
 
@@ -183,9 +184,22 @@ class FileUtil
      * @return bool
      * @throws Exception
      */
-    public static function exists(string $relative_path = ''): bool
+    public static function existsByRelativePathWithPrefix(string $relative_path = ''): bool
     {
-        $real_path = self::getRealPathByRelativePath($relative_path);
+        $real_path = self::getRealPathByRelativePathWithPrefix($relative_path);
         return File::exists($real_path);
+    }
+
+    /**
+     * 检查给定的目录是否存在
+     *
+     * @param string $relative_path
+     * @return bool
+     * @throws Exception
+     */
+    public static function existsByRelativePathWithoutPrefix(string $relative_path = ''): bool
+    {
+        $real_path = self::getRealPathByRelativePathWithoutPrefix($relative_path);
+        return file_exists($real_path);
     }
 }

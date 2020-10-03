@@ -5,22 +5,23 @@ namespace App\Customize\api\admin\handler;
 
 
 use App\Customize\api\admin\model\CategoryModel;
+use App\Customize\api\admin\model\Model;
 use App\Customize\api\admin\model\ModuleModel;
 use stdClass;
 use Traversable;
-use function core\convert_obj;
+use function core\convert_object;
 
 class CategoryHandler extends Handler
 {
-    public static function handle(?CategoryModel $model , bool $deep = true): ?stdClass
+    public static function handle(?Model $model , array $with = [] , bool $deep = true): ?stdClass
     {
         if (empty($model)) {
             return null;
         }
-        $res = convert_obj($model);
+        $res = convert_object($model);
         if ($deep) {
             $category = $res->p_id ? CategoryModel::find($res->p_id) : null;
-            $category = self::handle($category , false);
+            $category = self::handle($category , $with ,false);
         } else {
             $category = null;
         }

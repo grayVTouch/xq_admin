@@ -20,7 +20,7 @@ module.exports = {
     entry: {
         // babel-polyfill，在 ie 环境下，vuex 需要用到！
         // 相关文档请看 babel 官方文档
-        app: ['@babel/polyfill' , './source/app.js']
+        app: ['@babel/polyfill' , './src/app.js']
     },
     plugins: [
         // 这个用法错了
@@ -36,13 +36,14 @@ module.exports = {
         }) ,
         new VueLoaderPlugin() ,
         new MiniCssExtractPlugin({
-            filename: "[name].css",
-            chunkFilename: "[name]-[id].css"
+            filename: "css/[name]-[hash].css",
+            chunkFilename: "css/chunk-[name]-[hash].css"
         })
     ],
     output: {
-        filename: 'js/[name].js',
-        path: path.resolve(__dirname, 'dist')
+        filename: 'js/[name]-[hash].js',
+        path: path.resolve(__dirname, 'dist') ,
+        chunkFilename: "js/chunk-[name]-[hash].js" ,
     } ,
     module: {
         rules: [
@@ -73,10 +74,22 @@ module.exports = {
                 ]
             } ,
             {
-                // test: /\.s?[ac]ss$/,
-                test: /\.css$/ ,
+                test: /\.s?[ac]ss$/,
+                // test: /\.css$/ ,
                 use: [
-                    MiniCssExtractPlugin.loader ,
+                    // MiniCssExtractPlugin.loader ,
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            /**
+                             * 如果没加 publicPath 的情况下，css 中通过 @import 或 url() 等引入的文件
+                             * 加载的目录会默认是 css 文件所在目录
+                             * 而实际上字体文件的定位是 dist 目录所在目录！
+                             * 所以需要给出 publicPath 指定 dist 编译的根目录
+                             */
+                            publicPath: '../',
+                        },
+                    },
                     // 'vue-style-loader' ,
                     // 'style-loader' ,
                     {
@@ -98,8 +111,8 @@ module.exports = {
                         // 是一种加强型的 文件加载器
                         loader: 'url-loader' ,
                         options: {
-                            name: 'asset/[name].[ext]' ,
-                            esModule: false
+                            name: 'res/[name]-[hash].[ext]' ,
+                            esModule: false ,
                         }
 
                     }
@@ -108,7 +121,13 @@ module.exports = {
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
                 use: [
-                    'file-loader'
+                    {
+                        loader: 'file-loader' ,
+                        options: {
+                            name: 'font/[name]-[hash].[ext]' ,
+                            // esModule: false ,
+                        } ,
+                    }
                 ]
             } ,
             {
@@ -137,10 +156,10 @@ module.exports = {
             'vue-router': 'vue-router/dist/vue-router.esm.js' ,
             'vuex': 'vuex/dist/vuex.esm.js' ,
 
-            '@asset': path.resolve(__dirname , './source/asset') ,
-            '@api': path.resolve(__dirname , './source/api') ,
-            '@plugin': path.resolve(__dirname , './source/plugin') ,
-            '@vue': path.resolve(__dirname , './source/vue') ,
+            '@asset': path.resolve(__dirname , './src/asset') ,
+            '@api': path.resolve(__dirname , './src/api') ,
+            '@plugin': path.resolve(__dirname , './src/plugin') ,
+            '@vue': path.resolve(__dirname , './src/vue') ,
         }
     } ,
 

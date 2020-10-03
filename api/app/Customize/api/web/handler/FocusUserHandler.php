@@ -9,19 +9,20 @@ use App\Customize\api\web\model\PraiseModel;
 use App\Customize\api\web\model\FocusUserModel;
 use App\Customize\api\web\model\UserModel;
 use App\Customize\api\web\util\FileUtil;
+use App\Model\Model;
 use stdClass;
 use function api\web\get_value;
 use function api\web\user;
-use function core\convert_obj;
+use function core\convert_object;
 
 class FocusUserHandler extends Handler
 {
-    public static function handle(?FocusUserModel $model): ?stdClass
+    public static function handle(?Model $model , array $with = []): ?stdClass
     {
         if (empty($model)) {
             return null;
         }
-        $res = convert_obj($model);
+        $res = convert_object($model);
 
         $user = UserModel::find($res->user_id);
         $user = UserHandler::handle($user);

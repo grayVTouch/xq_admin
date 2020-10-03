@@ -12,12 +12,13 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-        //
+        $datetime = date('Y-m-d H:i:s');
         DB::table('xq_role')->insert([
             'id' => 1 ,
             'name' => '超级管理员' ,
             'weight' => 0 ,
-            'created_at' => date('Y-m-d H:i:s')
+            'updated_at' =>  $datetime ,
+            'created_at' =>  $datetime ,
         ]);
     }
 }

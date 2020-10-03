@@ -4,7 +4,7 @@
 namespace App\Customize\api\admin\model;
 
 
-use function core\convert_obj;
+use function core\convert_object;
 
 class AdminTokenModel extends Model
 {

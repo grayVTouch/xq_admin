@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use function api\admin\get_form_error;
 use function api\admin\my_config;
+use function api\admin\my_config_keys;
 use function api\admin\parse_order;
 use function core\array_unit;
 
@@ -27,7 +28,7 @@ class PositionAction extends Action
 
     public static function update(Base $context , $id , array $param = [])
     {
-        $platform_range = array_keys(my_config('business.platform'));
+        $platform_range = my_config_keys('business.platform');
         $validator = Validator::make($param , [
             'name' => 'required' ,
             'value' => 'required' ,
@@ -51,7 +52,7 @@ class PositionAction extends Action
 
     public static function store(Base $context , array $param = [])
     {
-        $platform_range = array_keys(my_config('business.platform'));
+        $platform_range = my_config_keys('business.platform');
         $validator = Validator::make($param , [
             'name' => 'required' ,
             'value' => 'required' ,

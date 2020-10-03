@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use function api\admin\get_form_error;
 use function api\admin\my_config;
+use function api\admin\my_config_keys;
 use function core\array_unit;
 use function core\obj_to_array;
 
@@ -44,8 +45,8 @@ class NavAction extends Action
 
     public static function localUpdate(Base $context , $id , array $param = [])
     {
-        $platform_range = array_keys(my_config('business.platform'));
-        $bool_range     = array_keys(my_config('business.bool_for_int'));
+        $platform_range = my_config_keys('business.platform');
+        $bool_range     = my_config_keys('business.bool_for_int');
         $validator = Validator::make($param , [
             'weight'    => 'sometimes|integer',
             'p_id'    => 'sometimes|integer',
@@ -85,8 +86,8 @@ class NavAction extends Action
 
     public static function update(Base $context , $id , array $param = [])
     {
-        $platform_range = array_keys(my_config('business.platform'));
-        $bool_range = array_keys(my_config('business.bool_for_int'));
+        $platform_range = my_config_keys('business.platform');
+        $bool_range = my_config_keys('business.bool_for_int');
         $validator = Validator::make($param , [
             'name'    => 'required',
             'enable'   => ['required', Rule::in($bool_range)],
@@ -120,8 +121,8 @@ class NavAction extends Action
 
     public static function store(Base $context , array $param = [])
     {
-        $platform_range = array_keys(my_config('business.platform'));
-        $bool_range = array_keys(my_config('business.bool_for_int'));
+        $platform_range = my_config_keys('business.platform');
+        $bool_range = my_config_keys('business.bool_for_int');
         $validator = Validator::make($param , [
             'name'    => 'required',
             'enable'  => ['required', Rule::in($bool_range)],

@@ -57,7 +57,9 @@ export default {
             const positions = G.copy(this.$store.state.position , true);
             G.tree.handle(positions);
             G.tree.uHandle(positions , (v) => {
-                console.log('当前处理的单元' , v.path);
+                /**
+                 * 这边做权限认证
+                 */
             });
             this.positions = positions;
             this.flatPosition = G.tree.flat(positions);

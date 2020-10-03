@@ -39,7 +39,7 @@ class VideoHandleJob implements ShouldQueue
     {
         //
         $this->videoId = $video_id;
-        $this->dir = FileUtil::getRealPath('video/video_' . $this->videoId);
+        $this->dir = FileUtil::getRealPathByRelativePathWithoutPrefix('video/video_' . $this->videoId);
     }
 
     /**
@@ -85,8 +85,8 @@ class VideoHandleJob implements ShouldQueue
         // ......处理新数据
         $merge_video_subtitle       = $video->merge_video_subtitle == 1 && !empty($video->video_subtitles);
         $first_video_subtitle       = $merge_video_subtitle ? $video->video_subtitles[0] : null;
-        $first_video_subtitle_file  = $merge_video_subtitle ? FileUtil::getRealPathByRelativePath($first_video_subtitle->src) : '';
-        $video_src                  = FileUtil::getRealPathByRelativePath($video->src);
+        $first_video_subtitle_file  = $merge_video_subtitle ? FileUtil::getRealPathByRelativePathWithPrefix($first_video_subtitle->src) : '';
+        $video_src                  = FileUtil::getRealPathByRelativePathWithPrefix($video->src);
         $video_info                 = FFprobe::create($video_src)->coreInfo();
 
         $video_simple_preview   = my_config('app.video_simple_preview');
@@ -105,8 +105,8 @@ class VideoHandleJob implements ShouldQueue
         /**
          * 视频第一帧
          */
-        $video_first_frame_filename = FileUtil::getRelativePath($this->genMediaSuffix('jpeg'));
-        $video_first_frame = FileUtil::getRealPathByRelativePath($video_first_frame_filename);
+        $video_first_frame_filename = FileUtil::generateRelativePathWithPrefix($this->genMediaSuffix('jpeg'));
+        $video_first_frame = FileUtil::getRealPathByRelativePathWithPrefix($video_first_frame_filename);
 
         FFmpeg::create()
             ->input($video_src)
@@ -142,8 +142,8 @@ class VideoHandleJob implements ShouldQueue
         }
 
         $input_command = rtrim($input_command, '|');
-        $video_simple_preview_filename = FileUtil::getRelativePath($this->genMediaSuffix('mp4'));
-        $video_simple_preview = FileUtil::getRealPathByRelativePath($video_simple_preview_filename);
+        $video_simple_preview_filename = FileUtil::generateRelativePathWithPrefix($this->genMediaSuffix('mp4'));
+        $video_simple_preview = FileUtil::getRealPathByRelativePathWithPrefix($video_simple_preview_filename);
 
         FFmpeg::create()
             ->input($input_command)
@@ -187,8 +187,8 @@ class VideoHandleJob implements ShouldQueue
             imagecopymerge($cav , $image_cav , $x , $y , 0 , 0 , $video_preview['width'] , $video_preview['height'] , 100);
         }
 
-        $preview_filename   = FileUtil::getRelativePath($this->genMediaSuffix('jpeg'));
-        $preview            = FileUtil::getRealPathByRelativePath($preview_filename);
+        $preview_filename   = FileUtil::generateRelativePathWithPrefix($this->genMediaSuffix('jpeg'));
+        $preview            = FileUtil::getRealPathByRelativePathWithPrefix($preview_filename);
 
         imagejpeg($cav , $preview);
 
@@ -230,8 +230,8 @@ class VideoHandleJob implements ShouldQueue
                 $is_hd = true;
             }
             $save_origin        = false;
-            $filename           = FileUtil::getRelativePath($this->genMediaSuffix('mp4'));
-            $transcoded_file    = FileUtil::getRealPathByRelativePath($filename);
+            $filename           = FileUtil::generateRelativePathWithPrefix($this->genMediaSuffix('mp4'));
+            $transcoded_file    = FileUtil::getRealPathByRelativePathWithPrefix($filename);
 
             $ffmpeg = FFmpeg::create()
                 ->input($video_src);
@@ -262,8 +262,8 @@ class VideoHandleJob implements ShouldQueue
         }
 
         if ($save_origin_video || $save_origin) {
-            $filename           = FileUtil::getRelativePath($this->genMediaSuffix('mp4'));
-            $transcoded_file    = FileUtil::getRealPathByRelativePath($filename);
+            $filename           = FileUtil::generateRelativePathWithPrefix($this->genMediaSuffix('mp4'));
+            $transcoded_file    = FileUtil::getRealPathByRelativePathWithPrefix($filename);
             $ffmpeg = FFmpeg::create()->input($video_src);
             if ($merge_video_subtitle) {
                 $ffmpeg->subtitle($first_video_subtitle_file);
@@ -303,9 +303,9 @@ class VideoHandleJob implements ShouldQueue
                 if (!FileUtil::exists($v->src)) {
                     continue ;
                 }
-                $video_subtitle_file = FileUtil::getRealPathByRelativePath($v->src);
-                $video_subtitle_convert_filename = FileUtil::getRelativePath($this->genMediaSuffix('vtt'));
-                $video_subtitle_convert_file = FileUtil::getRealPathByRelativePath($video_subtitle_convert_filename);
+                $video_subtitle_file = FileUtil::getRealPathByRelativePathWithPrefix($v->src);
+                $video_subtitle_convert_filename = FileUtil::generateRelativePathWithPrefix($this->genMediaSuffix('vtt'));
+                $video_subtitle_convert_file = FileUtil::getRealPathByRelativePathWithPrefix($video_subtitle_convert_filename);
                 FFmpeg::create()
                     ->input($video_subtitle_file)
                     ->save($video_subtitle_convert_file);

@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use function api\admin\get_form_error;
 use function api\admin\my_config;
+use function api\admin\my_config_keys;
 use function api\admin\parse_order;
 use function core\array_unit;
 
@@ -37,9 +38,9 @@ class VideoAction extends Action
 
     public static function update(Base $context , $id , array $param = []): array
     {
-        $type_range     = array_keys(my_config('business.type_for_video'));
-        $status_range   = array_keys(my_config('business.status_for_video'));
-        $bool_range     = array_keys(my_config('business.bool_for_int'));
+        $type_range     = my_config_keys('business.type_for_video');
+        $status_range   = my_config_keys('business.status_for_video');
+        $bool_range     = my_config_keys('business.bool_for_int');
         $validator = Validator::make($param , [
             'user_id'       => 'required|integer' ,
             'module_id'     => 'required|integer' ,
@@ -171,9 +172,9 @@ class VideoAction extends Action
 
     public static function store(Base $context , array $param = []): array
     {
-        $type_range     = array_keys(my_config('business.type_for_video'));
-        $status_range   = array_keys(my_config('business.status_for_video'));
-        $bool_range     = array_keys(my_config('business.bool_for_int'));
+        $type_range     = my_config_keys('business.type_for_video');
+        $status_range   = my_config_keys('business.status_for_video');
+        $bool_range     = my_config_keys('business.bool_for_int');
 
         $validator = Validator::make($param , [
             'user_id'   => 'required|integer' ,

@@ -25,7 +25,7 @@ use function api\web\get_form_error;
 use function api\web\my_config;
 use function api\web\parse_order;
 use function api\web\user;
-use function core\current_time;
+use function core\current_datetime;
 use function core\obj_to_array;
 
 class ImageSubjectAction extends Action
@@ -33,7 +33,7 @@ class ImageSubjectAction extends Action
     // 最新发布图片
     public static function newest(Base $context , array $param = [])
     {
-        $type_range = array_keys(my_config('business.type_for_image_subject'));
+        $type_range = my_config_keys('business.type_for_image_subject');
 
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
@@ -53,7 +53,7 @@ class ImageSubjectAction extends Action
     // 热门
     public static function hot(Base $context , array $param = [])
     {
-        $type_range = array_keys(my_config('business.type_for_image_subject'));
+        $type_range = my_config_keys('business.type_for_image_subject');
 
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
@@ -72,7 +72,7 @@ class ImageSubjectAction extends Action
 
     public static function hotWithPager(Base $context , array $param = [])
     {
-        $type_range = array_keys(my_config('business.type_for_image_subject'));
+        $type_range = my_config_keys('business.type_for_image_subject');
 
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
@@ -91,7 +91,7 @@ class ImageSubjectAction extends Action
 
     public static function getByTagId(Base $context , $tag_id , array $param = [])
     {
-        $type_range = array_keys(my_config('business.type_for_image_subject'));
+        $type_range = my_config_keys('business.type_for_image_subject');
 
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
@@ -112,7 +112,7 @@ class ImageSubjectAction extends Action
 
     public static function getWithPagerByTagIds(Base $context , array $param = [])
     {
-        $type_range = array_keys(my_config('business.type_for_image_subject'));
+        $type_range = my_config_keys('business.type_for_image_subject');
         $mode_range = my_config('business.mode_for_image_subject');
 
         $validator = Validator::make($param , [
@@ -162,7 +162,7 @@ class ImageSubjectAction extends Action
 
     public static function hotTags(Base $context , array $param = [])
     {
-        $type_range = array_keys(my_config('business.type_for_image_subject'));
+        $type_range = my_config_keys('business.type_for_image_subject');
 
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
@@ -186,7 +186,7 @@ class ImageSubjectAction extends Action
 
     public static function hotTagsWithPager(Base $context , array $param = [])
     {
-        $type_range = array_keys(my_config('business.type_for_image_subject'));
+        $type_range = my_config_keys('business.type_for_image_subject');
 
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
@@ -287,7 +287,7 @@ class ImageSubjectAction extends Action
 
     public static function index(Base $context , array $param = [])
     {
-        $type_range = array_keys(my_config('business.type_for_image_subject'));
+        $type_range = my_config_keys('business.type_for_image_subject');
         $mode_range = my_config('business.mode_for_image_subject');
 
         $validator = Validator::make($param , [
@@ -354,7 +354,7 @@ class ImageSubjectAction extends Action
     // 推荐数据
     public static function recommend(Base $context , int $image_subject_id , array $param = [])
     {
-        $type_range = array_keys(my_config('business.type_for_image_subject'));
+        $type_range = my_config_keys('business.type_for_image_subject');
 
         $validator = Validator::make($param , [
             'type'      => ['required' , Rule::in($type_range)] ,

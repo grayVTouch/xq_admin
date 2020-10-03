@@ -31,4 +31,18 @@ class CategoryModel extends Model
             ->get();
     }
 
+    public static function getByFilter(array $filter = null): Collection
+    {
+        $filter = $filter ?? [];
+        $filter['module_id']    = $filter['module_id'] ?? '';
+        $filter['type']         = $filter['type'] ?? '';
+        $where = [];
+        if ($filter['module_id'] !== '') {
+            $where[] = ['module_id' , '=' , $filter['module_id']];
+        }
+        if ($filter['type'] !== '') {
+            $where[] = ['type' , '=' , $filter['type']];
+        }
+        return self::where($where)->get();
+    }
 }

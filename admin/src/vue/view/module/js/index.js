@@ -1,9 +1,9 @@
 
 const form = {
     weight: 0 ,
-    auth: 0 ,
-    enable: 1 ,
-    default: 0 ,
+    is_auth: 0 ,
+    is_enabled: 1 ,
+    is_default: 0 ,
 };
 
 export default {
@@ -23,7 +23,6 @@ export default {
                 // edit-编辑 add-添加
                 mode: '' ,
                 selectedIds: [] ,
-
             } ,
             table: {
                 field: [

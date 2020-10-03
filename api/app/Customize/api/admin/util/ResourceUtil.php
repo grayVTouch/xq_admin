@@ -5,7 +5,7 @@ namespace App\Customize\api\admin\util;
 
 
 use App\Customize\api\admin\model\ResourceModel;
-use function core\current_time;
+use function core\current_datetime;
 
 class ResourceUtil
 {
@@ -24,7 +24,7 @@ class ResourceUtil
         if (empty($path)) {
             return -1;
         }
-        $datetime = current_time();
+        $datetime = current_datetime();
         return ResourceModel::insertGetId([
             'url'           => $url ,
             'path'          => $path ,
@@ -43,22 +43,22 @@ class ResourceUtil
      * @param string $path
      * @return int|null
      */
-    public static function delete(string $path): int
+    public static function delete(string $url): int
     {
         if (empty($path)) {
             return -1;
         }
-        return ResourceModel::updateByPath($path , [
+        return ResourceModel::updateByUrl($url , [
             'is_deleted' => 1 ,
         ]);
     }
 
-    public static function used(string $path): int
+    public static function used(string $url): int
     {
         if (empty($path)) {
             return -1;
         }
-        return ResourceModel::updateByPath($path , [
+        return ResourceModel::updateByUrl($url , [
             'is_used' => 1 ,
         ]);
     }

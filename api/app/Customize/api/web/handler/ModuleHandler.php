@@ -5,17 +5,18 @@ namespace App\Customize\api\web\handler;
 
 
 use App\Customize\api\web\model\ModuleModel;
+use App\Model\Model;
 use stdClass;
-use function core\convert_obj;
+use function core\convert_object;
 
 class ModuleHandler extends Handler
 {
-    public static function handle(?ModuleModel $model): ?stdClass
+    public static function handle(?Model $model , array $with = []): ?stdClass
     {
         if (empty($model)) {
             return null;
         }
-        $res = convert_obj($model);
+        $res = convert_object($model);
         return $res;
     }
 

@@ -14,9 +14,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use function api\admin\get_form_error;
 use function api\admin\my_config;
+use function api\admin\my_config_keys;
 use function api\admin\parse_order;
 use function core\array_unit;
-use function core\current_time;
+use function core\current_datetime;
 
 class DiskAction extends Action
 {
@@ -31,8 +32,8 @@ class DiskAction extends Action
 
     public static function localUpdate(Base $context , $id , array $param = [])
     {
-        $bool_range = array_keys(my_config('business.bool_for_int'));
-        $os_range   = array_keys(my_config('business.os_for_disk'));
+        $bool_range = my_config_keys('business.bool_for_int');
+        $os_range   = my_config_keys('business.os_for_disk');
 
         $validator = Validator::make($param , [
             'default'   => ['sometimes' , 'integer' , Rule::in($bool_range)] ,
@@ -98,8 +99,8 @@ class DiskAction extends Action
 
     public static function update(Base $context , $id , array $param = [])
     {
-        $bool_range = array_keys(my_config('business.bool_for_int'));
-        $os_range   = array_keys(my_config('business.os_for_disk'));
+        $bool_range = my_config_keys('business.bool_for_int');
+        $os_range   = my_config_keys('business.os_for_disk');
 
         $validator = Validator::make($param , [
             'path'      => 'required' ,
@@ -159,8 +160,8 @@ class DiskAction extends Action
 
     public static function store(Base $context , array $param = [])
     {
-        $bool_range = array_keys(my_config('business.bool_for_int'));
-        $os_range   = array_keys(my_config('business.os_for_disk'));
+        $bool_range = my_config_keys('business.bool_for_int');
+        $os_range   = my_config_keys('business.os_for_disk');
 
         $validator = Validator::make($param , [
             'path'      => 'required' ,
@@ -186,7 +187,7 @@ class DiskAction extends Action
             ]);
         }
 
-        $param['created_at'] = current_time();
+        $param['created_at'] = current_datetime();
         try {
             DB::beginTransaction();
 

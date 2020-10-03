@@ -8,17 +8,18 @@ use App\Customize\api\web\model\HistoryModel;
 use App\Customize\api\web\model\ImageSubjectModel;
 use App\Customize\api\web\model\ModuleModel;
 use App\Customize\api\web\model\UserModel;
+use App\Model\Model;
 use stdClass;
-use function core\convert_obj;
+use function core\convert_object;
 
 class HistoryHandler extends Handler
 {
-    public static function handle(?HistoryModel $model): ?stdClass
+    public static function handle(?Model $model , array $with = []): ?stdClass
     {
         if (empty($model)) {
             return null;
         }
-        $res = convert_obj($model);
+        $res = convert_object($model);
 
         $module = ModuleModel::find($res->module_id);
         ModuleHandler::handle($module);
