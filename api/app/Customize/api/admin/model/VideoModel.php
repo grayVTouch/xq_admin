@@ -96,4 +96,9 @@ class VideoModel extends Model
             ['index' , '=' , $index] ,
         ])->first();
     }
+
+    public static function getByVideoSubjectId()
+    {
+
+    }
 }

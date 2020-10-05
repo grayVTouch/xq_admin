@@ -86,7 +86,7 @@ class FileUtil
     }
 
     // 根据负荷规则的相对路径获取绝对路径
-    public static function getRealPathByRelativePathWithPrefix(string $relative_path = ''): string
+    public static function generateRealPathByRelativePathWithPrefix(string $relative_path = ''): string
     {
         if (empty($relative_path)) {
             return '';
@@ -121,16 +121,16 @@ class FileUtil
      * @return string
      * @throws Exception
      */
-    public static function getRealPathByRelativePathWithoutPrefix(string $path = ''): string
+    public static function generateRealPathByRelativePathWithoutPrefix(string $path = ''): string
     {
         $path = self::generateRelativePathWithPrefix($path);
-        return self::getRealPathByRelativePathWithPrefix($path);
+        return self::generateRealPathByRelativePathWithPrefix($path);
     }
 
     // 删除文件（通过相对路径）
     public static function delete(string $relative_path = ''): void
     {
-        $real_path = self::getRealPathByRelativePathWithoutPrefix($relative_path);
+        $real_path = self::generateRealPathByRelativePathWithoutPrefix($relative_path);
         if (!File::exists($real_path)) {
             return ;
         }
@@ -178,6 +178,37 @@ class FileUtil
     }
 
     /**
+     * 从相对路径生成访问网络地址
+     *
+     * @param  string $path
+     * @return string
+     */
+    public static function generateUrlByRelativePath(string $relative_path): string
+    {
+        $res_url        = my_config('app.res_url');
+        $res_url        = rtrim($res_url , '/');
+        $relative_path  = ltrim($relative_path , '/');
+        return $res_url . '/' . $relative_path;
+    }
+
+    /**
+     * 从绝对路径生成相对路径
+     *
+     * @param  string $path
+     * @return string
+     */
+    public static function generateUrlByRealPath(string $real_path = ''): string
+    {
+        $real_path                      = format_path($real_path);
+        $res_url                        = my_config('app.res_url');
+        $res_url                        = rtrim($res_url , '/');
+        $disk                           = self::disk();
+        $relative_path_without_prefix   = ltrim(str_replace($disk->path , '' , $real_path) , '/');
+        $relative_path_with_prefix      = $disk->prefix . '/' . $relative_path_without_prefix;
+        return $res_url . '/' . $relative_path_with_prefix;
+    }
+
+    /**
      * 从相对路径判断其实际路径对应的文件是否存在
      *
      * @param string $relative_path
@@ -186,7 +217,7 @@ class FileUtil
      */
     public static function existsByRelativePathWithPrefix(string $relative_path = ''): bool
     {
-        $real_path = self::getRealPathByRelativePathWithPrefix($relative_path);
+        $real_path = self::generateRealPathByRelativePathWithPrefix($relative_path);
         return File::exists($real_path);
     }
 
@@ -199,7 +230,7 @@ class FileUtil
      */
     public static function existsByRelativePathWithoutPrefix(string $relative_path = ''): bool
     {
-        $real_path = self::getRealPathByRelativePathWithoutPrefix($relative_path);
+        $real_path = self::generateRealPathByRelativePathWithoutPrefix($relative_path);
         return file_exists($real_path);
     }
 }

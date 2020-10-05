@@ -61,7 +61,7 @@ class ModuleAction extends Action
                 ModuleModel::setNotDefaultByExcludeId($res->id);
             }
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
 
             DB::rollBack();
@@ -123,7 +123,7 @@ class ModuleAction extends Action
 
             DB::commit();
 
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
 
             DB::rollBack();

@@ -51,7 +51,7 @@ class RoleAction extends Action
             'name' ,
             'weight' ,
         ]));
-        return self::success();
+        return self::success('操作成功');
     }
 
     public static function store(Base $context , array $param = [])
@@ -87,7 +87,7 @@ class RoleAction extends Action
             RoleModel::destroy($id);
             RolePermissionPivot::delByRoleId($id);
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -101,7 +101,7 @@ class RoleAction extends Action
             RoleModel::destroy($ids);
             RolePermissionPivot::delByRoleIds($ids);
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -132,7 +132,7 @@ class RoleAction extends Action
                 ]);
             }
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollback();
             throw $e;

@@ -27,8 +27,8 @@ class FileAction extends Action
         }
         $dir        = date('Ymd');
         $path       = FileUtil::upload($file , $dir);
-        $real_path  = FileUtil::getRealPathByRelativePathWithPrefix($path);
-        $url        = FileUtil::url($path);
+        $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
+        $url        = FileUtil::generateUrlByRelativePath($path);
         ResourceUtil::create($url , $real_path , 'local');
         return self::success('' , $url);
     }
@@ -48,8 +48,8 @@ class FileAction extends Action
         }
         $dir        = date('Ymd');
         $path       = FileUtil::upload($file , $dir);
-        $real_path  = FileUtil::getRealPathByRelativePathWithPrefix($path);
-        $url        = FileUtil::url($path);
+        $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
+        $url        = FileUtil::generateUrlByRelativePath($path);
         if (empty($param['m'])) {
             if (!empty($param['w'])) {
                 $mode = 'fix-width';
@@ -65,7 +65,7 @@ class FileAction extends Action
             $mode = $param['m'];
         }
         if (in_array($mode , $mode_range)) {
-            $real_path          = FileUtil::getRealPathByRelativePathWithPrefix($path);
+            $real_path          = FileUtil::generateRealPathByRelativePathWithPrefix($path);
             $image_handle_dir   = FileUtil::dir($dir);
             $image_processor    = new ImageProcessor($image_handle_dir);
             $real_path = $image_processor->compress($real_path , [
@@ -77,7 +77,7 @@ class FileAction extends Action
             // 删除源文件
             FileUtil::delete($path);
             $relative_path  = FileUtil::prefix() . '/' . str_replace(FileUtil::dir() . '/' , '' , $real_path);
-            $url            = FileUtil::url($relative_path);
+            $url            = FileUtil::generateUrlByRelativePath($relative_path);
         }
         ResourceUtil::create($url , $real_path , 'local');
         return self::success('' , $url);
@@ -94,8 +94,8 @@ class FileAction extends Action
         }
         $dir        = date('Ymd');
         $path       = FileUtil::upload($file , $dir);
-        $real_path  = FileUtil::getRealPathByRelativePathWithPrefix($path);
-        $url        = FileUtil::url($path);
+        $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
+        $url        = FileUtil::generateUrlByRelativePath($path);
         ResourceUtil::create($url , $real_path , 'local');
         return self::success('' , $url);
     }
@@ -116,8 +116,8 @@ class FileAction extends Action
 //        }
         $dir        = date('Ymd');
         $path       = FileUtil::upload($file , $dir);
-        $real_path  = FileUtil::getRealPathByRelativePathWithPrefix($path);
-        $url        = FileUtil::url($path);
+        $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
+        $url        = FileUtil::generateUrlByRelativePath($path);
         ResourceUtil::create($url , $real_path , 'local');
         return self::success('' , $url);
     }
@@ -133,8 +133,8 @@ class FileAction extends Action
         }
         $dir        = date('Ymd');
         $path       = FileUtil::upload($file , $dir);
-        $real_path  = FileUtil::getRealPathByRelativePathWithPrefix($path);
-        $url        = FileUtil::url($path);
+        $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
+        $url        = FileUtil::generateUrlByRelativePath($path);
         ResourceUtil::create($url , $real_path , 'local');
         return self::success('' , $url);
     }

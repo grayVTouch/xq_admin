@@ -5,6 +5,7 @@ namespace App\Customize\api\admin\action;
 
 use App\Customize\api\admin\handler\VideoHandler;
 use App\Customize\api\admin\job\VideoHandleJob;
+use App\Customize\api\admin\job\VideoResourceHandleJob;
 use App\Customize\api\admin\model\CategoryModel;
 use App\Customize\api\admin\model\VideoModel;
 use App\Customize\api\admin\model\ModuleModel;
@@ -12,9 +13,11 @@ use App\Customize\api\admin\model\VideoSrcModel;
 use App\Customize\api\admin\model\VideoSubjectModel;
 use App\Customize\api\admin\model\UserModel;
 use App\Customize\api\admin\model\VideoSubtitleModel;
+use App\Customize\api\admin\util\FileUtil;
 use App\Customize\api\admin\util\ResourceUtil;
 use App\Customize\api\admin\util\VideoUtil;
 use App\Http\Controllers\api\admin\Base;
+use Core\Lib\File;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -24,6 +27,7 @@ use function api\admin\my_config;
 use function api\admin\my_config_keys;
 use function api\admin\parse_order;
 use function core\array_unit;
+use function core\current_datetime;
 
 class VideoAction extends Action
 {
@@ -32,7 +36,14 @@ class VideoAction extends Action
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
         $paginator = VideoModel::index($param , $order , $limit);
-        $paginator = VideoHandler::handlePaginator($paginator);
+        $paginator = VideoHandler::handlePaginator($paginator , [
+            'user' ,
+            'module' ,
+            'category' ,
+            'video_subject' ,
+            'videos' ,
+            'video_subtitles' ,
+        ]);
         return self::success('' , $paginator);
     }
 
@@ -108,10 +119,11 @@ class VideoAction extends Action
                 'fail_reason' => '请提供失败原因' ,
             ]);
         }
-        $param['weight'] = $param['weight'] === '' ? $video->weight : $param['weight'];
-        $param['updated_at'] = date('Y-m-d H:i:s');
-        $video_subtitles = $param['video_subtitles'] === '' ? [] : json_decode($param['video_subtitles'] , true);
-        $video_has_change = $video->src !== $param['src'];
+        $datetime               = current_datetime();
+        $param['weight']        = $param['weight'] === '' ? $video->weight : $param['weight'];
+        $param['updated_at']    = $datetime;
+        $video_subtitles        = $param['video_subtitles'] === '' ? [] : json_decode($param['video_subtitles'] , true);
+        $video_has_change       = $video->src !== $param['src'];
         try {
             DB::beginTransaction();
             if ($video_has_change) {
@@ -157,13 +169,49 @@ class VideoAction extends Action
                 ResourceUtil::used($v['src']);
             }
             DB::commit();
+            /**
+             * 建立图片目录
+             * 移动图片到指定的目录
+             */
+            $disk       = my_config('app.disk');
+            $save_dir   = '';
+            $prefix     = '';
+            if ($disk === 'local') {
+                $prefix             = FileUtil::prefix();
+                $source_save_dir    = '';
+                $target_save_dir    = '';
+                if ($param['type'] === 'pro') {
+                    $source_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($video_subject->name);
+                    $target_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($param['name']);
+                } else {
+                    $dirname            = my_config('app.dir')['video'];
+                    $date_string        = date('Ymd' , strtotime($video_subject->created_at));
+                    $source_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($dirname . '/' . $date_string);
+                    $target_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($dirname . '/' . date('Ymd'));
+                }
+                if (!File::exists($source_save_dir)) {
+                    File::cDir($save_dir , 0755 , true);
+                }
+                if ($source_save_dir !== $target_save_dir) {
+                    File::move($source_save_dir , $target_save_dir);
+                }
+                $save_dir = $target_save_dir;
+            }
             $video_subtitle_count = VideoSubtitleModel::countByVideoId($video->id);
             if ($video_has_change ||
                 ($param['merge_video_subtitle'] == 1 && $video_subtitle_count > 0)
             ) {
-                VideoHandleJob::dispatch($video->id);
+                /**
+                 * 处理资源变更 + 视频处理
+                 */
+                VideoHandleJob::withChain([
+                    new VideoResourceHandleJob($video->id , $prefix , $save_dir)
+                ])->dispatch($video->id , $prefix , $save_dir);
+            } else {
+                // 仅处理目录变更
+                VideoResourceHandleJob::dispatch($video->id , $prefix , $save_dir);
             }
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -270,14 +318,39 @@ class VideoAction extends Action
                     'video_id'      => $id ,
                     'name'          => $v['name'] ,
                     'src'           => $v['src'] ,
-                    'created_at'   => $param['created_at'] ,
+                    'updated_at'   => $datetime ,
+                    'created_at'   => $datetime ,
                 ]);
                 ResourceUtil::used($v['src']);
             }
             DB::commit();
-            // 派发任务到队列中执行
-            VideoHandleJob::dispatch($id);
-            return self::success();
+            /**
+             * 建立图片目录
+             * 移动图片到指定的目录
+             */
+            $disk       = my_config('app.disk');
+            $save_dir   = '';
+            $prefix     = '';
+            if ($disk === 'local') {
+                $prefix = FileUtil::prefix();
+                if ($param['type'] === 'pro') {
+                    $save_dir = FileUtil::generateRealPathByRelativePathWithoutPrefix($param['name']);
+                } else {
+                    $dirname = my_config('app.dir')['image'];
+                    $save_dir = FileUtil::generateRealPathByRelativePathWithoutPrefix($dirname . '/' . date('Ymd'));
+                }
+                if (!File::exists($save_dir)) {
+                    File::cDir($save_dir , 0755 , true);
+                }
+            }
+            /**
+             * 链接队列任务：按顺序执行队列任务，如果其中一个任务执行失败那么整个任务将会失败
+             */
+            // 队列任务：视频资源处理
+            VideoHandleJob::withChain([
+                new VideoResourceHandleJob($id , $prefix , $save_dir) ,
+            ])->dispatch($id , $prefix , $save_dir);
+            return self::success('操作成功' , $id);
         } catch(Exception $e) {
             throw $e;
         }
@@ -289,7 +362,14 @@ class VideoAction extends Action
         if (empty($res)) {
             return self::error('视频不存在' , '' , 404);
         }
-        $res = VideoHandler::handle($res);
+        $res = VideoHandler::handle($res , [
+            'user' ,
+            'module' ,
+            'category' ,
+            'video_subject' ,
+            'videos' ,
+            'video_subtitles' ,
+        ]);
         return self::success('' , $res);
     }
 
@@ -299,7 +379,7 @@ class VideoAction extends Action
             DB::beginTransaction();
             VideoUtil::delete($id);
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -315,7 +395,7 @@ class VideoAction extends Action
                 VideoUtil::delete($id);
             }
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -333,7 +413,7 @@ class VideoAction extends Action
                 VideoSrcModel::destroy($video_src->id);
             }
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -363,6 +443,6 @@ class VideoAction extends Action
             ]);
             VideoHandleJob::dispatch($video->id);
         }
-        return self::success();
+        return self::success('操作成功');
     }
 }

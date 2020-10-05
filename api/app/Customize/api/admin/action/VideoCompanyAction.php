@@ -74,7 +74,7 @@ class VideoCompanyAction extends Action
                 ResourceUtil::delete($res->thumb);
             }
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;

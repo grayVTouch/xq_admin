@@ -93,7 +93,7 @@ class AdminAction extends Action
                 ResourceUtil::delete($res->avatar);
             }
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e){
             DB::rollBack();
             throw $e;
@@ -183,7 +183,7 @@ class AdminAction extends Action
                 AdminModel::destroy($v->id);
             }
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;

@@ -46,7 +46,7 @@ class VideoSeriesAction extends Action
             'weight' ,
             'module_id' ,
         ]));
-        return self::success();
+        return self::success('操作成功');
     }
 
     public static function store(Base $context , array $param = [])

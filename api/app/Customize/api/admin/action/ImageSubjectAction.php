@@ -4,7 +4,7 @@
 namespace App\Customize\api\admin\action;
 
 use App\Customize\api\admin\handler\ImageSubjectHandler;
-use App\Customize\api\admin\job\ImageSubjectHandleJob;
+use App\Customize\api\admin\job\ImageSubjectResourceHandleJob;
 use App\Customize\api\admin\model\CategoryModel;
 use App\Customize\api\admin\model\ImageModel;
 use App\Customize\api\admin\model\ImageSubjectCommentImageModel;
@@ -126,26 +126,24 @@ class ImageSubjectAction extends Action
         $prefix     = '';
         if ($disk === 'local') {
             $prefix             = FileUtil::prefix();
+            $source_save_dir    = '';
             $target_save_dir    = '';
             if ($param['type'] === 'pro') {
-                $source_save_dir = FileUtil::getRealPathByRelativePathWithoutPrefix($image_subject->name);
-                $target_save_dir = FileUtil::getRealPathByRelativePathWithoutPrefix($param['name']);
-                if ($source_save_dir !== $target_save_dir) {
-                    File::move($source_save_dir , $target_save_dir);
-                }
+                $source_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($image_subject->name);
+                $target_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($param['name']);
             } else {
                 $dirname            = my_config('app.dir')['image'];
                 $date_string        = date('Ymd' , strtotime($image_subject->created_at));
-                $source_save_dir    = FileUtil::getRealPathByRelativePathWithoutPrefix($dirname . '/' . $date_string);
-                $target_save_dir    = FileUtil::getRealPathByRelativePathWithoutPrefix($dirname . '/' . date('Ymd'));
-                if ($source_save_dir !== $target_save_dir) {
-                    File::move($source_save_dir , $target_save_dir);
-                }
+                $source_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($dirname . '/' . $date_string);
+                $target_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($dirname . '/' . date('Ymd'));
             }
-            $save_dir = $target_save_dir;
-            if (!File::exists($save_dir)) {
+            if (!File::exists($source_save_dir)) {
                 File::cDir($save_dir , 0755 , true);
             }
+            if ($source_save_dir !== $target_save_dir) {
+                File::move($source_save_dir , $target_save_dir);
+            }
+            $save_dir = $target_save_dir;
         }
         try {
             DB::beginTransaction();
@@ -212,8 +210,8 @@ class ImageSubjectAction extends Action
             }
             DB::commit();
             // 图片迁移
-            ImageSubjectHandleJob::dispatch($id , $prefix , $save_dir);
-            return self::success();
+            ImageSubjectResourceHandleJob::dispatch($id , $prefix , $save_dir);
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -285,13 +283,13 @@ class ImageSubjectAction extends Action
         if ($disk === 'local') {
             $prefix = FileUtil::prefix();
             if ($param['type'] === 'pro') {
-                $save_dir = FileUtil::getRealPathByRelativePathWithoutPrefix($param['name']);
+                $save_dir = FileUtil::generateRealPathByRelativePathWithoutPrefix($param['name']);
             } else {
                 $dirname = my_config('app.dir')['image'];
-                $save_dir = FileUtil::getRealPathByRelativePathWithoutPrefix($dirname . '/' . date('Ymd'));
+                $save_dir = FileUtil::generateRealPathByRelativePathWithoutPrefix($dirname . '/' . date('Ymd'));
             }
-            if (!file_exists($save_dir)) {
-                mkdir($save_dir , 0755 , true);
+            if (!File::exists($save_dir)) {
+                File::cDir($save_dir , 0755 , true);
             }
         }
         try {
@@ -346,8 +344,8 @@ class ImageSubjectAction extends Action
             }
             DB::commit();
             // 图片迁移
-            ImageSubjectHandleJob::dispatch($id , $prefix , $save_dir);
-            return self::success();
+            ImageSubjectResourceHandleJob::dispatch($id , $prefix , $save_dir);
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -370,7 +368,7 @@ class ImageSubjectAction extends Action
             DB::beginTransaction();
             ImageSubjectUtil::delete($id);
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -386,7 +384,7 @@ class ImageSubjectAction extends Action
                 ImageSubjectUtil::delete($id);
             }
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;

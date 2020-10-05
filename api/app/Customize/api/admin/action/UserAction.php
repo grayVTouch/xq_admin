@@ -86,7 +86,7 @@ class UserAction extends Action
                 ResourceUtil::delete($res->avatar);
             }
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;

@@ -41,7 +41,7 @@ class VideoSubtitleAction extends Action
                 ResourceUtil::delete($v->src);
             }
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;

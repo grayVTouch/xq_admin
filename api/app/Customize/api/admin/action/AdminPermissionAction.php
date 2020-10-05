@@ -80,7 +80,7 @@ class AdminPermissionAction extends Action
             'b_ico' ,
             'p_id' ,
         ]));
-        return self::success();
+        return self::success('操作成功');
     }
 
     public static function update(Base $context , $id , array $param = [])
@@ -118,7 +118,7 @@ class AdminPermissionAction extends Action
             'b_ico' ,
             'p_id' ,
         ]));
-        return self::success();
+        return self::success('操作成功');
     }
 
     public static function store(Base $context , array $param = [])
@@ -187,7 +187,7 @@ class AdminPermissionAction extends Action
             $destroy = array_merge($destroy , $_ids);
         }
         AdminPermissionModel::destroy($destroy);
-        return self::success();
+        return self::success('操作成功');
     }
 
     public static function allExcludeSelfAndChildren(Base $context , int $id , array $param = [])

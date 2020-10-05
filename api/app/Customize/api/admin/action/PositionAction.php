@@ -47,7 +47,7 @@ class PositionAction extends Action
             'description' ,
             'platform' ,
         ]));
-        return self::success();
+        return self::success('操作成功');
     }
 
     public static function store(Base $context , array $param = [])

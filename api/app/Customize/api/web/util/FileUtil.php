@@ -85,7 +85,7 @@ class FileUtil
     }
 
     // 根据负荷规则的相对路径获取绝对路径
-    public static function getRealPathByRelativePathWithPrefix(string $relative_path = ''): string
+    public static function generateRealPathByRelativePathWithPrefix(string $relative_path = ''): string
     {
         if (empty($relative_path)) {
             return '';
@@ -116,7 +116,7 @@ class FileUtil
     // 通过给定的路径生成实际保存的绝对路径
     public static function getRealPath(string $path = ''): string
     {
-        return self::getRealPathByRelativePathWithPrefix(self::generateRelativePathWithPrefix($path));
+        return self::generateRealPathByRelativePathWithPrefix(self::generateRelativePathWithPrefix($path));
     }
 
     // 删除文件（通过相对路径）
@@ -165,7 +165,7 @@ class FileUtil
     // 检查文件是否存在
     public static function exists(string $relative_path = ''): bool
     {
-        $real_path = self::getRealPathByRelativePathWithPrefix($relative_path);
+        $real_path = self::generateRealPathByRelativePathWithPrefix($relative_path);
         return File::exists($real_path);
     }
 }

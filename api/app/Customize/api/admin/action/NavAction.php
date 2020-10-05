@@ -81,7 +81,7 @@ class NavAction extends Action
             'value' ,
             'platform' ,
         ]));
-        return self::success();
+        return self::success('操作成功');
     }
 
     public static function update(Base $context , $id , array $param = [])
@@ -116,7 +116,7 @@ class NavAction extends Action
             'value' ,
             'platform' ,
         ]));
-        return self::success();
+        return self::success('操作成功');
     }
 
     public static function store(Base $context , array $param = [])
@@ -182,7 +182,7 @@ class NavAction extends Action
             $destroy = array_merge($destroy , $_ids);
         }
         NavModel::destroy($destroy);
-        return self::success();
+        return self::success('操作成功');
     }
 
     public static function allExcludeSelfAndChildren(Base $context , int $id , array $param = [])

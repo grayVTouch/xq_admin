@@ -348,7 +348,7 @@ class ImageSubjectAction extends Action
             return self::error('图片专题不存在');
         }
         ImageSubjectModel::countHandle($image_subject->id , 'view_count' , 'increment' , 1);
-        return self::success();
+        return self::success('操作成功');
     }
 
     // 推荐数据

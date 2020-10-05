@@ -47,7 +47,7 @@ class UserHandler extends Handler
             $res->focused = 0;
         }
 
-        $res->__channel_thumb__ = empty($res->channel_thumb) ? '' : FileUtil::url($res->channel_thumb);
+        $res->__channel_thumb__ = empty($res->channel_thumb) ? '' : FileUtil::generateUrlByRelativePath($res->channel_thumb);
 
         $res->__sex__ = get_config_key_mapping_value('business.sex_for_user' , $res->sex);
 

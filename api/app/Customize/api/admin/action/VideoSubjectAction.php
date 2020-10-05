@@ -5,6 +5,7 @@ namespace App\Customize\api\admin\action;
 
 use App\Customize\api\admin\handler\VideoSubjectHandler;
 use App\Customize\api\admin\handler\UserHandler;
+use App\Customize\api\admin\job\VideoResourceHandleJob;
 use App\Customize\api\admin\model\CategoryModel;
 use App\Customize\api\admin\model\ModuleModel;
 use App\Customize\api\admin\model\RelationTagModel;
@@ -13,8 +14,10 @@ use App\Customize\api\admin\model\VideoCompanyModel;
 use App\Customize\api\admin\model\VideoSeriesModel;
 use App\Customize\api\admin\model\VideoSubjectModel;
 use App\Customize\api\admin\model\UserModel;
+use App\Customize\api\admin\util\FileUtil;
 use App\Customize\api\admin\util\ResourceUtil;
 use App\Http\Controllers\api\admin\Base;
+use Core\Lib\File;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -41,12 +44,12 @@ class VideoSubjectAction extends Action
     {
         $status_range = my_config_keys('business.status_for_video_subject');
         $validator = Validator::make($param , [
-            'name'          => 'required' ,
-            'release_time'  => 'sometimes|date_format:Y-m-d' ,
-            'end_time'      => 'sometimes|date_format:Y-m-d' ,
-            'status'        => ['required' , Rule::in($status_range)] ,
-            'count'         => 'sometimes|integer' ,
-            'weight'        => 'sometimes|integer' ,
+            'name'              => 'required' ,
+            'release_time'      => 'sometimes|date_format:Y-m-d' ,
+            'end_time'          => 'sometimes|date_format:Y-m-d' ,
+            'status'            => ['required' , Rule::in($status_range)] ,
+            'count'             => 'sometimes|integer' ,
+            'weight'            => 'sometimes|integer' ,
             'video_series_id'   => 'sometimes|integer' ,
             'video_company_id'  => 'sometimes|integer' ,
             'module_id'         => 'required|integer' ,
@@ -59,21 +62,18 @@ class VideoSubjectAction extends Action
         if (empty($video_subject)) {
             return self::error('视频专题不存在' , '' , 404);
         }
-
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
             return self::error('' , [
                 'module_id' => '模块不存在' ,
             ]);
         }
-
         $category = CategoryModel::find($param['category_id']);
         if (empty($category)) {
             return self::error('' , [
                 'category_id' => '分类不存在' ,
             ]);
         }
-
         $video_series = null;
         if (!empty($param['video_series_id'])) {
             $video_series = VideoSeriesModel::find($param['video_series_id']);
@@ -83,7 +83,6 @@ class VideoSubjectAction extends Action
                 ]);
             }
         }
-
         $video_company = null;
         if (!empty($param['video_company_id'])) {
             $video_company = VideoCompanyModel::find($param['video_company_id']);
@@ -93,10 +92,10 @@ class VideoSubjectAction extends Action
                 ]);
             }
         }
-
-        $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
-        $param['updated_at'] = current_datetime();
-        $tags = $param['tags'] === '' ? [] : json_decode($param['tags'] , true);
+        $datetime               = current_datetime();
+        $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
+        $param['updated_at']    = $datetime;
+        $tags                   = $param['tags'] === '' ? [] : json_decode($param['tags'] , true);
         try {
             DB::beginTransaction();
             VideoSubjectModel::updateById($video_subject->id , array_unit($param , [
@@ -113,7 +112,7 @@ class VideoSubjectAction extends Action
                 'category_id' ,
                 'module_id' ,
                 'weight' ,
-//                'updated_at' ,
+                'updated_at' ,
             ]));
             ResourceUtil::used($param['thumb']);
             if ($video_subject->thumb !== $param['thumb']) {
@@ -138,10 +137,12 @@ class VideoSubjectAction extends Action
                 }
                 RelationTagModel::insertGetId([
                     'relation_type' => 'video_subject' ,
-                    'relation_id' => $video_subject->id ,
-                    'tag_id' => $tag->id ,
-                    'name' => $tag->name ,
-                    'module_id' => $tag->module_id ,
+                    'relation_id'   => $video_subject->id ,
+                    'tag_id'        => $tag->id ,
+                    'name'          => $tag->name ,
+                    'module_id'     => $tag->module_id ,
+                    'updated_at'    => $datetime ,
+                    'created_at'    => $datetime ,
                 ]);
                 // 针对该标签的计数要增加
                 TagModel::updateById($tag->id , [
@@ -149,7 +150,7 @@ class VideoSubjectAction extends Action
                 ]);
             }
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -169,20 +170,17 @@ class VideoSubjectAction extends Action
             'video_series_id'   => 'sometimes|integer' ,
             'video_company_id'  => 'sometimes|integer' ,
             'module_id'         => 'required|integer' ,
-            'category_id'         => 'required|integer' ,
+            'category_id'       => 'required|integer' ,
         ]);
-
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
-
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
             return self::error('' , [
                 'module_id' => '模块不存在' ,
             ]);
         }
-
         $video_series = null;
         if (!empty($param['video_series_id'])) {
             $video_series = VideoSeriesModel::find($param['video_series_id']);
@@ -192,7 +190,6 @@ class VideoSubjectAction extends Action
                 ]);
             }
         }
-
         $video_company = null;
         if (!empty($param['video_company_id'])) {
             $video_company = VideoCompanyModel::find($param['video_company_id']);
@@ -202,17 +199,16 @@ class VideoSubjectAction extends Action
                 ]);
             }
         }
-
         $category = CategoryModel::find($param['category_id']);
         if (empty($category)) {
             return self::error('' , [
                 'category_id' => '分类不存在' ,
             ]);
         }
-
-        $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
-        $param['created_at'] = current_datetime();
-        $tags = $param['tags'] === '' ? [] : json_decode($param['tags'] , true);
+        $datetime = current_datetime();
+        $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
+        $param['created_at']    = $datetime;
+        $tags                   = $param['tags'] === '' ? [] : json_decode($param['tags'] , true);
         try {
             DB::beginTransaction();
             $id = VideoSubjectModel::insertGetId(array_unit($param, [
@@ -229,6 +225,7 @@ class VideoSubjectAction extends Action
                 'category_id',
                 'module_id',
                 'weight',
+                'updated_at',
                 'created_at',
             ]));
             ResourceUtil::used($param['thumb']);
@@ -240,10 +237,13 @@ class VideoSubjectAction extends Action
                 }
                 RelationTagModel::insertGetId([
                     'relation_type' => 'video_subject',
-                    'relation_id' => $id,
-                    'tag_id' => $tag->id,
-                    'name' => $tag->name,
-                    'module_id' => $tag->module_id,
+                    'relation_id'   => $id,
+                    'tag_id'        => $tag->id,
+                    'name'          => $tag->name,
+                    'module_id'     => $tag->module_id,
+                    'updated_at'    => $datetime ,
+                    'created_at'    => $datetime ,
+
                 ]);
                 // 针对该标签的计数要增加
                 TagModel::updateById($tag->id, [
@@ -251,7 +251,7 @@ class VideoSubjectAction extends Action
                 ]);
             }
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -299,7 +299,7 @@ class VideoSubjectAction extends Action
                 VideoSubjectModel::destroy($v->id);
             }
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;

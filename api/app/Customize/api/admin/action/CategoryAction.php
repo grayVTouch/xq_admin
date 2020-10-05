@@ -74,7 +74,7 @@ class CategoryAction extends Action
             'p_id' ,
             'module_id' ,
         ]));
-        return self::success();
+        return self::success('操作成功');
     }
 
     public static function update(Base $context , $id , array $param = [])
@@ -103,7 +103,7 @@ class CategoryAction extends Action
             'p_id' ,
             'module_id' ,
         ]));
-        return self::success();
+        return self::success('操作成功');
     }
 
     public static function store(Base $context , array $param = [])
@@ -163,7 +163,7 @@ class CategoryAction extends Action
             $destroy = array_merge($destroy , $_ids);
         }
         CategoryModel::destroy($destroy);
-        return self::success();
+        return self::success('操作成功');
     }
 
     public static function allExcludeSelfAndChildren(Base $context , int $id , array $param = [])

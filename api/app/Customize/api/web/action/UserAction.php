@@ -66,7 +66,7 @@ class UserAction extends Action
             CollectionGroupModel::delByModuleIdAndUserIdAndIds($module->id , $user->id , $collection_group_ids);
             CollectionModel::delByModuleIdAndUserIdAndCollectionGroupIds($module->id , $user->id , $collection_group_ids);
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -264,7 +264,7 @@ class UserAction extends Action
                 'used' => 1 ,
             ]);
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -825,7 +825,7 @@ class UserAction extends Action
         UserModel::updateById($user->id , [
             'password' => $password
         ]);
-        return self::success();
+        return self::success('操作成功');
     }
 
     public static function destroyHistory(Base $context , array $param = []): array
@@ -942,7 +942,7 @@ class UserAction extends Action
             // 取消关注
             FocusUserModel::delByUserIdAndFocusUserId($user->id , $focus_user->id);
         }
-        return self::success();
+        return self::success('操作成功');
     }
 
     public static function myFocusUser(Base $context , int $user_id , array $param = []): array

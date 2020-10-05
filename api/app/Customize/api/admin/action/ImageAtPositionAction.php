@@ -66,7 +66,7 @@ class ImageAtPositionAction extends Action
                 ResourceUtil::delete($res->path);
             }
             DB::commit();
-            return self::success();
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;

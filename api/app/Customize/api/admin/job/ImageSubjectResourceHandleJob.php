@@ -28,7 +28,7 @@ use function core\format_path;
 use function core\get_filename;
 use function core\random;
 
-class ImageSubjectHandleJob implements ShouldQueue
+class ImageSubjectResourceHandleJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -41,6 +41,12 @@ class ImageSubjectHandleJob implements ShouldQueue
      * @var string
      */
     private $saveDir        = '';
+
+    /**
+     *
+     * @var DiskModel
+     */
+    private $disk        = '';
 
     /**
      * Create a new job instance.
@@ -69,6 +75,11 @@ class ImageSubjectHandleJob implements ShouldQueue
      */
     public function handle()
     {
+        $disk = my_config('app.disk');
+        if ($disk !== 'local') {
+            // 不是本地存储，跳过
+            return ;
+        }
         $image_subject = ImageSubjectModel::find($this->imageSubjectId);
         if (empty($image_subject)) {
             throw new Exception('图片专题不存在【' . $this->imageSubjectId . '】');
@@ -86,6 +97,11 @@ class ImageSubjectHandleJob implements ShouldQueue
                 DB::beginTransaction();
                 $resource = ResourceModel::findByUrl($v->src);
                 if (empty($resource)) {
+                    DB::rollBack();
+                    continue ;
+                }
+                if ($resource->disk !== 'local') {
+                    // 跳过非本地存储的资源
                     DB::rollBack();
                     continue ;
                 }

@@ -77,6 +77,6 @@ class MiscAction extends Action
                 'updated_at' => $timestamp ,
             ]);
         }
-        return self::success();
+        return self::success('操作成功');
     }
 }
