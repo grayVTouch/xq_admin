@@ -25,9 +25,9 @@ class DiskAction extends Action
     {
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $paginator = DiskModel::index($param , $order , $limit);
-        $paginator = DiskHandler::handlePaginator($paginator);
-        return self::success('' , $paginator);
+        $res = DiskModel::index($param , $order , $limit);
+        $res = DiskHandler::handlePaginator($res);
+        return self::success('' , $res);
     }
 
     public static function localUpdate(Base $context , $id , array $param = [])
@@ -38,6 +38,7 @@ class DiskAction extends Action
         $validator = Validator::make($param , [
             'default'   => ['sometimes' , 'integer' , Rule::in($bool_range)] ,
             'os'        => ['sometimes' , Rule::in($os_range)] ,
+            'is_linked' => ['sometimes' , 'integer' , Rule::in($bool_range)] ,
         ]);
 
         if ($validator->fails()) {
@@ -71,6 +72,7 @@ class DiskAction extends Action
         $param['os']        = $param['os'] === '' ? $res->os : $param['os'];
         $param['prefix']    = $param['prefix'] === '' ? $res->prefix : $param['prefix'];
         $param['default']   = $param['default'] === '' ? $res->default : $param['default'];
+        $param['is_linked'] = $param['is_linked'] === '' ? $res->is_linked : $param['is_linked'];
 
         try {
             DB::beginTransaction();
@@ -80,6 +82,8 @@ class DiskAction extends Action
                 'os' ,
                 'prefix' ,
                 'default' ,
+                'is_linked' ,
+                'updated_at' ,
             ]));
 
             if ($param['default']) {
@@ -106,6 +110,7 @@ class DiskAction extends Action
             'path'      => 'required' ,
             'prefix'    => 'required' ,
             'default'   => ['required' , 'integer' , Rule::in($bool_range)] ,
+            'is_linked' => ['required' , 'integer' , Rule::in($bool_range)] ,
             'os'        => ['required' , Rule::in($os_range)] ,
         ]);
 
@@ -141,6 +146,8 @@ class DiskAction extends Action
                 'os' ,
                 'prefix' ,
                 'default' ,
+                'is_linked' ,
+                'updated_at' ,
             ]));
 
             if ($param['default']) {
@@ -227,12 +234,55 @@ class DiskAction extends Action
     public static function destroy(Base $context , $id , array $param = [])
     {
         $count = DiskModel::destroy($id);
-        return self::success('' , $count);
+        return self::success('操作成功' , $count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
         $count = DiskModel::destroy($ids);
-        return self::success('' , $count);
+        return self::success('操作成功' , $count);
     }
+
+    public static function link(Base $context , array $ids , array $param = []): array
+    {
+        $disks = [];
+        foreach ($ids as $v)
+        {
+            $disk = DiskModel::find($v);
+            if (empty($disk)) {
+                return self::error("部分id【{$v}】对应的记录不存在" , $v , 404);
+            }
+            if ($disk->is_linked) {
+                return self::error('包含已创建链接的记录');
+            }
+            $disks[] = $disk;
+        }
+        $res_dir    = my_config('app.res_dir');
+        $res_dir    = rtrim($res_dir , '/');
+        $failed     = [];
+        foreach ($disks as $v)
+        {
+            // 创建软连接
+            $link   = $res_dir . '/' . $v->prefix;
+            $status = 0;
+            $res    = [];
+            if (in_array($v->os , ['windows'])) {
+                exec("mklink /J \"{$link}\" \"{$v->path}\"" , $res , $status);
+            } else {
+                // linux | mac os
+                exec("ln -s \"{$v->path}\" \"{$link}\"" , $res , $status);
+            }
+            if ($status > 0) {
+                $failed[] = implode('' , $res);
+            }
+            DiskModel::updateById($v->id , [
+                'is_linked' => 1 ,
+            ]);
+        }
+        if (count($failed) > 0) {
+            return self::success("部分创建成功" . (empty($failed[0]) ? '' : "【{$failed[0]}】") , $failed);
+        }
+        return self::success('操作成功');
+    }
+
 }

@@ -18,7 +18,7 @@ use App\Customize\api\web\model\VideoSubjectModel;
 use App\Customize\api\web\model\ModuleModel;
 use App\Customize\api\web\model\PraiseModel;
 use App\Customize\api\web\model\RelationTagModel;
-use App\Customize\api\web\model\SubjectModel;
+use App\Customize\api\web\model\ImageSubjectModel;
 use App\Customize\api\web\model\TagModel;
 use App\Http\Controllers\api\web\Base;
 use Core\Lib\Category;
@@ -29,7 +29,7 @@ use function api\web\my_config;
 use function api\web\parse_order;
 use function api\web\user;
 use function core\current_datetime;
-use function core\obj_to_array;
+use function core\object_to_array;
 
 class VideoSubjectAction extends Action
 {
@@ -104,7 +104,7 @@ class VideoSubjectAction extends Action
 
     public static function getWithPagerByTagIds(Base $context , array $param = [])
     {
-        $mode_range = my_config('business.mode_for_video_subject');
+        $mode_range = my_config('business.mode_for_video_project');
 
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
@@ -173,7 +173,7 @@ class VideoSubjectAction extends Action
 
     public static function hotTagsWithPager(Base $context , array $param = [])
     {
-        $type_range = my_config_keys('business.type_for_video_subject');
+        $type_range = my_config_keys('business.type_for_video_project');
 
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
@@ -228,12 +228,12 @@ class VideoSubjectAction extends Action
         if (empty($module)) {
             return self::error('模块不存在' , '' , 404);
         }
-        $video_subject = VideoSubjectModel::find($id);
-        if (empty($video_subject)) {
+        $video_project = VideoSubjectModel::find($id);
+        if (empty($video_project)) {
             return self::error('图片专题不存在' , '' , 404);
         }
-        $video_subject = VideoSubjectHandler::handle($video_subject);
-        return self::success('' , $video_subject);
+        $video_project = VideoSubjectHandler::handle($video_project);
+        return self::success('' , $video_project);
     }
 
     public static function category(Base $context , array $param = [])
@@ -250,22 +250,22 @@ class VideoSubjectAction extends Action
         }
         $all_categories = CategoryModel::getAllByModuleId($module->id);
         // 图片分类 id ，请比对数据库中的数据，指定具体的 id
-        $video_subject_top_category_id = 0;
+        $video_project_top_category_id = 0;
         switch ($module->id)
         {
             // 新世界
             case 1:
-                $video_subject_top_category_id = 16;
+                $video_project_top_category_id = 16;
                 break;
             // 旧世界
             case 3:
-                $video_subject_top_category_id = 36;
+                $video_project_top_category_id = 36;
                 break;
             default:
                 return self::error('不支持的模块，请重新选择');
         }
-        $all_categories = obj_to_array($all_categories);
-        $categories = Category::childrens($video_subject_top_category_id , $all_categories , null , true , false);
+        $all_categories = object_to_array($all_categories);
+        $categories = Category::childrens($video_project_top_category_id , $all_categories , null , true , false);
         return self::success('' , $categories);
     }
 
@@ -282,15 +282,15 @@ class VideoSubjectAction extends Action
             return self::error('模块不存在' , '' , 404);
         }
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = SubjectModel::getWithPagerInImageSubjectByModuleIdAndValueAndLimit($module->id , $param['value'] , $limit);
+        $res = ImageSubjectModel::getWithPagerInImageSubjectByModuleIdAndValueAndLimit($module->id , $param['value'] , $limit);
         $res = SubjectHandler::handlePaginator($res);
         return self::success('' , $res);
     }
 
     public static function index(Base $context , array $param = [])
     {
-        $type_range = my_config_keys('business.type_for_video_subject');
-        $mode_range = my_config('business.mode_for_video_subject');
+        $type_range = my_config_keys('business.type_for_video_project');
+        $mode_range = my_config('business.mode_for_video_project');
 
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
@@ -316,7 +316,7 @@ class VideoSubjectAction extends Action
 
         // 获取所有子类
         $categories         = CategoryModel::getAll();
-        $categories         = obj_to_array($categories);
+        $categories         = object_to_array($categories);
         $tmp_category_ids   = [];
 
         foreach ($param['category_ids'] as $v)
@@ -343,20 +343,20 @@ class VideoSubjectAction extends Action
         return self::success('' , $res);
     }
 
-    public static function incrementViewCount(Base $context , int $video_subject_id , array $param = [])
+    public static function incrementViewCount(Base $context , int $video_project_id , array $param = [])
     {
-        $video_subject = VideoSubjectModel::find($video_subject_id);
-        if (empty($video_subject)) {
+        $video_project = VideoSubjectModel::find($video_project_id);
+        if (empty($video_project)) {
             return self::error('图片专题不存在');
         }
-        VideoSubjectModel::countHandle($video_subject->id , 'view_count' , 'increment' , 1);
+        VideoSubjectModel::countHandle($video_project->id , 'view_count' , 'increment' , 1);
         return self::success('操作成功');
     }
 
     // 推荐数据
-    public static function recommend(Base $context , int $video_subject_id , array $param = [])
+    public static function recommend(Base $context , int $video_project_id , array $param = [])
     {
-        $type_range = my_config_keys('business.type_for_video_subject');
+        $type_range = my_config_keys('business.type_for_video_project');
 
         $validator = Validator::make($param , [
             'type'      => ['required' , Rule::in($type_range)] ,
@@ -366,23 +366,23 @@ class VideoSubjectAction extends Action
             return self::error($validator->errors()->first());
         }
 
-        $video_subject = VideoSubjectModel::find($video_subject_id);
-        if (empty($video_subject)) {
+        $video_project = VideoSubjectModel::find($video_project_id);
+        if (empty($video_project)) {
             return self::error('图片专题未找到' , null , 404);
         }
 
-        $param['module_id']     = $video_subject->module_id ?? '';
-        $param['category_id']   = $video_subject->category_id ?? '';
-        $param['subject_id']    = $video_subject->subject_id ?? '';
+        $param['module_id']     = $video_project->module_id ?? '';
+        $param['category_id']   = $video_project->category_id ?? '';
+        $param['image_subject_id']    = $video_project->subject_id ?? '';
 
         $limit = $param['limit'] ? $param['limit'] : my_config('app.limit');
 
-        $res = VideoSubjectModel::recommendExcludeSelfByFilterAndLimit($video_subject->id , $param , $limit);
+        $res = VideoSubjectModel::recommendExcludeSelfByFilterAndLimit($video_project->id , $param , $limit);
         $res = VideoSubjectHandler::handleAll($res);
         return self::success('' , $res);
     }
 
-    public static function videosInRange(Base $context , int $video_subject_id , array $param = [])
+    public static function videosInRange(Base $context , int $video_project_id , array $param = [])
     {
         $validator = Validator::make($param , [
             'min' => 'required|integer' ,
@@ -393,12 +393,12 @@ class VideoSubjectAction extends Action
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
 
-        $video_subject = VideoSubjectModel::find($video_subject_id);
-        if (empty($video_subject)) {
+        $video_project = VideoSubjectModel::find($video_project_id);
+        if (empty($video_project)) {
             return self::error('记录不存在' , null , 404);
         }
 
-        $res = VideoModel::findByVideoSubjectIdAndMinIndexAndMaxIndex($video_subject->id , $param['min'] , $param['max']);
+        $res = VideoModel::findByVideoSubjectIdAndMinIndexAndMaxIndex($video_project->id , $param['min'] , $param['max']);
         $res = VideoHandler::handleAll($res);
         return self::success('' , $res);
     }
@@ -406,7 +406,7 @@ class VideoSubjectAction extends Action
     public static function videoSubjectsInSeries(Base $base , int $video_series_id , array $param = []): array
     {
         $validator = Validator::make($param , [
-            'video_subject_id' => 'required|integer' ,
+            'video_project_id' => 'required|integer' ,
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
@@ -415,7 +415,7 @@ class VideoSubjectAction extends Action
         if (empty($video_series_id)) {
             return self::error('视频系列不存在' , '' , 404);
         }
-        $res = VideoSubjectModel::getByVideoSeriesIdAndExcludeVideoSubjectId($video_series->id , $param['video_subject_id']);
+        $res = VideoSubjectModel::getByVideoSeriesIdAndExcludeVideoSubjectId($video_series->id , $param['video_project_id']);
         $res = VideoSubjectHandler::handleAll($res);
         return self::success('' , $res);
     }

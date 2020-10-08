@@ -11,7 +11,7 @@ use stdClass;
 
 use function core\convert_object;
 use function core\format_capacity;
-use function core\obj_to_array;
+use function core\object_to_array;
 
 class DiskHandler extends Handler
 {

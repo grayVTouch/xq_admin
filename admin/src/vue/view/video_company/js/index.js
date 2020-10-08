@@ -3,6 +3,46 @@ const form = {
     module_id: '' ,
     weight: 0 ,
     country_id: '' ,
+    status: 0 ,
+};
+
+const users = {
+    data: [],
+    field: [
+        {
+            title: 'id' ,
+            key: 'id' ,
+            center: TopContext.table.alignCenter ,
+            width: TopContext.table.id ,
+        } ,
+        {
+            title: '名称' ,
+            key: 'username' ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '头像' ,
+            slot: 'avatar' ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '创建时间' ,
+            key: 'created_at' ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '操作' ,
+            slot: 'action' ,
+        } ,
+    ] ,
+    current: {
+        id: 0 ,
+        username: 'unknow' ,
+    } ,
+    limit: TopContext.limit ,
+    value: '' ,
+    page: 1 ,
+    total: 0 ,
 };
 
 const countries = {
@@ -22,7 +62,7 @@ const countries = {
         } ,
         {
             title: '创建时间' ,
-            key: 'create_time' ,
+            key: 'created_at' ,
             minWidth: TopContext.table.time ,
             center: TopContext.table.alignCenter ,
         } ,
@@ -64,13 +104,14 @@ export default {
                 // 抽屉
                 drawer: false ,
                 modalForCountry: false ,
-
+                // 用户模态框
+                modalForUser: false ,
             } ,
             table: {
                 field: [
                     {
                         type: 'selection',
-                        minWidth: TopContext.table.checkbox ,
+                        width: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     },
@@ -96,6 +137,12 @@ export default {
                         fixed: 'left' ,
                     },
                     {
+                        title: '用户',
+                        slot: 'user_id',
+                        minWidth: TopContext.table.name ,
+                        align: TopContext.table.alignCenter,
+                    },
+                    {
                         title: '模块【id】',
                         slot: 'module_id',
                         minWidth: TopContext.table.name ,
@@ -104,6 +151,18 @@ export default {
                     {
                         title: '国家【id】',
                         slot: 'country_id',
+                        minWidth: TopContext.table.name ,
+                        align: TopContext.table.alignCenter,
+                    },
+                    {
+                        title: '状态',
+                        slot: 'status',
+                        minWidth: TopContext.table.status ,
+                        align: TopContext.table.alignCenter,
+                    },
+                    {
+                        title: '失败原因',
+                        key: 'fail_reason',
                         minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter,
                     },
@@ -121,7 +180,7 @@ export default {
                     } ,
                     {
                         title: '创建时间' ,
-                        key: 'create_time' ,
+                        key: 'created_at' ,
                         minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
@@ -152,6 +211,8 @@ export default {
 
             // 模块
             modules: [] ,
+
+            users: G.copy(users) ,
         };
     } ,
 
@@ -180,7 +241,7 @@ export default {
             Api.module.all((msg , data , code) => {
                 this.pending('getModules' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.modules = data;
@@ -192,7 +253,7 @@ export default {
             Api.region.country((msg , data , code) => {
                 this.pending('getCountries' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.countriesInList = data;
@@ -231,7 +292,7 @@ export default {
             Api.video_company.index(this.search , (msg , data , code) => {
                 this.pending('getData' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.table.total = data.total;
@@ -266,7 +327,7 @@ export default {
                 Api.video_company.destroyAll(idList , (msg , data , code) => {
                     if (code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
-                        this.message('error' , data);
+                        this.message('error' , msg);
                         return ;
                     }
                     G.invoke(callback , this , true);
@@ -305,14 +366,31 @@ export default {
 
         editEvent (record) {
             this._val('mode' , 'edit');
-            this.form = record;
             this.ins.thumb.render(this.form.thumb);
             this.getModules();
-            this.countries.current = {
-                id:   record.country_id ,
-                name: record.country ,
-            };
             this.openFormModal();
+            this.findById(record.id , (res) => {
+                if (!res) {
+                    return ;
+                }
+                this.users.current      = this.form.user ? this.form.user : G.copy(users.current);
+                this.countries.current  = this.form.region ? this.form.region : G.copy(countries.current);
+            });
+        } ,
+
+        // 获取当前编辑记录详情
+        findById (id , callback) {
+            this._val('findById' , true);
+            Api.video_company.show(id , (msg , data , code) => {
+                this._val('findById' , true);
+                if (code !== TopContext.code.Success) {
+                    G.invoke(callback , null , false);
+                    this.message('error' , msg);
+                    return ;
+                }
+                this.form = data;
+                G.invoke(callback , null , true);
+            });
         } ,
 
         addEvent () {
@@ -410,6 +488,42 @@ export default {
             this._val('modalForCountry' , false);
             this.countries.data = [];
         } ,
+
+        searchUser () {
+            this.pending('searchUser' , true);
+            Api.user.search({
+                value: this.users.value ,
+                limit: this.users.limit ,
+                page: this.users.page ,
+            }, (msg , data , code) => {
+                this.pending('searchUser' , false);
+                if (code !== TopContext.code.Success) {
+                    this.error({user_id: data});
+                    return ;
+                }
+                this.users.total = data.total;
+                this.users.page = data.current_page;
+                this.users.data = data.data;
+            });
+        } ,
+
+        userPageEvent (page) {
+            this.users.page = page;
+            this.searchUser();
+        } ,
+
+        searchUserEvent (e) {
+            this.searchUser();
+            this._val('modalForUser' , true);
+        } ,
+
+        updateUserEvent (row , index) {
+            this.error({user_id: ''}, false);
+            this.form.user_id = row.id;
+            this._val('modalForUser', false);
+            this.users.data = [];
+            this.users.current = G.copy(row);
+        },
 
     } ,
 }

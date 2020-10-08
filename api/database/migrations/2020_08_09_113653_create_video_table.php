@@ -33,7 +33,7 @@ class CreateVideoTable extends Migration
             $table->tinyInteger('merge_video_subtitle')->default(0)->comment('合并字幕？0-否 1-是');
             $table->unsignedInteger('duration')->default(0)->comment('时长');
             $table->string('type' , 100)->default('')->comment('类别：pro-专题 misc-杂类');
-            $table->unsignedBigInteger('video_subject_id')->default(0)->comment('xq_video_subject.id');
+            $table->unsignedBigInteger('video_project_id')->default(0)->comment('xq_video_project.id');
             $table->string('simple_preview' , 100)->default('')->comment('简单视频预览（仅有画面无声音的几秒合成预览）');
             $table->string('preview' , 500)->default('')->comment('视频预览图片');
             $table->unsignedInteger('preview_width')->default(0)->comment('视频预览：单个画面尺寸：宽');

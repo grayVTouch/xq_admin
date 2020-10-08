@@ -64,6 +64,6 @@ INSERT INTO `xq_admin_permission` VALUES (20, '视频管理', 'Video Manager', '
 INSERT INTO `xq_admin_permission` VALUES (21, '视频系列', '', '/video_series/index', '', 'view', 'GET', 1, 1, 1, 20, '', '', 0, '2020-07-27 21:20:50', '2020-08-04 17:02:25');
 INSERT INTO `xq_admin_permission` VALUES (22, '视频制作公司', '', '/video_company/index', '', 'view', 'GET', 1, 1, 1, 20, '', '', 0, '2020-07-27 21:21:16', '2020-08-08 09:50:58');
 INSERT INTO `xq_admin_permission` VALUES (23, '视频列表', '', '/video/index', '', 'view', 'GET', 1, 1, 1, 20, '', '', 0, '2020-07-27 21:21:54', '2020-08-08 10:29:17');
-INSERT INTO `xq_admin_permission` VALUES (24, '视频专题', '', '/video_subject/index', '', 'view', 'GET', 1, 1, 1, 20, '', '', 0, '2020-07-29 14:02:38', '2020-08-04 17:10:26');
+INSERT INTO `xq_admin_permission` VALUES (24, '视频专题', '', '/video_project/index', '', 'view', 'GET', 1, 1, 1, 20, '', '', 0, '2020-07-29 14:02:38', '2020-08-04 17:10:26');
 
 SET FOREIGN_KEY_CHECKS = 1;

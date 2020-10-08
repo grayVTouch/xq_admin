@@ -39,10 +39,10 @@ class Handler
      */
     public static function handlePaginator(Paginator $paginator , array $with = []): stdClass
     {
-        $data = static::handleAll($paginator->items() , $with);
-        $obj = convert_object($paginator);
-        $obj->data = $data;
-        return $obj;
+        $data   = static::handleAll($paginator->items() , $with);
+        $object = convert_object($paginator);
+        $object->data = $data;
+        return $object;
     }
 
 //    public static function handle(?Model $model , array $with = []): ?stdClass

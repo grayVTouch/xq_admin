@@ -23,7 +23,7 @@ class VideoSubtitleAction extends Action
             $count = VideoSubtitleModel::destroy($res->id);
             ResourceUtil::delete($res->src);
             DB::commit();
-            return self::success('' , $count);
+            return self::success('操作成功' , $count);
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;

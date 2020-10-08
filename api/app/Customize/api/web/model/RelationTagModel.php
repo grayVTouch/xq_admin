@@ -57,7 +57,7 @@ class RelationTagModel extends Model
             ->select('rt.*' , DB::raw('count(rt.id) as total'))
             ->where($where)
             ->whereExists(function($query) use($relation_type , $filter){
-                if ($relation_type === 'image_subject') {
+                if ($relation_type === 'image_project') {
                     $query->where('type' , $filter['type']);
                 }
             })
@@ -75,7 +75,7 @@ class RelationTagModel extends Model
         $filter['type']      = $filter['type'] ?? '';
 
         $where = [
-            ['rt.relation_type' , '=' , 'image_subject'] ,
+            ['rt.relation_type' , '=' , 'image_project'] ,
         ];
 
         if ($filter['module_id'] !== '') {
@@ -104,7 +104,7 @@ class RelationTagModel extends Model
         $filter['module_id'] = $filter['module_id'] ?? '';
 
         $where = [
-            ['relation_type' , '=' , 'video_subject'] ,
+            ['relation_type' , '=' , 'video_project'] ,
         ];
 
         if ($filter['module_id'] !== '') {
@@ -151,7 +151,7 @@ class RelationTagModel extends Model
         $filter['type']      = $filter['type'] ?? '';
 
         $where = [
-            ['rt.relation_type' , '=' , 'image_subject'] ,
+            ['rt.relation_type' , '=' , 'image_project'] ,
         ];
 
         if ($filter['module_id'] !== '') {

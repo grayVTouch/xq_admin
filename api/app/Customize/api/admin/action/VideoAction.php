@@ -10,7 +10,7 @@ use App\Customize\api\admin\model\CategoryModel;
 use App\Customize\api\admin\model\VideoModel;
 use App\Customize\api\admin\model\ModuleModel;
 use App\Customize\api\admin\model\VideoSrcModel;
-use App\Customize\api\admin\model\VideoSubjectModel;
+use App\Customize\api\admin\model\VideoProjectModel;
 use App\Customize\api\admin\model\UserModel;
 use App\Customize\api\admin\model\VideoSubtitleModel;
 use App\Customize\api\admin\util\FileUtil;
@@ -28,6 +28,7 @@ use function api\admin\my_config_keys;
 use function api\admin\parse_order;
 use function core\array_unit;
 use function core\current_datetime;
+use function core\object_to_array;
 
 class VideoAction extends Action
 {
@@ -35,16 +36,16 @@ class VideoAction extends Action
     {
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $paginator = VideoModel::index($param , $order , $limit);
-        $paginator = VideoHandler::handlePaginator($paginator , [
+        $res = VideoModel::index($param , $order , $limit);
+        $res = VideoHandler::handlePaginator($res , [
             'user' ,
             'module' ,
             'category' ,
-            'video_subject' ,
+            'video_project' ,
             'videos' ,
             'video_subtitles' ,
         ]);
-        return self::success('' , $paginator);
+        return self::success('' , $res);
     }
 
     public static function update(Base $context , $id , array $param = []): array
@@ -55,11 +56,12 @@ class VideoAction extends Action
         $validator = Validator::make($param , [
             'user_id'       => 'required|integer' ,
             'module_id'     => 'required|integer' ,
-            'category_id'   => 'required|integer' ,
-            'video_subject_id' => 'sometimes|integer' ,
+            'category_id'   => 'sometimes|integer' ,
+            'video_project_id' => 'sometimes|integer' ,
             'type'          => ['required' , Rule::in($type_range)] ,
             'weight'        => 'sometimes|integer' ,
             'view_count'    => 'sometimes|integer' ,
+            'play_count'    => 'sometimes|integer' ,
             'praise_count'  => 'sometimes|integer' ,
             'against_count' => 'sometimes|integer' ,
             'index'         => 'sometimes|integer' ,
@@ -73,63 +75,83 @@ class VideoAction extends Action
         if (empty($video)) {
             return self::error('视频记录不存在' , '' , 404);
         }
-        if (!in_array($video->process_status , [-1 , 2]) && $video->src !== $param['src']) {
-            return self::error('当前状态禁止更改视频源' , [
-                'src' => '当前操作禁止更改视频源' ,
-            ] , 403);
+        $video = VideoHandler::handle($video , [
+            'video_project' ,
+        ]);
+        if ($video->type === 'pro' && empty($video->video_project)) {
+            return self::error('源视频所属的视频专题不存在' , ['video_project_id' => '源视频所属的视频专题不存在'] , 404);
+        }
+        /**
+         * 处理状态
+         * -1-处理失败
+         * 0-待处理
+         * 1-处理中
+         * 2-转码中
+         * 3-处理完成
+         */
+        if (!in_array($video->process_status , [-1 , 0 , 3])) {
+            return self::error('当前状态禁止更改视频源，仅支持【待处理|处理完成|处理失败】允许更改状态' , ['src' => '当前状态禁止更改视频源，仅在【待处理|处理完成|处理失败】状态下允许更改'] , 403);
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('表单错误，请检查' , [
-                'module_id' => '模块不存在'
-            ]);
+            return self::error('模块不存在' , ['module_id' => '模块不存在']);
         }
-        $category = CategoryModel::find($param['category_id']);
-        if (empty($category)) {
-            return self::error('表单错误，请检查' , [
-                'category_id' => '分类不存在' ,
-            ]);
+        $video_project = null;
+        if ($param['type'] === 'pro') {
+            // 专题
+            $video_project = VideoProjectModel::find($param['video_project_id']);
+            if (empty($video_project)) {
+                return self::error('专题不存在' , ['video_project_id' => '专题不存在']);
+            }
+            if (VideoModel::findByVideoSubjectIdAndIndex($video_project->id , $param['index'])) {
+                return self::error('索引已经存在' , ['index' => '索引已经存在']);
+            }
+            $param['category_id'] = 0;
+        } else {
+            // 杂项
+            $category = CategoryModel::find($param['category_id']);
+            if (empty($category)) {
+                return self::error('分类不存在' , ['category_id' => '分类不存在']);
+            }
+            $param['video_project_id']  = 0;
+            $param['index']             = 0;
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error('表单错误，请检查' , [
-                'user_id' => '用户不存在'
-            ]);
+            return self::error('用户不存在' , ['user_id' => '用户不存在']);
         }
-        $video_subject = null;
-        if ($param['type'] === 'pro') {
-            $video_subject = VideoSubjectModel::find($param['video_subject_id']);
-            if (empty($video_subject)) {
-                return self::error('表单错误，请检查' , [
-                    'video_subject_id' => '专题不存在' ,
-                ]);
-            }
-            if (VideoModel::findExcludeSelfByVideoIdAndVideoSubjectIdAndIndex($video->id , $video_subject->id , $param['index'])) {
-                return self::error('表单错误，请检查' , [
-                    'index' => '索引已经存在' ,
-                ]);
-            }
-        } else {
-            $param['video_subject_id']  = 0;
-            $param['index']             = 0;
-        }
-
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error('表单错误，请检查' , [
-                'fail_reason' => '请提供失败原因' ,
-            ]);
+            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
         }
         $datetime               = current_datetime();
         $param['weight']        = $param['weight'] === '' ? $video->weight : $param['weight'];
+        $param['view_count']    = $param['view_count'] === '' ? 0 : $param['view_count'];
+        $param['play_count']    = $param['play_count'] === '' ? 0 : $param['play_count'];
+        $param['against_count'] = $param['against_count'] === '' ? 0 : $param['against_count'];
+        $param['praise_count']  = $param['praise_count'] === '' ? 0 : $param['praise_count'];
         $param['updated_at']    = $datetime;
         $video_subtitles        = $param['video_subtitles'] === '' ? [] : json_decode($param['video_subtitles'] , true);
-        $video_has_change       = $video->src !== $param['src'];
         try {
             DB::beginTransaction();
-            if ($video_has_change) {
-                // 视频源发生变动
+            // 视频字幕
+            foreach ($video_subtitles as $v)
+            {
+                VideoSubtitleModel::insertGetId([
+                    'video_id'      => $video->id ,
+                    'name'          => $v['name'] ,
+                    'src'           => $v['src'] ,
+                    'created_at'   => $param['created_at'] ,
+                ]);
+                ResourceUtil::used($v['src']);
+            }
+            $video_subtitles = VideoSubtitleModel::getByVideoId($video->id);
+            if (
+                $video->src !== $param['src'] ||
+                ($param['merge_video_subtitle'] == 1 && $video_subtitles->isNotEmpty())
+            ) {
+                // 视频源发生变化 或者 需要合成字幕
+                // 都需要对视频进行重新处理
                 $param['process_status'] = 0;
-                ResourceUtil::delete($video->src);
             }
             VideoModel::updateById($video->id , array_unit($param , [
                 'name' ,
@@ -138,12 +160,13 @@ class VideoAction extends Action
                 'category_id' ,
                 'src' ,
                 'type' ,
-                'video_subject_id' ,
+                'video_project_id' ,
                 'thumb' ,
                 'description' ,
                 'weight' ,
                 'index' ,
                 'view_count' ,
+                'play_count' ,
                 'praise_count' ,
                 'against_count' ,
                 'merge_video_subtitle' ,
@@ -157,16 +180,9 @@ class VideoAction extends Action
             if ($video->thumb !== $param['thumb']) {
                 ResourceUtil::delete($video->thumb);
             }
-            // 视频字幕
-            foreach ($video_subtitles as $v)
-            {
-                VideoSubtitleModel::insertGetId([
-                    'video_id'      => $video->id ,
-                    'name'          => $v['name'] ,
-                    'src'           => $v['src'] ,
-                    'created_at'   => $param['created_at'] ,
-                ]);
-                ResourceUtil::used($v['src']);
+            if ($video->src !== $param['src'] ) {
+                // 视频源发生变动
+                ResourceUtil::delete($video->src);
             }
             DB::commit();
             /**
@@ -181,36 +197,25 @@ class VideoAction extends Action
                 $source_save_dir    = '';
                 $target_save_dir    = '';
                 if ($param['type'] === 'pro') {
-                    $source_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($video_subject->name);
-                    $target_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($param['name']);
+                    $source_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($video->video_project->name);
+                    $target_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($video_project->name);
                 } else {
                     $dirname            = my_config('app.dir')['video'];
-                    $date_string        = date('Ymd' , strtotime($video_subject->created_at));
+                    $date_string        = date('Ymd' , strtotime($video->video_project->created_at));
                     $source_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($dirname . '/' . $date_string);
                     $target_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($dirname . '/' . date('Ymd'));
                 }
-                if (!File::exists($source_save_dir)) {
-                    File::cDir($save_dir , 0755 , true);
-                }
-                if ($source_save_dir !== $target_save_dir) {
+                if (
+                    $source_save_dir !== $target_save_dir &&
+                    File::exists($source_save_dir) &&
+                    !File::exists($target_save_dir)
+                ) {
                     File::move($source_save_dir , $target_save_dir);
                 }
                 $save_dir = $target_save_dir;
             }
-            $video_subtitle_count = VideoSubtitleModel::countByVideoId($video->id);
-            if ($video_has_change ||
-                ($param['merge_video_subtitle'] == 1 && $video_subtitle_count > 0)
-            ) {
-                /**
-                 * 处理资源变更 + 视频处理
-                 */
-                VideoHandleJob::withChain([
-                    new VideoResourceHandleJob($video->id , $prefix , $save_dir)
-                ])->dispatch($video->id , $prefix , $save_dir);
-            } else {
-                // 仅处理目录变更
-                VideoResourceHandleJob::dispatch($video->id , $prefix , $save_dir);
-            }
+            // 视频处理
+            VideoHandleJob::dispatch($video->id , $prefix , $save_dir);
             return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
@@ -225,67 +230,63 @@ class VideoAction extends Action
         $bool_range     = my_config_keys('business.bool_for_int');
 
         $validator = Validator::make($param , [
-            'user_id'   => 'required|integer' ,
-            'module_id' => 'required|integer' ,
-            'category_id' => 'required|integer' ,
-            'video_subject_id' => 'sometimes|integer' ,
-            'type'      => ['required' , Rule::in($type_range)] ,
-            'weight'    => 'sometimes|integer' ,
-            'view_count'    => 'sometimes|integer' ,
-            'praise_count'  => 'sometimes|integer' ,
-            'against_count'  => 'sometimes|integer' ,
-            'index'  => 'sometimes|integer' ,
-            'status'        => ['required' , 'integer' , Rule::in($status_range)] ,
-            'merge_video_subtitle' => ['required' , 'integer' , Rule::in($bool_range)] ,
+            'user_id'               => 'required|integer' ,
+            'module_id'             => 'required|integer' ,
+            'category_id'           => 'sometimes|integer' ,
+            'video_project_id'      => 'sometimes|integer' ,
+            'type'                  => ['required' , Rule::in($type_range)] ,
+            'weight'                => 'sometimes|integer' ,
+            'view_count'            => 'sometimes|integer' ,
+            'praise_count'          => 'sometimes|integer' ,
+            'against_count'         => 'sometimes|integer' ,
+            'play_count'            => 'sometimes|integer' ,
+            'index'                 => 'sometimes|integer' ,
+            'status'                => ['required' , 'integer' , Rule::in($status_range)] ,
+            'merge_video_subtitle'  => ['required' , 'integer' , Rule::in($bool_range)] ,
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('表单错误，请检查' , [
-                'module_id' => '模块不存在'
-            ]);
+            return self::error('模块不存在' , ['module_id' => '模块不存在']);
         }
-        $category = CategoryModel::find($param['category_id']);
-        if (empty($category)) {
-            return self::error('表单错误，请检查' , [
-                'category_id' => '分类不存在' ,
-            ]);
+        $video_project = null;
+        if ($param['type'] === 'pro') {
+            // 专题
+            $video_project = VideoProjectModel::find($param['video_project_id']);
+            if (empty($video_project)) {
+                return self::error('专题不存在' , ['video_project_id' => '专题不存在']);
+            }
+            if (VideoModel::findByVideoSubjectIdAndIndex($video_project->id , $param['index'])) {
+                return self::error('索引已经存在' , ['index' => '索引已经存在']);
+            }
+            $param['category_id'] = 0;
+        } else {
+            // 杂项
+            $category = CategoryModel::find($param['category_id']);
+            if (empty($category)) {
+                return self::error('分类不存在' , ['category_id' => '分类不存在']);
+            }
+            $param['video_project_id']  = 0;
+            $param['index']             = 0;
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error('表单错误，请检查' , [
-                'user_id' => '用户不存在'
-            ]);
-        }
-        $video_subject = null;
-        if ($param['type'] === 'pro') {
-            $video_subject = VideoSubjectModel::find($param['video_subject_id']);
-            if (empty($video_subject)) {
-                return self::error('表单错误，请检查' , [
-                    'video_subject_id' => '专题不存在' ,
-                ]);
-            }
-            if (VideoModel::findByVideoSubjectIdAndIndex($video_subject->id , $param['index'])) {
-                return self::error('表单错误，请检查' , [
-                    'index' => '索引已经存在' ,
-                ]);
-            }
-        } else {
-            $param['video_subject_id']  = 0;
-            $param['index']             = 0;
+            return self::error('用户不存在' , ['user_id' => '用户不存在']);
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error('表单错误，请检查' , [
-                'fail_reason' => '请提供失败原因' ,
-            ]);
+            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
         }
-        $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
-        $datetime = date('Y-m-d H:i:s');
-        $param['updated_at'] = $datetime;
-        $param['created_at'] = $param['created_at'] === '' ? $datetime : $param['created_at'];
-        $video_subtitles = $param['video_subtitles'] === '' ? [] : json_decode($param['video_subtitles'] , true);
+        $datetime               = date('Y-m-d H:i:s');
+        $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
+        $param['view_count']    = $param['view_count'] === '' ? 0 : $param['view_count'];
+        $param['play_count']    = $param['play_count'] === '' ? 0 : $param['play_count'];
+        $param['against_count'] = $param['against_count'] === '' ? 0 : $param['against_count'];
+        $param['praise_count']  = $param['praise_count'] === '' ? 0 : $param['praise_count'];
+        $param['updated_at']    = $datetime;
+        $param['created_at']    = $param['created_at'] === '' ? $datetime : $param['created_at'];
+        $video_subtitles        = $param['video_subtitles'] === '' ? [] : json_decode($param['video_subtitles'] , true);
         try {
             DB::beginTransaction();
             $id = VideoModel::insertGetId(array_unit($param , [
@@ -295,12 +296,13 @@ class VideoAction extends Action
                 'category_id' ,
                 'src' ,
                 'type' ,
-                'video_subject_id' ,
+                'video_project_id' ,
                 'thumb' ,
                 'description' ,
                 'weight' ,
                 'index' ,
                 'view_count' ,
+                'play_count' ,
                 'praise_count' ,
                 'against_count' ,
                 'status' ,
@@ -334,22 +336,20 @@ class VideoAction extends Action
             if ($disk === 'local') {
                 $prefix = FileUtil::prefix();
                 if ($param['type'] === 'pro') {
-                    $save_dir = FileUtil::generateRealPathByRelativePathWithoutPrefix($param['name']);
+                    $save_dir = FileUtil::generateRealPathByRelativePathWithoutPrefix($video_project->name);
                 } else {
-                    $dirname = my_config('app.dir')['image'];
+                    $dirname = my_config('app.dir')['video'];
                     $save_dir = FileUtil::generateRealPathByRelativePathWithoutPrefix($dirname . '/' . date('Ymd'));
                 }
                 if (!File::exists($save_dir)) {
-                    File::cDir($save_dir , 0755 , true);
+                    File::mkdir($save_dir , 0777 , true);
                 }
             }
             /**
              * 链接队列任务：按顺序执行队列任务，如果其中一个任务执行失败那么整个任务将会失败
              */
             // 队列任务：视频资源处理
-            VideoHandleJob::withChain([
-                new VideoResourceHandleJob($id , $prefix , $save_dir) ,
-            ])->dispatch($id , $prefix , $save_dir);
+            VideoHandleJob::dispatch($id , $prefix , $save_dir);
             return self::success('操作成功' , $id);
         } catch(Exception $e) {
             throw $e;
@@ -366,7 +366,7 @@ class VideoAction extends Action
             'user' ,
             'module' ,
             'category' ,
-            'video_subject' ,
+            'video_project' ,
             'videos' ,
             'video_subtitles' ,
         ]);
@@ -430,18 +430,43 @@ class VideoAction extends Action
             if (empty($video)) {
                 return self::error('包含无效记录' , '' , 404);
             }
+            $video = VideoHandler::handle($video , [
+                'video_project'
+            ]);
             if ($video->process_status !== -1) {
                 return self::error('包含无效处理状态视频' , '' , 403);
             }
-            $videos[$id] = $video;
+            if ($video->type === 'pro' && empty($video->video_project)) {
+                return self::error('包含类型为专题视频但视频专题不存在的记录');
+            }
+            $videos[] = $video;
         }
-        foreach ($ids as $id)
+        /**
+         * 建立图片目录
+         * 移动图片到指定的目录
+         */
+        $disk   = my_config('app.disk');
+        $prefix = FileUtil::prefix();
+        foreach ($videos as $video)
         {
-            $video = $videos[$id];
+            if ($disk !== 'local') {
+                // todo 其他存储介质的视频处理
+                continue ;
+            }
+            if ($video->type === 'pro') {
+                $save_dir       = FileUtil::generateRealPathByRelativePathWithoutPrefix($video->video_project->name);
+            } else {
+                $dirname        = my_config('app.dir')['video'];
+                $date_string    = date('Ymd' , strtotime($video->video_project->created_at));
+                $save_dir       = FileUtil::generateRealPathByRelativePathWithoutPrefix($dirname . '/' . $date_string);
+            }
+            if (!File::exists($save_dir)) {
+                File::mkdir($save_dir , 0777 , true);
+            }
             VideoModel::updateById($video->id , [
                 'process_status' => 0 ,
             ]);
-            VideoHandleJob::dispatch($video->id);
+            VideoHandleJob::dispatch($video->id , $prefix , $save_dir);
         }
         return self::success('操作成功');
     }

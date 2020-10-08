@@ -5,6 +5,7 @@ const update = genUrl('disk/{id}');
 const show = genUrl('disk/{id}');
 const destroy = genUrl('disk/{id}');
 const destroyAll = genUrl('destroy_all_disk');
+const linkDisk = genUrl('link_disk');
 
 export default {
     index (data , success , error) {
@@ -35,9 +36,15 @@ export default {
         return request(url , 'delete' , null , success , error)
     } ,
 
-    destroyAll (idList , success , error) {
+    destroyAll (ids , success , error) {
         return request(destroyAll , 'delete' , {
-            ids: G.jsonEncode(idList)
+            ids: G.jsonEncode(ids)
+        } , success , error)
+    } ,
+
+    linkDisk (ids , success , error) {
+        return request(linkDisk , 'post' , {
+            ids: G.jsonEncode(ids)
         } , success , error)
     } ,
 

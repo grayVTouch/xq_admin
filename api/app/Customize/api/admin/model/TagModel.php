@@ -63,12 +63,12 @@ class TagModel extends Model
         ])->first();
     }
 
-    public static function findByModuleIdAndNameExcludeSelf(int $id , int $module_id , string $name = ''): ?TagModel
+    public static function findByExcludeIdAndModuleIdAndName(int $exclude_id , int $module_id , string $name = ''): ?TagModel
     {
         return self::where([
+            ['id' , '!=' , $exclude_id] ,
             ['module_id' , '=' , $module_id] ,
             ['name' , '=' , $name] ,
-            ['id' , '!=' , $id] ,
         ])->first();
     }
 }

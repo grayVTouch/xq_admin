@@ -5,7 +5,7 @@ namespace App\Customize\api\web\action;
 
 
 use App\Customize\api\web\handler\SubjectHandler;
-use App\Customize\api\web\model\SubjectModel;
+use App\Customize\api\web\model\ImageSubjectModel;
 use App\Customize\api\web\model\ModuleModel;
 use App\Http\Controllers\api\web\Base;
 use Illuminate\Support\Facades\Validator;
@@ -25,7 +25,7 @@ class SubjectAction extends Action
         if (empty($module)) {
             return self::error('模块不存在' , '' , 404);
         }
-        $subject = SubjectModel::find($id);
+        $subject = ImageSubjectModel::find($id);
         $subject = SubjectHandler::handle($subject);
         return self::success('' , $subject);
     }

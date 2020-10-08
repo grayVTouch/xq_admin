@@ -47,7 +47,7 @@ class VideoSubjectHandler extends Handler
         $videos = VideoModel::getByVideoSubjectId($res->id);
         $videos = VideoHandler::handleAll($videos);
 
-        $tags = RelationTagModel::getByRelationTypeAndRelationId('video_subject' , $res->id);
+        $tags = RelationTagModel::getByRelationTypeAndRelationId('video_project' , $res->id);
 
         $res->module = $module;
         $res->video_series = $video_series;
@@ -57,7 +57,7 @@ class VideoSubjectHandler extends Handler
         $res->videos = $videos;
 
 
-        $res->__status__ = get_config_key_mapping_value('business.status_for_video_subject' , $res->status);
+        $res->__status__ = get_config_key_mapping_value('business.status_for_video_project' , $res->status);
 
         // 点赞数
         $res->play_count = VideoModel::sumPlayCountByVideoSubjectId($res->id);
@@ -68,14 +68,14 @@ class VideoSubjectHandler extends Handler
         // 反对数
         $res->against_count = VideoModel::sumAgainstCountByVideoSubjectId($res->id);
         // 收藏数
-        $res->collect_count = CollectionModel::countByModuleIdAndRelationTypeAndRelationId($res->module_id , 'video_subject' , $res->id);
+        $res->collect_count = CollectionModel::countByModuleIdAndRelationTypeAndRelationId($res->module_id , 'video_project' , $res->id);
 
         $user = user();
         if (empty($user)) {
             $res->collected = 0;
             $res->praised   = 0;
         } else {
-            $res->collected = CollectionModel::findByModuleIdAndUserIdAndRelationTypeAndRelationId($res->module_id , $user->id , 'video_subject' , $res->id) ? 1 : 0;
+            $res->collected = CollectionModel::findByModuleIdAndUserIdAndRelationTypeAndRelationId($res->module_id , $user->id , 'video_project' , $res->id) ? 1 : 0;
             $res->praised   = PraiseModel::getByModuleIdAndUserIdAndRelationTypeAndRelationIds($res->module_id , $user->id , 'video' , array_column($videos , 'id'))->count() ? 1 : 0;
         }
 

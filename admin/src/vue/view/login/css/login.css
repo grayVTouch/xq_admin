@@ -120,6 +120,7 @@
     background-color: transparent;
     border: none;
     color: #fff;
+    font-size: 12px;
 }
 
 .container .form .form-inner .line .top .left .form-input:focus {

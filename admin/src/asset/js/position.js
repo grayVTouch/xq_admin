@@ -37,16 +37,38 @@ export default [
         children: [] ,
     } ,
     {
-        key: 'image_subject' ,
-        cn: '图片专题' ,
-        en: 'Image Subject' ,
+        key: 'image_manager' ,
+        cn: '图片管理' ,
+        en: 'Image Manager' ,
         // 路由路径
-        path: '/image_subject/index' ,
+        path: '' ,
         hidden: false ,
-        view: true ,
+        view: false ,
         sIco: TopContext.resUrl + '/preset/ico/image.png' ,
         bIco: TopContext.resUrl + '/preset/ico/image.png' ,
-        children: [] ,
+        children: [
+            {
+                cn: '图片主体' ,
+                en: '' ,
+                // 路由路径
+                path: '/image_subject/index' ,
+                hidden: false ,
+                view: true ,
+                sIco: TopContext.resUrl + '/preset/ico/subject.png' ,
+                bIco: TopContext.resUrl + '/preset/ico/subject.png' ,
+                children: [] ,
+            } ,
+            {
+                cn: '图片专题' ,
+                en: '' ,
+                path: '/image_project/index' ,
+                hidden: false ,
+                view: true ,
+                sIco: TopContext.resUrl + '/preset/ico/image.png' ,
+                bIco: TopContext.resUrl + '/preset/ico/image.png' ,
+                children: [] ,
+            } ,
+        ] ,
     } ,
     {
         key: 'video_manager' ,
@@ -84,11 +106,11 @@ export default [
                 children: [] ,
             } ,
             {
-                key: 'video_subject' ,
+                key: 'video_project' ,
                 cn: '视频专题' ,
                 en: '' ,
                 // 路由路径
-                path: '/video_subject/index' ,
+                path: '/video_project/index' ,
                 hidden: false ,
                 view: true ,
                 sIco: '' ,
@@ -131,19 +153,6 @@ export default [
 
         sIco: TopContext.resUrl + '/preset/ico/category.png' ,
         bIco: TopContext.resUrl + '/preset/ico/catetory.png' ,
-        children: [] ,
-    } ,
-    {
-
-        cn: '关联主体' ,
-        en: 'Subject' ,
-        // 路由路径
-        path: '/subject/index' ,
-        hidden: false ,
-        view: true ,
-
-        sIco: TopContext.resUrl + '/preset/ico/subject.png' ,
-        bIco: TopContext.resUrl + '/preset/ico/subject.png' ,
         children: [] ,
     } ,
     {

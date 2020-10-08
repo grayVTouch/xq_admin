@@ -18,7 +18,7 @@ class video extends Base
         $param['user_id']      = $param['user_id'] ?? '';
         $param['module_id']    = $param['module_id'] ?? '';
         $param['category_id']          = $param['category_id'] ?? '';
-        $param['video_subject_id']     = $param['video_subject_id'] ?? '';
+        $param['video_project_id']     = $param['video_project_id'] ?? '';
         $param['type']         = $param['type'] ?? '';
         $param['status']       = $param['status'] ?? '';
         $param['order'] = $param['order'] ?? '';
@@ -41,18 +41,19 @@ class video extends Base
         $param['module_id']     = $param['module_id'] ?? '';
         $param['category_id']   = $param['category_id'] ?? '';
         $param['type']          = $param['type'] ?? '';
-        $param['video_subject_id']    = $param['video_subject_id'] ?? '';
+        $param['video_project_id'] = $param['video_project_id'] ?? '';
         $param['thumb']         = $param['thumb'] ?? '';
         $param['description']   = $param['description'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
-        $param['index']        = $param['index'] ?? '';
+        $param['index']         = $param['index'] ?? '';
         $param['view_count']    = $param['view_count'] ?? '';
+        $param['play_count']    = $param['play_count'] ?? '';
         $param['praise_count']  = $param['praise_count'] ?? '';
-        $param['against_count']  = $param['against_count'] ?? '';
+        $param['against_count'] = $param['against_count'] ?? '';
         $param['status']        = $param['status'] ?? '';
         $param['fail_reason']   = $param['fail_reason'] ?? '';
         $param['src']           = $param['src'] ?? '';
-        $param['created_at']   = $param['created_at'] ?? '';
+        $param['created_at']    = $param['created_at'] ?? '';
         $res = VideoAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -68,18 +69,19 @@ class video extends Base
         $param['module_id']     = $param['module_id'] ?? '';
         $param['category_id']   = $param['category_id'] ?? '';
         $param['type']          = $param['type'] ?? '';
-        $param['video_subject_id']    = $param['video_subject_id'] ?? '';
+        $param['video_project_id']  = $param['video_project_id'] ?? '';
         $param['thumb']         = $param['thumb'] ?? '';
         $param['description']   = $param['description'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
-        $param['index']        = $param['index'] ?? '';
+        $param['index']         = $param['index'] ?? '';
         $param['view_count']    = $param['view_count'] ?? '';
+        $param['play_count']    = $param['play_count'] ?? '';
         $param['praise_count']  = $param['praise_count'] ?? '';
-        $param['against_count']  = $param['against_count'] ?? '';
+        $param['against_count'] = $param['against_count'] ?? '';
         $param['status']        = $param['status'] ?? '';
         $param['fail_reason']   = $param['fail_reason'] ?? '';
         $param['src']           = $param['src'] ?? '';
-        $param['created_at']   = $param['created_at'] ?? '';
+        $param['created_at']    = $param['created_at'] ?? '';
         $res = VideoAction::store($this ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);

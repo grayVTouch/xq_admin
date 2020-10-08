@@ -25,7 +25,7 @@ class ImageAtPosition extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $res = ImageAtPositionAction::imageAtPosition($this , 'image_subject' , $param);
+        $res = ImageAtPositionAction::imageAtPosition($this , 'image_project' , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }

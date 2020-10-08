@@ -82,7 +82,7 @@
                 <div class="run-action-title">
                     <div class="left">
                         <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showBatchBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
+                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="val.selectedIds.length > 0">（{{ val.selectedIds.length }}）</span></my-table-button>
                     </div>
                     <div class="right">
                         <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
@@ -107,7 +107,7 @@
                             {{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}
                         </template>
                         <template v-slot:path="{row , index}">
-                            <img :src="row.path ? row.__path__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" @click.stop="link(row.__path__)" class="image">
+                            <img :src="row.path ? row.path : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" @click.stop="link(row.path)" class="image">
                         </template>
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
@@ -121,7 +121,7 @@
 
             <div class="line operation">
                 <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showBatchBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
+                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="val.selectedIds.length > 0">（{{ val.selectedIds.length }}）</span></my-table-button>
             </div>
 
             <div class="line page">
@@ -137,7 +137,7 @@
                             <tr :class="{error: val.error.module_id}">
                                 <td>模块</td>
                                 <td>
-                                    <my-select :data="modules" v-model="form.module_id"></my-select>
+                                    <my-select :data="modules" v-model="form.module_id" @change="val.error.module_id = ''"></my-select>
                                     <my-loading v-if="val.pending.getModules"></my-loading>
                                     <span class="need">*</span>
                                     <div class="msg"></div>

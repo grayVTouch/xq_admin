@@ -20,10 +20,12 @@ class UserHandler extends Handler
         if (empty($model)) {
             return null;
         }
-        $res = convert_object($model);
+        $model = convert_object($model);
 
-        $res->__sex__ = get_config_key_mapping_value('business.sex_for_user' , $res->sex);
-        return $res;
+        $model->__is_system__   = get_config_key_mapping_value('business.bool_for_int' , $model->is_system);
+        $model->__sex__         = get_config_key_mapping_value('business.sex' , $model->sex);
+
+        return $model;
     }
 
 }

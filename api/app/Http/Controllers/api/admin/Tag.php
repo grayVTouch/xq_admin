@@ -30,7 +30,10 @@ class Tag extends Base
         $param['name']          = $param['name'] ?? '';
         $param['description']   = $param['description'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
-        $param['module_id']        = $param['module_id'] ?? '';
+        $param['module_id']     = $param['module_id'] ?? '';
+        $param['user_id']       = $param['user_id'] ?? '';
+        $param['status']        = $param['status'] ?? '';
+        $param['fail_reason']   = $param['fail_reason'] ?? '';
         $res = TagAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -45,6 +48,9 @@ class Tag extends Base
         $param['description']   = $param['description'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
         $param['module_id']        = $param['module_id'] ?? '';
+        $param['user_id']       = $param['user_id'] ?? '';
+        $param['status']        = $param['status'] ?? '';
+        $param['fail_reason']   = $param['fail_reason'] ?? '';
         $res = TagAction::store($this ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -58,7 +64,10 @@ class Tag extends Base
         $param['name']          = $param['name'] ?? '';
         $param['description']   = $param['description'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
-        $param['module_id']        = $param['module_id'] ?? '';
+        $param['module_id']     = $param['module_id'] ?? '';
+        $param['user_id']       = $param['user_id'] ?? '';
+        $param['status']        = $param['status'] ?? '';
+        $param['fail_reason']   = $param['fail_reason'] ?? '';
         $res = TagAction::findOrCreate($this ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);

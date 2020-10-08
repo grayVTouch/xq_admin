@@ -14,7 +14,7 @@ use App\Customize\api\web\model\CollectionModel;
 use App\Customize\api\web\model\EmailCodeModel;
 use App\Customize\api\web\model\FocusUserModel;
 use App\Customize\api\web\model\HistoryModel;
-use App\Customize\api\web\model\ImageSubjectModel;
+use App\Customize\api\web\model\ImageProjectModel;
 use App\Customize\api\web\model\ModuleModel;
 use App\Customize\api\web\model\PraiseModel;
 use App\Customize\api\web\model\UserModel;
@@ -403,8 +403,8 @@ class UserAction extends Action
         }
         switch ($param['relation_type'])
         {
-            case 'image_subject':
-                $relation = ImageSubjectModel::find($param['relation_id']);
+            case 'image_project':
+                $relation = ImageProjectModel::find($param['relation_id']);
                 break;
             default:
                 $relation = null;
@@ -466,8 +466,8 @@ class UserAction extends Action
         }
         $user = user();
         $res = null;
-        if ($param['relation_type'] === 'image_subject') {
-            $relation = ImageSubjectModel::find($param['relation_id']);
+        if ($param['relation_type'] === 'image_project') {
+            $relation = ImageProjectModel::find($param['relation_id']);
             if (empty($relation)) {
                 return self::error('关联事物不存在');
             }
@@ -483,7 +483,7 @@ class UserAction extends Action
                 ]);
             } else {
                 // 取消收藏
-                CollectionModel::delByModuleIdAndUserIdAndCollectionGroupIdAndRelationTypeAndRelationId($module->id , $user->id , $collection_group->id , 'image_subject' , $relation->id);
+                CollectionModel::delByModuleIdAndUserIdAndCollectionGroupIdAndRelationTypeAndRelationId($module->id , $user->id , $collection_group->id , 'image_project' , $relation->id);
             }
         } else {
             // 其他类型，预留
@@ -511,9 +511,9 @@ class UserAction extends Action
         if (empty($module)) {
             return self::error('模块不存在');
         }
-        if ($param['relation_type'] === 'image_subject') {
+        if ($param['relation_type'] === 'image_project') {
             // 图片专题
-            $relation = ImageSubjectModel::find($param['relation_id']);
+            $relation = ImageProjectModel::find($param['relation_id']);
             if (empty($relation)) {
                 return self::error('图片专题不存在');
             }
@@ -527,13 +527,13 @@ class UserAction extends Action
                     'relation_id' => $relation->id ,
                     'created_at' => date('Y-m-d H:i:s')
                 ]);
-                ImageSubjectModel::countHandle($relation->id , 'praise_count' , 'increment');
+                ImageProjectModel::countHandle($relation->id , 'praise_count' , 'increment');
             } else {
                 // 取消收藏
-                PraiseModel::delByModuleIdAndUserIdAndRelationTypeAndRelationId($module->id , $user->id , 'image_subject' , $relation->id);
-                ImageSubjectModel::countHandle($relation->id , 'praise_count' , 'decrement');
+                PraiseModel::delByModuleIdAndUserIdAndRelationTypeAndRelationId($module->id , $user->id , 'image_project' , $relation->id);
+                ImageProjectModel::countHandle($relation->id , 'praise_count' , 'decrement');
             }
-            $res = ImageSubjectModel::find($relation->id);
+            $res = ImageProjectModel::find($relation->id);
             $res = ImageSubjectHandler::handle($res);
         } else {
             // 其他类型，预留
@@ -558,8 +558,8 @@ class UserAction extends Action
         }
         switch ($param['relation_type'])
         {
-            case 'image_subject':
-                $relation = ImageSubjectModel::find($param['relation_id']);
+            case 'image_project':
+                $relation = ImageProjectModel::find($param['relation_id']);
                 break;
         }
         if (empty($relation)) {
@@ -602,8 +602,8 @@ class UserAction extends Action
         }
         switch ($param['relation_type'])
         {
-            case 'image_subject':
-                $relation = ImageSubjectModel::find($param['relation_id']);
+            case 'image_project':
+                $relation = ImageProjectModel::find($param['relation_id']);
                 break;
             default:
                 $relation = null;
@@ -691,8 +691,8 @@ class UserAction extends Action
         }
         switch ($param['relation_type'])
         {
-            case 'image_subject':
-                $relation = ImageSubjectModel::find($param['relation_id']);
+            case 'image_project':
+                $relation = ImageProjectModel::find($param['relation_id']);
                 break;
             default:
                 $relation = null;
@@ -777,7 +777,7 @@ class UserAction extends Action
 
     public static function update(Base $context , array $param = [])
     {
-        $sex_range = my_config_keys('business.sex_for_user');
+        $sex_range = my_config_keys('business.sex');
         $validator = Validator::make($param , [
             'sex' => ['required' , Rule::in($sex_range)] ,
             'email' => 'sometimes|email' ,
@@ -852,7 +852,7 @@ class UserAction extends Action
         }
         // 检查记录是否是当前登录用户
         $count = HistoryModel::destroy($history_ids);
-        return self::success('' , $count);
+        return self::success('操作成功' , $count);
     }
 
     public static function collections(Base $context , array $param = []): array
@@ -1005,7 +1005,7 @@ class UserAction extends Action
     // 局部更新
     public static function localUpdate(Base $context , array $param = [])
     {
-        $sex_range = my_config_keys('business.sex_for_user');
+        $sex_range = my_config_keys('business.sex');
         $validator = Validator::make($param , [
             'sex' => ['sometimes' , Rule::in($sex_range)] ,
             'email' => 'sometimes|email' ,

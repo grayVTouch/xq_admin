@@ -6,7 +6,7 @@ let i                   = 1;
 const pannelId          = i++;
 const adminId           = i++;
 const userId            = i++;
-const imageSubjectId    = i++;
+const imageProjectId    = i++;
 const videoId    = i++;
 const tagId             = i++;
 const categoryId        = i++;
@@ -58,11 +58,11 @@ export default [
         children: [] ,
     } ,
     {
-        id: imageSubjectId ,
+        id: imageProjectId ,
         cn: '图片专题' ,
         en: 'Image Subject' ,
         // 路由路径
-        path: '/image_subject/index' ,
+        path: '/image_project/index' ,
         hidden: false ,
         view: true ,
         parentId: 0 ,
@@ -113,7 +113,7 @@ export default [
                 cn: '视频专题' ,
                 en: '' ,
                 // 路由路径
-                path: '/video_subject/index' ,
+                path: '/video_project/index' ,
                 hidden: false ,
                 view: true ,
                 parentId: videoId ,

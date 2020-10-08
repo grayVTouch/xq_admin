@@ -7,7 +7,9 @@ namespace App\Customize\api\admin\handler;
 use App\Customize\api\admin\model\ModuleModel;
 use App\Customize\api\admin\model\TagModel;
 use App\Customize\api\admin\model\Model;
+use App\Customize\api\admin\model\UserModel;
 use stdClass;
+use function api\admin\get_config_key_mapping_value;
 use function core\convert_object;
 
 class TagHandler extends Handler
@@ -17,12 +19,22 @@ class TagHandler extends Handler
         if (empty($model)) {
             return null;
         }
-        $res = convert_object($model);
-        $module = ModuleModel::find($res->module_id);
-        ModuleHandler::handle($module);
+        $model = convert_object($model);
 
-        $res->module = $module;
-        return $res;
+        $model->__status__ = get_config_key_mapping_value('business.status_for_tag' , $model->status);
+
+        if (in_array('user' , $with)) {
+            $user = UserModel::find($model->user_id);
+            $user = UserHandler::handle($user);
+            $model->user = $user;
+        }
+        if (in_array('module' , $with)) {
+            $module = ModuleModel::find($model->module_id);
+            $module = ModuleHandler::handle($module);
+            $model->module = $module;
+        }
+
+        return $model;
     }
 
 }

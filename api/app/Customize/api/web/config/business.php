@@ -21,18 +21,18 @@ return [
     ] ,
 
     // 图片专题分类类型
-    'type_for_image_subject' => [
+    'type_for_image_project' => [
         'pro' => '专题' ,
         'misc' => '杂类' ,
     ] ,
 
-    'status_for_image_subject' => [
+    'status_for_image_project' => [
         -1 => '审核失败',
         0 => '待审核' ,
         1 => '审核成功' ,
     ] ,
 
-    'sex_for_user' => [
+    'sex' => [
         'male' => '男' ,
         'female' => '女' ,
         'secret' => '保密' ,
@@ -47,7 +47,7 @@ return [
         'cancel' ,
     ] ,
 
-    'mode_for_image_subject' => [
+    'mode_for_image_project' => [
         // 收藏
         'strict' ,
         // 取消收藏
@@ -55,26 +55,26 @@ return [
     ] ,
 
     'relation_type_for_history' => [
-        'image_subject' => '图片专题' ,
-        'video_subject' => '视频专题' ,
+        'image_project' => '图片专题' ,
+        'video_project' => '视频专题' ,
         'article_subject' => '文章专题' ,
     ] ,
 
     'relation_type_for_collection' => [
-        'image_subject' => '图片专题' ,
-        'video_subject' => '视频专题' ,
+        'image_project' => '图片专题' ,
+        'video_project' => '视频专题' ,
         'article_subject' => '文章专题' ,
     ] ,
 
     'relation_type_for_praise' => [
-        'image_subject' => '图片专题' ,
-        'video_subject' => '视频专题' ,
+        'image_project' => '图片专题' ,
+        'video_project' => '视频专题' ,
         'article_subject' => '文章专题' ,
     ] ,
 
     'relation_type_for_tag' => [
-        'image_subject' => '图片专题' ,
-        'video_subject' => '视频专题' ,
+        'image_project' => '图片专题' ,
+        'video_project' => '视频专题' ,
         'article_subject' => '文章专题' ,
     ] ,
 
@@ -91,7 +91,7 @@ return [
         'register' => '用户注册' ,
     ] ,
 
-    'status_for_video_subject' => [
+    'status_for_video_project' => [
         'making' => '连载中' ,
         'completed' => '已完结' ,
         'terminated' => '已终止' ,

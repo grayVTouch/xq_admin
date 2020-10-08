@@ -1,15 +1,17 @@
 <?php
 
-//var_dump(ini_get('upload_max_filesize'));
-//var_dump(ini_get('post_max_size'));
+use Core\Lib\File;
 
-//$dir = 'd:/测试/迅雷下载';
-//
-//if (!file_exists($dir)) {
-//    mkdir($dir , 0755 , true);
-//}
-//
-//var_dump('目录创建成功');
+require_once __DIR__ . '/app/Customize/api/admin/plugin/extra/app.php';
+
+$string = 'd:/web/xinqu/resource/upload/初音岛 第一季/初音岛 第一季';
 
 
-rename('d:/avatar.jpg' , 'd:/test/avatar.jpg');
+function generateMediaSuffix(string $type , string $name , string $extension): string
+{
+    return $type === 'pro' ? $name . '.' . $extension : $name . '【' . random(8 , 'letter' , true) . '】' . '.' . $extension;
+}
+
+$res = generateMediaSuffix('pro' , '测试视频' , 'jpeg');
+
+var_dump($res);

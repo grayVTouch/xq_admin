@@ -58,3 +58,16 @@
     justify-content: center;
     align-items: center;
 }
+
+/**
+ * ***************
+ * 表格大图预览样式
+ * ***************
+ */
+.table-preview-image-style {
+    /*max-width: 300px;*/
+}
+
+.table-preview-image-style .image {
+    max-width: 400px;
+}

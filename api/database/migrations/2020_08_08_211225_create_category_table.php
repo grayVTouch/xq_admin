@@ -19,7 +19,7 @@ class CreateCategoryTable extends Migration
         Schema::create($this->table , function (Blueprint $table) {
             $table->id();
             $table->string('name' , 255)->default('')->comment('名称');
-            $table->string('type' , 255)->default('')->comment('分类所属的类别: image_subject-图片专题 video_subject-视频专题 video-视频分类 image-图片分类');
+            $table->string('type' , 255)->default('')->comment('分类所属的类别: image_project-图片专题 video_project-视频专题 video-视频分类 image-图片分类');
             $table->string('description' , 500)->default('')->comment('描述');
             $table->unsignedBigInteger('p_id')->default(0)->comment('xq_category.id');
             $table->tinyInteger('is_enabled')->default(1)->comment('是否启用：0-否 1-是');

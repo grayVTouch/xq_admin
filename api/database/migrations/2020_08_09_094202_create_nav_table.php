@@ -19,7 +19,7 @@ class CreateNavTable extends Migration
         Schema::create($this->table , function (Blueprint $table) {
             $table->id();
             $table->string('name' , 255)->default('')->comment('名称');
-            $table->string('type' , 255)->default('')->comment('导航菜单类型：目前支持的有： image_subject-图片专题 video_subject-视频专题 等');
+            $table->string('type' , 255)->default('')->comment('导航菜单类型：目前支持的有： image_subject-图片专题 video_project-视频专题 等');
             $table->string('value' , 255)->default('')->comment('值');
             $table->string('description' , 500)->default('')->comment('描述');
             $table->unsignedBigInteger('p_id')->default(0)->comment('xq_nav.id');

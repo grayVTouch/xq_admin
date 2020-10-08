@@ -30,7 +30,7 @@ export default {
                 field: [
                     {
                         type: 'selection',
-                        minWidth: TopContext.table.checkbox ,
+                        width: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     },
@@ -91,7 +91,7 @@ export default {
                     } ,
                     {
                         title: '创建时间' ,
-                        key: 'create_time' ,
+                        key: 'created_at' ,
                         minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
@@ -136,7 +136,7 @@ export default {
             Api.module.all((msg , data , code) => {
                 this.pending('getModules' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.modules = data;
@@ -148,7 +148,7 @@ export default {
             Api.nav.getByModuleId(this.form.module_id ? this.form.module_id : 0 , (msg , data , code) => {
                 this.pending('getNavs' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.navs = this.getNavsExcludeSelfAndChildrenById(this.form.id , data);
@@ -178,7 +178,7 @@ export default {
             Api.nav.index((msg , data , code) => {
                 this.pending('getData' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.handleData(data);
@@ -224,7 +224,7 @@ export default {
                 Api.nav.destroyAll(ids , (msg , data , code) => {
                     if (code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
-                        this.message('error' , data);
+                        this.message('error' , msg);
                         return ;
                     }
                     G.invoke(callback , self , true);
@@ -246,7 +246,7 @@ export default {
                 this.pending(pendingKey , false);
                 if (code !== TopContext.code.Success) {
                     record[extra.field] = oVal;
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.message('success' , '操作成功');

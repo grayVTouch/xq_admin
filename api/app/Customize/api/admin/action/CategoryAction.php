@@ -15,7 +15,7 @@ use function api\admin\get_form_error;
 use function api\admin\my_config;
 use function api\admin\my_config_keys;
 use function core\array_unit;
-use function core\obj_to_array;
+use function core\object_to_array;
 
 class CategoryAction extends Action
 {
@@ -23,7 +23,7 @@ class CategoryAction extends Action
     {
         $res = CategoryModel::getAll();
         $res = CategoryHandler::handleAll($res);
-        $res = obj_to_array($res);
+        $res = object_to_array($res);
         $res = Category::childrens(0 , $res , [
             'id'    => 'id' ,
             'p_id'  => 'p_id' ,
@@ -35,7 +35,7 @@ class CategoryAction extends Action
     {
         $res = CategoryModel::getByFilter($param);
         $res = CategoryHandler::handleAll($res);
-        $res = obj_to_array($res);
+        $res = object_to_array($res);
         $res = Category::childrens(0 , $res , [
             'id'    => 'id' ,
             'p_id'  => 'p_id' ,
@@ -144,18 +144,18 @@ class CategoryAction extends Action
     public static function destroy(Base $context , $id , array $param = [])
     {
         $data = CategoryModel::get();
-        $data = obj_to_array($data);
+        $data = object_to_array($data);
         $data = Category::childrens($id , $data , null , true , false);
         $ids = array_column($data , 'id');
         $count = CategoryModel::destroy($ids);
-        return self::success('' , $count);
+        return self::success('操作成功' , $count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
         $destroy = [];
         $data = CategoryModel::get();
-        $data = obj_to_array($data);
+        $data = object_to_array($data);
         foreach ($ids as $v)
         {
             $_data = Category::childrens($v , $data , null , true , false);
@@ -170,7 +170,7 @@ class CategoryAction extends Action
     {
         $res = CategoryModel::getAll();
         $res = CategoryHandler::handleAll($res);
-        $res = obj_to_array($res);
+        $res = object_to_array($res);
         $exclude = Category::childrens($id , $res , null , true , false);
         $exclude_ids = array_column($exclude , 'id');
         for ($i = 0; $i < count($res); ++$i)

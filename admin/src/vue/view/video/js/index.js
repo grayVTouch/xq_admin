@@ -23,7 +23,7 @@ export default {
                 field: [
                     {
                         type: 'selection',
-                        minWidth: TopContext.table.checkbox ,
+                        width: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     },
@@ -106,7 +106,7 @@ export default {
                     } ,
                     {
                         title: '关联主体【id】' ,
-                        slot: 'video_subject_id' ,
+                        slot: 'video_project_id' ,
                         minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
@@ -134,6 +134,12 @@ export default {
                     {
                         title: '浏览次数' ,
                         key: 'view_count' ,
+                        minWidth: TopContext.table.number ,
+                        align: TopContext.table.alignCenter
+                    } ,
+                    {
+                        title: '播放次数' ,
+                        key: 'play_count' ,
                         minWidth: TopContext.table.number ,
                         align: TopContext.table.alignCenter
                     } ,
@@ -167,17 +173,17 @@ export default {
                     } ,
                     {
                         title: '创建时间' ,
-                        key: 'create_time' ,
+                        key: 'created_at' ,
                         minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
-                    {
-                        title: '操作' ,
-                        slot: 'action' ,
-                        minWidth: TopContext.table.action + 80 ,
-                        align: TopContext.table.alignCenter ,
-                        fixed: 'right' ,
-                    } ,
+                    // {
+                    //     title: '操作' ,
+                    //     slot: 'action' ,
+                    //     minWidth: TopContext.table.action + 80 ,
+                    //     align: TopContext.table.alignCenter ,
+                    //     fixed: 'right' ,
+                    // } ,
                 ] ,
                 total: 0 ,
                 page: 1 ,
@@ -189,7 +195,7 @@ export default {
                 user_id: '' ,
                 module_id: '' ,
                 category_id: '' ,
-                video_subject_id: '' ,
+                video_project_id: '' ,
                 status: '' ,
             } ,
 
@@ -231,7 +237,7 @@ export default {
             Api.module.all((msg , data , code) => {
                 this.pending('getModules' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.modules = data;
@@ -251,7 +257,7 @@ export default {
                 this.pending('getCategories' , false);
 
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
 
@@ -264,7 +270,7 @@ export default {
             Api.video.index(this.search , (msg , data , code) => {
                 this.pending('getData' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.table.total = data.total;
@@ -297,7 +303,7 @@ export default {
                     Api.video.destroyAll(idList , (msg , data , code) => {
                         if (code !== TopContext.code.Success) {
                             G.invoke(callback , this , false);
-                            this.message('error' , data);
+                            this.message('error' , msg);
                             return ;
                         }
                         G.invoke(callback , this , true);

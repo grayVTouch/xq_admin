@@ -251,17 +251,17 @@ CREATE TABLE `xq_collection`  (
 -- ----------------------------
 -- Records of xq_collection
 -- ----------------------------
-INSERT INTO `xq_collection` VALUES (137, 1, 45, 'image_subject', 19, 1, '2020-07-11 23:42:08');
-INSERT INTO `xq_collection` VALUES (141, 1, 45, 'image_subject', 17, 1, '2020-07-12 01:06:57');
-INSERT INTO `xq_collection` VALUES (142, 1, 50, 'image_subject', 29, 3, '2020-07-12 16:59:40');
-INSERT INTO `xq_collection` VALUES (143, 1, 50, 'image_subject', 24, 3, '2020-07-13 21:57:28');
-INSERT INTO `xq_collection` VALUES (145, 1, 50, 'image_subject', 30, 3, '2020-07-15 12:28:48');
-INSERT INTO `xq_collection` VALUES (147, 1, 50, 'image_subject', 27, 3, '2020-07-15 15:42:14');
-INSERT INTO `xq_collection` VALUES (149, 1, 50, 'image_subject', 23, 3, '2020-07-15 15:42:20');
-INSERT INTO `xq_collection` VALUES (152, 1, 50, 'image_subject', 21, 3, '2020-07-15 15:42:33');
-INSERT INTO `xq_collection` VALUES (154, 1, 50, 'image_subject', 22, 3, '2020-07-15 15:42:39');
-INSERT INTO `xq_collection` VALUES (156, 1, 50, 'image_subject', 26, 3, '2020-07-15 15:43:04');
-INSERT INTO `xq_collection` VALUES (159, 1, 54, 'image_subject', 19, 1, '2020-07-17 00:24:03');
+INSERT INTO `xq_collection` VALUES (137, 1, 45, 'image_project', 19, 1, '2020-07-11 23:42:08');
+INSERT INTO `xq_collection` VALUES (141, 1, 45, 'image_project', 17, 1, '2020-07-12 01:06:57');
+INSERT INTO `xq_collection` VALUES (142, 1, 50, 'image_project', 29, 3, '2020-07-12 16:59:40');
+INSERT INTO `xq_collection` VALUES (143, 1, 50, 'image_project', 24, 3, '2020-07-13 21:57:28');
+INSERT INTO `xq_collection` VALUES (145, 1, 50, 'image_project', 30, 3, '2020-07-15 12:28:48');
+INSERT INTO `xq_collection` VALUES (147, 1, 50, 'image_project', 27, 3, '2020-07-15 15:42:14');
+INSERT INTO `xq_collection` VALUES (149, 1, 50, 'image_project', 23, 3, '2020-07-15 15:42:20');
+INSERT INTO `xq_collection` VALUES (152, 1, 50, 'image_project', 21, 3, '2020-07-15 15:42:33');
+INSERT INTO `xq_collection` VALUES (154, 1, 50, 'image_project', 22, 3, '2020-07-15 15:42:39');
+INSERT INTO `xq_collection` VALUES (156, 1, 50, 'image_project', 26, 3, '2020-07-15 15:43:04');
+INSERT INTO `xq_collection` VALUES (159, 1, 54, 'image_project', 19, 1, '2020-07-17 00:24:03');
 
 -- ----------------------------
 -- Table structure for xq_collection_group
@@ -341,69 +341,69 @@ CREATE TABLE `xq_history`  (
 -- ----------------------------
 -- Records of xq_history
 -- ----------------------------
-INSERT INTO `xq_history` VALUES (32, 1, 'image_subject', 13, 1, '2020-07-11', '23:45:07', '2020-07-11 23:45:07');
-INSERT INTO `xq_history` VALUES (33, 1, 'image_subject', 17, 1, '2020-07-11', '23:43:33', '2020-07-11 23:43:33');
-INSERT INTO `xq_history` VALUES (36, 1, 'image_subject', 20, 1, '2020-07-11', '23:46:50', '2020-07-11 23:46:50');
-INSERT INTO `xq_history` VALUES (38, 1, 'image_subject', 13, 1, '2020-07-12', '00:02:20', '2020-07-12 00:02:20');
-INSERT INTO `xq_history` VALUES (39, 1, 'image_subject', 46, 5, '2020-07-12', '00:36:52', '2020-07-12 00:36:52');
-INSERT INTO `xq_history` VALUES (40, 1, 'image_subject', 45, 5, '2020-07-12', '00:22:13', '2020-07-12 00:22:13');
-INSERT INTO `xq_history` VALUES (41, 1, 'image_subject', 39, 4, '2020-07-12', '00:23:59', '2020-07-12 00:23:59');
-INSERT INTO `xq_history` VALUES (42, 1, 'image_subject', 38, 4, '2020-07-12', '00:35:15', '2020-07-12 00:35:15');
-INSERT INTO `xq_history` VALUES (43, 1, 'image_subject', 42, 5, '2020-07-12', '00:36:03', '2020-07-12 00:36:03');
-INSERT INTO `xq_history` VALUES (44, 1, 'image_subject', 31, 4, '2020-07-12', '00:38:13', '2020-07-12 00:38:13');
-INSERT INTO `xq_history` VALUES (45, 1, 'image_subject', 36, 4, '2020-07-12', '00:38:58', '2020-07-12 00:38:58');
-INSERT INTO `xq_history` VALUES (46, 1, 'image_subject', 20, 1, '2020-07-12', '00:39:53', '2020-07-12 00:39:53');
-INSERT INTO `xq_history` VALUES (48, 1, 'image_subject', 12, 1, '2020-07-12', '00:45:41', '2020-07-12 00:45:41');
-INSERT INTO `xq_history` VALUES (49, 1, 'image_subject', 12, 5, '2020-07-12', '00:45:58', '2020-07-12 00:45:58');
-INSERT INTO `xq_history` VALUES (50, 1, 'image_subject', 46, 4, '2020-07-12', '00:52:28', '2020-07-12 00:52:28');
-INSERT INTO `xq_history` VALUES (52, 1, 'image_subject', 26, 3, '2020-07-12', '11:03:45', '2020-07-12 11:03:45');
-INSERT INTO `xq_history` VALUES (53, 1, 'image_subject', 29, 3, '2020-07-12', '18:16:56', '2020-07-12 18:16:56');
-INSERT INTO `xq_history` VALUES (54, 1, 'image_subject', 29, 3, '2020-07-13', '22:53:41', '2020-07-13 22:53:41');
-INSERT INTO `xq_history` VALUES (55, 1, 'image_subject', 30, 3, '2020-07-13', '22:20:48', '2020-07-13 22:20:48');
-INSERT INTO `xq_history` VALUES (56, 1, 'image_subject', 27, 3, '2020-07-13', '23:03:03', '2020-07-13 23:03:03');
-INSERT INTO `xq_history` VALUES (57, 1, 'image_subject', 24, 3, '2020-07-13', '21:57:22', '2020-07-13 21:57:22');
-INSERT INTO `xq_history` VALUES (58, 1, 'image_subject', 20, 1, '2020-07-13', '22:15:09', '2020-07-13 22:15:09');
-INSERT INTO `xq_history` VALUES (59, 1, 'image_subject', 19, 1, '2020-07-13', '22:14:06', '2020-07-13 22:14:06');
-INSERT INTO `xq_history` VALUES (60, 1, 'image_subject', 17, 1, '2020-07-13', '22:14:30', '2020-07-13 22:14:30');
-INSERT INTO `xq_history` VALUES (61, 1, 'image_subject', 23, 3, '2020-07-13', '22:25:54', '2020-07-13 22:25:54');
-INSERT INTO `xq_history` VALUES (63, 1, 'image_subject', 19, 1, '2020-07-15', '16:10:34', '2020-07-15 16:10:34');
-INSERT INTO `xq_history` VALUES (64, 1, 'image_subject', 23, 3, '2020-07-15', '15:48:48', '2020-07-15 15:48:48');
-INSERT INTO `xq_history` VALUES (65, 1, 'image_subject', 17, 1, '2020-07-15', '02:38:08', '2020-07-15 02:38:08');
-INSERT INTO `xq_history` VALUES (66, 1, 'image_subject', 27, 3, '2020-07-15', '15:48:25', '2020-07-15 15:48:25');
-INSERT INTO `xq_history` VALUES (67, 1, 'image_subject', 28, 3, '2020-07-15', '15:33:16', '2020-07-15 15:33:16');
-INSERT INTO `xq_history` VALUES (68, 1, 'image_subject', 30, 3, '2020-07-15', '15:48:46', '2020-07-15 15:48:46');
-INSERT INTO `xq_history` VALUES (69, 1, 'image_subject', 29, 3, '2020-07-15', '23:18:21', '2020-07-15 23:18:21');
-INSERT INTO `xq_history` VALUES (70, 1, 'image_subject', 24, 3, '2020-07-15', '20:15:23', '2020-07-15 20:15:23');
-INSERT INTO `xq_history` VALUES (71, 1, 'image_subject', 21, 3, '2020-07-15', '15:42:28', '2020-07-15 15:42:28');
-INSERT INTO `xq_history` VALUES (72, 1, 'image_subject', 22, 3, '2020-07-15', '15:42:36', '2020-07-15 15:42:36');
-INSERT INTO `xq_history` VALUES (73, 1, 'image_subject', 26, 3, '2020-07-15', '15:43:01', '2020-07-15 15:43:01');
-INSERT INTO `xq_history` VALUES (74, 1, 'image_subject', 25, 3, '2020-07-15', '15:43:40', '2020-07-15 15:43:40');
-INSERT INTO `xq_history` VALUES (75, 1, 'image_subject', 14, 1, '2020-07-15', '16:10:13', '2020-07-15 16:10:13');
-INSERT INTO `xq_history` VALUES (76, 1, 'image_subject', 20, 1, '2020-07-15', '16:10:28', '2020-07-15 16:10:28');
-INSERT INTO `xq_history` VALUES (77, 1, 'image_subject', 13, 1, '2020-07-15', '16:11:14', '2020-07-15 16:11:14');
-INSERT INTO `xq_history` VALUES (78, 1, 'image_subject', 29, 3, '2020-07-16', '22:02:38', '2020-07-16 22:02:38');
-INSERT INTO `xq_history` VALUES (79, 1, 'image_subject', 24, 3, '2020-07-16', '22:02:34', '2020-07-16 22:02:34');
-INSERT INTO `xq_history` VALUES (80, 4, 'image_subject', 24, 3, '2020-07-16', '18:15:36', '2020-07-16 18:15:36');
-INSERT INTO `xq_history` VALUES (81, 4, 'image_subject', 30, 3, '2020-07-16', '18:15:37', '2020-07-16 18:15:37');
-INSERT INTO `xq_history` VALUES (82, 1, 'image_subject', 30, 3, '2020-07-16', '22:05:08', '2020-07-16 22:05:08');
-INSERT INTO `xq_history` VALUES (83, 1, 'image_subject', 12, 1, '2020-07-16', '22:26:32', '2020-07-16 22:26:32');
-INSERT INTO `xq_history` VALUES (84, 1, 'image_subject', 29, 1, '2020-07-16', '20:48:23', '2020-07-16 20:48:23');
-INSERT INTO `xq_history` VALUES (85, 1, 'image_subject', 30, 1, '2020-07-16', '20:48:43', '2020-07-16 20:48:43');
-INSERT INTO `xq_history` VALUES (86, 1, 'image_subject', 27, 3, '2020-07-16', '21:51:15', '2020-07-16 21:51:15');
-INSERT INTO `xq_history` VALUES (87, 1, 'image_subject', 26, 3, '2020-07-16', '22:00:06', '2020-07-16 22:00:06');
-INSERT INTO `xq_history` VALUES (88, 1, 'image_subject', 28, 3, '2020-07-16', '22:28:04', '2020-07-16 22:28:04');
-INSERT INTO `xq_history` VALUES (89, 1, 'image_subject', 21, 3, '2020-07-16', '21:59:58', '2020-07-16 21:59:58');
-INSERT INTO `xq_history` VALUES (90, 1, 'image_subject', 23, 3, '2020-07-16', '22:26:22', '2020-07-16 22:26:22');
-INSERT INTO `xq_history` VALUES (91, 1, 'image_subject', 20, 1, '2020-07-16', '22:27:49', '2020-07-16 22:27:49');
-INSERT INTO `xq_history` VALUES (92, 1, 'image_subject', 17, 1, '2020-07-16', '22:28:15', '2020-07-16 22:28:15');
-INSERT INTO `xq_history` VALUES (93, 1, 'image_subject', 19, 1, '2020-07-17', '00:28:19', '2020-07-17 00:28:19');
-INSERT INTO `xq_history` VALUES (94, 1, 'image_subject', 17, 1, '2020-07-17', '00:50:28', '2020-07-17 00:50:28');
-INSERT INTO `xq_history` VALUES (95, 1, 'image_subject', 20, 1, '2020-07-17', '00:28:06', '2020-07-17 00:28:06');
-INSERT INTO `xq_history` VALUES (96, 1, 'image_subject', 29, 3, '2020-07-17', '00:45:06', '2020-07-17 00:45:06');
-INSERT INTO `xq_history` VALUES (97, 1, 'image_subject', 28, 3, '2020-07-17', '00:49:52', '2020-07-17 00:49:52');
-INSERT INTO `xq_history` VALUES (98, 1, 'image_subject', 27, 3, '2020-07-17', '00:56:29', '2020-07-17 00:56:29');
-INSERT INTO `xq_history` VALUES (99, 1, 'image_subject', 30, 3, '2020-07-17', '00:56:41', '2020-07-17 00:56:41');
-INSERT INTO `xq_history` VALUES (100, 1, 'image_subject', 26, 3, '2020-07-17', '00:56:44', '2020-07-17 00:56:44');
+INSERT INTO `xq_history` VALUES (32, 1, 'image_project', 13, 1, '2020-07-11', '23:45:07', '2020-07-11 23:45:07');
+INSERT INTO `xq_history` VALUES (33, 1, 'image_project', 17, 1, '2020-07-11', '23:43:33', '2020-07-11 23:43:33');
+INSERT INTO `xq_history` VALUES (36, 1, 'image_project', 20, 1, '2020-07-11', '23:46:50', '2020-07-11 23:46:50');
+INSERT INTO `xq_history` VALUES (38, 1, 'image_project', 13, 1, '2020-07-12', '00:02:20', '2020-07-12 00:02:20');
+INSERT INTO `xq_history` VALUES (39, 1, 'image_project', 46, 5, '2020-07-12', '00:36:52', '2020-07-12 00:36:52');
+INSERT INTO `xq_history` VALUES (40, 1, 'image_project', 45, 5, '2020-07-12', '00:22:13', '2020-07-12 00:22:13');
+INSERT INTO `xq_history` VALUES (41, 1, 'image_project', 39, 4, '2020-07-12', '00:23:59', '2020-07-12 00:23:59');
+INSERT INTO `xq_history` VALUES (42, 1, 'image_project', 38, 4, '2020-07-12', '00:35:15', '2020-07-12 00:35:15');
+INSERT INTO `xq_history` VALUES (43, 1, 'image_project', 42, 5, '2020-07-12', '00:36:03', '2020-07-12 00:36:03');
+INSERT INTO `xq_history` VALUES (44, 1, 'image_project', 31, 4, '2020-07-12', '00:38:13', '2020-07-12 00:38:13');
+INSERT INTO `xq_history` VALUES (45, 1, 'image_project', 36, 4, '2020-07-12', '00:38:58', '2020-07-12 00:38:58');
+INSERT INTO `xq_history` VALUES (46, 1, 'image_project', 20, 1, '2020-07-12', '00:39:53', '2020-07-12 00:39:53');
+INSERT INTO `xq_history` VALUES (48, 1, 'image_project', 12, 1, '2020-07-12', '00:45:41', '2020-07-12 00:45:41');
+INSERT INTO `xq_history` VALUES (49, 1, 'image_project', 12, 5, '2020-07-12', '00:45:58', '2020-07-12 00:45:58');
+INSERT INTO `xq_history` VALUES (50, 1, 'image_project', 46, 4, '2020-07-12', '00:52:28', '2020-07-12 00:52:28');
+INSERT INTO `xq_history` VALUES (52, 1, 'image_project', 26, 3, '2020-07-12', '11:03:45', '2020-07-12 11:03:45');
+INSERT INTO `xq_history` VALUES (53, 1, 'image_project', 29, 3, '2020-07-12', '18:16:56', '2020-07-12 18:16:56');
+INSERT INTO `xq_history` VALUES (54, 1, 'image_project', 29, 3, '2020-07-13', '22:53:41', '2020-07-13 22:53:41');
+INSERT INTO `xq_history` VALUES (55, 1, 'image_project', 30, 3, '2020-07-13', '22:20:48', '2020-07-13 22:20:48');
+INSERT INTO `xq_history` VALUES (56, 1, 'image_project', 27, 3, '2020-07-13', '23:03:03', '2020-07-13 23:03:03');
+INSERT INTO `xq_history` VALUES (57, 1, 'image_project', 24, 3, '2020-07-13', '21:57:22', '2020-07-13 21:57:22');
+INSERT INTO `xq_history` VALUES (58, 1, 'image_project', 20, 1, '2020-07-13', '22:15:09', '2020-07-13 22:15:09');
+INSERT INTO `xq_history` VALUES (59, 1, 'image_project', 19, 1, '2020-07-13', '22:14:06', '2020-07-13 22:14:06');
+INSERT INTO `xq_history` VALUES (60, 1, 'image_project', 17, 1, '2020-07-13', '22:14:30', '2020-07-13 22:14:30');
+INSERT INTO `xq_history` VALUES (61, 1, 'image_project', 23, 3, '2020-07-13', '22:25:54', '2020-07-13 22:25:54');
+INSERT INTO `xq_history` VALUES (63, 1, 'image_project', 19, 1, '2020-07-15', '16:10:34', '2020-07-15 16:10:34');
+INSERT INTO `xq_history` VALUES (64, 1, 'image_project', 23, 3, '2020-07-15', '15:48:48', '2020-07-15 15:48:48');
+INSERT INTO `xq_history` VALUES (65, 1, 'image_project', 17, 1, '2020-07-15', '02:38:08', '2020-07-15 02:38:08');
+INSERT INTO `xq_history` VALUES (66, 1, 'image_project', 27, 3, '2020-07-15', '15:48:25', '2020-07-15 15:48:25');
+INSERT INTO `xq_history` VALUES (67, 1, 'image_project', 28, 3, '2020-07-15', '15:33:16', '2020-07-15 15:33:16');
+INSERT INTO `xq_history` VALUES (68, 1, 'image_project', 30, 3, '2020-07-15', '15:48:46', '2020-07-15 15:48:46');
+INSERT INTO `xq_history` VALUES (69, 1, 'image_project', 29, 3, '2020-07-15', '23:18:21', '2020-07-15 23:18:21');
+INSERT INTO `xq_history` VALUES (70, 1, 'image_project', 24, 3, '2020-07-15', '20:15:23', '2020-07-15 20:15:23');
+INSERT INTO `xq_history` VALUES (71, 1, 'image_project', 21, 3, '2020-07-15', '15:42:28', '2020-07-15 15:42:28');
+INSERT INTO `xq_history` VALUES (72, 1, 'image_project', 22, 3, '2020-07-15', '15:42:36', '2020-07-15 15:42:36');
+INSERT INTO `xq_history` VALUES (73, 1, 'image_project', 26, 3, '2020-07-15', '15:43:01', '2020-07-15 15:43:01');
+INSERT INTO `xq_history` VALUES (74, 1, 'image_project', 25, 3, '2020-07-15', '15:43:40', '2020-07-15 15:43:40');
+INSERT INTO `xq_history` VALUES (75, 1, 'image_project', 14, 1, '2020-07-15', '16:10:13', '2020-07-15 16:10:13');
+INSERT INTO `xq_history` VALUES (76, 1, 'image_project', 20, 1, '2020-07-15', '16:10:28', '2020-07-15 16:10:28');
+INSERT INTO `xq_history` VALUES (77, 1, 'image_project', 13, 1, '2020-07-15', '16:11:14', '2020-07-15 16:11:14');
+INSERT INTO `xq_history` VALUES (78, 1, 'image_project', 29, 3, '2020-07-16', '22:02:38', '2020-07-16 22:02:38');
+INSERT INTO `xq_history` VALUES (79, 1, 'image_project', 24, 3, '2020-07-16', '22:02:34', '2020-07-16 22:02:34');
+INSERT INTO `xq_history` VALUES (80, 4, 'image_project', 24, 3, '2020-07-16', '18:15:36', '2020-07-16 18:15:36');
+INSERT INTO `xq_history` VALUES (81, 4, 'image_project', 30, 3, '2020-07-16', '18:15:37', '2020-07-16 18:15:37');
+INSERT INTO `xq_history` VALUES (82, 1, 'image_project', 30, 3, '2020-07-16', '22:05:08', '2020-07-16 22:05:08');
+INSERT INTO `xq_history` VALUES (83, 1, 'image_project', 12, 1, '2020-07-16', '22:26:32', '2020-07-16 22:26:32');
+INSERT INTO `xq_history` VALUES (84, 1, 'image_project', 29, 1, '2020-07-16', '20:48:23', '2020-07-16 20:48:23');
+INSERT INTO `xq_history` VALUES (85, 1, 'image_project', 30, 1, '2020-07-16', '20:48:43', '2020-07-16 20:48:43');
+INSERT INTO `xq_history` VALUES (86, 1, 'image_project', 27, 3, '2020-07-16', '21:51:15', '2020-07-16 21:51:15');
+INSERT INTO `xq_history` VALUES (87, 1, 'image_project', 26, 3, '2020-07-16', '22:00:06', '2020-07-16 22:00:06');
+INSERT INTO `xq_history` VALUES (88, 1, 'image_project', 28, 3, '2020-07-16', '22:28:04', '2020-07-16 22:28:04');
+INSERT INTO `xq_history` VALUES (89, 1, 'image_project', 21, 3, '2020-07-16', '21:59:58', '2020-07-16 21:59:58');
+INSERT INTO `xq_history` VALUES (90, 1, 'image_project', 23, 3, '2020-07-16', '22:26:22', '2020-07-16 22:26:22');
+INSERT INTO `xq_history` VALUES (91, 1, 'image_project', 20, 1, '2020-07-16', '22:27:49', '2020-07-16 22:27:49');
+INSERT INTO `xq_history` VALUES (92, 1, 'image_project', 17, 1, '2020-07-16', '22:28:15', '2020-07-16 22:28:15');
+INSERT INTO `xq_history` VALUES (93, 1, 'image_project', 19, 1, '2020-07-17', '00:28:19', '2020-07-17 00:28:19');
+INSERT INTO `xq_history` VALUES (94, 1, 'image_project', 17, 1, '2020-07-17', '00:50:28', '2020-07-17 00:50:28');
+INSERT INTO `xq_history` VALUES (95, 1, 'image_project', 20, 1, '2020-07-17', '00:28:06', '2020-07-17 00:28:06');
+INSERT INTO `xq_history` VALUES (96, 1, 'image_project', 29, 3, '2020-07-17', '00:45:06', '2020-07-17 00:45:06');
+INSERT INTO `xq_history` VALUES (97, 1, 'image_project', 28, 3, '2020-07-17', '00:49:52', '2020-07-17 00:49:52');
+INSERT INTO `xq_history` VALUES (98, 1, 'image_project', 27, 3, '2020-07-17', '00:56:29', '2020-07-17 00:56:29');
+INSERT INTO `xq_history` VALUES (99, 1, 'image_project', 30, 3, '2020-07-17', '00:56:41', '2020-07-17 00:56:41');
+INSERT INTO `xq_history` VALUES (100, 1, 'image_project', 26, 3, '2020-07-17', '00:56:44', '2020-07-17 00:56:44');
 
 -- ----------------------------
 -- Table structure for xq_image
@@ -1533,7 +1533,7 @@ CREATE TABLE `xq_position`  (
 -- Records of xq_position
 -- ----------------------------
 INSERT INTO `xq_position` VALUES (1, 'home_slideshow', '首页幻灯片', '', 'web', '2020-07-13 16:24:16');
-INSERT INTO `xq_position` VALUES (2, 'image_subject', '图片专题-幻灯片', '', 'web', '2020-07-13 16:27:31');
+INSERT INTO `xq_position` VALUES (2, 'image_project', '图片专题-幻灯片', '', 'web', '2020-07-13 16:27:31');
 
 -- ----------------------------
 -- Table structure for xq_praise
@@ -1553,23 +1553,23 @@ CREATE TABLE `xq_praise`  (
 -- ----------------------------
 -- Records of xq_praise
 -- ----------------------------
-INSERT INTO `xq_praise` VALUES (36, 1, 'image_subject', 23, 3, '2020-07-08 13:26:38');
-INSERT INTO `xq_praise` VALUES (61, 1, 'image_subject', 16, 1, '2020-07-11 23:43:19');
-INSERT INTO `xq_praise` VALUES (62, 1, 'image_subject', 20, 1, '2020-07-11 23:43:21');
-INSERT INTO `xq_praise` VALUES (63, 1, 'image_subject', 12, 1, '2020-07-11 23:43:23');
-INSERT INTO `xq_praise` VALUES (64, 1, 'image_subject', 18, 1, '2020-07-11 23:43:27');
-INSERT INTO `xq_praise` VALUES (65, 1, 'image_subject', 17, 1, '2020-07-11 23:43:30');
-INSERT INTO `xq_praise` VALUES (66, 1, 'image_subject', 45, 5, '2020-07-12 00:22:22');
-INSERT INTO `xq_praise` VALUES (69, 1, 'image_subject', 38, 4, '2020-07-12 00:38:53');
-INSERT INTO `xq_praise` VALUES (70, 1, 'image_subject', 37, 4, '2020-07-12 00:38:54');
-INSERT INTO `xq_praise` VALUES (71, 1, 'image_subject', 36, 4, '2020-07-12 00:38:55');
-INSERT INTO `xq_praise` VALUES (73, 1, 'image_subject', 24, 3, '2020-07-13 21:57:27');
-INSERT INTO `xq_praise` VALUES (85, 1, 'image_subject', 29, 3, '2020-07-15 21:59:08');
-INSERT INTO `xq_praise` VALUES (88, 1, 'image_subject', 30, 3, '2020-07-16 12:57:31');
-INSERT INTO `xq_praise` VALUES (100, 1, 'image_subject', 26, 3, '2020-07-16 22:00:14');
-INSERT INTO `xq_praise` VALUES (101, 1, 'image_subject', 28, 3, '2020-07-16 22:04:38');
-INSERT INTO `xq_praise` VALUES (102, 1, 'image_subject', 19, 1, '2020-07-17 00:20:16');
-INSERT INTO `xq_praise` VALUES (103, 1, 'image_subject', 27, 3, '2020-07-17 00:44:35');
+INSERT INTO `xq_praise` VALUES (36, 1, 'image_project', 23, 3, '2020-07-08 13:26:38');
+INSERT INTO `xq_praise` VALUES (61, 1, 'image_project', 16, 1, '2020-07-11 23:43:19');
+INSERT INTO `xq_praise` VALUES (62, 1, 'image_project', 20, 1, '2020-07-11 23:43:21');
+INSERT INTO `xq_praise` VALUES (63, 1, 'image_project', 12, 1, '2020-07-11 23:43:23');
+INSERT INTO `xq_praise` VALUES (64, 1, 'image_project', 18, 1, '2020-07-11 23:43:27');
+INSERT INTO `xq_praise` VALUES (65, 1, 'image_project', 17, 1, '2020-07-11 23:43:30');
+INSERT INTO `xq_praise` VALUES (66, 1, 'image_project', 45, 5, '2020-07-12 00:22:22');
+INSERT INTO `xq_praise` VALUES (69, 1, 'image_project', 38, 4, '2020-07-12 00:38:53');
+INSERT INTO `xq_praise` VALUES (70, 1, 'image_project', 37, 4, '2020-07-12 00:38:54');
+INSERT INTO `xq_praise` VALUES (71, 1, 'image_project', 36, 4, '2020-07-12 00:38:55');
+INSERT INTO `xq_praise` VALUES (73, 1, 'image_project', 24, 3, '2020-07-13 21:57:27');
+INSERT INTO `xq_praise` VALUES (85, 1, 'image_project', 29, 3, '2020-07-15 21:59:08');
+INSERT INTO `xq_praise` VALUES (88, 1, 'image_project', 30, 3, '2020-07-16 12:57:31');
+INSERT INTO `xq_praise` VALUES (100, 1, 'image_project', 26, 3, '2020-07-16 22:00:14');
+INSERT INTO `xq_praise` VALUES (101, 1, 'image_project', 28, 3, '2020-07-16 22:04:38');
+INSERT INTO `xq_praise` VALUES (102, 1, 'image_project', 19, 1, '2020-07-17 00:20:16');
+INSERT INTO `xq_praise` VALUES (103, 1, 'image_project', 27, 3, '2020-07-17 00:44:35');
 
 -- ----------------------------
 -- Table structure for xq_relation_tag
@@ -1588,58 +1588,58 @@ CREATE TABLE `xq_relation_tag`  (
 -- ----------------------------
 -- Records of xq_relation_tag
 -- ----------------------------
-INSERT INTO `xq_relation_tag` VALUES (15, 48, '雪嫩肌肤', 'image_subject', 13, 1);
-INSERT INTO `xq_relation_tag` VALUES (16, 49, '惊艳', 'image_subject', 13, 1);
-INSERT INTO `xq_relation_tag` VALUES (18, 51, '诱人', 'image_subject', 13, 1);
-INSERT INTO `xq_relation_tag` VALUES (19, 52, '少女', 'image_subject', 13, 1);
-INSERT INTO `xq_relation_tag` VALUES (21, 22, '嫩模', 'image_subject', 15, 1);
-INSERT INTO `xq_relation_tag` VALUES (22, 23, '乳沟', 'image_subject', 15, 1);
-INSERT INTO `xq_relation_tag` VALUES (23, 24, '童颜巨乳', 'image_subject', 15, 1);
-INSERT INTO `xq_relation_tag` VALUES (24, 25, '酥胸', 'image_subject', 15, 1);
-INSERT INTO `xq_relation_tag` VALUES (25, 26, '胴体', 'image_subject', 15, 1);
-INSERT INTO `xq_relation_tag` VALUES (26, 27, '若隐如现', 'image_subject', 15, 1);
-INSERT INTO `xq_relation_tag` VALUES (27, 24, '童颜巨乳', 'image_subject', 14, 1);
-INSERT INTO `xq_relation_tag` VALUES (28, 25, '酥胸', 'image_subject', 14, 1);
-INSERT INTO `xq_relation_tag` VALUES (29, 26, '胴体', 'image_subject', 14, 1);
-INSERT INTO `xq_relation_tag` VALUES (30, 27, '若隐如现', 'image_subject', 14, 1);
-INSERT INTO `xq_relation_tag` VALUES (31, 23, '乳沟', 'image_subject', 16, 1);
-INSERT INTO `xq_relation_tag` VALUES (32, 24, '童颜巨乳', 'image_subject', 16, 1);
-INSERT INTO `xq_relation_tag` VALUES (33, 25, '酥胸', 'image_subject', 16, 1);
-INSERT INTO `xq_relation_tag` VALUES (34, 26, '胴体', 'image_subject', 16, 1);
-INSERT INTO `xq_relation_tag` VALUES (35, 27, '若隐如现', 'image_subject', 16, 1);
-INSERT INTO `xq_relation_tag` VALUES (43, 24, '童颜巨乳', 'image_subject', 19, 1);
-INSERT INTO `xq_relation_tag` VALUES (47, 22, '嫩模', 'image_subject', 20, 1);
-INSERT INTO `xq_relation_tag` VALUES (48, 23, '乳沟', 'image_subject', 20, 1);
-INSERT INTO `xq_relation_tag` VALUES (49, 24, '童颜巨乳', 'image_subject', 20, 1);
-INSERT INTO `xq_relation_tag` VALUES (50, 25, '酥胸', 'image_subject', 20, 1);
-INSERT INTO `xq_relation_tag` VALUES (51, 26, '胴体', 'image_subject', 20, 1);
-INSERT INTO `xq_relation_tag` VALUES (52, 27, '若隐如现', 'image_subject', 20, 1);
-INSERT INTO `xq_relation_tag` VALUES (65, 53, 'ACG', 'image_subject', 18, 1);
-INSERT INTO `xq_relation_tag` VALUES (68, 26, '胴体', 'image_subject', 12, 1);
-INSERT INTO `xq_relation_tag` VALUES (72, 24, '童颜巨乳', 'image_subject', 12, 1);
-INSERT INTO `xq_relation_tag` VALUES (73, 56, '美臀', 'image_subject', 12, 1);
-INSERT INTO `xq_relation_tag` VALUES (74, 51, '诱人', 'image_subject', 12, 1);
-INSERT INTO `xq_relation_tag` VALUES (75, 58, '娃娃脸', 'image_subject', 19, 1);
-INSERT INTO `xq_relation_tag` VALUES (76, 59, '御姐', 'image_subject', 17, 1);
-INSERT INTO `xq_relation_tag` VALUES (77, 24, '童颜巨乳', 'image_subject', 17, 1);
-INSERT INTO `xq_relation_tag` VALUES (78, 60, '美艳', 'image_subject', 17, 1);
-INSERT INTO `xq_relation_tag` VALUES (79, 66, 'ACG', 'image_subject', 22, 3);
-INSERT INTO `xq_relation_tag` VALUES (80, 66, 'ACG', 'image_subject', 23, 3);
-INSERT INTO `xq_relation_tag` VALUES (81, 66, 'ACG', 'image_subject', 24, 3);
-INSERT INTO `xq_relation_tag` VALUES (82, 66, 'ACG', 'image_subject', 25, 3);
-INSERT INTO `xq_relation_tag` VALUES (83, 66, 'ACG', 'image_subject', 26, 3);
-INSERT INTO `xq_relation_tag` VALUES (84, 66, 'ACG', 'image_subject', 27, 3);
-INSERT INTO `xq_relation_tag` VALUES (85, 66, 'ACG', 'image_subject', 28, 3);
-INSERT INTO `xq_relation_tag` VALUES (86, 66, 'ACG', 'image_subject', 29, 3);
-INSERT INTO `xq_relation_tag` VALUES (87, 66, 'ACG', 'image_subject', 30, 3);
-INSERT INTO `xq_relation_tag` VALUES (90, 69, '勇者传说', 'image_subject', 29, 3);
-INSERT INTO `xq_relation_tag` VALUES (133, 67, '唯美', 'image_subject', 24, 3);
-INSERT INTO `xq_relation_tag` VALUES (134, 70, '圣剑传说', 'image_subject', 24, 3);
-INSERT INTO `xq_relation_tag` VALUES (135, 72, '黑暗之魂', 'image_subject', 24, 3);
-INSERT INTO `xq_relation_tag` VALUES (136, 66, 'ACG', 'image_subject', 21, 3);
-INSERT INTO `xq_relation_tag` VALUES (137, 67, '唯美', 'image_subject', 21, 3);
-INSERT INTO `xq_relation_tag` VALUES (138, 70, '圣剑传说', 'image_subject', 21, 3);
-INSERT INTO `xq_relation_tag` VALUES (139, 72, '黑暗之魂', 'image_subject', 21, 3);
+INSERT INTO `xq_relation_tag` VALUES (15, 48, '雪嫩肌肤', 'image_project', 13, 1);
+INSERT INTO `xq_relation_tag` VALUES (16, 49, '惊艳', 'image_project', 13, 1);
+INSERT INTO `xq_relation_tag` VALUES (18, 51, '诱人', 'image_project', 13, 1);
+INSERT INTO `xq_relation_tag` VALUES (19, 52, '少女', 'image_project', 13, 1);
+INSERT INTO `xq_relation_tag` VALUES (21, 22, '嫩模', 'image_project', 15, 1);
+INSERT INTO `xq_relation_tag` VALUES (22, 23, '乳沟', 'image_project', 15, 1);
+INSERT INTO `xq_relation_tag` VALUES (23, 24, '童颜巨乳', 'image_project', 15, 1);
+INSERT INTO `xq_relation_tag` VALUES (24, 25, '酥胸', 'image_project', 15, 1);
+INSERT INTO `xq_relation_tag` VALUES (25, 26, '胴体', 'image_project', 15, 1);
+INSERT INTO `xq_relation_tag` VALUES (26, 27, '若隐如现', 'image_project', 15, 1);
+INSERT INTO `xq_relation_tag` VALUES (27, 24, '童颜巨乳', 'image_project', 14, 1);
+INSERT INTO `xq_relation_tag` VALUES (28, 25, '酥胸', 'image_project', 14, 1);
+INSERT INTO `xq_relation_tag` VALUES (29, 26, '胴体', 'image_project', 14, 1);
+INSERT INTO `xq_relation_tag` VALUES (30, 27, '若隐如现', 'image_project', 14, 1);
+INSERT INTO `xq_relation_tag` VALUES (31, 23, '乳沟', 'image_project', 16, 1);
+INSERT INTO `xq_relation_tag` VALUES (32, 24, '童颜巨乳', 'image_project', 16, 1);
+INSERT INTO `xq_relation_tag` VALUES (33, 25, '酥胸', 'image_project', 16, 1);
+INSERT INTO `xq_relation_tag` VALUES (34, 26, '胴体', 'image_project', 16, 1);
+INSERT INTO `xq_relation_tag` VALUES (35, 27, '若隐如现', 'image_project', 16, 1);
+INSERT INTO `xq_relation_tag` VALUES (43, 24, '童颜巨乳', 'image_project', 19, 1);
+INSERT INTO `xq_relation_tag` VALUES (47, 22, '嫩模', 'image_project', 20, 1);
+INSERT INTO `xq_relation_tag` VALUES (48, 23, '乳沟', 'image_project', 20, 1);
+INSERT INTO `xq_relation_tag` VALUES (49, 24, '童颜巨乳', 'image_project', 20, 1);
+INSERT INTO `xq_relation_tag` VALUES (50, 25, '酥胸', 'image_project', 20, 1);
+INSERT INTO `xq_relation_tag` VALUES (51, 26, '胴体', 'image_project', 20, 1);
+INSERT INTO `xq_relation_tag` VALUES (52, 27, '若隐如现', 'image_project', 20, 1);
+INSERT INTO `xq_relation_tag` VALUES (65, 53, 'ACG', 'image_project', 18, 1);
+INSERT INTO `xq_relation_tag` VALUES (68, 26, '胴体', 'image_project', 12, 1);
+INSERT INTO `xq_relation_tag` VALUES (72, 24, '童颜巨乳', 'image_project', 12, 1);
+INSERT INTO `xq_relation_tag` VALUES (73, 56, '美臀', 'image_project', 12, 1);
+INSERT INTO `xq_relation_tag` VALUES (74, 51, '诱人', 'image_project', 12, 1);
+INSERT INTO `xq_relation_tag` VALUES (75, 58, '娃娃脸', 'image_project', 19, 1);
+INSERT INTO `xq_relation_tag` VALUES (76, 59, '御姐', 'image_project', 17, 1);
+INSERT INTO `xq_relation_tag` VALUES (77, 24, '童颜巨乳', 'image_project', 17, 1);
+INSERT INTO `xq_relation_tag` VALUES (78, 60, '美艳', 'image_project', 17, 1);
+INSERT INTO `xq_relation_tag` VALUES (79, 66, 'ACG', 'image_project', 22, 3);
+INSERT INTO `xq_relation_tag` VALUES (80, 66, 'ACG', 'image_project', 23, 3);
+INSERT INTO `xq_relation_tag` VALUES (81, 66, 'ACG', 'image_project', 24, 3);
+INSERT INTO `xq_relation_tag` VALUES (82, 66, 'ACG', 'image_project', 25, 3);
+INSERT INTO `xq_relation_tag` VALUES (83, 66, 'ACG', 'image_project', 26, 3);
+INSERT INTO `xq_relation_tag` VALUES (84, 66, 'ACG', 'image_project', 27, 3);
+INSERT INTO `xq_relation_tag` VALUES (85, 66, 'ACG', 'image_project', 28, 3);
+INSERT INTO `xq_relation_tag` VALUES (86, 66, 'ACG', 'image_project', 29, 3);
+INSERT INTO `xq_relation_tag` VALUES (87, 66, 'ACG', 'image_project', 30, 3);
+INSERT INTO `xq_relation_tag` VALUES (90, 69, '勇者传说', 'image_project', 29, 3);
+INSERT INTO `xq_relation_tag` VALUES (133, 67, '唯美', 'image_project', 24, 3);
+INSERT INTO `xq_relation_tag` VALUES (134, 70, '圣剑传说', 'image_project', 24, 3);
+INSERT INTO `xq_relation_tag` VALUES (135, 72, '黑暗之魂', 'image_project', 24, 3);
+INSERT INTO `xq_relation_tag` VALUES (136, 66, 'ACG', 'image_project', 21, 3);
+INSERT INTO `xq_relation_tag` VALUES (137, 67, '唯美', 'image_project', 21, 3);
+INSERT INTO `xq_relation_tag` VALUES (138, 70, '圣剑传说', 'image_project', 21, 3);
+INSERT INTO `xq_relation_tag` VALUES (139, 72, '黑暗之魂', 'image_project', 21, 3);
 
 -- ----------------------------
 -- Table structure for xq_role

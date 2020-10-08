@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class VideoSubjectModel extends Model
 {
-    protected $table = 'xq_video_subject';
+    protected $table = 'xq_video_project';
 
     public static function getNewestByFilterAndLimit(array $filter = [] , int $limit = 0): Collection
     {
@@ -41,12 +41,12 @@ class VideoSubjectModel extends Model
         }
 
         return self::selectRaw('vs.*, 
-                (select sum(play_count) from xq_video where type = ? and video_subject_id = vs.id) as play_count ,
-                (select sum(view_count) from xq_video where type = ? and video_subject_id = vs.id) as view_count , 
-                (select sum(praise_count) from xq_video where type = ? and video_subject_id = vs.id) as praise_count ,
-                (select sum(against_count) from xq_video where type = ? and video_subject_id = vs.id) as against_count
+                (select sum(play_count) from xq_video where type = ? and video_project_id = vs.id) as play_count ,
+                (select sum(view_count) from xq_video where type = ? and video_project_id = vs.id) as view_count , 
+                (select sum(praise_count) from xq_video where type = ? and video_project_id = vs.id) as praise_count ,
+                (select sum(against_count) from xq_video where type = ? and video_project_id = vs.id) as against_count
                 ' , ['pro' , 'pro' , 'pro' , 'pro'])
-            ->from('xq_video_subject as vs')
+            ->from('xq_video_project as vs')
             ->where($where)
             ->orderBy('praise_count' , 'desc')
             ->orderBy('play_count' , 'desc')
@@ -72,12 +72,12 @@ class VideoSubjectModel extends Model
             $where[] = ['type' , '=' , $filter['type']];
         }
         return self::selectRaw('vs.*, 
-                (select sum(play_count) from xq_video where type = ? and video_subject_id = vs.id) as play_count ,
-                (select sum(view_count) from xq_video where type = ? and video_subject_id = vs.id) as view_count , 
-                (select sum(praise_count) from xq_video where type = ? and video_subject_id = vs.id) as praise_count ,
-                (select sum(against_count) from xq_video where type = ? and video_subject_id = vs.id) as against_count
+                (select sum(play_count) from xq_video where type = ? and video_project_id = vs.id) as play_count ,
+                (select sum(view_count) from xq_video where type = ? and video_project_id = vs.id) as view_count , 
+                (select sum(praise_count) from xq_video where type = ? and video_project_id = vs.id) as praise_count ,
+                (select sum(against_count) from xq_video where type = ? and video_project_id = vs.id) as against_count
                 ' , ['pro' , 'pro' , 'pro' , 'pro'])
-            ->from('xq_video_subject as vs')
+            ->from('xq_video_project as vs')
             ->where($where)
             ->orderBy('praise_count' , 'desc')
             ->orderBy('play_count' , 'desc')
@@ -101,14 +101,14 @@ class VideoSubjectModel extends Model
             $where[] = ['vs.module_id' , '=' , $filter['module_id']];
         }
 
-        return self::from('xq_video_subject as vs')
+        return self::from('xq_video_project as vs')
             ->select('vs.*')
             ->where($where)
             ->whereExists(function($query) use($tag_id){
                 $query->from('xq_relation_tag')
                     ->where([
                         ['tag_id' , '=' , $tag_id] ,
-                        ['relation_type' , '=' , 'video_subject'] ,
+                        ['relation_type' , '=' , 'video_project'] ,
                     ])
                     ->whereRaw('vs.id = relation_id');
             })
@@ -129,12 +129,12 @@ class VideoSubjectModel extends Model
             $where[] = ['vs.module_id' , '=' , $filter['module_id']];
         }
 
-        return self::from('xq_video_subject as vs')
+        return self::from('xq_video_project as vs')
             ->where($where)
             ->whereExists(function($query) use($tag_ids){
                 $query->from('xq_relation_tag')
                     ->where([
-                        ['relation_type' , '=' , 'video_subject'] ,
+                        ['relation_type' , '=' , 'video_project'] ,
                     ])
                     ->whereIn('tag_id' , $tag_ids)
                     ->whereRaw('vs.id = relation_id');
@@ -155,14 +155,14 @@ class VideoSubjectModel extends Model
             $where[] = ['vs.module_id' , '=' , $filter['module_id']];
         }
 
-        return self::from('xq_video_subject as vs')
+        return self::from('xq_video_project as vs')
             ->where($where)
             ->whereExists(function($query) use($tag_ids){
                 $query->select('id')
                     ->selectRaw('count(id) as total')
                     ->from('xq_relation_tag')
                     ->where([
-                        ['relation_type' , '=' , 'video_subject'] ,
+                        ['relation_type' , '=' , 'video_project'] ,
                     ])
                     ->whereIn('tag_id' , $tag_ids)
                     ->whereRaw('vs.id = relation_id')
@@ -205,7 +205,7 @@ class VideoSubjectModel extends Model
             $where[] = ['vs.module_id' , '=' , $filter['module_id']];
         }
 
-        $query = self::from('xq_video_subject as vs')
+        $query = self::from('xq_video_project as vs')
             ->where($where);
 
         return $query->whereRaw("lower(vs.name) like ?" , ["%{$value}%"])
@@ -214,7 +214,7 @@ class VideoSubjectModel extends Model
                     ->selectRaw('count(id) as total')
                     ->from('xq_relation_tag')
                     ->where([
-                        ['relation_type' , '=' , 'video_subject'] ,
+                        ['relation_type' , '=' , 'video_project'] ,
                     ]);
                 if (!empty($filter['tag_ids'])) {
                     $query->whereIn('tag_id' , $filter['tag_ids'])
@@ -243,7 +243,7 @@ class VideoSubjectModel extends Model
             $where[] = ['vs.module_id' , '=' , $filter['module_id']];
         }
 
-        $query = self::from('xq_video_subject as vs')
+        $query = self::from('xq_video_project as vs')
             ->where($where);
 
         return $query->whereRaw("lower(vs.name) like ?" , ["%{$value}%"])
@@ -252,7 +252,7 @@ class VideoSubjectModel extends Model
                     ->selectRaw('count(id) as total')
                     ->from('xq_relation_tag')
                     ->where([
-                        ['relation_type' , '=' , 'video_subject'] ,
+                        ['relation_type' , '=' , 'video_project'] ,
                     ]);
 
                 if (!empty($filter['tag_ids'])) {
@@ -293,12 +293,12 @@ class VideoSubjectModel extends Model
         }
 
         return self::selectRaw('vs.*, 
-                (select sum(play_count) from xq_video where type = ? and video_subject_id = vs.id) as play_count ,
-                (select sum(view_count) from xq_video where type = ? and video_subject_id = vs.id) as view_count , 
-                (select sum(praise_count) from xq_video where type = ? and video_subject_id = vs.id) as praise_count ,
-                (select sum(against_count) from xq_video where type = ? and video_subject_id = vs.id) as against_count
+                (select sum(play_count) from xq_video where type = ? and video_project_id = vs.id) as play_count ,
+                (select sum(view_count) from xq_video where type = ? and video_project_id = vs.id) as view_count , 
+                (select sum(praise_count) from xq_video where type = ? and video_project_id = vs.id) as praise_count ,
+                (select sum(against_count) from xq_video where type = ? and video_project_id = vs.id) as against_count
                 ' , ['pro' , 'pro' , 'pro' , 'pro'])
-            ->from('xq_video_subject as vs')
+            ->from('xq_video_project as vs')
             ->where($where)
             ->orderBy('praise_count' , 'desc')
             ->orderBy('play_count' , 'desc')
@@ -309,12 +309,14 @@ class VideoSubjectModel extends Model
             ->get();
     }
 
-    public static function getByVideoSeriesIdAndExcludeVideoSubjectId(int $video_series_id , int $exclude_video_subject_id): Collection
+    public static function getByVideoSeriesIdAndExcludeVideoSubjectId(int $video_series_id , int $exclude_video_project_id): Collection
     {
         return self::where([
-                ['id' , '!=' , $exclude_video_subject_id] ,
+                ['id' , '!=' , $exclude_video_project_id] ,
                 ['video_series_id' , '=' , $video_series_id] ,
             ])
             ->get();
     }
+
+
 }

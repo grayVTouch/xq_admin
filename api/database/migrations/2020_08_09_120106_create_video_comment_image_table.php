@@ -19,7 +19,7 @@ class CreateVideoCommentImageTable extends Migration
         Schema::create($this->table , function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('video_id')->default(0)->comment('xq_video.id');
-            $table->unsignedBigInteger('video_subject_id')->default(0)->comment('缓存字段，xq_video.video_subject_id');
+            $table->unsignedBigInteger('video_project_id')->default(0)->comment('缓存字段，xq_video.video_project_id');
             $table->unsignedBigInteger('video_comment_id')->default(0)->comment('xq_video_comment.id');
             $table->string('path' , 500)->default('')->comment('路径');
 

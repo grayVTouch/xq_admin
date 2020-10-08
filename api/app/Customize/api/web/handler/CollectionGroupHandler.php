@@ -6,7 +6,7 @@ namespace App\Customize\api\web\handler;
 
 use App\Customize\api\web\model\CollectionGroupModel;
 use App\Customize\api\web\model\CollectionModel;
-use App\Customize\api\web\model\ImageSubjectModel;
+use App\Customize\api\web\model\ImageProjectModel;
 use App\Customize\api\web\model\ModuleModel;
 use App\Customize\api\web\model\UserModel;
 use App\Model\Model;
@@ -32,7 +32,7 @@ class CollectionGroupHandler extends Handler
         // 该收藏夹内的物品数量
         $res->count = CollectionModel::countByCollectionGroupId($res->id);
 //        $res->count = CollectionModel::countByModuleIdAndUserIdAndCollectionGroupId($res->module_id , $res->user_id , $res->id);
-        $res->count_for_image_subject = CollectionModel::countByCollectionGroupIdAndRelationType($res->id , 'image_subject');
+        $res->count_for_image_project = CollectionModel::countByCollectionGroupIdAndRelationType($res->id , 'image_project');
 
         $res->module = $module;
         $res->user = $user;
@@ -43,8 +43,8 @@ class CollectionGroupHandler extends Handler
         if (!empty($collection)) {
             switch ($collection->relation_type)
             {
-                case 'image_subject':
-                    $relation = ImageSubjectModel::find($collection->relation_id);
+                case 'image_project':
+                    $relation = ImageProjectModel::find($collection->relation_id);
                     $relation = ImageSubjectHandler::handle($relation);
                     $thumb = $relation->thumb;
                     break;

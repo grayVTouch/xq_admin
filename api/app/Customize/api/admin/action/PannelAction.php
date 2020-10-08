@@ -11,15 +11,15 @@ namespace App\Customize\api\admin\action;
 use App\Customize\api\admin\model\AdminModel;
 use App\Customize\api\admin\model\CategoryModel;
 use App\Customize\api\admin\model\FailedJobsModel;
-use App\Customize\api\admin\model\ImageSubjectModel;
+use App\Customize\api\admin\model\ImageProjectModel;
 use App\Customize\api\admin\model\ModuleModel;
-use App\Customize\api\admin\model\SubjectModel;
+use App\Customize\api\admin\model\ImageSubjectModel;
 use App\Customize\api\admin\model\TagModel;
 use App\Customize\api\admin\model\UserModel;
 use App\Customize\api\admin\model\VideoCompanyModel;
 use App\Customize\api\admin\model\VideoModel;
 use App\Customize\api\admin\model\VideoSeriesModel;
-use App\Customize\api\admin\model\VideoSubjectModel;
+use App\Customize\api\admin\model\VideoProjectModel;
 use App\Customize\api\admin\util\PannelUtil;
 use App\Http\Controllers\api\admin\Base;
 use App\Http\Controllers\api\admin\VideoCompany;
@@ -41,17 +41,17 @@ class PannelAction extends Action
         // 后台用户
         $admin_count_for_today                  = AdminModel::countByDate($today);
         // 图片专题
-        $image_subject_count_for_today          = ImageSubjectModel::countByDate($today);
+        $image_project_count_for_today          = ImageProjectModel::countByDate($today);
         // 标签
         $tag_count_for_today                    = TagModel::countByDate($today);
         // 模块
         $module_count_for_today                  = ModuleModel::countByDate($today);
         // 关联主体
-        $subject_count_for_today                  = SubjectModel::countByDate($today);
+        $subject_count_for_today                  = ImageSubjectModel::countByDate($today);
         // 视频数量
         $video_count_for_today                  = VideoModel::countByDate($today);
         // 视频专题
-        $video_subject_count_for_today          = VideoSubjectModel::countByDate($today);
+        $video_project_count_for_today          = VideoProjectModel::countByDate($today);
         // 视频系列
         $video_series_count_for_today                  = VideoSeriesModel::countByDate($today);
         // 视频制作公司
@@ -68,12 +68,12 @@ class PannelAction extends Action
         // 昨日
         $user_count_for_yesterday           = UserModel::countByDate($yesterday);
         $admin_count_for_yesterday          = AdminModel::countByDate($yesterday);
-        $image_subject_count_for_yesterday  = ImageSubjectModel::countByDate($yesterday);
+        $image_project_count_for_yesterday  = ImageProjectModel::countByDate($yesterday);
         $tag_count_for_yesterday            = TagModel::countByDate($yesterday);
         $module_count_for_yesterday         = ModuleModel::countByDate($yesterday);
-        $subject_count_for_yesterday        = SubjectModel::countByDate($yesterday);
+        $subject_count_for_yesterday        = ImageSubjectModel::countByDate($yesterday);
         $video_count_for_yesterday          = VideoModel::countByDate($yesterday);
-        $video_subject_count_for_yesterday  = VideoSubjectModel::countByDate($yesterday);
+        $video_project_count_for_yesterday  = VideoProjectModel::countByDate($yesterday);
         $video_series_count_for_yesterday   = VideoSeriesModel::countByDate($yesterday);
         $video_company_count_for_yesterday  = VideoCompanyModel::countByDate($yesterday);
         $category_count_for_yesterday  = CategoryModel::countByDate($yesterday);
@@ -84,12 +84,12 @@ class PannelAction extends Action
         // 比例
         $ratio_for_user             = PannelUtil::ratio($user_count_for_today , $user_count_for_yesterday);
         $ratio_for_admin            = PannelUtil::ratio($admin_count_for_today , $admin_count_for_yesterday);
-        $ratio_for_image_subject    = PannelUtil::ratio($image_subject_count_for_today , $image_subject_count_for_yesterday);
+        $ratio_for_image_project    = PannelUtil::ratio($image_project_count_for_today , $image_project_count_for_yesterday);
         $ratio_for_subject          = PannelUtil::ratio($subject_count_for_today , $subject_count_for_yesterday);
         $ratio_for_tag              = PannelUtil::ratio($tag_count_for_today , $tag_count_for_yesterday);
         $ratio_for_module           = PannelUtil::ratio($module_count_for_today , $module_count_for_yesterday);
         $ratio_for_video    = PannelUtil::ratio($video_count_for_today , $video_count_for_yesterday);
-        $ratio_for_video_subject    = PannelUtil::ratio($video_subject_count_for_today , $video_subject_count_for_yesterday);
+        $ratio_for_video_project    = PannelUtil::ratio($video_project_count_for_today , $video_project_count_for_yesterday);
         $ratio_for_video_series    = PannelUtil::ratio($video_series_count_for_today , $video_series_count_for_yesterday);
         $ratio_for_video_company    = PannelUtil::ratio($video_company_count_for_today , $video_company_count_for_yesterday);
         $ratio_for_category    = PannelUtil::ratio($category_count_for_today , $category_count_for_yesterday);
@@ -101,12 +101,12 @@ class PannelAction extends Action
         // 标志
         $flag_for_user = PannelUtil::flag($user_count_for_today  , $user_count_for_yesterday);
         $flag_for_admin            = PannelUtil::flag($admin_count_for_today , $admin_count_for_yesterday);
-        $flag_for_image_subject    = PannelUtil::flag($image_subject_count_for_today , $image_subject_count_for_yesterday);
+        $flag_for_image_project    = PannelUtil::flag($image_project_count_for_today , $image_project_count_for_yesterday);
         $flag_for_subject          = PannelUtil::flag($subject_count_for_today , $subject_count_for_yesterday);
         $flag_for_tag              = PannelUtil::flag($tag_count_for_today , $tag_count_for_yesterday);
         $flag_for_module           = PannelUtil::flag($module_count_for_today , $module_count_for_yesterday);
         $flag_for_video    = PannelUtil::flag($video_count_for_today , $video_count_for_yesterday);
-        $flag_for_video_subject    = PannelUtil::flag($video_subject_count_for_today , $video_subject_count_for_yesterday);
+        $flag_for_video_project    = PannelUtil::flag($video_project_count_for_today , $video_project_count_for_yesterday);
         $flag_for_video_series    = PannelUtil::flag($video_series_count_for_today , $video_series_count_for_yesterday);
         $flag_for_video_company    = PannelUtil::flag($video_company_count_for_today , $video_company_count_for_yesterday);
         $flag_for_category    = PannelUtil::flag($category_count_for_today , $category_count_for_yesterday);
@@ -117,12 +117,12 @@ class PannelAction extends Action
         // 总计
         $user_count = UserModel::count();
         $admin_count = AdminModel::count();
-        $image_subject_count = ImageSubjectModel::count();
-        $subject_count = SubjectModel::count();
+        $image_project_count = ImageProjectModel::count();
+        $subject_count = ImageSubjectModel::count();
         $tag_count = TagModel::count();
         $module_count = ModuleModel::count();
         $video_count = VideoModel::count();
-        $video_subject_count = VideoSubjectModel::count();
+        $video_project_count = VideoProjectModel::count();
         $video_series_count = VideoSeriesModel::count();
         $video_company_count = VideoCompanyModel::count();
         $category_count = VideoCompanyModel::count();
@@ -145,14 +145,14 @@ class PannelAction extends Action
                 'ratio'     => $ratio_for_admin ,
                 'total'     => $admin_count ,
             ] ,
-            'image_subject' => [
-                'today'     => $image_subject_count_for_today ,
-                'yesterday' => $image_subject_count_for_yesterday ,
-                'flag'      => $flag_for_image_subject ,
-                'ratio'     => $ratio_for_image_subject ,
-                'total'     => $image_subject_count ,
+            'image_project' => [
+                'today'     => $image_project_count_for_today ,
+                'yesterday' => $image_project_count_for_yesterday ,
+                'flag'      => $flag_for_image_project ,
+                'ratio'     => $ratio_for_image_project ,
+                'total'     => $image_project_count ,
             ] ,
-            'subject' => [
+            'image_subject' => [
                 'today'     => $subject_count_for_today ,
                 'yesterday' => $subject_count_for_yesterday ,
                 'flag'      => $flag_for_subject ,
@@ -180,12 +180,12 @@ class PannelAction extends Action
                 'ratio'     => $ratio_for_video ,
                 'total'     => $video_count ,
             ] ,
-            'video_subject' => [
-                'today'     => $video_subject_count_for_today ,
-                'yesterday' => $video_subject_count_for_yesterday ,
-                'flag'      => $flag_for_video_subject ,
-                'ratio'     => $ratio_for_video_subject ,
-                'total'     => $video_subject_count ,
+            'video_project' => [
+                'today'     => $video_project_count_for_today ,
+                'yesterday' => $video_project_count_for_yesterday ,
+                'flag'      => $flag_for_video_project ,
+                'ratio'     => $ratio_for_video_project ,
+                'total'     => $video_project_count ,
             ] ,
             'video_series' => [
                 'today'     => $video_series_count_for_today ,

@@ -39,6 +39,9 @@ class VideoCompany extends Base
         $param['country_id']        = $param['country_id'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
         $param['module_id']        = $param['module_id'] ?? '';
+        $param['user_id']       = $param['user_id'] ?? '';
+        $param['status']        = $param['status'] ?? '';
+        $param['fail_reason']   = $param['fail_reason'] ?? '';
         $res = VideoCompanyAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -50,11 +53,14 @@ class VideoCompany extends Base
     {
         $param = $this->request->post();
         $param['name']          = $param['name'] ?? '';
-        $param['thumb']        = $param['thumb'] ?? '';
-        $param['description']  = $param['description'] ?? '';
-        $param['country_id']        = $param['country_id'] ?? '';
+        $param['thumb']         = $param['thumb'] ?? '';
+        $param['description']   = $param['description'] ?? '';
+        $param['country_id']    = $param['country_id'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
-        $param['module_id']        = $param['module_id'] ?? '';
+        $param['module_id']     = $param['module_id'] ?? '';
+        $param['user_id']       = $param['user_id'] ?? '';
+        $param['status']        = $param['status'] ?? '';
+        $param['fail_reason']   = $param['fail_reason'] ?? '';
         $res = VideoCompanyAction::store($this ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);

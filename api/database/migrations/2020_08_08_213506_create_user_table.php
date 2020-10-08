@@ -27,6 +27,7 @@ class CreateUserTable extends Migration
             $table->string('last_ip' , 100)->default('')->comment('最近登录ip');
             $table->string('phone' , 50)->default('')->comment('手机');
             $table->string('email' , 50)->default('')->comment('电子邮件');
+            $table->tinyInteger('is_system')->default(0)->comment('系统用户？0-否 1-是');
             $table->unsignedBigInteger('user_group_id')->default(0)->comment('xq_user_group.id');
             $table->string('channel_thumb' , 500)->default('')->comment('频道封面');
             $table->string('description' , 1000)->default('')->comment('描述');

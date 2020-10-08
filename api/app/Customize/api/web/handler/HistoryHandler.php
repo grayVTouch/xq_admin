@@ -5,7 +5,7 @@ namespace App\Customize\api\web\handler;
 
 
 use App\Customize\api\web\model\HistoryModel;
-use App\Customize\api\web\model\ImageSubjectModel;
+use App\Customize\api\web\model\ImageProjectModel;
 use App\Customize\api\web\model\ModuleModel;
 use App\Customize\api\web\model\UserModel;
 use App\Model\Model;
@@ -30,8 +30,8 @@ class HistoryHandler extends Handler
         // 关联的主题
         switch ($res->relation_type)
         {
-            case 'image_subject':
-                $relation = ImageSubjectModel::find($res->relation_id);
+            case 'image_project':
+                $relation = ImageProjectModel::find($res->relation_id);
                 $relation = ImageSubjectHandler::handle($relation);
                 break;
             default:

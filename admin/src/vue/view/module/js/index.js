@@ -28,7 +28,7 @@ export default {
                 field: [
                     {
                         type: 'selection',
-                        minWidth: TopContext.table.checkbox ,
+                        width: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     },
@@ -81,7 +81,7 @@ export default {
                     } ,
                     {
                         title: '创建时间' ,
-                        key: 'create_time' ,
+                        key: 'created_at' ,
                         minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
@@ -146,7 +146,7 @@ export default {
                 this.pending(pendingKey , false);
                 if (code !== TopContext.code.Success) {
                     extra.data[extra.field] = oVal;
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.message('success' , '操作成功');
@@ -161,7 +161,7 @@ export default {
             Api.module.index(this.search , (msg , data , code) => {
                 this.pending('getData' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.table.total = data.total;
@@ -197,7 +197,7 @@ export default {
                 Api.module.destroyAll(idList , (msg , data , code) => {
                     if (code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
-                        this.message('error' , data);
+                        this.message('error' , msg);
                         return ;
                     }
                     G.invoke(callback , self , true);

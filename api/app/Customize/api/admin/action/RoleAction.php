@@ -21,7 +21,7 @@ use function api\admin\my_config;
 use function api\admin\parse_order;
 use function core\array_unit;
 use function core\convert_object;
-use function core\obj_to_array;
+use function core\object_to_array;
 
 class RoleAction extends Action
 {
@@ -29,9 +29,9 @@ class RoleAction extends Action
     {
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $paginator = RoleModel::index($param , $order , $limit);
-        $paginator = RoleHandler::handlePaginator($paginator);
-        return self::success('' , $paginator);
+        $res = RoleModel::index($param , $order , $limit);
+        $res = RoleHandler::handlePaginator($res);
+        return self::success('' , $res);
     }
 
     public static function update(Base $context , $id , array $param = [])

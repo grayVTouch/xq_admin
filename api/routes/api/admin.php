@@ -154,23 +154,6 @@ Route::prefix('admin')
              * 关联主体
              * ******************
              */
-            Route::get('subject' , 'Subject@index');
-            Route::get('subject/{id}' , 'Subject@show');
-            Route::patch('subject/{id}' , 'Subject@localUpdate');
-            Route::put('subject/{id}' , 'Subject@update');
-            Route::post('subject' , 'Subject@store');
-            // 特别注意，这边这个顺序不能更换
-            // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_subject' , 'Subject@destroyAll');
-            Route::delete('subject/{id}' , 'Subject@destroy');
-
-            Route::get('search_subject' , 'Subject@search');
-
-            /**
-             * ******************
-             * 图片主题
-             * ******************
-             */
             Route::get('image_subject' , 'ImageSubject@index');
             Route::get('image_subject/{id}' , 'ImageSubject@show');
             Route::patch('image_subject/{id}' , 'ImageSubject@localUpdate');
@@ -180,8 +163,25 @@ Route::prefix('admin')
             // 如果更换会导致 路由匹配出现不是期望的现象
             Route::delete('destroy_all_image_subject' , 'ImageSubject@destroyAll');
             Route::delete('image_subject/{id}' , 'ImageSubject@destroy');
-            Route::delete('destroy_all_image_for_image_subject' , 'ImageSubject@destroyImages');
-            Route::delete('destroy_image_subject_tag' , 'ImageSubject@destroyTag');
+
+            Route::get('search_image_subject' , 'ImageSubject@search');
+
+            /**
+             * ******************
+             * 图片专题
+             * ******************
+             */
+            Route::get('image_project' , 'ImageProject@index');
+            Route::get('image_project/{id}' , 'ImageProject@show');
+            Route::patch('image_project/{id}' , 'ImageProject@localUpdate');
+            Route::put('image_project/{id}' , 'ImageProject@update');
+            Route::post('image_project' , 'ImageProject@store');
+            // 特别注意，这边这个顺序不能更换
+            // 如果更换会导致 路由匹配出现不是期望的现象
+            Route::delete('destroy_all_image_project' , 'ImageProject@destroyAll');
+            Route::delete('image_project/{id}' , 'ImageProject@destroy');
+            Route::delete('destroy_all_image_for_image_project' , 'ImageProject@destroyImages');
+            Route::delete('destroy_image_project_tag' , 'ImageProject@destroyTag');
 
             /**
              * ******************
@@ -252,17 +252,17 @@ Route::prefix('admin')
              * 视频专题
              * ******************
              */
-            Route::get('video_subject' , 'VideoSubject@index');
-            Route::get('video_subject/{id}' , 'VideoSubject@show');
-            Route::patch('video_subject/{id}' , 'VideoSubject@localUpdate');
-            Route::put('video_subject/{id}' , 'VideoSubject@update');
-            Route::post('video_subject' , 'VideoSubject@store');
+            Route::get('video_project' , 'VideoProject@index');
+            Route::get('video_project/{id}' , 'VideoProject@show');
+            Route::patch('video_project/{id}' , 'VideoProject@localUpdate');
+            Route::put('video_project/{id}' , 'VideoProject@update');
+            Route::post('video_project' , 'VideoProject@store');
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_video_subject' , 'VideoSubject@destroyAll');
-            Route::delete('video_subject/{id}' , 'VideoSubject@destroy');
-            Route::get('search_video_subject' , 'VideoSubject@search');
-            Route::delete('destroy_video_subject_tag' , 'VideoSubject@destroyTag');
+            Route::delete('destroy_all_video_project' , 'VideoProject@destroyAll');
+            Route::delete('video_project/{id}' , 'VideoProject@destroy');
+            Route::get('search_video_project' , 'VideoProject@search');
+            Route::delete('destroy_video_project_tag' , 'VideoProject@destroyTag');
 
             /**
              * ******************
@@ -321,6 +321,7 @@ Route::prefix('admin')
             // 如果更换会导致 路由匹配出现不是期望的现象
             Route::delete('destroy_all_disk' , 'Disk@destroyAll');
             Route::delete('disk/{id}' , 'Disk@destroy');
+            Route::post('link_disk' , 'Disk@link');
 
             /***
              * 队列任务相关

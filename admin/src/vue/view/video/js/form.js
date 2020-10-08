@@ -3,14 +3,15 @@ const form = {
     user_id: '' ,
     module_id: '' ,
     category_id: '' ,
-    video_subject_id: '' ,
+    video_project_id: '' ,
     view_count: 0  ,
+    play_count: 0  ,
     praise_count: 0 ,
     against_count: 0 ,
     weight: 0 ,
     status: 0 ,
     merge_video_subtitle: 0 ,
-    index: 0 ,
+    index: 1 ,
 };
 
 const users = {
@@ -36,7 +37,7 @@ const users = {
         } ,
         {
             title: '创建时间' ,
-            key: 'create_time' ,
+            key: 'created_at' ,
             minWidth: TopContext.table.time ,
             center: TopContext.table.alignCenter ,
         } ,
@@ -57,7 +58,7 @@ const users = {
     total: 0 ,
 };
 
-const videoSubjects = {
+const videoProjects = {
     data: [],
     field: [
         {
@@ -86,7 +87,7 @@ const videoSubjects = {
         } ,
         {
             title: '创建时间' ,
-            key: 'create_time' ,
+            key: 'created_at' ,
             minWidth: TopContext.table.time ,
             center: TopContext.table.alignCenter ,
         } ,
@@ -129,7 +130,7 @@ export default {
                 error: {} ,
                 selectedIdsForVideo: [] ,
                 selectedIdsForSubtitle: [] ,
-                modalForSubject: false ,
+                modalForVideoProject: false ,
                 modalForUser: false ,
                 valueForUser: '' ,
                 drawer: false ,
@@ -139,7 +140,7 @@ export default {
             users: G.copy(users , true),
 
             // 关联主体
-            videoSubjects: G.copy(videoSubjects , true),
+            videoProjects: G.copy(videoProjects , true),
 
             // 标签
             tags: [] ,
@@ -156,7 +157,7 @@ export default {
                 field: [
                     {
                         type: 'selection' ,
-                        minWidth: TopContext.table.checkbox ,
+                        width: TopContext.table.checkbox ,
                         center: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     } ,
@@ -192,7 +193,7 @@ export default {
                 field: [
                     {
                         type: 'selection' ,
-                        minWidth: TopContext.table.checkbox ,
+                        width: TopContext.table.checkbox ,
                         center: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     } ,
@@ -271,10 +272,13 @@ export default {
 
         getCategories (moduleId , callback) {
             this.pending('getCategories' , true);
-            Api.category.searchByModuleId(moduleId , (msg , data , code) => {
+            Api.category.search({
+                module_id: this.form.module_id ,
+                type: this.form.type === 'pro' ? 'video_project' : 'video' ,
+            } , (msg , data , code) => {
                 this.pending('getCategories' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     G.invoke(callback , null , false);
                     return ;
                 }
@@ -290,7 +294,7 @@ export default {
             Api.module.all((msg , data , code) => {
                 this.pending('getModules' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     G.invoke(callback , null , false);
                     return ;
                 }
@@ -306,15 +310,17 @@ export default {
 
             this.error({module_id: ''} , false);
             this.form.category_id = '';
-            this.form.video_subject_id = '';
-            this.form.video_subject = G.copy(videoSubjects.current);
+            this.form.video_project_id = '';
+            this.form.video_project = G.copy(videoProjects.current);
             this.getCategories(moduleId);
         } ,
 
         typeChangedEvent (type) {
             if (type === 'misc') {
-                this.form.video_subject = G.copy(videoSubjects.current);
-                this.form.video_subject_id = '';
+                this.videoProjects.current  = G.copy(videoProjects.current);
+                this.form.video_project_id  = '';
+            } else {
+                this.form.category_id = 0;
             }
         } ,
 
@@ -363,6 +369,46 @@ export default {
             });
         } ,
 
+        searchVideoProject () {
+            this.pending('searchImageSubject' , true);
+            Api.video_project.search({
+                module_id: this.form.module_id ,
+                value: this.videoProjects.value ,
+            } , (msg , data , code) => {
+                this.pending('searchImageSubject' , false);
+                if (code !== TopContext.code.Success) {
+                    this.error({video_project_id: data});
+                    return ;
+                }
+                this.videoProjects.page = data.current_page;
+                this.videoProjects.total = data.total;
+                this.videoProjects.data = data.data;
+            });
+        } ,
+
+        searchVideoProjectEvent (e) {
+            if (this.form.module_id < 1) {
+                this.error({video_project_id: '请选择模块后操作'});
+                return ;
+            }
+            this.error({video_project_id: ''} , false);
+            this.searchVideoProject();
+            this._val('modalForVideoProject' , true);
+        } ,
+
+        updateVideoProjectEvent (row , index) {
+            this.val.error.video_project_id = '';
+            this.form.video_project_id = row.id;
+            this._val('modalForVideoProject' , false);
+            this.videoProjects.data = [];
+            this.videoProjects.current = row;
+        } ,
+
+        videoProjectPageEvent (page) {
+            this.videoProjects.page = page;
+            this.searchVideoProject();
+        } ,
+
         searchUser () {
             this.pending('searchUser' , true);
             Api.user.search(this.users.value , (msg , data , code) => {
@@ -377,37 +423,6 @@ export default {
             });
         } ,
 
-        userPageEvent (page) {
-            this.users.page = page;
-            this.searchUser();
-        } ,
-
-        searchVideoSubject () {
-            this.pending('searchSubject' , true);
-            Api.video_subject.search({
-                module_id: this.form.module_id ,
-                value: this.videoSubjects.value ,
-            } , (msg , data , code) => {
-                this.pending('searchSubject' , false);
-                if (code !== TopContext.code.Success) {
-                    this.error({video_subject_id: data});
-                    return ;
-                }
-                this.videoSubjects.page = data.current_page;
-                this.videoSubjects.total = data.total;
-                this.videoSubjects.data = data.data;
-            });
-        } ,
-
-        searchVideoSubjectEvent (e) {
-            if (this.form.module_id < 1) {
-                this.error({video_subject_id: '请选择模块后操作'});
-                return ;
-            }
-            this.error({video_subject_id: ''} , false);
-            this.searchVideoSubject();
-            this._val('modalForSubject' , true);
-        } ,
 
         searchUserEvent (e) {
             // 开始搜索
@@ -415,18 +430,34 @@ export default {
             this._val('modalForUser' , true);
         } ,
 
-        updateVideoSubjectEvent (row , index) {
-            this.form.video_subject_id = row.id;
-            this.form.video_subject = row;
-            this._val('modalForSubject' , false);
-            this.videoSubjects.data = [];
-        } ,
-
         updateUserEvent (row , index) {
+            this.val.error.user_id = '';
             this.form.user_id = row.id;
-            this.form.user = row;
             this._val('modalForUser' , false);
             this.users.data = [];
+            this.users.current = row;
+        } ,
+
+        userPageEvent (page) {
+            this.users.page = page;
+            this.searchUser();
+        } ,
+
+        // 获取当前编辑记录详情
+        findById (id) {
+            this._val('findById' , true);
+            return new Promise((resolve , reject) => {
+                Api.video.show(id , (msg , data , code) => {
+                    this._val('findById' , false);
+                    if (code !== TopContext.code.Success) {
+                        this.message('error' , msg);
+                        reject();
+                        return ;
+                    }
+                    this.form = data;
+                    resolve();
+                });
+            });
         } ,
 
         openFormDrawer () {
@@ -434,6 +465,13 @@ export default {
             this.getModules();
             if (this.mode === 'edit') {
                 this.getCategories(this.form.module_id);
+                this.findById(this.data.id).then((res) => {
+                    this.ins.thumb.render(this.form.thumb);
+                    this.users.current = this.form.user ? this.form.user : G.copy(users.current);
+                    this.videoProjects.current = this.form.video_project ? this.form.video_project : G.copy(videoProjects.current);
+                    this.videos.data = this.form.videos;
+                    this.videoSubtitles.data = this.form.video_subtitles;
+                });
             }
         } ,
 
@@ -451,7 +489,7 @@ export default {
             // 切换回基本的内容
             this._val('tab' , 'base');
             this.users.value = '';
-            this.videoSubjects.value = '';
+            this.videoProjects.value = '';
         } ,
 
 
@@ -656,37 +694,13 @@ export default {
             Api.video.store(form , callback);
         } ,
 
-        setDatetimeEvent (date) {
-            this.form.create_time = date;
-        } ,
-
         changeEventTest (value) {
             console.log('i-select changed' , value , JSON.stringify(this.modules));
         } ,
     } ,
 
     watch: {
-        data (data) {
-            if (G.isEmptyObject(data)) {
-                this.form = G.copy(form);
-            } else {
-                this.form = data;
-            }
-            // 仅在外界传入的时候初始化图片
-            this.ins.thumb.render(this.form.thumb);
-            // this.ins.video.render(form.src);
-        } ,
 
-        form: {
-            deep: true ,
-            handler (form) {
-                this.users.current = form.user ? form.user : G.copy(users.current);
-                this.videoSubjects.current = form.video_subject ? form.video_subject : G.copy(videoSubjects.current);
-                this.videos.data = form.videos;
-                this.videoSubtitles.data = form.video_subtitles;
-                this.createTime = form.create_time;
-            } ,
-        } ,
     } ,
 };
 

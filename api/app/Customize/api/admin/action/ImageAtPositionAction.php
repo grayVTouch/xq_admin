@@ -23,9 +23,9 @@ class ImageAtPositionAction extends Action
     {
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $paginator = ImageAtPositionModel::index($param , $order , $limit);
-        $paginator = ImageAtPositionHandler::handlePaginator($paginator);
-        return self::success('' , $paginator);
+        $res = ImageAtPositionModel::index($param , $order , $limit);
+        $res = ImageAtPositionHandler::handlePaginator($res);
+        return self::success('' , $res);
     }
 
     public static function update(Base $context , $id , array $param = [])

@@ -58,7 +58,7 @@ Route::prefix('web')
             // 这种情况下，就会出现定义的具体路由不生效的情况
             Route::get('image_subject/subject' , 'ImageSubject@subject');
             Route::get('image_subject/{id}' , 'ImageSubject@show');
-            Route::get('image_subject' , 'ImageSubject@index');
+            Route::get('image_project' , 'ImageSubject@index');
 
 
             Route::get('subject/{id}' , 'Subject@show');
@@ -86,18 +86,18 @@ Route::prefix('web')
              * 视频专题
              * ************************************
              */
-            Route::get('/video_subject/newest' , 'VideoSubject@newest');
-            Route::get('/video_subject/hot_tags' , 'VideoSubject@hotTags');
-            Route::get('/video_subject/hot' , 'VideoSubject@hot');
-            Route::get('/video_subject/{tag_id}/get_by_tag_id' , 'VideoSubject@getByTagId');
-            Route::get('/video_subject/get_by_tag_ids' , 'VideoSubject@getByTagIds');
-            Route::get('/video_subject/{id}' , 'VideoSubject@show');
-            Route::get('/video_subject/{id}/videos_in_range' , 'VideoSubject@videosInRange');
+            Route::get('/video_project/newest' , 'VideoSubject@newest');
+            Route::get('/video_project/hot_tags' , 'VideoSubject@hotTags');
+            Route::get('/video_project/hot' , 'VideoSubject@hot');
+            Route::get('/video_project/{tag_id}/get_by_tag_id' , 'VideoSubject@getByTagId');
+            Route::get('/video_project/get_by_tag_ids' , 'VideoSubject@getByTagIds');
+            Route::get('/video_project/{id}' , 'VideoSubject@show');
+            Route::get('/video_project/{id}/videos_in_range' , 'VideoSubject@videosInRange');
 
             /**
              * 视频系列
              */
-            Route::get('/video_subject/{id}/video_subjects' , 'VideoSubject@videoSubjectsInSeries');
+            Route::get('/video_project/{id}/video_projects' , 'VideoSubject@videoSubjectsInSeries');
 
         });
 

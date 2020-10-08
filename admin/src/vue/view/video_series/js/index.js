@@ -2,6 +2,46 @@
 const form = {
     module_id: '' ,
     weight: 0 ,
+    status: 0 ,
+};
+
+const users = {
+    data: [],
+    field: [
+        {
+            title: 'id' ,
+            key: 'id' ,
+            center: TopContext.table.alignCenter ,
+            width: TopContext.table.id ,
+        } ,
+        {
+            title: '名称' ,
+            key: 'username' ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '头像' ,
+            slot: 'avatar' ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '创建时间' ,
+            key: 'created_at' ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '操作' ,
+            slot: 'action' ,
+        } ,
+    ] ,
+    current: {
+        id: 0 ,
+        username: 'unknow' ,
+    } ,
+    limit: TopContext.limit ,
+    value: '' ,
+    page: 1 ,
+    total: 0 ,
 };
 
 export default {
@@ -23,13 +63,14 @@ export default {
                 selectedIds: [] ,
                 // 抽屉
                 drawer: false ,
-
+                // 用户模态框
+                modalForUser: false ,
             } ,
             table: {
                 field: [
                     {
                         type: 'selection',
-                        minWidth: TopContext.table.checkbox ,
+                        width: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     },
@@ -42,15 +83,33 @@ export default {
                     } ,
                     {
                         title: '名称' ,
-                        key: 'name' ,
+                        slot: 'name' ,
                         minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     } ,
                     {
+                        title: '用户',
+                        slot: 'user_id',
+                        minWidth: TopContext.table.name ,
+                        align: TopContext.table.alignCenter,
+                    },
+                    {
                         title: '模块【id】',
                         slot: 'module_id',
                         minWidth: TopContext.table.id ,
+                        align: TopContext.table.alignCenter,
+                    },
+                    {
+                        title: '状态',
+                        slot: 'status',
+                        minWidth: TopContext.table.status ,
+                        align: TopContext.table.alignCenter,
+                    },
+                    {
+                        title: '失败原因',
+                        key: 'fail_reason',
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter,
                     },
                     {
@@ -61,7 +120,7 @@ export default {
                     } ,
                     {
                         title: '创建时间' ,
-                        key: 'create_time' ,
+                        key: 'created_at' ,
                         minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
@@ -77,6 +136,8 @@ export default {
                 page: 1 ,
                 data: [] ,
             } ,
+            users: G.copy(users) ,
+
             search: {
                 limit: TopContext.limit ,
                 module_id: '' ,
@@ -108,7 +169,7 @@ export default {
         getModules () {
             Api.module.all((msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.modules = data;
@@ -130,7 +191,7 @@ export default {
             Api.video_series.index(this.search , (msg , data , code) => {
                 this.pending('getData' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.table.total = data.total;
@@ -165,7 +226,7 @@ export default {
                 Api.video_series.destroyAll(idList , (msg , data , code) => {
                     if (code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
-                        this.message('error' , data);
+                        this.message('error' , msg);
                         return ;
                     }
                     G.invoke(callback , this , true);
@@ -206,8 +267,29 @@ export default {
             this._val('modal' , true);
             this._val('mode' , 'edit');
             this.error();
-            this.form = G.copy(record);
             this.getModules();
+            this.findById(record.id , (res) => {
+                if (!res) {
+                    return ;
+                }
+                // 这边可以做一些处理
+                this.users.current = this.form.user ? this.form.user : G.copy(users.current);
+            });
+        } ,
+
+        // 获取当前编辑记录详情
+        findById (id , callback) {
+            this._val('findById' , true);
+            Api.video_series.show(id , (msg , data , code) => {
+                this._val('findById' , true);
+                if (code !== TopContext.code.Success) {
+                    G.invoke(callback , null , false);
+                    this.message('error' , msg);
+                    return ;
+                }
+                this.form = data;
+                G.invoke(callback , null , true);
+            });
         } ,
 
         addEvent () {
@@ -261,5 +343,41 @@ export default {
             this.search.page = page;
             this.getData();
         } ,
+
+        searchUser () {
+            this.pending('searchUser' , true);
+            Api.user.search({
+                value: this.users.value ,
+                limit: this.users.limit ,
+                page: this.users.page ,
+            }, (msg , data , code) => {
+                this.pending('searchUser' , false);
+                if (code !== TopContext.code.Success) {
+                    this.error({user_id: data});
+                    return ;
+                }
+                this.users.total = data.total;
+                this.users.page = data.current_page;
+                this.users.data = data.data;
+            });
+        } ,
+
+        userPageEvent (page) {
+            this.users.page = page;
+            this.searchUser();
+        } ,
+
+        searchUserEvent (e) {
+            this.searchUser();
+            this._val('modalForUser' , true);
+        } ,
+
+        updateUserEvent (row , index) {
+            this.error({user_id: ''}, false);
+            this.form.user_id = row.id;
+            this._val('modalForUser', false);
+            this.users.data = [];
+            this.users.current = G.copy(row);
+        },
     } ,
 }

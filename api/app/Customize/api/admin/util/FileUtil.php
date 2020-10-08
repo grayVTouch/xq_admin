@@ -41,8 +41,9 @@ class FileUtil
     // 上传文件保存
     public static function upload(?UploadedFile $uploaded_file , string $dir = ''): ?string
     {
+        $dir_prefix = format_path(my_config('app.dir')['system']);
         $dir        = empty($dir) ? '' : trim($dir , '/');
-        $save_dir   = format_path(self::dir() . '/' . $dir);
+        $save_dir   = format_path(self::dir() . '/' . $dir_prefix . '/' . $dir);
         $source     = $uploaded_file->getRealPath();
         $extension  = $uploaded_file->getClientOriginalExtension();
         $filename   = self::filename();
@@ -53,7 +54,7 @@ class FileUtil
             return false;
         }
         $prefix = self::prefix();
-        return format_path($prefix . '/' . $dir . '/' . $file);
+        return format_path($prefix . '/' . $dir_prefix . '/' . (empty($dir) ? '' : $dir . '/') . $file);
     }
 
     // 普通文件移动

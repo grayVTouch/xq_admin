@@ -62,7 +62,7 @@ export default {
             Api.admin_permission.index((msg , data , code) => {
                 this.pending('getPermissions' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.permissions = data;

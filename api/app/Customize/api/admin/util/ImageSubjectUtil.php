@@ -4,42 +4,44 @@
 namespace App\Customize\api\admin\util;
 
 
-use App\Customize\api\admin\handler\ImageSubjectHandler;
+use App\Customize\api\admin\handler\ImageProjectHandler;
 use App\Customize\api\admin\model\ImageModel;
-use App\Customize\api\admin\model\ImageSubjectCommentImageModel;
-use App\Customize\api\admin\model\ImageSubjectCommentModel;
-use App\Customize\api\admin\model\ImageSubjectModel;
+use App\Customize\api\admin\model\ImageProjectCommentImageModel;
+use App\Customize\api\admin\model\ImageProjectCommentModel;
+use App\Customize\api\admin\model\ImageProjectModel;
 use App\Customize\api\admin\model\RelationTagModel;
 
 class ImageSubjectUtil
 {
     public static function delete(int $image_subject_id): bool
     {
-        $res = ImageSubjectModel::find($image_subject_id);
+        $res = ImageProjectModel::find($image_subject_id);
         if (empty($res)) {
             return false;
         }
-        $res = ImageSubjectHandler::handle($res);
+        $res = ImageProjectHandler::handle($res , [
+            'images'
+        ]);
         ResourceUtil::delete($res->thumb);
         foreach ($res->images as $v)
         {
             ResourceUtil::delete($v->path);
         }
-        $comment_images = ImageSubjectCommentImageModel::getByImageSubjectId($res->id);
+        $comment_images = ImageProjectCommentImageModel::getByImageSubjectId($res->id);
         foreach ($comment_images as $v)
         {
             ResourceUtil::delete($v->path);
         }
         // 删除图片主题
-        ImageSubjectModel::destroy($res->id);
+        ImageProjectModel::destroy($res->id);
         // 删除图片主题相关的图片
         ImageModel::delByImageSubjectId($res->id);
         // 删除图片主题相关的评论
-        ImageSubjectCommentModel::delByImageSubjectId($res->id);
+        ImageProjectCommentModel::delByImageSubjectId($res->id);
         // 删除图片主题相关评论对应的评论图片
-        ImageSubjectCommentImageModel::delByImageSubjectId($res->id);
+        ImageProjectCommentImageModel::delByImageSubjectId($res->id);
         // 删除图片对应的标签
-        RelationTagModel::delByRelationTypeAndRelationId('image_subject' , $res->id);
+        RelationTagModel::delByRelationTypeAndRelationId('image_project' , $res->id);
         return true;
     }
 }

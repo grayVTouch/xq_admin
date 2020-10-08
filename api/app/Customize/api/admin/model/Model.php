@@ -3,6 +3,7 @@
 
 namespace App\Customize\api\admin\model;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class Model extends BaseModel
@@ -32,5 +33,10 @@ class Model extends BaseModel
     {
         return self::whereRaw('date_format(created_at , "%Y-%m-%d") = ?' , $date)
             ->count();
+    }
+
+    public static function getByIds(array $ids): Collection
+    {
+        return self::whereIn('id' , $ids)->get();
     }
 }

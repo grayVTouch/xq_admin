@@ -14,8 +14,8 @@ const indexForRole = () => import('../view/role/index.vue');
 const indexForModule = () => import('../view/module/index.vue');
 const indexForTag = () => import('../view/tag/index.vue');
 const indexForCategory = () => import('../view/category/index.vue');
-const indexForSubject = () => import('../view/subject/index.vue');
 const indexForImageSubject = () => import('../view/image_subject/index.vue');
+const indexForImageProject = () => import('../view/image_project/index.vue');
 const indexForUser = () => import('../view/user/index.vue');
 const indexForAdmin = () => import('../view/admin/index.vue');
 const indexForPosition = () => import('../view/position/index.vue');
@@ -23,7 +23,7 @@ const indexForImageAtPosition = () => import('../view/image_at_position/index.vu
 const indexForNav = () => import('../view/nav/index.vue');
 const indexForVideo = () => import('../view/video/index.vue');
 const indexForVideoSeries = () => import('../view/video_series/index.vue');
-const indexForVideoSubject = () => import('../view/video_subject/index.vue');
+const indexForVideoSubject = () => import('../view/video_project/index.vue');
 const indexForVideoCompany = () => import('../view/video_company/index.vue');
 const indexForDisk = () => import('../view/disk/index.vue');
 
@@ -82,14 +82,14 @@ export default [
     } ,
 
     {
-        path: '/subject/index' ,
-        component: indexForSubject ,
+        path: '/image_subject/index' ,
+        component: indexForImageSubject ,
         async: true ,
     } ,
 
     {
-        path: '/image_subject/index' ,
-        component: indexForImageSubject ,
+        path: '/image_project/index' ,
+        component: indexForImageProject ,
         async: true ,
     } ,
 
@@ -134,7 +134,7 @@ export default [
         async: true ,
     } ,
     {
-        path: '/video_subject/index' ,
+        path: '/video_project/index' ,
         component: indexForVideoSubject ,
         async: true ,
     } ,

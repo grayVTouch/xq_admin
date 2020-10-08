@@ -20,6 +20,7 @@ import {
     Tabs ,
     TabPane ,
     DatePicker ,
+    Rate ,
 } from 'view-design';
 
 
@@ -42,6 +43,7 @@ Vue.component('TabPane' , TabPane);
 Vue.component('Tabs' , Tabs);
 Vue.component('DatePicker' , DatePicker);
 Vue.component('Tooltip' , Tooltip);
+Vue.component('Rate' , Rate);
 
 Vue.prototype.$Notice = Notice;
 Vue.prototype.$Modal = Modal;

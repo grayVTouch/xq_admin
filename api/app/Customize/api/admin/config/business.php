@@ -21,7 +21,7 @@ return [
     ] ,
 
     // 图片专题分类类型
-    'type_for_image_subject' => [
+    'type_for_image_project' => [
         'pro' => '专题' ,
         'misc' => '杂类' ,
     ] ,
@@ -32,7 +32,7 @@ return [
         'misc' => '杂类' ,
     ] ,
 
-    'status_for_image_subject' => [
+    'status_for_image_project' => [
         -1 => '审核失败',
         0 => '待审核' ,
         1 => '审核成功' ,
@@ -44,7 +44,19 @@ return [
         1 => '审核成功' ,
     ] ,
 
-    'sex_for_user' => [
+    'status' => [
+        -1 => '审核失败',
+        0 => '待审核' ,
+        1 => '审核成功' ,
+    ] ,
+
+    'status_for_image_subject' => [
+        -1 => '审核失败',
+        0 => '待审核' ,
+        1 => '审核成功' ,
+    ] ,
+
+    'sex' => [
         'male' => '男' ,
         'female' => '女' ,
         'secret' => '保密' ,
@@ -69,12 +81,13 @@ return [
 
     'process_status_for_video' => [
         -1 => '处理失败' ,
-        0 => '信息处理中' ,
-        1 => '转码中' ,
-        2 => '处理完成' ,
+        0 => '待处理' ,
+        1 => '处理中' ,
+        2 => '转码中' ,
+        3 => '处理完成' ,
     ] ,
 
-    'status_for_video_subject' => [
+    'end_status_for_video_project' => [
         'making' => '连载中' ,
         'completed' => '已完结' ,
         'terminated' => '已终止' ,
@@ -87,8 +100,44 @@ return [
     ] ,
 
     'os_for_disk' => [
-        'windows' => 'windows' ,
-        'linux' => 'linux' ,
-        'mac' => 'mac' ,
+        'windows'   => 'windows' ,
+        'linux'     => 'linux' ,
+        'mac'       => 'mac' ,
+    ] ,
+
+    'status_for_video_series' => [
+        -1 => '审核失败',
+        0 => '待审核' ,
+        1 => '审核成功' ,
+    ] ,
+
+    'status_for_video_company' => [
+        -1 => '审核失败',
+        0 => '待审核' ,
+        1 => '审核成功' ,
+    ] ,
+
+    'status_for_video_subject' => [
+        -1 => '审核失败',
+        0 => '待审核' ,
+        1 => '审核成功' ,
+    ] ,
+
+    'status_for_tag' => [
+        -1 => '审核失败',
+        0 => '待审核' ,
+        1 => '审核成功' ,
+    ] ,
+
+    'status_for_category' => [
+        -1 => '审核失败',
+        0 => '待审核' ,
+        1 => '审核成功' ,
+    ] ,
+
+    'status_for_video_project' => [
+        -1 => '审核失败',
+        0 => '待审核' ,
+        1 => '审核成功' ,
     ] ,
 ];

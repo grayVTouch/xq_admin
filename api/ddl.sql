@@ -407,8 +407,8 @@ create table if not exists `xq_video_series` (
     primary key (id)
 ) engine=innodb auto_increment=1 character set=utf8mb4 collate=utf8mb4_unicode_ci comment '视频系列';
 
-drop table if exists `xq_video_subject`;
-create table if not exists `xq_video_subject` (
+drop table if exists `xq_video_project`;
+create table if not exists `xq_video_project` (
     id bigint unsigned not null auto_increment ,
     name varchar(255) default '' comment '名称' ,
     thumb varchar(500) default '' comment '封面' ,
@@ -457,7 +457,7 @@ create table if not exists `xq_video` (
       src varchar(500) default '' comment '视频源' ,
       duration int unsigned default 0 comment '时长' ,
       type varchar(50) default '' comment 'misc-杂项 pro-视频专题' ,
-      video_subject_id bigint unsigned default 0 comment 'xq_video_subject.id，视频专题' ,
+      video_project_id bigint unsigned default 0 comment 'xq_video_project.id，视频专题' ,
       simple_preview varchar(500) default '' comment '简单视频预览 gif' ,
       preview varchar(500) default '' comment '视频预览' ,
       preview_width int unsigned default 0 comment '视频预览：单个画面尺寸：宽' ,
@@ -505,7 +505,7 @@ create table if not exists `xq_video_comment` (
     user_id bigint unsigned default 0 comment 'xq_user.id 评论者' ,
     p_id int comment 'xq_video_comment.id' ,
     video_id bigint unsigned default 0 comment 'xq_video.id' ,
-    video_subject_id bigint unsigned default 0 comment 'xq_video_subject.id' ,
+    video_project_id bigint unsigned default 0 comment 'xq_video_project.id' ,
     praise_count bigint unsigned default 0 comment '获赞次数' ,
     against_count bigint unsigned default 0 comment '反对次数' ,
     status tinyint default 1 comment '状态：-1-审核不通过 0-审核中 1-审核通过' ,
@@ -518,7 +518,7 @@ drop table if exists `xq_video_comment_image`;
 create table if not exists `xq_video_comment_image` (
     id bigint unsigned not null auto_increment ,
     video_id bigint unsigned default 0 comment 'xq_video.id' ,
-    video_subject_id bigint unsigned default 0 comment 'xq_video_subject.id' ,
+    video_project_id bigint unsigned default 0 comment 'xq_video_project.id' ,
     video_comment_id bigint unsigned default 0 comment 'xq_video_comment.id' ,
     path varchar(500) default '' comment '文件路径' ,
     created_at datetime default null ,

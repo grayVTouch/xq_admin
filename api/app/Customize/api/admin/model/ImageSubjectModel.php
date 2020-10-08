@@ -5,6 +5,7 @@ namespace App\Customize\api\admin\model;
 
 
 use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ImageSubjectModel extends Model
@@ -13,54 +14,36 @@ class ImageSubjectModel extends Model
 
     public static function index(array $filter = [] , array $order = [] , int $limit = 20): Paginator
     {
-        $filter['id']           = $filter['id'] ?? '';
-        $filter['name']         = $filter['name'] ?? '';
-        $filter['user_id']      = $filter['user_id'] ?? '';
-        $filter['module_id']    = $filter['module_id'] ?? '';
-        $filter['category_id']  = $filter['category_id'] ?? '';
-        $filter['subject_id']   = $filter['subject_id'] ?? '';
-        $filter['type']         = $filter['type'] ?? '';
-        $filter['status']       = $filter['status'] ?? '';
-
+        $filter['id'] = $filter['id'] ?? '';
+        $filter['name'] = $filter['name'] ?? '';
+        $filter['module_id'] = $filter['module_id'] ?? '';
         $order['field'] = $order['field'] ?? 'id';
-        $order['value'] = $order['value'] ?? 'desc';
-
+        $order['value'] = $order['value'] ?? 'asc';
         $where = [];
-
         if ($filter['id'] !== '') {
             $where[] = ['id' , '=' , $filter['id']];
         }
-
         if ($filter['name'] !== '') {
             $where[] = ['name' , 'like' , "%{$filter['name']}%"];
         }
-
-        if ($filter['user_id'] !== '') {
-            $where[] = ['user_id' , '=' , $filter['user_id']];
-        }
-
         if ($filter['module_id'] !== '') {
             $where[] = ['module_id' , '=' , $filter['module_id']];
         }
-
-        if ($filter['category_id'] !== '') {
-            $where[] = ['category_id' , '=' , $filter['category_id']];
-        }
-
-        if ($filter['subject_id'] !== '') {
-            $where[] = ['subject_id' , '=' , $filter['subject_id']];
-        }
-
-        if ($filter['type'] !== '') {
-            $where[] = ['type' , '=' , $filter['type']];
-        }
-
-        if ($filter['status'] !== '') {
-            $where[] = ['status' , '=' , $filter['status']];
-        }
-
         return self::where($where)
             ->orderBy($order['field'] , $order['value'])
+            ->paginate($limit);
+    }
+
+    public static function search(int $module_id , string $value = '' , int $limit = 20): Paginator
+    {
+        return self::where('module_id' , $module_id)
+            ->where(function($query) use($value){
+                $query->where('id' , $value)
+                    ->orWhere('name' , 'like' , "%{$value}%");
+            })
+            ->orderBy('weight' , 'desc')
+            ->orderBy('created_at' , 'desc')
+            ->orderBy('id' , 'asc')
             ->paginate($limit);
     }
 
@@ -72,9 +55,8 @@ class ImageSubjectModel extends Model
     public static function findByNameAndExcludeId(string $name , int $exclude_id): ?ImageSubjectModel
     {
         return self::where([
-                ['name' , '=' , $name] ,
-                ['id' , '!=' , $exclude_id] ,
-            ])
-            ->first();
+            ['name' , '=' , $name] ,
+            ['id' , '!=' , $exclude_id] ,
+        ])->first();
     }
 }

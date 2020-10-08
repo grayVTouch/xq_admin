@@ -46,14 +46,14 @@ class AdminAction extends Action
     {
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $paginator = AdminModel::index($param , $order , $limit);
-        $paginator = AdminHandler::handlePaginator($paginator);
-        return self::success('' , $paginator);
+        $res = AdminModel::index($param , $order , $limit);
+        $res = AdminHandler::handlePaginator($res);
+        return self::success('' , $res);
     }
 
     public static function update(Base $context , $id , array $param = [])
     {
-        $sex_range = my_config_keys('business.sex_for_user');
+        $sex_range = my_config_keys('business.sex');
         $validator = Validator::make($param , [
             'username' => 'required|min:4' ,
             'sex' => ['required' , Rule::in($sex_range)] ,
@@ -102,7 +102,7 @@ class AdminAction extends Action
 
     public static function store(Base $context , array $param = [])
     {
-        $sex_range = my_config_keys('business.sex_for_user');
+        $sex_range = my_config_keys('business.sex');
         $validator = Validator::make($param , [
             'username' => 'required|min:4' ,
             'password' => 'required' ,
@@ -162,7 +162,7 @@ class AdminAction extends Action
             $count = AdminModel::destroy($id);
             ResourceUtil::delete($res->avatar);
             DB::commit();
-            return self::success('' , $count);
+            return self::success('操作成功' , $count);
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;

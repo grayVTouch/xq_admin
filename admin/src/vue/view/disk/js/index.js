@@ -1,6 +1,6 @@
 
 const form = {
-    os: '' ,
+    os: 'windows' ,
     default: 0 ,
 };
 
@@ -29,7 +29,7 @@ export default {
                 field: [
                     {
                         type: 'selection',
-                        minWidth: TopContext.table.checkbox ,
+                        width: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     },
@@ -79,15 +79,22 @@ export default {
                         fixed: 'right' ,
                     } ,
                     {
+                        title: '已创建软连接？' ,
+                        slot: 'is_linked' ,
+                        minWidth: TopContext.table.status ,
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
+                    } ,
+                    {
                         title: '创建时间' ,
-                        key: 'create_time' ,
+                        key: 'created_at' ,
                         minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '操作' ,
                         slot: 'action' ,
-                        minWidth: TopContext.table.action ,
+                        minWidth: TopContext.table.action + 100 ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'right' ,
                     } ,
@@ -125,7 +132,7 @@ export default {
         getModules () {
             Api.module.all((msg , data , code) => {
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.modules = data;
@@ -146,7 +153,7 @@ export default {
             Api.disk.index(this.search , (msg , data , code) => {
                 this.pending('getData' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.table.total = data.total;
@@ -174,7 +181,7 @@ export default {
                 return ;
             }
             const self = this;
-            this.confirmModal('你确定删除吗？'  , (res) => {
+            this.confirmModal('删除记录后相关资源将无法访问！你确定删除吗（如果需要恢复，请手动创建源数据）？'  , (res) => {
                 if (!res) {
                     G.invoke(callback , this , false);
                     return ;
@@ -182,7 +189,7 @@ export default {
                 Api.disk.destroyAll(idList , (msg , data , code) => {
                     if (code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
-                        this.message('error' , data);
+                        this.message('error' , msg);
                         return ;
                     }
                     G.invoke(callback , this , true);
@@ -302,12 +309,35 @@ export default {
                 this.pending(pendingKey , false);
                 if (code !== TopContext.code.Success) {
                     record[extra.field] = oVal;
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.message('success' , '操作成功');
                 this.getData();
             });
+        } ,
+
+        linkDiskEvent (index , row) {
+            const loadingKey = 'link_disk' + row.id;
+            this._val(loadingKey , true);
+            this.linkDisk([row.id] , () => {
+                this._val(loadingKey , false);
+            });
+
+        } ,
+
+        linkDisk (ids , callback) {
+            Api.disk.linkDisk(ids , (msg , data , code) => {
+                if (G.isFunction(callback)) {
+                    callback();
+                }
+                if (code !== TopContext.code.Success) {
+                    this.message('error' , msg);
+                    return ;
+                }
+                this.message('success' , msg);
+                this.getData();
+            })
         } ,
     } ,
 }

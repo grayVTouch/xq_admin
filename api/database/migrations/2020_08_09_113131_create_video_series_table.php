@@ -28,6 +28,8 @@ class CreateVideoSeriesTable extends Migration
 
             $table->timestamps();
 
+            $table->unique('name');
+
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_unicode_ci';

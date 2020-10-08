@@ -89,7 +89,7 @@
                 <div class="run-action-title">
                     <div class="left">
                         <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showBatchBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
+                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="val.selectedIds.length > 0">（{{ val.selectedIds.length }}）</span></my-table-button>
                     </div>
                     <div class="right">
                         <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
@@ -106,10 +106,20 @@
 
                 <div class="table">
 
-                    <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
+                    <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData" @on-row-dblclick="editEvent">
 <!--                        <template v-slot:name="{row,index}">{{ row.name + `【${row.module ? row.module.name : 'unknow'}】` }}</template>-->
-                        <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" @click="link(row.thumb)" ></template>
+                        <template v-slot:thumb="{row,index}">
+                            <Poptip trigger="hover" placement="right" :transfer="true">
+                                <img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image" @click="link(row.thumb)" alt="">
+                                <div slot="content" class="table-preview-image-style">
+                                    <img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" class="image" @click="link(row.thumb)" alt="">
+                                </div>
+                            </Poptip>
+                        </template>
+
                         <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
+                        <template v-slot:user_id="{row,index}">{{ row.user ? `${row.user.username}【${row.user.id}】` : `unknow【${row.user_id}】` }}</template>
+                        <template v-slot:status="{row,index}"><b :class="{'run-red': row.status === -1 , 'run-gray': row.status === 0 , 'run-green': row.status === 1}">{{ row.__status__ }}</b></template>
                         <template v-slot:country_id="{row,index}">{{`${row.country}【${row.country_id}】` }}</template>
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
@@ -123,7 +133,7 @@
 
             <div class="line operation">
                 <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showBatchBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
+                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="val.selectedIds.length > 0">（{{ val.selectedIds.length }}）</span></my-table-button>
             </div>
 
             <div class="line page">
@@ -145,10 +155,22 @@
                                 </td>
                             </tr>
 
+                            <tr :class="{error: val.error.user_id}">
+                                <td>所属用户：</td>
+                                <td>
+                                    <input type="text" readonly="readonly" :value="`${getUsername(users.current.username , users.current.nickname)}【${users.current.id}】`" class="form-text w-150 run-cursor-not-allow">
+                                    如需重新搜索，请点击
+                                    <Button @click="searchUserEvent">搜索</Button>
+                                    <span class="need">*</span>
+                                    <div class="msg"></div>
+                                    <div class="e-msg">{{ val.error.user_id }}</div>
+                                </td>
+                            </tr>
+
                             <tr :class="{error: val.error.module_id}">
                                 <td>所属模块</td>
                                 <td>
-                                    <my-select :data="modules" v-model="form.module_id"></my-select>
+                                    <my-select :data="modules" v-model="form.module_id" @change="val.error.module_id = ''"></my-select>
                                     <my-loading v-if="val.pending.getModules"></my-loading>
                                     <span class="need">*</span>
                                     <div class="msg"></div>
@@ -214,6 +236,28 @@
                                 </td>
                             </tr>
 
+                            <tr :class="{error: val.error.status}">
+                                <td>状态</td>
+                                <td>
+                                    <RadioGroup v-model="form.status">
+                                        <Radio v-for="(v,k) in $store.state.business.image_subject.status" :key="k" :label="parseInt(k)">{{ v }}</Radio>
+                                    </RadioGroup>
+                                    <span class="need">*</span>
+                                    <div class="msg">默认：待审核</div>
+                                    <div class="e-msg">{{ val.error.status }}</div>
+                                </td>
+                            </tr>
+
+                            <tr :class="{error: val.error.fail_reason}" v-show="form.status === -1">
+                                <td>失败原因</td>
+                                <td>
+                                    <textarea v-model="form.fail_reason" class="form-textarea" @input="val.error.fail_reason = ''"></textarea>
+                                    <span class="need">*</span>
+                                    <div class="msg">当状态为审核失败的时候必填</div>
+                                    <div class="e-msg">{{ val.error.fail_reason }}</div>
+                                </td>
+                            </tr>
+
                             <tr :class="{error: val.error.weight}">
                                 <td>权重</td>
                                 <td>
@@ -242,8 +286,8 @@
 
         </div>
 
-        <!-- 选择关联主体 -->
-        <my-form-modal v-model="val.modalForCountry" title="请选择关联主体" :width="1000">
+        <!-- 请选择国家 -->
+        <my-form-modal v-model="val.modalForCountry" title="请选择国家" :width="1000">
             <template slot="footer">
                 <Button v-ripple type="error" @click="val.modalForCountry=false">取消</Button>
             </template>
@@ -263,6 +307,30 @@
                     </div>
                     <div class="pager">
                         <my-page :total="countries.total" :limit="countries.limit" :page="countries.page" @on-change="countryPageEvent"></my-page>
+                    </div>
+                </div>
+            </template>
+        </my-form-modal>
+
+        <!-- 请选择用户 -->
+        <my-form-modal v-model="val.modalForUser" title="请选择用户" :width="1000">
+            <template slot="footer">
+                <Button v-ripple type="error" @click="val.modalForUser=false">取消</Button>
+            </template>
+            <template slot="default">
+                <div class="search-modal">
+                    <div class="input">
+                        <div class="input-mask"><input type="text" v-model="users.value" @keyup.enter="searchUser" placeholder="请输入搜索值"></div>
+                        <div class="msg">输入id、用户名、手机号码、邮箱可查询</div>
+                    </div>
+                    <div class="list">
+                        <Table border :loading="val.pending.searchUser" :data="users.data" :columns="users.field" @on-row-click="updateUserEvent">
+                            <template v-slot:avatar="{row,index}"><img :src="row.avatar ? row.avatar : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
+                            <template v-slot:action="{row,index}"><my-table-button>选择</my-table-button></template>
+                        </Table>
+                    </div>
+                    <div class="pager">
+                        <my-page :total="users.total" :limit="users.limit" :page="users.page" @on-change="userPageEvent"></my-page>
                     </div>
                 </div>
             </template>

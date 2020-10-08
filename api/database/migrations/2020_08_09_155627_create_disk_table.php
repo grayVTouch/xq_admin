@@ -22,6 +22,7 @@ class CreateDiskTable extends Migration
             $table->string('os' , '255')->default('')->comment('操作系统：windows | linux | mac');
             $table->string('prefix' , '255')->default('')->comment('路径前缀，用于区分不同磁盘，请提供 disk_c 诸如这样的字符串');
             $table->tinyInteger('default')->default(0)->comment('默认？0-否 1-是');
+            $table->tinyInteger('is_linked')->default(0)->comment('是否已创建软连接？0-否 1-是');
 
             $table->timestamps();
 

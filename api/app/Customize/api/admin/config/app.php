@@ -1,8 +1,10 @@
 <?php
 
 return [
-    // 资源url
+    // 资源URL：disk=local 必须提供
     'res_url' => 'http://res.xq.test' ,
+    // 资源的映射目录：disk=local 必须提供
+    'res_dir' => base_path() . '/../resource' ,
 
     /**
      * 当前的磁盘存储方式
@@ -14,8 +16,9 @@ return [
 
     // 相关目录
     'dir' => [
-        'image' => '非专题图片' ,
-        'video' => '非专题视频' ,
+        'image'     => '非专题图片' ,
+        'video'     => '非专题视频' ,
+        'system'    => 'system' ,
     ] ,
 
     // 每页显示记录数

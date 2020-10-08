@@ -24,9 +24,9 @@ class ModuleAction extends Action
     {
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $paginator = ModuleModel::index($param , $order , $limit);
-        $paginator = ModuleHandler::handlePaginator($paginator);
-        return self::success('' , $paginator);
+        $res = ModuleModel::index($param , $order , $limit);
+        $res = ModuleHandler::handlePaginator($res);
+        return self::success('' , $res);
     }
 
     public static function update(Base $context , $id , array $param = [])
@@ -201,13 +201,13 @@ class ModuleAction extends Action
     public static function destroy(Base $context , $id , array $param = [])
     {
         $count = ModuleModel::destroy($id);
-        return self::success('' , $count);
+        return self::success('操作成功' , $count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
         $count = ModuleModel::destroy($ids);
-        return self::success('' , $count);
+        return self::success('操作成功' , $count);
     }
 
     public static function all(Base $context , array $param = [])

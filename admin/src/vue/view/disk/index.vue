@@ -65,7 +65,7 @@
                 <div class="run-action-title">
                     <div class="left">
                         <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showBatchBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
+                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="val.selectedIds.length > 0">（{{ val.selectedIds.length }}）</span></my-table-button>
                     </div>
                     <div class="right">
                         <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
@@ -84,9 +84,11 @@
 
                     <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
                         <template v-slot:default="{row,index}"><my-switch v-model="row.default" :loading="val.pending['default_' + row.id]" :extra="{id: row.id , field: 'default'}" @on-change="updateBoolValEvent" /></template>
+                        <template v-slot:is_linked="{row,index}"><my-switch v-model="row.is_linked" :loading="val.pending['is_linked_' + row.id]" :extra="{id: row.id , field: 'is_linked'}" @on-change="updateBoolValEvent" /></template>
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
                             <my-table-button type="error" :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
+                            <my-table-button v-if="!row.is_linked" :loading="val.pending['link_disk_' + row.id]" @click="linkDiskEvent(index , row)"><my-icon icon="shanchu" />创建链接</my-table-button>
                         </template>
                     </Table>
 
@@ -96,7 +98,7 @@
 
             <div class="line operation">
                 <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showBatchBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
+                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="val.selectedIds.length > 0">（{{ val.selectedIds.length }}）</span></my-table-button>
             </div>
 
             <div class="line page">
@@ -113,7 +115,7 @@
                                 <td>
                                     <input type="text" v-model="form.path" @input="val.error.path = ''" class="form-text">
                                     <span class="need">*</span>
-                                    <div class="msg">请特别注意</div>
+                                    <div class="msg">例如：windows: d:/test ；linux: /myself/resource</div>
                                     <div class="e-msg">{{ val.error.path }}</div>
                                 </td>
                             </tr>
@@ -135,7 +137,7 @@
                                         <Radio v-for="(v,k) in $store.state.business.disk.os" :key="k" :label="k">{{ v }}</Radio>
                                     </RadioGroup>
                                     <span class="need">*</span>
-                                    <div class="msg"></div>
+                                    <div class="msg">默认：windows</div>
                                     <div class="e-msg">{{ val.error.os }}</div>
                                 </td>
                             </tr>
@@ -149,6 +151,18 @@
                                     <span class="need">*</span>
                                     <div class="msg">默认：否</div>
                                     <div class="e-msg">{{ val.error.default }}</div>
+                                </td>
+                            </tr>
+
+                            <tr :class="{error: val.error.is_linked}" v-if="val.mode === 'edit'">
+                                <td>已创建链接？</td>
+                                <td>
+                                    <RadioGroup v-model="form.is_linked"  @input="val.error.is_linked = ''">
+                                        <Radio v-for="(v,k) in $store.state.business.bool_for_int" :key="k" :label="parseInt(k)">{{ v }}</Radio>
+                                    </RadioGroup>
+                                    <span class="need">*</span>
+                                    <div class="msg"></div>
+                                    <div class="e-msg">{{ val.error.is_linked }}</div>
                                 </td>
                             </tr>
 

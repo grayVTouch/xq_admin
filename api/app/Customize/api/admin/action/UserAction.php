@@ -36,14 +36,14 @@ class UserAction extends Action
     {
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $paginator = UserModel::index($param , $order , $limit);
-        $paginator = UserHandler::handlePaginator($paginator);
-        return self::success('' , $paginator);
+        $res = UserModel::index($param , $order , $limit);
+        $res = UserHandler::handlePaginator($res);
+        return self::success('' , $res);
     }
 
     public static function update(Base $context , $id , array $param = [])
     {
-        $sex_range = my_config_keys('business.sex_for_user');
+        $sex_range = my_config_keys('business.sex');
 
         $validator = Validator::make($param , [
             'username'  => 'required' ,
@@ -96,7 +96,7 @@ class UserAction extends Action
 
     public static function store(Base $context , array $param = [])
     {
-        $sex_range = my_config_keys('business.sex_for_user');
+        $sex_range = my_config_keys('business.sex');
 
         $validator = Validator::make($param , [
             'username' => 'required' ,
@@ -158,12 +158,15 @@ class UserAction extends Action
         if (empty($res)) {
             return self::error('记录不存在' , '' , 404);
         }
+        if ($res->is_system === 1) {
+            return self::error('系统内置用户，禁止操作' , '' , 403);
+        }
         try {
             DB::beginTransaction();
             $count = UserModel::destroy($res->id);
             ResourceUtil::delete($res->avatar);
             DB::commit();
-            return self::success('' , $count);
+            return self::success('操作成功' , $count);
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -172,17 +175,23 @@ class UserAction extends Action
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
-
-        $res = UserModel::find($ids);
+        $res = UserModel::getByIds($ids);
+        if (count($ids) !== $res->count()) {
+            return self::error('包含无效记录');
+        }
         try {
             DB::beginTransaction();
             foreach ($res as $v)
             {
+                if ($v->is_system === 1) {
+                    DB::rollBack();
+                    return self::error('包含系统内置用户，禁止操作' , '' , 403);
+                }
                 ResourceUtil::delete($v->avatar);
+                UserModel::destroy($v->id);
             }
-            $count = UserModel::destroy($ids);
             DB::commit();
-            return self::success('' , $count);
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;

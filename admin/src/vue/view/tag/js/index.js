@@ -2,7 +2,49 @@
 const form = {
     module_id: '' ,
     weight: 0 ,
+    status: 0 ,
 };
+
+
+const users = {
+    data: [],
+    field: [
+        {
+            title: 'id' ,
+            key: 'id' ,
+            center: TopContext.table.alignCenter ,
+            width: TopContext.table.id ,
+        } ,
+        {
+            title: '名称' ,
+            key: 'username' ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '头像' ,
+            slot: 'avatar' ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '创建时间' ,
+            key: 'created_at' ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '操作' ,
+            slot: 'action' ,
+        } ,
+    ] ,
+    current: {
+        id: 0 ,
+        username: 'unknow' ,
+    } ,
+    limit: TopContext.limit ,
+    value: '' ,
+    page: 1 ,
+    total: 0 ,
+};
+
 
 export default {
     name: "index",
@@ -23,13 +65,14 @@ export default {
                 selectedIds: [] ,
                 // 抽屉
                 drawer: false ,
+                modalForUser: false ,
 
             } ,
             table: {
                 field: [
                     {
                         type: 'selection',
-                        minWidth: TopContext.table.checkbox ,
+                        width: TopContext.table.checkbox ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     },
@@ -50,7 +93,13 @@ export default {
                     {
                         title: '模块【id】',
                         slot: 'module_id',
-                        minWidth: TopContext.table.id ,
+                        minWidth: TopContext.table.name ,
+                        align: TopContext.table.alignCenter,
+                    },
+                    {
+                        title: '用户',
+                        slot: 'user_id',
+                        minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter,
                     },
                     {
@@ -60,6 +109,18 @@ export default {
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
+                        title: '状态',
+                        slot: 'status',
+                        minWidth: TopContext.table.status ,
+                        align: TopContext.table.alignCenter,
+                    },
+                    {
+                        title: '失败原因',
+                        key: 'fail_reason',
+                        minWidth: TopContext.table.name ,
+                        align: TopContext.table.alignCenter,
+                    },
+                    {
                         title: '权重' ,
                         key: 'weight' ,
                         minWidth: TopContext.table.weight ,
@@ -67,7 +128,7 @@ export default {
                     } ,
                     {
                         title: '创建时间' ,
-                        key: 'create_time' ,
+                        key: 'created_at' ,
                         minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
@@ -90,6 +151,8 @@ export default {
             form: G.copy(form)  ,
 
             modules: [] ,
+
+            users: G.copy(users) ,
         };
     } ,
 
@@ -117,7 +180,7 @@ export default {
             Api.module.all((msg , data , code) => {
                 this.pending('getModules' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.modules = data;
@@ -139,7 +202,7 @@ export default {
             Api.tag.index(this.search , (msg , data , code) => {
                 this.pending('getData' , false);
                 if (code !== TopContext.code.Success) {
-                    this.message('error' , data);
+                    this.message('error' , msg);
                     return ;
                 }
                 this.table.total = data.total;
@@ -174,7 +237,7 @@ export default {
                 Api.tag.destroyAll(idList , (msg , data , code) => {
                     if (code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
-                        this.message('error' , data);
+                        this.message('error' , msg);
                         return ;
                     }
                     G.invoke(callback , this , true);
@@ -211,20 +274,40 @@ export default {
             });
         } ,
 
+        // 获取当前编辑记录详情
+        findById (id) {
+            return new Promise((resolve , reject) => {
+                this._val('findById' , true);
+                Api.tag.show(id , (msg , data , code) => {
+                    this._val('findById' , true);
+                    if (code !== TopContext.code.Success) {
+                        this.message('error' , msg);
+                        reject();
+                        return ;
+                    }
+                    this.form = data;
+                    resolve();
+                });
+            });
+        } ,
+
         editEvent (record) {
             this._val('modal' , true);
             this._val('mode' , 'edit');
             this.error();
-            this.form = G.copy(record);
             this.getModules();
+            this.findById(record.id).then((res) => {
+                this.users.current = this.form.user ? this.form.user : G.copy(users.current);
+            });
         } ,
 
         addEvent () {
             this._val('modal' , true);
             this._val('mode' , 'add');
             this.error();
-            this.form = G.copy(form);
             this.getModules();
+            this.form = G.copy(form);
+            this.users = G.copy(users);
         } ,
 
         submitEvent () {
@@ -270,5 +353,41 @@ export default {
             this.search.page = page;
             this.getData();
         } ,
+
+        searchUser () {
+            this.pending('searchUser' , true);
+            Api.user.search({
+                value: this.users.value ,
+                limit: this.users.limit ,
+                page: this.users.page ,
+            }, (msg , data , code) => {
+                this.pending('searchUser' , false);
+                if (code !== TopContext.code.Success) {
+                    this.error({user_id: data});
+                    return ;
+                }
+                this.users.total = data.total;
+                this.users.page = data.current_page;
+                this.users.data = data.data;
+            });
+        } ,
+
+        userPageEvent (page) {
+            this.users.page = page;
+            this.searchUser();
+        } ,
+
+        searchUserEvent (e) {
+            this.searchUser();
+            this._val('modalForUser' , true);
+        } ,
+
+        updateUserEvent (row , index) {
+            this.error({user_id: ''}, false);
+            this.form.user_id = row.id;
+            this._val('modalForUser', false);
+            this.users.data = [];
+            this.users.current = G.copy(row);
+        },
     } ,
 }

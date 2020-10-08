@@ -55,6 +55,7 @@ Vue.mixin({
             return this.$Message[action]({
                 background: true ,
                 content ,
+                duration: 3 ,
                 ...merge ,
             });
         } ,
@@ -74,6 +75,7 @@ Vue.mixin({
         error (error = {} , clear = true) {
             if (clear) {
                 this.val.error = {...error};
+                return ;
             }
             this.val.error = {...this.val.error , ...error};
         } ,

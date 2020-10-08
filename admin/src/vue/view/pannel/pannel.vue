@@ -47,9 +47,9 @@
                                 <div class="right">
                                     <div class="top">新增图片专题</div>
                                     <div class="btm">
-                                        <div class="line">今日：<b>{{ info.image_subject.today }}</b></div>
-                                        <div class="line">昨日：<b>{{ info.image_subject.yesterday }}</b></div>
-                                        <div class="line ratio" :class="{up: info.image_subject.flag == 'up' , down: info.image_subject.flag == 'down'}">相较昨天：<b>{{ info.image_subject.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
+                                        <div class="line">今日：<b>{{ info.image_project.today }}</b></div>
+                                        <div class="line">昨日：<b>{{ info.image_project.yesterday }}</b></div>
+                                        <div class="line ratio" :class="{up: info.image_project.flag == 'up' , down: info.image_project.flag == 'down'}">相较昨天：<b>{{ info.image_project.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
                                     </div>
                                 </div>
                             </div>
@@ -59,9 +59,9 @@
                                 <div class="right">
                                     <div class="top">新增关联主体</div>
                                     <div class="btm">
-                                        <div class="line">今日：<b>{{ info.subject.today }}</b></div>
-                                        <div class="line">昨日：<b>{{ info.subject.yesterday }}</b></div>
-                                        <div class="line ratio" :class="{up: info.subject.flag == 'up' , down: info.subject.flag == 'down'}">相较昨天：<b>{{ info.subject.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
+                                        <div class="line">今日：<b>{{ info.image_subject.today }}</b></div>
+                                        <div class="line">昨日：<b>{{ info.image_subject.yesterday }}</b></div>
+                                        <div class="line ratio" :class="{up: info.image_subject.flag == 'up' , down: info.image_subject.flag == 'down'}">相较昨天：<b>{{ info.image_subject.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
                                     </div>
                                 </div>
                             </div>
@@ -107,9 +107,9 @@
                                 <div class="right">
                                     <div class="top">新增视频专题</div>
                                     <div class="btm">
-                                        <div class="line">今日：<b>{{ info.video_subject.today }}</b></div>
-                                        <div class="line">昨日：<b>{{ info.video_subject.yesterday }}</b></div>
-                                        <div class="line ratio" :class="{up: info.video_subject.flag == 'up' , down: info.video_subject.flag == 'down'}">相较昨天：<b>{{ info.video_subject.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
+                                        <div class="line">今日：<b>{{ info.video_project.today }}</b></div>
+                                        <div class="line">昨日：<b>{{ info.video_project.yesterday }}</b></div>
+                                        <div class="line ratio" :class="{up: info.video_project.flag == 'up' , down: info.video_project.flag == 'down'}">相较昨天：<b>{{ info.video_project.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
                                     </div>
                                 </div>
                             </div>
@@ -218,7 +218,7 @@
                                 <div class="left"><my-icon icon="tupian1"></my-icon></div>
                                 <div class="right">
                                     <div class="top">图片专题数</div>
-                                    <div class="btm">{{ info.image_subject.total }}</div>
+                                    <div class="btm">{{ info.image_project.total }}</div>
                                 </div>
                             </div>
 
@@ -226,7 +226,7 @@
                                 <div class="left"><my-icon icon="guanlian1"></my-icon></div>
                                 <div class="right">
                                     <div class="top">关联主体数</div>
-                                    <div class="btm">{{ info.subject.total }}</div>
+                                    <div class="btm">{{ info.image_subject.total }}</div>
                                 </div>
                             </div>
 
@@ -258,7 +258,7 @@
                                 <div class="left"><my-icon icon="shipin"></my-icon></div>
                                 <div class="right">
                                     <div class="top">视频专题数</div>
-                                    <div class="btm">{{ info.video_subject.total }}</div>
+                                    <div class="btm">{{ info.video_project.total }}</div>
                                 </div>
                             </div>
 

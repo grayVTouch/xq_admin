@@ -1,18 +1,18 @@
 <template>
     <Modal
-            :title="title"
-            :width="width"
-            :mask-closable="maskClosable"
-            :closable="closable"
-            class-name="my-form-modal"
-            @on-ok="okEvent"
-            @on-cancel="cancelEvent"
-            :loading="loading"
-            v-model="valueCopy">
-
-        <template>
+        :title="title"
+        :width="width"
+        :mask-closable="maskClosable"
+        :closable="closable"
+        class-name="my-form-modal"
+        @on-ok="okEvent"
+        @on-cancel="cancelEvent"
+        :loading="loading"
+        v-model="valueCopy"
+    >
+        <div class="my-modal-body">
             <slot></slot>
-        </template>
+        </div>
 
         <template slot="footer">
             <slot name="footer"></slot>
@@ -106,5 +106,10 @@
 
     .my-form-modal > * {
         top: 0;
+    }
+
+    .my-modal-body {
+        max-height: 750px;
+        overflow: auto;
     }
 </style>

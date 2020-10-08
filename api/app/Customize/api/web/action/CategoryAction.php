@@ -9,7 +9,7 @@ use App\Customize\api\web\model\ModuleModel;
 use App\Http\Controllers\api\web\Base;
 use Core\Lib\Category;
 use Illuminate\Support\Facades\Validator;
-use function core\obj_to_array;
+use function core\object_to_array;
 
 class CategoryAction extends Action
 {
@@ -20,7 +20,7 @@ class CategoryAction extends Action
         }
         $res = CategoryModel::getAllByModuleId($param['module_id']);
         $res = CategoryHandler::handleAll($res);
-        $res = obj_to_array($res);
+        $res = object_to_array($res);
         $res = Category::childrens(0 , $res , null , false ,false);
         return self::success('' , $res);
     }

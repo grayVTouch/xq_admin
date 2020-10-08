@@ -41,7 +41,7 @@ class HistoryModel extends Model
                 // $join->on 会把内容当成是字段
                 // $join->where 仅把值当成是值
                 $join->on('h.relation_id' , '=' , 'is.id')
-                    ->where('h.relation_type' , '=' , 'image_subject');
+                    ->where('h.relation_type' , '=' , 'image_project');
             })
             ->where($where)
             ->orderBy('h.created_at' , 'desc')

@@ -22,7 +22,15 @@ class Test extends Base
 //        VideoHandleJob::dispatch(1);
 //        TestJob::dispatch();
 
-        var_dump(Hash::make('364793'));
+//        return response('fuck' , 500);
+//        throw new Exception('exception');
+        $i = 0;
+        while ($i < 3)
+        {
+            $i++;
+            sleep(1);
+        }
 
+        return response('fuck' , 400);
     }
 }

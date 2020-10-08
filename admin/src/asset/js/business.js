@@ -21,7 +21,7 @@ export default {
             api: 'api'
         }
     } ,
-    image_subject: {
+    image_project: {
         type: {
             pro: '专题' ,
             misc: '杂项' ,
@@ -34,12 +34,17 @@ export default {
         }
     } ,
 
-    video_subject: {
+    video_project: {
 
-        status: {
+        end_status: {
             making : '连载中' ,
             completed: '已完结' ,
             terminated: '已终止'
+        } ,
+        status: {
+            '-1' : '审核失败' ,
+            0: '待审核' ,
+            1: '审核通过'
         }
     } ,
 
@@ -81,5 +86,53 @@ export default {
             linux: 'linux' ,
             mac: 'mac' ,
         } ,
+    } ,
+
+    image_subject: {
+        status: {
+            '-1' : '审核失败' ,
+            0: '待审核' ,
+            1: '审核通过'
+        }
+    } ,
+
+    video_subject: {
+        status: {
+            '-1' : '审核失败' ,
+            0: '待审核' ,
+            1: '审核通过'
+        }
+    } ,
+
+    video_series: {
+        status: {
+            '-1' : '审核失败' ,
+            0: '待审核' ,
+            1: '审核通过'
+        }
+    } ,
+
+    video_company: {
+        status: {
+            '-1' : '审核失败' ,
+            0: '待审核' ,
+            1: '审核通过'
+        }
+    } ,
+
+    tag: {
+        status: {
+            '-1' : '审核失败' ,
+            0: '待审核' ,
+            1: '审核通过'
+        }
+    } ,
+
+    category: {
+        status: {
+            '-1' : '审核失败' ,
+            0: '待审核' ,
+            1: '审核通过'
+        }
     } ,
 };

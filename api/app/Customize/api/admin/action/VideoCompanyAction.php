@@ -4,15 +4,19 @@
 namespace App\Customize\api\admin\action;
 
 use App\Customize\api\admin\handler\VideoCompanyHandler;
+use App\Customize\api\admin\model\ModuleModel;
 use App\Customize\api\admin\model\RegionModel;
+use App\Customize\api\admin\model\UserModel;
 use App\Customize\api\admin\model\VideoCompanyModel;
 use App\Customize\api\admin\util\ResourceUtil;
 use App\Http\Controllers\api\admin\Base;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use function api\admin\get_form_error;
 use function api\admin\my_config;
+use function api\admin\my_config_keys;
 use function api\admin\parse_order;
 use function core\array_unit;
 use function core\current_datetime;
@@ -23,41 +27,54 @@ class VideoCompanyAction extends Action
     {
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $paginator = VideoCompanyModel::index($param , $order , $limit);
-        $paginator = VideoCompanyHandler::handlePaginator($paginator);
-        return self::success('' , $paginator);
+        $res = VideoCompanyModel::index($param , $order , $limit);
+        $res = VideoCompanyHandler::handlePaginator($res , [
+            'module' ,
+            'user' ,
+            'region' ,
+        ]);
+        return self::success('' , $res);
     }
 
     public static function update(Base $context , $id , array $param = [])
     {
+        $status_range = my_config_keys('business.status_for_video_company');
         $validator = Validator::make($param , [
             'name'          => 'required' ,
             'module_id'     => 'required|integer' ,
             'country_id'    => 'sometimes|integer' ,
             'weight'        => 'sometimes|integer' ,
+            'user_id'       => 'required|integer' ,
+            'status'        => ['required' , Rule::in($status_range)] ,
         ]);
-
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
-
         $res = VideoCompanyModel::find($id);
-
         if (empty($res)) {
             return self::error('记录不存在' , '' , 404);
         }
-
-        $country = RegionModel::find($param['country_id']);
-
-        if (empty($country)) {
-            return self::error('表单错误' , [
-                'country_id' => '国家不存在' ,
-            ]);
+        if (VideoCompanyModel::findByNameAndExcludeId($param['name'] , $res->id)) {
+            return self::error('名称已经被使用' , ['name' => '名称已经被使用']);
         }
-
-        $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
-        $param['country'] = $country->name;
-
+        $module = ModuleModel::find($param['module_id']);
+        if (empty($module)) {
+            return self::error('模块不存在' , ['module_id' => '模块不存在']);
+        }
+        $user = UserModel::find($param['user_id']);
+        if (empty($user)) {
+            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+        }
+        if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
+            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+        }
+        $country = RegionModel::find($param['country_id']);
+        if (empty($country)) {
+            return self::error('国家不存在' , ['country_id' => '国家不存在']);
+        }
+        $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
+        $param['country']       = $country->name;
+        $param['updated_at']    = current_datetime();
         try {
             DB::beginTransaction();
             VideoCompanyModel::updateById($res->id , array_unit($param , [
@@ -68,6 +85,10 @@ class VideoCompanyAction extends Action
                 'country' ,
                 'weight' ,
                 'module_id' ,
+                'user_id' ,
+                'status' ,
+                'fail_reason' ,
+                'updated_at' ,
             ]));
             ResourceUtil::used($param['thumb']);
             if ($res->thumb !== $param['thumb']) {
@@ -83,28 +104,43 @@ class VideoCompanyAction extends Action
 
     public static function store(Base $context , array $param = [])
     {
+        $status_range = my_config_keys('business.status_for_video_company');
         $validator = Validator::make($param , [
             'name'          => 'required' ,
             'module_id'     => 'required|integer' ,
             'country_id'    => 'sometimes|integer' ,
             'weight'        => 'sometimes|integer' ,
+            'user_id'       => 'required|integer' ,
+            'status'        => ['required' , Rule::in($status_range)] ,
         ]);
-
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
-
+        if (VideoCompanyModel::findByName($param['name'])) {
+            return self::error('名称已经被使用' , ['name' => '名称已经被使用']);
+        }
+        $module = ModuleModel::find($param['module_id']);
+        if (empty($module)) {
+            return self::error('模块不存在' , ['module_id' => '模块不存在']);
+        }
+        $user = UserModel::find($param['user_id']);
+        if (empty($user)) {
+            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+        }
+        if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
+            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+        }
         $country = RegionModel::find($param['country_id']);
-
         if (empty($country)) {
             return self::error('表单错误' , [
                 'country_id' => '国家不存在' ,
             ]);
         }
-
+        $datetime               = current_datetime();
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
-        $param['created_at']   = current_datetime();
         $param['country']       = $country->name;
+        $param['updated_at']    = $datetime;
+        $param['created_at']    = $datetime;
 
         try {
             DB::beginTransaction();
@@ -116,6 +152,10 @@ class VideoCompanyAction extends Action
                 'country' ,
                 'weight' ,
                 'module_id' ,
+                'user_id' ,
+                'status' ,
+                'fail_reason' ,
+                'updated_at' ,
                 'created_at' ,
             ]));
             ResourceUtil::used($param['thumb']);
@@ -131,9 +171,13 @@ class VideoCompanyAction extends Action
     {
         $res = VideoCompanyModel::find($id);
         if (empty($res)) {
-            return self::error('关联主体不存在' , '' , 404);
+            return self::error('记录不存在' , '' , 404);
         }
-        $res = VideoCompanyModel::handle($res);
+        $res = VideoCompanyHandler::handle($res , [
+            'module' ,
+            'user' ,
+            'region' ,
+        ]);
         return self::success('' , $res);
     }
 
@@ -148,7 +192,7 @@ class VideoCompanyAction extends Action
             ResourceUtil::delete($res->thumb);
             $count = VideoCompanyModel::destroy($res->id);
             DB::commit();
-            return self::success('' , $count);
+            return self::success('操作成功' , $count);
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -166,7 +210,7 @@ class VideoCompanyAction extends Action
             }
             $count = VideoCompanyModel::destroy($ids);
             DB::commit();
-            return self::success('' , $count);
+            return self::success('操作成功' , $count);
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;

@@ -26,8 +26,7 @@ export default {
     } ,
 
     show (id , success , error) {
-        const url = show.replace('{id}' , id);
-        return request(show , 'get' , null , success , error)
+        return request(show.replace('{id}' , id) , 'get' , null , success , error)
     } ,
 
     destroy (id , success , error) {

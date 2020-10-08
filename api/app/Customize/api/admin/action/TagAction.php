@@ -6,13 +6,16 @@ namespace App\Customize\api\admin\action;
 use App\Customize\api\admin\handler\TagHandler;
 use App\Customize\api\admin\model\ModuleModel;
 use App\Customize\api\admin\model\TagModel;
+use App\Customize\api\admin\model\UserModel;
 use App\Http\Controllers\api\admin\Base;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use function api\admin\get_form_error;
 use function api\admin\my_config;
+use function api\admin\my_config_keys;
 use function api\admin\parse_order;
 use function core\array_unit;
-use function core\current_datetime;
+use function core\current_date;
 
 class TagAction extends Action
 {
@@ -20,16 +23,22 @@ class TagAction extends Action
     {
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $paginator = TagModel::index($param , $order , $limit);
-        $paginator = TagHandler::handlePaginator($paginator);
-        return self::success('' , $paginator);
+        $res = TagModel::index($param , $order , $limit);
+        $res = TagHandler::handlePaginator($res , [
+            'module' ,
+            'user' ,
+        ]);
+        return self::success('' , $res);
     }
 
     public static function update(Base $context , $id , array $param = [])
     {
+        $status_range = my_config_keys('business.status_for_tag');
         $validator = Validator::make($param , [
-            'name' => 'required' ,
-            'module_id' => 'required' ,
+            'name'      => 'required' ,
+            'module_id' => 'required|integer' ,
+            'user_id'   => 'required|integer' ,
+            'status'    => ['required' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
@@ -42,24 +51,40 @@ class TagAction extends Action
         if (empty($module)) {
             return self::error('模块不存在' , '' , 404);
         }
-        $tag = TagModel::findByModuleIdAndNameExcludeSelf($res->id , $module->id , $param['name']);
+        $tag = TagModel::findByExcludeIdAndModuleIdAndName($res->id , $module->id , $param['name']);
         if (!empty($tag)) {
             return self::error('标签已经存在');
         }
-        $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
+        $user = UserModel::find($param['user_id']);
+        if (empty($user)) {
+            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+        }
+        if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
+            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+        }
+        $datetime               = current_date();
+        $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
+        $param['updated_at']    = $datetime;
         TagModel::updateById($res->id , array_unit($param , [
             'name' ,
             'weight' ,
             'module_id' ,
+            'user_id' ,
+            'status' ,
+            'fail_reason' ,
+            'updated_at' ,
         ]));
         return self::success('操作成功');
     }
 
     public static function store(Base $context , array $param = [])
     {
+        $status_range = my_config_keys('business.status_for_tag');
         $validator = Validator::make($param , [
-            'name' => 'required' ,
-            'module_id' => 'required' ,
+            'name'      => 'required' ,
+            'module_id' => 'required|integer' ,
+            'user_id'   => 'required|integer' ,
+            'status'    => ['required' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
             return self::error('表单错误，请检查' , get_form_error($validator));
@@ -72,11 +97,26 @@ class TagAction extends Action
         if (!empty($tag)) {
             return self::error('标签已经存在');
         }
-        $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
+        $user = UserModel::find($param['user_id']);
+        if (empty($user)) {
+            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+        }
+        if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
+            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+        }
+        $datetime               = current_date();
+        $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
+        $param['updated_at']    = $datetime;
+        $param['created_at']    = $datetime;
         $id = TagModel::insertGetId(array_unit($param , [
             'name' ,
             'weight' ,
             'module_id' ,
+            'user_id' ,
+            'status' ,
+            'fail_reason' ,
+            'updated_at' ,
+            'created_at' ,
         ]));
         return self::success('' , $id);
     }
@@ -84,11 +124,12 @@ class TagAction extends Action
     public static function findOrCreate(Base $context , array $param = [])
     {
         $validator = Validator::make($param , [
-            'name' => 'required' ,
-            'module_id' => 'required' ,
+            'name'      => 'required' ,
+            'module_id' => 'required|integer' ,
+            'user_id'   => 'required|integer' ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
@@ -98,16 +139,27 @@ class TagAction extends Action
         if (!empty($tag)) {
             return self::success('' , $tag);
         }
-        $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
-        $param['created_at'] = current_datetime();
+        $user = UserModel::find($param['user_id']);
+        if (empty($user)) {
+            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+        }
+        $datetime               = current_date();
+        $param['status']        = 1;
+        $param['updated_at']    = $datetime;
+        $param['created_at']    = $datetime;
         $id = TagModel::insertGetId(array_unit($param , [
             'name' ,
-            'weight' ,
             'module_id' ,
+            'user_id' ,
+            'status' ,
+            'updated_at' ,
             'created_at' ,
         ]));
         $tag = TagModel::find($id);
-        TagHandler::handle($tag);
+        TagHandler::handle($tag , [
+            'module' ,
+            'user' ,
+        ]);
         return self::success('' , $tag);
     }
 
@@ -115,23 +167,26 @@ class TagAction extends Action
     public static function show(Base $context , $id , array $param = [])
     {
         $res = TagModel::find($id);
-        if (empty($role)) {
+        if (empty($res)) {
             return self::error('标签不存在' , '' , 404);
         }
-        $res = TagHandler::handle($res);
+        $res = TagHandler::handle($res , [
+            'module' ,
+            'user' ,
+        ]);
         return self::success('' , $res);
     }
 
     public static function destroy(Base $context , $id , array $param = [])
     {
         $count = TagModel::destroy($id);
-        return self::success('' , $count);
+        return self::success('操作成功' , $count);
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
     {
         $count = TagModel::destroy($ids);
-        return self::success('' , $count);
+        return self::success('操作成功' , $count);
     }
 
     public static function search(Base $context , $value , array $param = [])

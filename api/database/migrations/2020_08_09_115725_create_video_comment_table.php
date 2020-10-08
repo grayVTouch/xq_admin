@@ -22,7 +22,7 @@ class CreateVideoCommentTable extends Migration
             $table->unsignedBigInteger('p_id')->default(0)->comment('xq_video_comment.id');
             $table->unsignedBigInteger('user_id')->default(0)->comment('xq_user.id');
             $table->unsignedBigInteger('video_id')->default(0)->comment('xq_video.id');
-            $table->unsignedBigInteger('video_subject_id')->default(0)->comment('缓存字段，xq_video.video_subject_id');
+            $table->unsignedBigInteger('video_project_id')->default(0)->comment('缓存字段，xq_video.video_project_id');
             $table->unsignedBigInteger('praise_count')->default(0)->comment('获赞次数');
             $table->unsignedBigInteger('against_count')->default(0)->comment('反对次数');
             $table->tinyInteger('status')->default(1)->comment('状态：-1-审核不通过 0-审核中 1-审核通过');

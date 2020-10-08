@@ -55,7 +55,7 @@
                         <div class="option">
                             <div class="field">视频专题：</div>
                             <div class="value">
-                                <input type="number" class="form-text" v-model="search.video_subject_id">
+                                <input type="number" class="form-text" v-model="search.video_project_id">
                             </div>
                         </div>
 
@@ -121,8 +121,8 @@
                 <div class="run-action-title">
                     <div class="left">
                         <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showBatchBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
-                        <my-table-button @click="retryProcessVideosEvent" :loading="val.pending.retryProcessVideos" v-show="showBatchBtn"><my-icon icon="reset" />重新处理 （{{ val.selectedIds.length }}）</my-table-button>
+                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="val.selectedIds.length > 0">（{{ val.selectedIds.length }}）</span></my-table-button>
+                        <my-table-button @click="retryProcessVideosEvent" :loading="val.pending.retryProcessVideos"><my-icon icon="reset" />重新处理 <span v-if="val.selectedIds.length > 0">（{{ val.selectedIds.length }}）</span></my-table-button>
                     </div>
                     <div class="right">
                         <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
@@ -139,20 +139,37 @@
 
                 <div class="table">
 
-                    <Table border :height="$store.state.context.table.height"  :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
+                    <Table border :height="$store.state.context.table.height"  :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData" @on-row-dblclick="editEvent">
                         <template v-slot:thumb="{row,index}">
-                            <img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image" @click="link(row.thumb)">
+                            <Poptip trigger="hover" placement="right" :transfer="true">
+                                <img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image" @click="link(row.thumb)" alt="">
+                                <div slot="content" class="table-preview-image-style">
+                                    <img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" class="image" @click="link(row.thumb)" alt="">
+                                </div>
+                            </Poptip>
                         </template>
                         <template v-slot:thumb_for_program="{row,index}">
-                            <img :src="row.thumb_for_program ? row.__thumb_for_program__ : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image" @click="link(row.__thumb_for_program__)">
+                            <Poptip trigger="hover" placement="right" :transfer="true">
+                                <img :src="row.thumb_for_program ? row.thumb_for_program : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image" @click="link(row.thumb_for_program)" alt="">
+                                <div slot="content" class="table-preview-image-style">
+                                    <img :src="row.thumb_for_program ? row.thumb_for_program : $store.state.context.res.notFound" class="image" @click="link(row.thumb_for_program)" alt="">
+                                </div>
+                            </Poptip>
                         </template>
                         <template v-slot:simple_preview="{row,index}">
-                            <Tooltip content="点击可播放预览视频" placement="right">
-                                <video :src="row.__simple_preview__" @click="restartPlayVideo" :height="$store.state.context.table.imageH"></video>
+                            <Tooltip content="点击播放" placement="right" :transfer="true">
+                                <video :src="row.simple_preview" @click="restartPlayVideo" :height="$store.state.context.table.imageH"></video>
                             </Tooltip>
                         </template>
                         <template v-slot:preview="{row,index}">
-                            <Button @click="link(row.__preview__)">点击查看</Button>
+
+                            <Poptip trigger="hover" placement="right" :transfer="true">
+                                <Button @click="link(row.preview)">悬浮查看</Button>
+                                <div slot="content" class="table-preview-image-style">
+                                    <img :src="row.preview ? row.preview : $store.state.context.res.notFound" class="image" @click="link(row.preview)" alt="">
+                                </div>
+                            </Poptip>
+
                         </template>
                         <template v-slot:user_id="{row,index}">
                             {{ row.user ? `${row.user.username}【${row.user.id}】` : `unknow【${row.user_id}】` }}
@@ -163,8 +180,8 @@
                         <template v-slot:category_id="{row,index}">
                             {{ row.category ? `${row.category.name}【${row.category.id}】` : `unknow【${row.category_id}】` }}
                         </template>
-                        <template v-slot:video_subject_id="{row,index}">
-                            {{ row.type === 'pro' ? (row.video_subject ? `${row.video_subject.name}【${row.video_subject.id}】` : `unknow【${row.video_subject_id}】`) : null }}
+                        <template v-slot:video_project_id="{row,index}">
+                            {{ row.type === 'pro' ? (row.video_project ? `${row.video_project.name}【${row.video_project.id}】` : `unknow【${row.video_project_id}】`) : null }}
                         </template>
 
                         <template v-slot:status="{row,index}">
@@ -187,8 +204,8 @@
 
             <div class="line operation">
                 <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll" v-show="showBatchBtn"><my-icon icon="shanchu" />删除选中项 （{{ val.selectedIds.length }}）</my-table-button>
-                <my-table-button @click="retryProcessVideosEvent" :loading="val.pending.retryProcessVideos" v-show="showBatchBtn"><my-icon icon="reset" />重新处理 （{{ val.selectedIds.length }}）</my-table-button>
+                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="val.selectedIds.length > 0">（{{ val.selectedIds.length }}）</span></my-table-button>
+                <my-table-button @click="retryProcessVideosEvent" :loading="val.pending.retryProcessVideos"><my-icon icon="reset" />重新处理 <span v-if="val.selectedIds.length > 0">（{{ val.selectedIds.length }}）</span></my-table-button>
             </div>
 
             <div class="line page">

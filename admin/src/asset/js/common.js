@@ -9,7 +9,7 @@ window.request = function(url , method , data , success , error)
         } ,
         data ,
         success (data , code) {
-            if (code === 401) {
+            if (code === TopContext.code.AuthFailed) {
                 // 登录认证失败
                 G.s.del('token');
                 window.history.go(0);
@@ -20,9 +20,6 @@ window.request = function(url , method , data , success , error)
             }
         } ,
         error ,
-        netError () {
-            // console.log();
-        } ,
     });
 };
 

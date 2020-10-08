@@ -6,7 +6,7 @@ namespace App\Customize\api\web\handler;
 
 use App\Customize\api\web\model\CollectionGroupModel;
 use App\Customize\api\web\model\CollectionModel;
-use App\Customize\api\web\model\ImageSubjectModel;
+use App\Customize\api\web\model\ImageProjectModel;
 use App\Customize\api\web\model\UserModel;
 use App\Customize\api\web\util\CollectionGroupUtil;
 use App\Model\Model;
@@ -31,8 +31,8 @@ class CollectionHandler extends Handler
 
         switch ($model->relation_type)
         {
-            case 'image_subject':
-                $relation = ImageSubjectModel::find($model->relation_id);
+            case 'image_project':
+                $relation = ImageProjectModel::find($model->relation_id);
                 $relation = ImageSubjectHandler::handle($relation);
                 break;
             default:

@@ -24,7 +24,7 @@ use function api\admin\my_config;
 use function core\format_path;
 use function core\random;
 
-class VideoHandleJob implements ShouldQueue
+class VideoHandleJob extends FileBaseJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -34,6 +34,20 @@ class VideoHandleJob implements ShouldQueue
      * @var int|string
      */
     private $videoId = '';
+
+    /**
+     * 保存的目录
+     *
+     * @var string
+     */
+    private $saveDir = '';
+
+    /**
+     * 视频保存目录
+     *
+     * @var string
+     */
+    private $videoSaveDir = '';
 
     /**
      * 临时目录
@@ -47,21 +61,7 @@ class VideoHandleJob implements ShouldQueue
      *
      * @var string
      */
-    private $saveDir = '';
-
-    /**
-     * 保存的目录
-     *
-     * @var string
-     */
     private $prefix = '';
-
-    /**
-     * 保存的目录
-     *
-     * @var DiskModel
-     */
-    private $disk = '';
 
     /**
      * Create a new job instance.
@@ -74,7 +74,6 @@ class VideoHandleJob implements ShouldQueue
         $this->videoId  = $video_id;
         $this->prefix   = $prefix;
         $this->saveDir  = $save_dir;
-        $this->tempDir  = $save_dir . '/video/video_temp_' . $this->videoId;
         $this->disk     = DiskModel::findByPrefix($prefix);
 
         if (empty($this->disk)) {
@@ -111,18 +110,25 @@ class VideoHandleJob implements ShouldQueue
         if (empty($video)) {
             throw new Exception('未找到 videoId:' . $this->videoId . ' 对应记录');
         }
+        if ($video->process_status !== 0) {
+            // 如果处理状态不是 0-待处理则不作任何处理
+            return ;
+        }
         $video = VideoHandler::handle($video , [
-            'video_subject' ,
+            'video_project' ,
             'videos' ,
             'video_subtitles' ,
         ]);
-        if ($video->type === 'pro' && empty($video->video_subject)) {
-            throw new Exception("视频专题不存在【$video->video_subject_id】");
+        if ($video->type === 'pro' && empty($video->video_project)) {
+            throw new Exception("视频专题不存在【$video->video_project_id】");
         }
         // 重置视频处理状态
         VideoModel::updateById($video->id , [
-            'process_status' => 0 ,
+            // 1-处理中
+            'process_status' => 1 ,
         ]);
+        $this->videoSaveDir = $this->generateRealPath($this->saveDir , $video->type === 'pro' ? $video->video_project->name : my_config('app.dir')['video'] . '/' . date('Ymd'));
+        $this->tempDir      = $this->videoSaveDir . '/temp';
 
         // 清理旧数据 start -------------------------------------------------------
         if (File::exists($this->tempDir)) {
@@ -142,8 +148,6 @@ class VideoHandleJob implements ShouldQueue
         // 清理旧数据 end -------------------------------------------------------
 
         // ......处理新数据
-//        $random                             = random(8 , 'letter' , true);
-        $video_save_dir                     = $this->generateRealPath($this->saveDir , $video->type === 'pro' ? $video->video_subject->name : my_config('app.dir')['video'] . '/' . date('Ymd'));
         $merge_video_subtitle               = $video->merge_video_subtitle == 1 && !empty($video->video_subtitles);
         $first_video_subtitle               = $merge_video_subtitle ? $video->video_subtitles[0] : '';
         $first_video_subtitle_resource      = $merge_video_subtitle ? ResourceModel::findByUrl($first_video_subtitle) : null;
@@ -152,16 +156,15 @@ class VideoHandleJob implements ShouldQueue
 
         $video_simple_preview_config        = my_config('app.video_simple_preview');
         $video_preview_config               = my_config('app.video_preview');
-        $video_temp_dir                     = $this->tempDir;
         $video_first_frame_duration         = my_config('app.video_frist_frame_duration');
         $video_subtitle_config              = my_config('app.video_subtitle');
 
-        if (!File::exists($video_save_dir)) {
-            File::mkdir($video_save_dir, 0755, true);
+        if (!File::exists($this->videoSaveDir)) {
+            File::mkdir($this->videoSaveDir, 0777, true);
         }
 
-        if (!File::exists($video_temp_dir)) {
-            File::mkdir($video_temp_dir, 0755, true);
+        if (!File::exists($this->tempDir)) {
+            File::mkdir($this->tempDir, 0777, true);
         }
 
         $date       = date('Ymd');
@@ -170,13 +173,14 @@ class VideoHandleJob implements ShouldQueue
         /**
          * 视频第一帧
          */
-        $video_first_frame_file = $this->generateRealPath($video_save_dir , $this->genMediaSuffix($video->type , $video->name , 'jpeg'));
+        $video_first_frame_file = $this->generateRealPath($this->videoSaveDir , $this->generateMediaSuffix($video->type , $video->name . '【第一帧】' , 'jpeg'));
         $video_first_frame_url  = $this->generateUrlByRealPath($video_first_frame_file);
 
         FFmpeg::create()
             ->input($video_resource->path)
             ->ss($video_first_frame_duration, 'input')
             ->frames(1)
+            ->quiet()
             ->save($video_first_frame_file);
 
         ResourceUtil::create($video_first_frame_url , $video_first_frame_file , 'local' , 0 , 0);
@@ -192,7 +196,7 @@ class VideoHandleJob implements ShouldQueue
 
         for ($i = 0; $i < $video_simple_preview_config['count']; ++$i)
         {
-            $cur_ts         = $video_temp_dir . '/' . $datetime . random(6, 'letter', true) . '.ts';
+            $cur_ts         = $this->tempDir . '/' . $datetime . random(6, 'letter', true) . '.ts';
             $start_duration = $avg_remain_duration + $avg_remain_duration * $i;
 
             FFmpeg::create()
@@ -200,6 +204,7 @@ class VideoHandleJob implements ShouldQueue
                 ->ss($start_duration, 'input')
                 ->size($video_simple_preview_config['width'], $video_simple_preview_config['height'])
                 ->disabledAudio()
+                ->quiet()
                 ->duration($video_simple_preview_config['duration'], 'output')
                 ->save($cur_ts);
 
@@ -208,11 +213,12 @@ class VideoHandleJob implements ShouldQueue
         }
 
         $input_command                  = rtrim($input_command, '|');
-        $video_simple_preview_file      = $this->generateRealPath($video_save_dir , $this->genMediaSuffix($video->type , $video->name , 'mp4'));
+        $video_simple_preview_file      = $this->generateRealPath($this->videoSaveDir , $this->generateMediaSuffix($video->type , $video->name . '【预览】' , 'mp4'));
         $video_simple_preview_url       = $this->generateUrlByRealPath($video_simple_preview_file);
 
         FFmpeg::create()
             ->input($input_command)
+            ->quiet()
             ->save($video_simple_preview_file);
 
         ResourceUtil::create($video_simple_preview_url , $video_simple_preview_file , 'local' , 0 , 0);
@@ -235,7 +241,7 @@ class VideoHandleJob implements ShouldQueue
 
         for ($i = 0; $i < $preview_count; ++$i)
         {
-            $image      = $video_temp_dir . '/' . $datetime . random(6 , 'letter' , true) . '.jpeg';
+            $image      = $this->tempDir . '/' . $datetime . random(6 , 'letter' , true) . '.jpeg';
             $timepoint  = $i * $video_preview_config['duration'];
 
             FFmpeg::create()
@@ -243,6 +249,7 @@ class VideoHandleJob implements ShouldQueue
                 ->ss($timepoint , 'input')
                 ->size($video_preview_config['width'] , $video_preview_config['width'] / ($video_info['width'] / $video_info['height']))
                 ->frames(1)
+                ->quiet()
                 ->save($image);
 
             $previews[] = $image;
@@ -253,7 +260,7 @@ class VideoHandleJob implements ShouldQueue
             imagecopymerge($cav , $image_cav , $x , $y , 0 , 0 , $video_preview_config['width'] , $video_preview_config['height'] , 100);
         }
 
-        $preview_file   = $this->generateRealPath($video_save_dir , $this->genMediaSuffix($video->type , $video->name ,'jpeg'));
+        $preview_file   = $this->generateRealPath($this->videoSaveDir , $this->generateMediaSuffix($video->type , $video->name . '【预览】' ,'jpeg'));
         $preview_url    = $this->generateUrlByRealPath($preview_file);
 
         imagejpeg($cav , $preview_file);
@@ -270,7 +277,7 @@ class VideoHandleJob implements ShouldQueue
             'preview_count'     => $preview_count ,
             'thumb_for_program' => $video_first_frame_url ,
             'duration'          => $video_info['duration'] ,
-            'process_status'    => 1 ,
+            'process_status'    => 2 ,
         ]);
 
         ResourceUtil::used($video_first_frame_url);
@@ -296,7 +303,7 @@ class VideoHandleJob implements ShouldQueue
                 $is_hd = true;
             }
             $save_origin            = false;
-            $transcoded_file        = $this->generateRealPath($video_save_dir , $this->genMediaSuffix($video->type , "{$video->name}【{$k}】" ,'mp4'));
+            $transcoded_file        = $this->generateRealPath($this->videoSaveDir , $this->generateMediaSuffix($video->type , "{$video->name}【{$k}】" ,'mp4'));
             $transcoded_access_url  = $this->generateUrlByRealPath($transcoded_file);
 
             $ffmpeg = FFmpeg::create()->input($video_resource->path);
@@ -305,6 +312,7 @@ class VideoHandleJob implements ShouldQueue
             }
             $ffmpeg->size($v['w'] , $v['h'])
                 ->codec($video_transcoding_config['codec'] , 'video')
+                ->quiet()
                 ->save($transcoded_file);
             $info = FFprobe::create($transcoded_file)->coreInfo();
             VideoSrcModel::insert([
@@ -328,9 +336,11 @@ class VideoHandleJob implements ShouldQueue
 
         if ($save_origin_video || $save_origin) {
             $definition             = '原画';
-            $transcoded_file        = $this->generateRealPath($video_save_dir , $this->genMediaSuffix($video->type , "{$video->name}【{$definition}】" ,'mp4'));
+            $transcoded_file        = $this->generateRealPath($this->videoSaveDir , $this->generateMediaSuffix($video->type , "{$video->name}【{$definition}】" ,'mp4'));
             $transcoded_access_url  = $this->generateUrlByRealPath($transcoded_file);
-            $ffmpeg = FFmpeg::create()->input($video_resource->path);
+            $ffmpeg = FFmpeg::create()
+                ->input($video_resource->path)
+                ->quiet();
             if ($merge_video_subtitle) {
                 $ffmpeg->subtitle($first_video_subtitle_resource->path);
             }
@@ -370,10 +380,11 @@ class VideoHandleJob implements ShouldQueue
                     // 字幕文件不存在，跳过
                     continue ;
                 }
-                $video_subtitle_convert_file        = $this->generateRealPath($video_save_dir , $this->genMediaSuffix($video->type , "{$video->name}【{$v->name}】" , 'vtt'));
+                $video_subtitle_convert_file        = $this->generateRealPath($this->videoSaveDir , $this->generateMediaSuffix($video->type , "{$video->name}【{$v->name}】" , 'vtt'));
                 $video_subtitle_convert_access_url  = $this->generateUrlByRealPath($video_subtitle_convert_file);
                 FFmpeg::create()
                     ->input($video_subtitle_resource->path)
+                    ->quiet()
                     ->save($video_subtitle_convert_file);
                 VideoSubtitleModel::updateById($v->id , [
                     'src' => $video_subtitle_convert_access_url
@@ -382,37 +393,16 @@ class VideoHandleJob implements ShouldQueue
                 ResourceUtil::create($video_subtitle_convert_access_url , $video_subtitle_convert_file , 'local' , 1 , 0);
             }
         }
-        File::delete($video_temp_dir);
+        File::delete($this->tempDir);
         VideoModel::updateById($video->id , [
-            'process_status' => 2
+            'process_status' => 3
         ]);
     }
 
     // 生成媒体的后缀
-    private function genMediaSuffix(string $type , string $name , string $extension): string
+    private function generateMediaSuffix(string $type , string $name , string $extension): string
     {
-        return $type === 'pro' ? $name . $extension : $name . '【' . random(8 , 'letter' , true) . '】' . '.' . $extension;
-    }
-
-    private function generateRealPath(string $dir , string $path): string
-    {
-        return format_path(rtrim($dir , '/') . '/' . ltrim($path , '/'));
-    }
-
-    /**
-     * 从绝对路径生成相对路径
-     *
-     * @param  string $path
-     * @return string
-     */
-    private function generateUrlByRealPath(string $real_path = ''): string
-    {
-        $real_path                      = format_path($real_path);
-        $res_url                        = my_config('app.res_url');
-        $res_url                        = rtrim($res_url , '/');
-        $relative_path_without_prefix   = ltrim(str_replace($this->disk->path , '' , $real_path) , '/');
-        $relative_path_with_prefix      = $this->disk->prefix . '/' . $relative_path_without_prefix;
-        return $res_url . '/' . $relative_path_with_prefix;
+        return $type === 'pro' ? $name . '.' . $extension : $name . '【' . random(8 , 'letter' , true) . '】' . '.' . $extension;
     }
 
     public function failed(Exception $e)

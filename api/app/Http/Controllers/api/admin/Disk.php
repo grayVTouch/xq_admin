@@ -93,4 +93,15 @@ class Disk extends Base
         }
         return success($res['message'] , $res['data']);
     }
+
+    public function link()
+    {
+        $ids = $this->request->input('ids' , '[]');
+        $ids = json_decode($ids , true);
+        $res = DiskAction::link($this , $ids);
+        if ($res['code'] != 0) {
+            return error($res['message'] , $res['data'] , $res['code']);
+        }
+        return success($res['message'] , $res['data']);
+    }
 }

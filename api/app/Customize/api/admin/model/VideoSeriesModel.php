@@ -51,4 +51,18 @@ class VideoSeriesModel extends Model
             ->orderBy('id' , 'asc')
             ->paginate($limit);
     }
+
+
+    public static function findByName(string $name): ?VideoSeriesModel
+    {
+        return self::where('name' , $name)->first();
+    }
+
+    public static function findByNameAndExcludeId(string $name , int $exclude_id): ?VideoSeriesModel
+    {
+        return self::where([
+            ['name' , '=' , $name] ,
+            ['id' , '!=' , $exclude_id] ,
+        ])->first();
+    }
 }

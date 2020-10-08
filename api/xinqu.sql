@@ -91,7 +91,7 @@ INSERT INTO `migrations` VALUES (317, '2020_08_09_094708_create_collection_table
 INSERT INTO `migrations` VALUES (318, '2020_08_09_094954_create_focus_user_table', 1);
 INSERT INTO `migrations` VALUES (319, '2020_08_09_095118_create_praise_table', 1);
 INSERT INTO `migrations` VALUES (320, '2020_08_09_095247_create_email_code_table', 1);
-INSERT INTO `migrations` VALUES (321, '2020_08_09_095510_create_video_subject_table', 1);
+INSERT INTO `migrations` VALUES (321, '2020_08_09_095510_create_video_project_table', 1);
 INSERT INTO `migrations` VALUES (322, '2020_08_09_113131_create_video_series_table', 1);
 INSERT INTO `migrations` VALUES (323, '2020_08_09_113435_create_video_company_table', 1);
 INSERT INTO `migrations` VALUES (324, '2020_08_09_113653_create_video_table', 1);
@@ -187,7 +187,7 @@ INSERT INTO `xq_admin_permission` VALUES (10, '权限管理', 'Permission', '/ad
 INSERT INTO `xq_admin_permission` VALUES (11, '系统管理', 'System', 'system', '', 'view', 'GET', 1, 0, 1, 0, 'http://res.xq.test/preset/ico/system.png', 'http://res.xq.test/preset/ico/system.png', 990, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
 INSERT INTO `xq_admin_permission` VALUES (12, '视频系列', '', '/video_series/index', '', 'view', 'GET', 1, 1, 1, 5, '', '', 989, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
 INSERT INTO `xq_admin_permission` VALUES (13, '视频制作公司', '', '/video_company/index', '', 'view', 'GET', 1, 1, 1, 5, '', '', 988, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
-INSERT INTO `xq_admin_permission` VALUES (14, '视频专题', '', '/video_subject/index', '', 'view', 'GET', 1, 1, 1, 5, '', '', 987, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
+INSERT INTO `xq_admin_permission` VALUES (14, '视频专题', '', '/video_project/index', '', 'view', 'GET', 1, 1, 1, 5, '', '', 987, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
 INSERT INTO `xq_admin_permission` VALUES (15, '视频列表', '', '/video/index', '', 'view', 'GET', 1, 1, 1, 5, '', '', 1986, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
 INSERT INTO `xq_admin_permission` VALUES (16, '角色列表', '', '/role/index', '', 'view', 'GET', 1, 1, 1, 10, '', '', 985, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
 INSERT INTO `xq_admin_permission` VALUES (17, '权限列表', '', '/admin_permission/index', '', 'view', 'GET', 1, 1, 1, 10, '', '', 984, '2020-08-11 22:18:18', '2020-08-11 22:18:18');
@@ -270,7 +270,7 @@ CREATE TABLE `xq_collection`  (
 -- ----------------------------
 -- Records of xq_collection
 -- ----------------------------
-INSERT INTO `xq_collection` VALUES (1, 2, 1, 'image_subject', 6, 1, '2020-08-16 16:13:45');
+INSERT INTO `xq_collection` VALUES (1, 2, 1, 'image_project', 6, 1, '2020-08-16 16:13:45');
 
 -- ----------------------------
 -- Table structure for xq_collection_group
@@ -365,23 +365,23 @@ CREATE TABLE `xq_history`  (
 -- ----------------------------
 -- Records of xq_history
 -- ----------------------------
-INSERT INTO `xq_history` VALUES (1, 2, 'image_subject', 2, 1, '2020-08-16', '15:35:02', '2020-08-16 15:35:02');
-INSERT INTO `xq_history` VALUES (2, 2, 'image_subject', 6, 1, '2020-08-16', '16:13:54', '2020-08-16 16:13:54');
-INSERT INTO `xq_history` VALUES (3, 2, 'image_subject', 6, 1, '2020-08-17', '14:52:50', '2020-08-17 14:52:50');
-INSERT INTO `xq_history` VALUES (4, 2, 'image_subject', 7, 1, '2020-08-17', '12:14:58', '2020-08-17 12:14:58');
-INSERT INTO `xq_history` VALUES (5, 2, 'image_subject', 5, 1, '2020-08-17', '12:15:19', '2020-08-17 12:15:19');
-INSERT INTO `xq_history` VALUES (6, 2, 'image_subject', 4, 1, '2020-08-17', '14:53:58', '2020-08-17 14:53:58');
-INSERT INTO `xq_history` VALUES (7, 2, 'image_subject', 7, 1, '2020-08-18', '16:26:31', '2020-08-18 16:26:31');
-INSERT INTO `xq_history` VALUES (8, 2, 'image_subject', 4, 1, '2020-08-18', '16:26:40', '2020-08-18 16:26:40');
-INSERT INTO `xq_history` VALUES (9, 2, 'image_subject', 6, 1, '2020-08-18', '17:22:54', '2020-08-18 17:22:54');
-INSERT INTO `xq_history` VALUES (10, 2, 'image_subject', 6, 1, '2020-08-20', '13:25:59', '2020-08-20 13:25:59');
-INSERT INTO `xq_history` VALUES (11, 2, 'image_subject', 2, 1, '2020-08-22', '21:42:26', '2020-08-22 21:42:26');
-INSERT INTO `xq_history` VALUES (12, 2, 'image_subject', 7, 1, '2020-08-22', '23:58:15', '2020-08-22 23:58:15');
-INSERT INTO `xq_history` VALUES (13, 2, 'image_subject', 7, 1, '2020-08-23', '21:53:43', '2020-08-23 21:53:43');
-INSERT INTO `xq_history` VALUES (14, 2, 'image_subject', 6, 1, '2020-08-23', '22:04:12', '2020-08-23 22:04:12');
-INSERT INTO `xq_history` VALUES (15, 2, 'image_subject', 7, 1, '2020-08-24', '20:42:34', '2020-08-24 20:42:34');
-INSERT INTO `xq_history` VALUES (16, 2, 'image_subject', 7, 1, '2020-08-25', '14:33:46', '2020-08-25 14:33:46');
-INSERT INTO `xq_history` VALUES (17, 2, 'image_subject', 6, 1, '2020-08-26', '22:00:54', '2020-08-26 22:00:54');
+INSERT INTO `xq_history` VALUES (1, 2, 'image_project', 2, 1, '2020-08-16', '15:35:02', '2020-08-16 15:35:02');
+INSERT INTO `xq_history` VALUES (2, 2, 'image_project', 6, 1, '2020-08-16', '16:13:54', '2020-08-16 16:13:54');
+INSERT INTO `xq_history` VALUES (3, 2, 'image_project', 6, 1, '2020-08-17', '14:52:50', '2020-08-17 14:52:50');
+INSERT INTO `xq_history` VALUES (4, 2, 'image_project', 7, 1, '2020-08-17', '12:14:58', '2020-08-17 12:14:58');
+INSERT INTO `xq_history` VALUES (5, 2, 'image_project', 5, 1, '2020-08-17', '12:15:19', '2020-08-17 12:15:19');
+INSERT INTO `xq_history` VALUES (6, 2, 'image_project', 4, 1, '2020-08-17', '14:53:58', '2020-08-17 14:53:58');
+INSERT INTO `xq_history` VALUES (7, 2, 'image_project', 7, 1, '2020-08-18', '16:26:31', '2020-08-18 16:26:31');
+INSERT INTO `xq_history` VALUES (8, 2, 'image_project', 4, 1, '2020-08-18', '16:26:40', '2020-08-18 16:26:40');
+INSERT INTO `xq_history` VALUES (9, 2, 'image_project', 6, 1, '2020-08-18', '17:22:54', '2020-08-18 17:22:54');
+INSERT INTO `xq_history` VALUES (10, 2, 'image_project', 6, 1, '2020-08-20', '13:25:59', '2020-08-20 13:25:59');
+INSERT INTO `xq_history` VALUES (11, 2, 'image_project', 2, 1, '2020-08-22', '21:42:26', '2020-08-22 21:42:26');
+INSERT INTO `xq_history` VALUES (12, 2, 'image_project', 7, 1, '2020-08-22', '23:58:15', '2020-08-22 23:58:15');
+INSERT INTO `xq_history` VALUES (13, 2, 'image_project', 7, 1, '2020-08-23', '21:53:43', '2020-08-23 21:53:43');
+INSERT INTO `xq_history` VALUES (14, 2, 'image_project', 6, 1, '2020-08-23', '22:04:12', '2020-08-23 22:04:12');
+INSERT INTO `xq_history` VALUES (15, 2, 'image_project', 7, 1, '2020-08-24', '20:42:34', '2020-08-24 20:42:34');
+INSERT INTO `xq_history` VALUES (16, 2, 'image_project', 7, 1, '2020-08-25', '14:33:46', '2020-08-25 14:33:46');
+INSERT INTO `xq_history` VALUES (17, 2, 'image_project', 6, 1, '2020-08-26', '22:00:54', '2020-08-26 22:00:54');
 
 -- ----------------------------
 -- Table structure for xq_image
@@ -604,7 +604,7 @@ CREATE TABLE `xq_position`  (
 -- Records of xq_position
 -- ----------------------------
 INSERT INTO `xq_position` VALUES (1, '首页幻灯片', 'home_slideshow', '', 'web', '2020-08-11 22:18:37');
-INSERT INTO `xq_position` VALUES (2, '图片专题', 'image_subject', '', 'web', '2020-08-11 22:18:37');
+INSERT INTO `xq_position` VALUES (2, '图片专题', 'image_project', '', 'web', '2020-08-11 22:18:37');
 
 -- ----------------------------
 -- Table structure for xq_praise
@@ -624,8 +624,8 @@ CREATE TABLE `xq_praise`  (
 -- ----------------------------
 -- Records of xq_praise
 -- ----------------------------
-INSERT INTO `xq_praise` VALUES (5, 2, 'image_subject', 6, 1, '2020-08-23 22:04:27');
-INSERT INTO `xq_praise` VALUES (6, 2, 'image_subject', 7, 1, '2020-08-24 20:43:04');
+INSERT INTO `xq_praise` VALUES (5, 2, 'image_project', 6, 1, '2020-08-23 22:04:27');
+INSERT INTO `xq_praise` VALUES (6, 2, 'image_project', 7, 1, '2020-08-24 20:43:04');
 
 -- ----------------------------
 -- Table structure for xq_region
@@ -7563,7 +7563,7 @@ CREATE TABLE `xq_relation_tag`  (
   `tag_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_tag.id',
   `module_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_module.id',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '缓存字段，xq_tag.name',
-  `relation_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '关联类型： image_subject-图片专题 video_subject-视频专题 ...等',
+  `relation_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '关联类型： image_subject-图片专题 video_project-视频专题 ...等',
   `relation_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '对应关联表中的 id',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `unique`(`module_id`, `relation_type`, `relation_id`, `tag_id`) USING BTREE
@@ -7572,17 +7572,17 @@ CREATE TABLE `xq_relation_tag`  (
 -- ----------------------------
 -- Records of xq_relation_tag
 -- ----------------------------
-INSERT INTO `xq_relation_tag` VALUES (3, 12, 1, '琉璃神社', 'image_subject', 2);
-INSERT INTO `xq_relation_tag` VALUES (4, 13, 1, '2月份', 'image_subject', 3);
-INSERT INTO `xq_relation_tag` VALUES (5, 14, 1, '3月份', 'image_subject', 4);
-INSERT INTO `xq_relation_tag` VALUES (6, 14, 1, '3月份', 'image_subject', 5);
-INSERT INTO `xq_relation_tag` VALUES (7, 15, 1, '5月份', 'image_subject', 6);
-INSERT INTO `xq_relation_tag` VALUES (8, 12, 1, '琉璃神社', 'image_subject', 7);
-INSERT INTO `xq_relation_tag` VALUES (11, 18, 1, '穹妹', 'image_subject', 8);
-INSERT INTO `xq_relation_tag` VALUES (15, 21, 1, '温馨', 'video_subject', 4);
-INSERT INTO `xq_relation_tag` VALUES (16, 22, 1, '治愈', 'video_subject', 4);
-INSERT INTO `xq_relation_tag` VALUES (17, 23, 1, '家庭', 'video_subject', 4);
-INSERT INTO `xq_relation_tag` VALUES (18, 24, 1, '亲情', 'video_subject', 4);
+INSERT INTO `xq_relation_tag` VALUES (3, 12, 1, '琉璃神社', 'image_project', 2);
+INSERT INTO `xq_relation_tag` VALUES (4, 13, 1, '2月份', 'image_project', 3);
+INSERT INTO `xq_relation_tag` VALUES (5, 14, 1, '3月份', 'image_project', 4);
+INSERT INTO `xq_relation_tag` VALUES (6, 14, 1, '3月份', 'image_project', 5);
+INSERT INTO `xq_relation_tag` VALUES (7, 15, 1, '5月份', 'image_project', 6);
+INSERT INTO `xq_relation_tag` VALUES (8, 12, 1, '琉璃神社', 'image_project', 7);
+INSERT INTO `xq_relation_tag` VALUES (11, 18, 1, '穹妹', 'image_project', 8);
+INSERT INTO `xq_relation_tag` VALUES (15, 21, 1, '温馨', 'video_project', 4);
+INSERT INTO `xq_relation_tag` VALUES (16, 22, 1, '治愈', 'video_project', 4);
+INSERT INTO `xq_relation_tag` VALUES (17, 23, 1, '家庭', 'video_project', 4);
+INSERT INTO `xq_relation_tag` VALUES (18, 24, 1, '亲情', 'video_project', 4);
 
 -- ----------------------------
 -- Table structure for xq_resource
@@ -7948,7 +7948,7 @@ CREATE TABLE `xq_video`  (
   `merge_video_subtitle` tinyint(4) NOT NULL DEFAULT 0 COMMENT '合并字幕？0-否 1-是',
   `duration` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '时长',
   `type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '类别：pro-专题 misc-杂类',
-  `video_subject_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_video_subject.id',
+  `video_project_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_video_project.id',
   `simple_preview` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '简单视频预览（仅有画面无声音的几秒合成预览）',
   `preview` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '视频预览图片',
   `preview_width` int(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '视频预览：单个画面尺寸：宽',
@@ -7983,7 +7983,7 @@ CREATE TABLE `xq_video_comment`  (
   `p_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_video_comment.id',
   `user_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_user.id',
   `video_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_video.id',
-  `video_subject_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '缓存字段，xq_video.video_subject_id',
+  `video_project_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '缓存字段，xq_video.video_project_id',
   `praise_count` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '获赞次数',
   `against_count` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '反对次数',
   `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '状态：-1-审核不通过 0-审核中 1-审核通过',
@@ -7999,7 +7999,7 @@ DROP TABLE IF EXISTS `xq_video_comment_image`;
 CREATE TABLE `xq_video_comment_image`  (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `video_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_video.id',
-  `video_subject_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '缓存字段，xq_video.video_subject_id',
+  `video_project_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '缓存字段，xq_video.video_project_id',
   `video_comment_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'xq_video_comment.id',
   `path` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '路径',
   `created_at` datetime(0) NULL DEFAULT NULL,
@@ -8076,10 +8076,10 @@ INSERT INTO `xq_video_src` VALUES (16, 12, 'upload/20200822/20200822112607KOYVwF
 INSERT INTO `xq_video_src` VALUES (17, 13, 'upload/20200822/20200822122120xdcWeY.mp4', 1417, 1280, 720, '', 147887376, '原画', '2020-08-22 12:24:18');
 
 -- ----------------------------
--- Table structure for xq_video_subject
+-- Table structure for xq_video_project
 -- ----------------------------
-DROP TABLE IF EXISTS `xq_video_subject`;
-CREATE TABLE `xq_video_subject`  (
+DROP TABLE IF EXISTS `xq_video_project`;
+CREATE TABLE `xq_video_project`  (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
   `thumb` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '封面',
@@ -8099,9 +8099,9 @@ CREATE TABLE `xq_video_subject`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '视频专题' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of xq_video_subject
+-- Records of xq_video_project
 -- ----------------------------
-INSERT INTO `xq_video_subject` VALUES (4, '听爸爸的话', 'upload/20200823/20200823215655lkvfsz.png', 0.00, '2020-08-22', '2020-08-22', 'completed', 1000, '', 4, 1, 2, 1, 0, '2020-08-22 11:17:51');
+INSERT INTO `xq_video_project` VALUES (4, '听爸爸的话', 'upload/20200823/20200823215655lkvfsz.png', 0.00, '2020-08-22', '2020-08-22', 'completed', 1000, '', 4, 1, 2, 1, 0, '2020-08-22 11:17:51');
 
 -- ----------------------------
 -- Table structure for xq_video_subtitle

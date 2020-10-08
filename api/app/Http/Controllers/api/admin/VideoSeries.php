@@ -34,7 +34,10 @@ class VideoSeries extends Base
         $param = $this->request->post();
         $param['name']          = $param['name'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
-        $param['module_id']        = $param['module_id'] ?? '';
+        $param['module_id']     = $param['module_id'] ?? '';
+        $param['user_id']       = $param['user_id'] ?? '';
+        $param['status']        = $param['status'] ?? '';
+        $param['fail_reason']   = $param['fail_reason'] ?? '';
         $res = VideoSeriesAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -47,7 +50,10 @@ class VideoSeries extends Base
         $param = $this->request->post();
         $param['name']          = $param['name'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
-        $param['module_id']        = $param['module_id'] ?? '';
+        $param['module_id']     = $param['module_id'] ?? '';
+        $param['user_id']       = $param['user_id'] ?? '';
+        $param['status']        = $param['status'] ?? '';
+        $param['fail_reason']   = $param['fail_reason'] ?? '';
         $res = VideoSeriesAction::store($this ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);

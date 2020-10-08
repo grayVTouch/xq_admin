@@ -18,7 +18,7 @@ class VideoModel extends Model
         $filter['user_id']      = $filter['user_id'] ?? '';
         $filter['module_id']    = $filter['module_id'] ?? '';
         $filter['category_id']          = $filter['category_id'] ?? '';
-        $filter['video_subject_id']     = $filter['video_subject_id'] ?? '';
+        $filter['video_project_id']     = $filter['video_project_id'] ?? '';
         $filter['type']         = $filter['type'] ?? '';
         $filter['status']       = $filter['status'] ?? '';
 
@@ -47,8 +47,8 @@ class VideoModel extends Model
             $where[] = ['category_id' , '=' , $filter['category_id']];
         }
 
-        if ($filter['video_subject_id'] !== '') {
-            $where[] = ['video_subject_id' , '=' , $filter['video_subject_id']];
+        if ($filter['video_project_id'] !== '') {
+            $where[] = ['video_project_id' , '=' , $filter['video_project_id']];
         }
 
         if ($filter['type'] !== '') {
@@ -78,21 +78,21 @@ class VideoModel extends Model
     }
 
     // 检查剧集是否已经存在
-    public static function findByVideoSubjectIdAndIndex(int $video_subject_id , int $index): ?VideoModel
+    public static function findByVideoSubjectIdAndIndex(int $video_project_id , int $index): ?VideoModel
     {
         return self::where([
             ['type' , '=' , 'pro'] ,
-            ['video_subject_id' , '=' , $video_subject_id] ,
+            ['video_project_id' , '=' , $video_project_id] ,
             ['index' , '=' , $index] ,
         ])->first();
     }
 
-    public static function findExcludeSelfByVideoIdAndVideoSubjectIdAndIndex(int $video_id , int $video_subject_id , int $index): ?VideoModel
+    public static function findExcludeSelfByVideoIdAndVideoSubjectIdAndIndex(int $video_id , int $video_project_id , int $index): ?VideoModel
     {
         return self::where([
             ['type' , '=' , 'pro'] ,
             ['id' , '!=' , $video_id] ,
-            ['video_subject_id' , '=' , $video_id] ,
+            ['video_project_id' , '=' , $video_id] ,
             ['index' , '=' , $index] ,
         ])->first();
     }
