@@ -14,7 +14,8 @@ const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+// const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+// const Webpack = require('webpack');
 
 module.exports = {
     entry: {
@@ -35,10 +36,12 @@ module.exports = {
             template: 'template.html'
         }) ,
         new VueLoaderPlugin() ,
-        new MiniCssExtractPlugin({
-            filename: "css/[name]-[hash].css",
-            chunkFilename: "css/chunk-[name]-[hash].css"
-        })
+        // new MiniCssExtractPlugin({
+        //     filename: "css/[name]-[hash].css",
+        //     chunkFilename: "css/chunk-[name]-[hash].css"
+        // }) ,
+        // // 热更新
+        // new Webpack.HotModuleReplacementPlugin() ,
     ],
     output: {
         filename: 'js/[name]-[hash].js',
@@ -78,26 +81,30 @@ module.exports = {
                 // test: /\.css$/ ,
                 use: [
                     // MiniCssExtractPlugin.loader ,
-                    {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {
-                            /**
-                             * 如果没加 publicPath 的情况下，css 中通过 @import 或 url() 等引入的文件
-                             * 加载的目录会默认是 css 文件所在目录
-                             * 而实际上字体文件的定位是 dist 目录所在目录！
-                             * 所以需要给出 publicPath 指定 dist 编译的根目录
-                             */
-                            publicPath: '../',
-                        },
-                    },
-                    // 'vue-style-loader' ,
+                    // {
+                    //     loader: MiniCssExtractPlugin.loader,
+                    //     options: {
+                    //         /**
+                    //          * 如果没加 publicPath 的情况下，css 中通过 @import 或 url() 等引入的文件
+                    //          * 加载的目录会默认是 css 文件所在目录
+                    //          * 而实际上字体文件的定位是 dist 目录所在目录！
+                    //          * 所以需要给出 publicPath 指定 dist 编译的根目录
+                    //          */
+                    //         publicPath: '../',
+                    //     },
+                    // },
+
+                    'vue-style-loader' ,
+                    'css-loader' ,
                     // 'style-loader' ,
-                    {
-                        loader: 'css-loader' ,
-                        options: {
-                            sourceMap: true
-                        }
-                    }
+                    // {
+                    //     loader: 'css-loader' ,
+                    //     options: {
+                    //         // sourceMap: true
+                    //         // esModule: false ,
+                    //     }
+                    // }
+
                 ],
             } ,
             {
@@ -152,9 +159,12 @@ module.exports = {
     // 简化导入
     resolve: {
         alias: {
-            'vue': 'vue/dist/vue.esm.js' ,
-            'vue-router': 'vue-router/dist/vue-router.esm.js' ,
-            'vuex': 'vuex/dist/vuex.esm.js' ,
+            // 'vue': 'vue/dist/vue.esm.js' ,
+            // 'vue-router': 'vue-router/dist/vue-router.esm.js' ,
+            // 'vuex': 'vuex/dist/vuex.esm.js' ,
+            'vue': 'vue/dist/vue.js' ,
+            'vue-router': 'vue-router/dist/vue-router.js' ,
+            'vuex': 'vuex/dist/vuex.js' ,
 
             '@asset': path.resolve(__dirname , './src/asset') ,
             '@api': path.resolve(__dirname , './src/api') ,

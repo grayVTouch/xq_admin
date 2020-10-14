@@ -50,6 +50,7 @@ export default {
     } ,
 
     mounted () {
+        // alert('nice');
         this.initIns();
         this.init();
         this.getData();

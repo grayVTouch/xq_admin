@@ -147,16 +147,20 @@ export default {
                         center: TopContext.table.alignCenter ,
                     } ,
                     {
-                        title: 'id' ,
+                        title: 'id fuck' ,
                         key: 'id' ,
+                        minWidth: TopContext.table.id ,
                         center: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '图片' ,
                         slot: 'path' ,
+                        minWidth: TopContext.table.image ,
+                        center: TopContext.table.alignCenter ,
                     } ,
                     {
                         title: '操作' ,
+                        minWidth: TopContext.table.action ,
                         slot: 'action' ,
                     } ,
                 ] ,

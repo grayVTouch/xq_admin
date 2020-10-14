@@ -42,8 +42,11 @@ Vue.config.productionTip = debug;
 new Vue({
     el: '#app' ,
     router ,
-    template: '<app />' ,
-    components: {
-        app ,
-    } ,
+    // template: '<app />' ,
+    render: (h) => {
+        return h(app);
+    }
+    // components: {
+    //     app ,
+    // } ,
 });

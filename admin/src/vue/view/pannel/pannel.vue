@@ -12,7 +12,7 @@
 
                     <div class="today">
                         <div class="run-title">
-                            <div class="left">今日统计资料</div>
+                            <div class="left">今日统计资料 111</div>
                             <div class="right"></div>
                         </div>
                         <div class="list">
