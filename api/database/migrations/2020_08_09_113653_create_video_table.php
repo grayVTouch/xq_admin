@@ -43,8 +43,9 @@ class CreateVideoTable extends Migration
             $table->unsignedInteger('preview_line_count')->default(0)->comment('视频预览：单行最大合并画面数量');
             $table->tinyInteger('is_hd')->default(0)->comment('高清视频：0-否 1-是');
             $table->tinyInteger('status')->default(1)->comment('状态：-1-审核不通过 0-审核中 1-审核通过');
-            $table->tinyInteger('process_status')->default(0)->comment('处理处理状态：-1-处理失败 0-信息处理中 1-转码中 2-处理完成');
             $table->string('fail_reason' , 1000)->default('')->comment('失败原因，当 status=-1 时，必须提供');
+            $table->tinyInteger('video_process_status')->default(0)->comment('视频处理处理状态：-1-处理失败 0-信息处理中 1-转码中 2-处理完成');
+            $table->tinyInteger('file_process_status')->default(0)->comment('文件处理处理状态：-1-处理失败 0-待处理 1-处理中 2-处理完成 ');
             $table->unsignedSmallInteger('index')->default(0)->comment('剧集索引，仅当 type=pro 的时候有效');
             $table->integer('weight')->default(0)->comment('权重');
 

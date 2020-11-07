@@ -114,6 +114,78 @@ const subtitle = {
     delete_1: false ,
 };
 
+const videos = {
+    field: [
+        {
+            type: 'selection' ,
+            width: TopContext.table.checkbox ,
+            center: TopContext.table.alignCenter ,
+            fixed: 'left' ,
+        } ,
+        {
+            title: 'id' ,
+            key: 'id' ,
+            minWidth: TopContext.table.id ,
+            center: TopContext.table.alignCenter ,
+            fixed: 'left' ,
+        } ,
+        {
+            title: '清晰度' ,
+            key: 'definition' ,
+            minWidth: TopContext.table.name ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '视频' ,
+            slot: 'src' ,
+            minWidth: TopContext.table.video ,
+        } ,
+        {
+            title: '操作' ,
+            slot: 'action' ,
+            minWidth: TopContext.table.action ,
+            fixed: 'right' ,
+        } ,
+    ] ,
+    data: [] ,
+};
+
+const videoSubtitles = {
+    field: [
+        {
+            type: 'selection' ,
+            width: TopContext.table.checkbox ,
+            center: TopContext.table.alignCenter ,
+            fixed: 'left' ,
+        } ,
+        {
+            title: 'id' ,
+            key: 'id' ,
+            minWidth: TopContext.table.id ,
+            center: TopContext.table.alignCenter ,
+            fixed: 'left' ,
+        } ,
+        {
+            title: '名称' ,
+            key: 'name' ,
+            minWidth: TopContext.table.name ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '字幕源' ,
+            minWidth: TopContext.table.src ,
+            key: 'src' ,
+        } ,
+        {
+            title: '操作' ,
+            slot: 'action' ,
+            minWidth: TopContext.table.action ,
+            fixed: 'right' ,
+        } ,
+    ] ,
+    data: [] ,
+};
+
 export default {
 
     computed: {
@@ -153,77 +225,9 @@ export default {
 
             uVideoSubtitles: [] ,
 
-            videos: {
-                field: [
-                    {
-                        type: 'selection' ,
-                        width: TopContext.table.checkbox ,
-                        center: TopContext.table.alignCenter ,
-                        fixed: 'left' ,
-                    } ,
-                    {
-                        title: 'id' ,
-                        key: 'id' ,
-                        minWidth: TopContext.table.id ,
-                        center: TopContext.table.alignCenter ,
-                        fixed: 'left' ,
-                    } ,
-                    {
-                        title: '清晰度' ,
-                        key: 'definition' ,
-                        minWidth: TopContext.table.name ,
-                        center: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '视频' ,
-                        slot: 'src' ,
-                        minWidth: TopContext.table.video ,
-                    } ,
-                    {
-                        title: '操作' ,
-                        slot: 'action' ,
-                        minWidth: TopContext.table.action ,
-                        fixed: 'right' ,
-                    } ,
-                ] ,
-                data: [] ,
-            } ,
+            videos: G.copy(videos) ,
 
-            videoSubtitles: {
-                field: [
-                    {
-                        type: 'selection' ,
-                        width: TopContext.table.checkbox ,
-                        center: TopContext.table.alignCenter ,
-                        fixed: 'left' ,
-                    } ,
-                    {
-                        title: 'id' ,
-                        key: 'id' ,
-                        minWidth: TopContext.table.id ,
-                        center: TopContext.table.alignCenter ,
-                        fixed: 'left' ,
-                    } ,
-                    {
-                        title: '名称' ,
-                        key: 'name' ,
-                        minWidth: TopContext.table.name ,
-                        center: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '字幕源' ,
-                        minWidth: TopContext.table.src ,
-                        key: 'src' ,
-                    } ,
-                    {
-                        title: '操作' ,
-                        slot: 'action' ,
-                        minWidth: TopContext.table.action ,
-                        fixed: 'right' ,
-                    } ,
-                ] ,
-                data: [] ,
-            } ,
+            videoSubtitles: G.copy(videoSubtitles) ,
 
             images: [] ,
 
@@ -481,15 +485,18 @@ export default {
                 return ;
             }
             this._val('drawer' , false);
+            this._val('tab' , 'base');
             this.ins.thumb.clearAll();
             this.ins.video.clearAll();
-            this.images = [];
-            this.tags = [];
-            this.uVideoSubtitles = [];
-            // 切换回基本的内容
-            this._val('tab' , 'base');
-            this.users.value = '';
-            this.videoProjects.value = '';
+
+            this.images             = [];
+            this.tags               = [];
+            this.uVideoSubtitles    = [];
+            this.users              = G.copy(users);
+            this.videoProjects      = G.copy(videoProjects);
+            this.videos             = G.copy(videos);
+            this.videoSubtitles     = G.copy(videoSubtitles);
+            this.form               = G.copy(form);
         } ,
 
 

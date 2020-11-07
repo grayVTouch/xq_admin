@@ -139,7 +139,7 @@
 
                 <div class="table">
 
-                    <Table border :height="$store.state.context.table.height"  :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData" @on-row-dblclick="editEvent">
+                    <Table border :height="$store.state.context.table.height"  :columns="table.field" :data="table.data" @on-selection-change="selectionChangeEvent" :loading="val.pending.getData" @on-row-dblclick="editEvent">
                         <template v-slot:thumb="{row,index}">
                             <Poptip trigger="hover" placement="right" :transfer="true">
                                 <img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image" @click="link(row.thumb)" alt="">
@@ -187,8 +187,11 @@
                         <template v-slot:status="{row,index}">
                             <b :class="{'run-red': row.status === -1 , 'run-gray': row.status === 0 , 'run-green': row.status === 1}">{{ row.__status__ }}</b>
                         </template>
-                        <template v-slot:process_status="{row,index}">
-                            <b :class="{'run-gray': row.process_status === -1 , 'run-red': row.process_status === 0 , 'run-green': row.process_status >= 1}">{{ row.__process_status__ }}</b>
+                        <template v-slot:video_process_status="{row,index}">
+                            <b :class="{'run-gray': row.video_process_status === -1 , 'run-red': row.video_process_status === 0 , 'run-green': row.video_process_status >= 1}">{{ row.__video_process_status__ }}</b>
+                        </template>
+                        <template v-slot:file_process_status="{row,index}">
+                            <b :class="{'run-gray': row.file_process_status === -1 , 'run-red': row.file_process_status === 0 , 'run-green': row.file_process_status >= 1}">{{ row.__file_process_status__ }}</b>
                         </template>
 
                         <template v-slot:action="{row , index}">

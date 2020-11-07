@@ -1,8 +1,12 @@
 <template>
-    <select v-model="valueCopy" @change="changeEvent" class="form-select">
-        <option :value="empty">请选择...</option>
-        <option v-for="v in data" :value="v[attr.id]" :key="v[attr.id]">{{ v[attr.name] }}</option>
-    </select>
+<!--    <select v-model="valueCopy" @change="changeEvent" class="form-select">-->
+<!--        <option :value="empty">请选择...</option>-->
+<!--        <option v-for="v in data" :value="v[attr.id]" :key="v[attr.id]">{{ v[attr.name] }}</option>-->
+<!--    </select>-->
+
+    <i-select v-model="valueCopy" filterable @on-change="changeEvent" class="form-select">
+        <i-option v-for="v in data" :value="v[attr.id]" :key="v[attr.id]">{{ v[attr.name] }}</i-option>
+    </i-select>
 </template>
 
 <script>
@@ -19,17 +23,19 @@
         } ,
         props: {
             value: {
-                type: [String , Number] ,
-                required: true ,
+                default: '' ,
             },
+
             data: {
                 type: Array ,
                 required: true ,
             } ,
+
             // 未选择时的默认值
             empty: {
                 default: '' ,
             } ,
+
             attr: {
                 type: Object ,
                 default () {
@@ -42,8 +48,8 @@
         } ,
 
         methods: {
-            changeEvent (e) {
-                this.$emit('change' , e.target.value);
+            changeEvent (value) {
+                this.$emit('change' , value);
             } ,
         } ,
 

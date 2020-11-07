@@ -210,7 +210,7 @@ export default {
             });
         } ,
 
-        selectedEvent (data) {
+        selectionChangeEvent (data) {
             const ids = [];
             data.forEach((v) => {
                 ids.push(v.id);

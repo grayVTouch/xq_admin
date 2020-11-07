@@ -7959,7 +7959,7 @@ CREATE TABLE `xq_video`  (
   `is_hd` tinyint(255) NULL DEFAULT 0 COMMENT '高清视频？0-否 1-是',
   `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '状态：-1-审核不通过 0-审核中 1-审核通过',
   `play_count` bigint(255) UNSIGNED NULL DEFAULT 0 COMMENT '播放数量',
-  `process_status` tinyint(4) NOT NULL DEFAULT 0 COMMENT '处理处理状态：-1-处理失败 0-信息处理中 1-转码中 2-处理完成',
+  `video_process_status` tinyint(4) NOT NULL DEFAULT 0 COMMENT '处理处理状态：-1-处理失败 0-信息处理中 1-转码中 2-处理完成',
   `fail_reason` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '失败原因，当 status=-1 时，必须提供',
   `weight` int(11) NOT NULL DEFAULT 0 COMMENT '权重',
   `updated_at` datetime(0) NULL DEFAULT NULL,

@@ -322,8 +322,9 @@ export default {
 
         // 注销
         logout () {
-            G.s.del('token');
-            this.push({name: 'login'});
+            G.cookie.del('token');
+            window.history.go(0);
+            // this.push({name: 'login'});
         } ,
 
         findTabByRoute (route) {

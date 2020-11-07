@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --config webpack.prod.js",
     "watch": "webpack --watch --config webpack.watch.js",
-    "server": "webpack-dev-server --inline --hot --open --config webpack.server.js"
+    "server": "webpack-dev-server --config webpack.server.js"
   },
   "author": "",
   "license": "ISC",

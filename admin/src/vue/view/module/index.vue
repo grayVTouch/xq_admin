@@ -87,7 +87,7 @@
 
                 <div class="table">
 
-                    <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
+                    <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectionChangeEvent" :loading="val.pending.getData">
                         <template v-slot:enable="{row,index}"><my-switch v-model="row.is_enabled" :loading="val.pending['enable_' + row.id]" :extra="{field: 'enable' , data: row}" @on-change="updateBoolValEvent" /></template>
                         <template v-slot:default="{row,index}"><my-switch v-model="row.is_default" :loading="val.pending['default_' + row.id]" :extra="{field: 'default' , data: row}" @on-change="updateBoolValEvent" /></template>
                         <template v-slot:auth="{row,index}"><my-switch v-model="row.auth" :loading="val.pending['auth_' + row.id]" :extra="{field: 'auth' , data: row}" @on-change="updateBoolValEvent" /></template>

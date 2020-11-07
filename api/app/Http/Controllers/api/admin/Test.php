@@ -14,6 +14,7 @@ class Test extends Base
 {
     public function index()
     {
+        var_dump(Hash::make(123456));
 //        var_dump(env('APP_URL'));
 //        var_dump(env('ADMIN_USERNAME'));
 //        $job_id = RestartFaildJob::dispatch(1);
@@ -24,13 +25,13 @@ class Test extends Base
 
 //        return response('fuck' , 500);
 //        throw new Exception('exception');
-        $i = 0;
-        while ($i < 3)
-        {
-            $i++;
-            sleep(1);
-        }
-
-        return response('fuck' , 400);
+//        $i = 0;
+//        while ($i < 3)
+//        {
+//            $i++;
+//            sleep(1);
+//        }
+//
+//        return response('fuck' , 400);
     }
 }

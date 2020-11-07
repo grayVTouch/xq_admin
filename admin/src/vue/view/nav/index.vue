@@ -18,7 +18,7 @@
 
                 <div class="table">
 
-                    <Table border width="100%" :height="630" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
+                    <Table border width="100%" :height="630" :columns="table.field" :data="table.data" @on-selection-change="selectionChangeEvent" :loading="val.pending.getData">
                         <template v-slot:name="{row,index}">
                             <template v-if="row.floor > 1">{{ '|' + '_'.repeat((row.floor - 1) * 10) + row.name + `【${row.module ? row.module.name : 'unknow'}】` }}</template>
                             <template v-else>{{ row.name + `【${row.module ? row.module.name : 'unknow'}】` }}</template>

@@ -49,15 +49,14 @@ export default {
 
 
         captcha () {
-            Api.misc.captcha((msg , data , code) => {
+            Api.misc.captcha().then(({message , data , code}) => {
                 if (code !== TopContext.code.Success) {
-                    this.errorHandle(msg , data , code);
-                    // this.error({captcha_code: '获取图形验证码失败，请稍后重新点击验证码再次尝试'} , false);
+                    this.errorHandle(message , data , code);
                     return ;
                 }
                 this.val.captcha = data;
                 this.form.captcha_key = data.key;
-            })
+            });
         } ,
 
         focusEvent (e) {
@@ -83,27 +82,53 @@ export default {
             });
         } ,
 
+        filter () {
+            const error = {};
+            if (G.isEmptyString(this.form.username)) {
+                error.username = '请填写用户名';
+            }
+            if (G.isEmptyString(this.form.password)) {
+                error.password = '请填写密码';
+            }
+            if (G.isEmptyString(this.form.captcha_code)) {
+                error.captcha_code = '请填写验证码';
+            }
+            return {
+                status: G.isEmptyObject(error) ,
+                error ,
+            };
+        } ,
+
         submitEvent () {
             if (!this.request('submit') || this.pending('submit')) {
                 return ;
             }
+            const filterRes = this.filter();
+
+            console.log('filterRes' , filterRes);
+
+            if (!filterRes.status) {
+                this.error(filterRes.error);
+                // this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
+                return ;
+            }
             this.pending('submit' , true);
-            Api.login.login(this.form , (msg , data , code) => {
-                this.pending('submit' , false);
-                this.error();
-                this.topMessage();
-                this.captcha();
-                if (code !== TopContext.code.Success) {
-                    this.errorHandle(msg , data , code);
-                    return ;
-                }
-                this.request('submit' , false);
-                this.topMessage('登录成功，进入首页中...' , 'run-green');
-                G.s.set('token' , data);
-                G.setTimeout(() => {
-                    this.push({name: 'home'});
-                } , 1000);
-            });
+            Api.login.login(this.form).then(({message , data , code}) => {
+                    this.pending('submit' , false);
+                    this.error();
+                    this.topMessage();
+                    this.captcha();
+                    if (code !== TopContext.code.Success) {
+                        this.errorHandle(message , data , code);
+                        return ;
+                    }
+                    this.request('submit' , false);
+                    this.topMessage('登录成功，进入首页中...' , 'run-green');
+                    G.cookie.set('token' , data);
+                    G.setTimeout(() => {
+                        this.push({name: 'home'});
+                    } , 1000);
+                });
         } ,
     }
 };

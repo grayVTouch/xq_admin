@@ -79,12 +79,19 @@ return [
         'fix-height' ,
     ] ,
 
-    'process_status_for_video' => [
+    'video_process_status_for_video' => [
         -1 => '处理失败' ,
         0 => '待处理' ,
         1 => '处理中' ,
         2 => '转码中' ,
         3 => '处理完成' ,
+    ] ,
+
+    'file_process_status_for_video' => [
+        -1 => '处理失败' ,
+        0 => '待处理' ,
+        1 => '处理中' ,
+        2 => '处理完成' ,
     ] ,
 
     'end_status_for_video_project' => [

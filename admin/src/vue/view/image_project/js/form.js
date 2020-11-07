@@ -8,7 +8,7 @@ const form = {
     praise_count: 0 ,
     weight: 0 ,
     __tag__: [] ,
-    status: 0 ,
+    status: 1 ,
     images: [] ,
     tags: [] ,
 };
@@ -96,6 +96,34 @@ const imageSubjects = {
     limit: TopContext.limit ,
 };
 
+const table = {
+    field: [
+        {
+            type: 'selection' ,
+            width: TopContext.table.checkbox ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: 'id fuck' ,
+            key: 'id' ,
+            minWidth: TopContext.table.id ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '图片' ,
+            slot: 'path' ,
+            minWidth: TopContext.table.image ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '操作' ,
+            minWidth: TopContext.table.action ,
+            slot: 'action' ,
+        } ,
+    ] ,
+    data: [] ,
+};
+
 export default {
     computed: {
         title () {
@@ -139,33 +167,7 @@ export default {
             // 实例
             ins: {} ,
 
-            table: {
-                field: [
-                    {
-                        type: 'selection' ,
-                        width: TopContext.table.checkbox ,
-                        center: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: 'id fuck' ,
-                        key: 'id' ,
-                        minWidth: TopContext.table.id ,
-                        center: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '图片' ,
-                        slot: 'path' ,
-                        minWidth: TopContext.table.image ,
-                        center: TopContext.table.alignCenter ,
-                    } ,
-                    {
-                        title: '操作' ,
-                        minWidth: TopContext.table.action ,
-                        slot: 'action' ,
-                    } ,
-                ] ,
-                data: [] ,
-            } ,
+            table: G.copy(table) ,
 
             images: [] ,
 
@@ -244,14 +246,14 @@ export default {
             this.form.image_subject_id = '';
             this.form.image_subject_id = '';
             this.form.topTags = [];
-            this.form.subject = G.copy(imageSubjects.current);
+            this.form.imageSubjects = G.copy(imageSubjects.current);
             this.getCategories(moduleId , this.form.type);
             this.getTopTags(moduleId);
         } ,
 
         typeChangedEvent (type) {
             if (type === 'misc') {
-                this.form.subject = G.copy(imageSubjects.current);
+                this.form.imageSubjects = G.copy(imageSubjects.current);
                 this.form.image_subject_id = '';
             }
         } ,
@@ -425,13 +427,15 @@ export default {
             this._val('drawer' , false);
             this.ins.thumb.clearAll();
             this.ins.images.clearAll();
-            this.images = [];
-            this.tags = [];
-            this.topTags = [];
-            this.modules = [];
-            this.categories = [];
-            this.users.value = '';
-            this.imageSubjects.value = '';
+            this.form           = G.copy(form);
+            this.images         = [];
+            this.tags           = [];
+            this.topTags        = [];
+            this.modules        = [];
+            this.categories     = [];
+            this.imageSubjects  = G.copy(imageSubjects);
+            this.users          = G.copy(users);
+            this.table          = G.copy(table);
             this._val('tab' , 'base');
         } ,
 
@@ -470,7 +474,7 @@ export default {
             });
         } ,
 
-        selectedEvent (data) {
+        selectionChangeEvent (data) {
             const ids = [];
             data.forEach((v) => {
                 ids.push(v.id);

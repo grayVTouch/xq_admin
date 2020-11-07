@@ -1,8 +1,4 @@
-
-const form = {
-    sex: 'secret' ,
-    role_id: '' ,
-};
+import MyForm from '../form.vue';
 
 const search = {
     role_id: '' ,
@@ -10,8 +6,14 @@ const search = {
     order: '' ,
 };
 
+const current = {id: 0};
+
 export default {
     name: "index",
+
+    components: {
+        'my-form': MyForm ,
+    } ,
 
     data () {
         return {
@@ -19,8 +21,6 @@ export default {
             ins: {} ,
             val: {
                 pending: {} ,
-                modal: false ,
-                error: {} ,
                 // edit-编辑 add-添加
                 mode: '' ,
                 selectedIds: [] ,
@@ -40,6 +40,7 @@ export default {
                         minWidth: TopContext.table.id ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
+                        sortable: 'custom' ,
                     } ,
                     {
                         title: '用户名' ,
@@ -70,7 +71,8 @@ export default {
                         title: '生日' ,
                         key: 'birthday' ,
                         minWidth: TopContext.table.name ,
-                        align: TopContext.table.alignCenter
+                        align: TopContext.table.alignCenter ,
+                        sortable: 'custom' ,
                     } ,
                     {
                         title: '手机号码' ,
@@ -88,7 +90,8 @@ export default {
                         title: '最近一次登录时间' ,
                         key: 'last_time' ,
                         minWidth: TopContext.table.time ,
-                        align: TopContext.table.alignCenter
+                        align: TopContext.table.alignCenter ,
+                        sortable: 'custom' ,
                     } ,
                     {
                         title: '最近一次登录ip' ,
@@ -107,14 +110,15 @@ export default {
                         key: 'created_at' ,
                         minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
+                        sortable: 'custom' ,
                     } ,
-                    {
-                        title: '操作' ,
-                        slot: 'action' ,
-                        minWidth: TopContext.table.action ,
-                        align: TopContext.table.alignCenter ,
-                        fixed: 'right' ,
-                    } ,
+                    // {
+                    //     title: '操作' ,
+                    //     slot: 'action' ,
+                    //     minWidth: TopContext.table.action ,
+                    //     align: TopContext.table.alignCenter ,
+                    //     fixed: 'right' ,
+                    // } ,
                 ] ,
                 total: 0 ,
                 page: 1 ,
@@ -125,21 +129,23 @@ export default {
             roles: [] ,
 
             search: G.copy(search) ,
-            form: G.copy(form)  ,
+
+            // 当前编辑的用户
+            current: G.copy(current) ,
+
+            // 选中项
+            selection: [] ,
         };
     } ,
 
     mounted () {
-        this.initDom();
-        this.initIns();
+        // this.initDom();
+        // this.initIns();
         this.getRoles();
         this.getData();
     } ,
 
     computed: {
-        title () {
-            return this.val.mode === 'edit' ? '编辑' : '添加';
-        } ,
 
         showBatchBtn () {
             return this.val.selectedIds.length > 0;
@@ -148,9 +154,7 @@ export default {
 
     methods: {
 
-        setDate (date) {
-            this.form.birthday = date;
-        } ,
+
 
         getRoles () {
             this.pending('getRoles' , true);
@@ -161,45 +165,6 @@ export default {
                     return ;
                 }
                 this.roles = data;
-            });
-        } ,
-
-        addRoleEvent () {
-            const route = '/role/index';
-            this.location(route , {
-                action: 'add' ,
-                callback: () => {
-                    // 更新角色
-                    this.getRoles();
-                    // 切换回当前的标签
-                    this.location(this.route.value , null , '_blank');
-                    // 关闭标签
-                    this.closeTabByRoute(route);
-                } ,
-            } , '_blank');
-        } ,
-
-        initDom () {
-            this.dom.avatar = G(this.$refs.avatar);
-        } ,
-
-        initIns () {
-            const self = this;
-            this.ins.avatar = new Uploader(this.dom.avatar.get(0) , {
-                api: this.thumbApi() ,
-                mode: 'override' ,
-                clear: true ,
-                uploaded (file , data , code) {
-                    if (code !== TopContext.code.Success) {
-                        this.status(file.id , false);
-                        return ;
-                    }
-                    this.status(file.id , true);
-                    self.form.avatar = data.data;
-                } ,
-                cleared () {
-                    self.form.avatar = '';
-                } ,
             });
         } ,
 
@@ -230,8 +195,8 @@ export default {
             this.destroyAll([id] , callback);
         } ,
 
-        destroyAll (idList , callback) {
-            if (idList.length < 1) {
+        destroyAll (ids , callback) {
+            if (ids.length < 1) {
                 this.message('warning' ,'请选择待删除的项');
                 G.invoke(callback , this , false);
                 return ;
@@ -242,7 +207,7 @@ export default {
                     G.invoke(callback , this , false);
                     return ;
                 }
-                Api.admin.destroyAll(idList , (msg , data , code) => {
+                Api.admin.destroyAll(ids , (msg , data , code) => {
                     if (code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
                         this.message('error' , msg);
@@ -255,12 +220,22 @@ export default {
             });
         } ,
 
-        selectedEvent (data) {
-            const ids = [];
-            data.forEach((v) => {
-                ids.push(v.id);
+        selectionChangeEvent (selection) {
+            this.selection = selection;
+        } ,
+
+        getIdsFromSelection () {
+            return this.selection.map((v) => {
+                v.id;
             });
-            this.val.selectedIds = ids;
+        } ,
+
+        rowClickEvent (row , index) {
+            this.$refs.table.toggleSelect(index);
+        } ,
+
+        rowDblclickEvent (row , index) {
+            this.editEvent(row);
         } ,
 
         destroyEvent (index , record) {
@@ -274,7 +249,7 @@ export default {
 
         destroyAllEvent () {
             this.pending('destroyAll' , true);
-            this.destroyAll(this.val.selectedIds , (success) => {
+            this.destroyAll(this.getIdsFromSelection() , (success) => {
                 this.pending('destroyAll' , false);
                 if (success) {
                     this.val.selectedIds = [];
@@ -282,54 +257,59 @@ export default {
             });
         } ,
 
-        editEvent (record) {
-            this._val('modal' , true);
+        isOnlyOneSelection () {
+            return this.selection.length === 1;
+        } ,
+
+        isEmptySelection () {
+            return this.selection.length === 0;
+        } ,
+
+        hasSelection () {
+            return this.selection.length > 0;
+        } ,
+
+        getFirstSelection () {
+            return this.selection[0];
+        } ,
+
+        checkOneSelection () {
+            if (!this.hasSelection()) {
+                this.errorHandle('请选择项');
+                return false;
+            }
+            if (!this.isOnlyOneSelection()) {
+                this.errorHandle('请仅选择一项');
+                return false;
+            }
+            return true;
+        } ,
+
+        edit (record) {
+            this.current = record;
             this._val('mode' , 'edit');
-            this.error();
-            this.getRoles();
-            this.form = G.copy(record);
+            this.$nextTick(() => {
+                this.$refs.form.openFormModal();
+            });
+        } ,
+
+        editEvent (record) {
+            this.edit(record);
+        } ,
+
+        editEventByButton () {
+            if (!this.checkOneSelection()) {
+                return ;
+            }
+            const current = this.getFirstSelection();
+            this.edit(current);
         } ,
 
         addEvent () {
-            this._val('modal' , true);
             this._val('mode' , 'add');
-            this.error();
-            this.getRoles();
-            this.form = G.copy(form);
-        } ,
-
-        submitEvent () {
-            const self = this;
-            this.pending('submit' , true);
-            const callback = (msg , data , code) => {
-                this.pending('submit' , false);
-                this.error();
-                if (code !== TopContext.code.Success) {
-                    this.errorHandle(msg , data , code);
-                    return ;
-                }
-                this.successHandle((keep) => {
-                    self.getData();
-                    if (keep) {
-                        return ;
-                    }
-                    self.closeFormModal();
-                });
-            };
-            if (this.val.mode === 'edit') {
-                Api.admin.update(this.form.id , this.form , callback);
-                return ;
-            }
-            Api.admin.store(this.form , callback);
-        } ,
-
-        closeFormModal () {
-            if (this.pending('submit')) {
-                this.message('warning' , '请求中...请耐心等待');
-                return;
-            }
-            this.val.modal = false;
-            this.ins.avatar.clearAll();
+            this.$nextTick(() => {
+                this.$refs.form.openFormModal();
+            });
         } ,
 
         searchEvent () {
@@ -339,6 +319,16 @@ export default {
 
         pageEvent (page) {
             this.search.page = page;
+            this.getData();
+        } ,
+
+        sortChangeEvent (data) {
+            if (data.order === TopContext.sort.none) {
+                this.search.order = '';
+            } else {
+                this.search.order = this.generateOrderString(data.key , data.order);
+            }
+            this.table.page = 1;
             this.getData();
         } ,
     } ,

@@ -111,8 +111,15 @@ export default {
                         align: TopContext.table.alignCenter
                     } ,
                     {
-                        title: '处理状态' ,
-                        slot: 'process_status' ,
+                        title: '视频处理状态' ,
+                        slot: 'video_process_status' ,
+                        minWidth: TopContext.table.status ,
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
+                    } ,
+                    {
+                        title: '文件处理状态' ,
+                        slot: 'file_process_status' ,
                         minWidth: TopContext.table.status ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'right' ,
@@ -316,7 +323,7 @@ export default {
             });
         } ,
 
-        selectedEvent (data) {
+        selectionChangeEvent (data) {
             const ids = [];
             data.forEach((v) => {
                 ids.push(v.id);

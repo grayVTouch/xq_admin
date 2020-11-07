@@ -115,7 +115,7 @@
 
                 <div class="table">
 
-                    <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
+                    <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectionChangeEvent" :loading="val.pending.getData">
                         <template v-slot:avatar="{row,index}">
                             <img :src="row.avatar ? row.avatar : $store.state.context.res.notFound" @click="link(row.avatar , '__blank')" :height="$store.state.context.table.imageH" class="image">
                         </template>
@@ -218,7 +218,7 @@
                             <tr :class="{error: val.error.birthday}">
                                 <td>生日</td>
                                 <td>
-                                    <DatePicker v-model="val.birthday" format="yyyy-MM-dd" class="iview-form-input" @on-change="setDate"></DatePicker>
+                                    <i-date-picker v-model="val.birthday" format="yyyy-MM-dd" class="iview-form-input" @on-change="setDate"></i-date-picker>
                                     <span class="need"></span>
                                     <div class="msg"></div>
                                     <div class="e-msg">{{ val.error.birthday }}</div>

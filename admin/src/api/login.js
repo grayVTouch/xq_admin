@@ -2,11 +2,11 @@ const login = genUrl('/login');
 const avatar = genUrl('/avatar');
 
 export default {
-    login (data , success , error) {
-        return request(login , 'post' , data , success , error);
+    login (data) {
+        return request(login , 'post' , null , data);
     } ,
 
-    avatar (data , success , error) {
-        return request(avatar , 'get' , data , success , error);
+    avatar (param) {
+        return request(avatar , 'get' , param);
     } ,
 };

@@ -465,7 +465,7 @@ create table if not exists `xq_video` (
       preview_duration int unsigned default 0 comment '视频预览：单个画面间隔时间' ,
       preview_count int unsigned default 0 comment '视频预览：合成的画面数量' ,
       status tinyint default 1 comment '状态：-1-审核不通过 0-审核中 1-审核通过' ,
-      process_status tinyint default 0 comment '处理处理状态：-1-处理失败 0-信息处理中 1-转码中 2-处理完成' ,
+      video_process_status tinyint default 0 comment '处理处理状态：-1-处理失败 0-信息处理中 1-转码中 2-处理完成' ,
       fail_reason varchar(1000) default '' comment '失败原因' ,
       weight int default 0 comment '权重' ,
       updated_at datetime default null ,

@@ -55,7 +55,7 @@ class ImageProjectHandler extends Handler
             $model->image_subject = $image_subject;
         }
         if (in_array('images' , $with)) {
-            $images = ImageModel::getByImageSubjectId($model->id);
+            $images = ImageModel::getByImageProjectId($model->id);
             $images = ImageHandler::handleAll($images);
             $model->images = $images;
         }

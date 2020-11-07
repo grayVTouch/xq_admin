@@ -15,7 +15,7 @@ class ImageModel extends Model
         return self::where('image_subject_id' , $image_subject_id)->delete();
     }
 
-    public static function getByImageSubjectId(int $image_subject_id): Collection
+    public static function getByImageProjectId(int $image_subject_id): Collection
     {
         return self::where('image_subject_id' , $image_subject_id)->get();
     }

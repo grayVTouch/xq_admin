@@ -385,7 +385,7 @@
 <!--                                    <div class="title"><img src="./image/year.png" class="image">用户活跃度</div>-->
 <!--                                    <div class="year">-->
 <!--                                        日期：-->
-<!--                                        <DatePicker type="date" placement="bottom-end" placeholder="请选择日期" style="width: 200px" @on-change="setDate"></DatePicker>-->
+<!--                                        <i-date-picker type="date" placement="bottom-end" placeholder="请选择日期" style="width: 200px" @on-change="setDate"></i-date-picker>-->
 <!--                                    </div>-->
 <!--                                    <div class="btns">-->
 <!--                                        <v-button color="blue" @click="chartForStatisUserActivityLog">确定</v-button>-->

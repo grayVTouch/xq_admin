@@ -19,8 +19,8 @@ class CreateImageProjectCommentImageTable extends Migration
         Schema::create($this->table , function (Blueprint $table) {
             $table->id();
             $table->text('content')->comment('内容');
-            $table->unsignedBigInteger('image_subject_id')->default(0)->comment('xq_image_subject.id');
-            $table->unsignedBigInteger('image_subject_comment_id')->default(0)->comment('xq_image_subject_comment.id');
+            $table->unsignedBigInteger('image_project_id')->default(0)->comment('xq_image_project.id');
+            $table->unsignedBigInteger('image_project_comment_id')->default(0)->comment('xq_image_project_comment.id');
             $table->string('path' , 500)->default('')->comment('路径');
 
             $table->timestamps();

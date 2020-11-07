@@ -1,9 +1,8 @@
 <template>
-    <select v-model="valueCopy" @change="changeEvent" class="form-select">
-        <option v-if="has" :value="top.key">{{ top.value }}</option>
-        <option v-else :value="empty">请选择...</option>
-        <option v-for="v in data" :value="v[attr.id]" :key="v[attr.id]">{{ v[attr.floor] > 1 ? '|' + '_'.repeat((v[attr.floor] - 1) * 10) : '' }}{{ v[attr.name] }}</option>
-    </select>
+    <i-select v-model="valueCopy" filterable @on-change="changeEvent" class="form-select">
+        <i-option v-if="has" :value="top.key">{{ top.value }}</i-option>
+        <i-option v-for="v in data" :value="v[attr.id]" :key="v[attr.id]">{{ v[attr.floor] > 1 ? '|' + '_'.repeat((v[attr.floor] - 1) * 10) : '' }}{{ v[attr.name] }}</i-option>
+    </i-select>
 </template>
 
 <script>
@@ -31,9 +30,9 @@
         } ,
         props: {
             value: {
-                type: [String , Number] ,
-                required: true ,
+                default: '' ,
             },
+
             data: {
                 type: Array ,
                 required: true ,
@@ -69,8 +68,8 @@
         } ,
 
         methods: {
-            changeEvent (e) {
-                this.$emit('change' , e.target.value);
+            changeEvent (value) {
+                this.$emit('change' , value);
             } ,
         } ,
 

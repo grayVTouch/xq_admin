@@ -14,8 +14,6 @@ const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
-// const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-// const Webpack = require('webpack');
 
 module.exports = {
     entry: {
@@ -36,12 +34,6 @@ module.exports = {
             template: 'template.html'
         }) ,
         new VueLoaderPlugin() ,
-        // new MiniCssExtractPlugin({
-        //     filename: "css/[name]-[hash].css",
-        //     chunkFilename: "css/chunk-[name]-[hash].css"
-        // }) ,
-        // // 热更新
-        // new Webpack.HotModuleReplacementPlugin() ,
     ],
     output: {
         filename: 'js/[name]-[hash].js',
@@ -60,52 +52,21 @@ module.exports = {
                             presets: ["@babel/preset-env"] ,
                             plugins: [
                                 // 提升运行速度 详情请查看 https://webpack.js.org/loaders/babel-loader/#root
-                                '@babel/plugin-transform-runtime' ,
+                                // '@babel/plugin-transform-runtime' ,
                                 // 支持动态导入语法 import()
-                                '@babel/plugin-syntax-dynamic-import' ,
-                                // iview 组件动态加载
-                                [
-                                    "import" ,
-                                    {
-                                        "libraryName": "iview" ,
-                                        "libraryDirectory": "src/components"
-                                    }
-                                ] ,
+                                // '@babel/plugin-syntax-dynamic-import' ,
+                                // view-design 组件动态加载
+                                // [
+                                //     "import" ,
+                                //     {
+                                //         "libraryName": "view-design" ,
+                                //         "libraryDirectory": "src/components"
+                                //     }
+                                // ] ,
                             ]
                         }
                     }
                 ]
-            } ,
-            {
-                test: /\.s?[ac]ss$/,
-                // test: /\.css$/ ,
-                use: [
-                    // MiniCssExtractPlugin.loader ,
-                    // {
-                    //     loader: MiniCssExtractPlugin.loader,
-                    //     options: {
-                    //         /**
-                    //          * 如果没加 publicPath 的情况下，css 中通过 @import 或 url() 等引入的文件
-                    //          * 加载的目录会默认是 css 文件所在目录
-                    //          * 而实际上字体文件的定位是 dist 目录所在目录！
-                    //          * 所以需要给出 publicPath 指定 dist 编译的根目录
-                    //          */
-                    //         publicPath: '../',
-                    //     },
-                    // },
-
-                    'vue-style-loader' ,
-                    'css-loader' ,
-                    // 'style-loader' ,
-                    // {
-                    //     loader: 'css-loader' ,
-                    //     options: {
-                    //         // sourceMap: true
-                    //         // esModule: false ,
-                    //     }
-                    // }
-
-                ],
             } ,
             {
                 test: /\.(png|svg|jpg|gif)$/,
@@ -159,13 +120,11 @@ module.exports = {
     // 简化导入
     resolve: {
         alias: {
-            // 'vue': 'vue/dist/vue.esm.js' ,
-            // 'vue-router': 'vue-router/dist/vue-router.esm.js' ,
-            // 'vuex': 'vuex/dist/vuex.esm.js' ,
             'vue': 'vue/dist/vue.js' ,
             'vue-router': 'vue-router/dist/vue-router.js' ,
             'vuex': 'vuex/dist/vuex.js' ,
 
+            // 相关目录
             '@asset': path.resolve(__dirname , './src/asset') ,
             '@api': path.resolve(__dirname , './src/api') ,
             '@plugin': path.resolve(__dirname , './src/plugin') ,

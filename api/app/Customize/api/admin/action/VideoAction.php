@@ -75,12 +75,6 @@ class VideoAction extends Action
         if (empty($video)) {
             return self::error('视频记录不存在' , '' , 404);
         }
-        $video = VideoHandler::handle($video , [
-            'video_project' ,
-        ]);
-        if ($video->type === 'pro' && empty($video->video_project)) {
-            return self::error('源视频所属的视频专题不存在' , ['video_project_id' => '源视频所属的视频专题不存在'] , 404);
-        }
         /**
          * 处理状态
          * -1-处理失败
@@ -89,8 +83,17 @@ class VideoAction extends Action
          * 2-转码中
          * 3-处理完成
          */
-        if (!in_array($video->process_status , [-1 , 0 , 3])) {
-            return self::error('当前状态禁止更改视频源，仅支持【待处理|处理完成|处理失败】允许更改状态' , ['src' => '当前状态禁止更改视频源，仅在【待处理|处理完成|处理失败】状态下允许更改'] , 403);
+        if (!in_array($video->video_process_status , [-1 , 3])) {
+            return self::error('当前状态禁止操作，视频处理状态仅支持【处理完成|处理失败】允许更改状态', '' , 403);
+        }
+        if (!in_array($video->file_process_status , [-1 , 2])) {
+            return self::error('当前状态禁止操作，文件处理状态仅支持【待处理|处理失败】允许更改状态' , '' , 403);
+        }
+        $video = VideoHandler::handle($video , [
+            'video_project' ,
+        ]);
+        if ($video->type === 'pro' && empty($video->video_project)) {
+            return self::error('源视频所属的视频专题不存在' , ['video_project_id' => '源视频所属的视频专题不存在'] , 404);
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
@@ -103,7 +106,7 @@ class VideoAction extends Action
             if (empty($video_project)) {
                 return self::error('专题不存在' , ['video_project_id' => '专题不存在']);
             }
-            if (VideoModel::findByVideoSubjectIdAndIndex($video_project->id , $param['index'])) {
+            if (VideoModel::findByExcludeIdAndVideoProjectIdAndIndex($video->id , $video_project->id , $param['index'])) {
                 return self::error('索引已经存在' , ['index' => '索引已经存在']);
             }
             $param['category_id'] = 0;
@@ -129,8 +132,10 @@ class VideoAction extends Action
         $param['play_count']    = $param['play_count'] === '' ? 0 : $param['play_count'];
         $param['against_count'] = $param['against_count'] === '' ? 0 : $param['against_count'];
         $param['praise_count']  = $param['praise_count'] === '' ? 0 : $param['praise_count'];
+        $param['file_process_status'] = 0;
         $param['updated_at']    = $datetime;
         $video_subtitles        = $param['video_subtitles'] === '' ? [] : json_decode($param['video_subtitles'] , true);
+        $is_video_need_handle   = false;
         try {
             DB::beginTransaction();
             // 视频字幕
@@ -151,7 +156,8 @@ class VideoAction extends Action
             ) {
                 // 视频源发生变化 或者 需要合成字幕
                 // 都需要对视频进行重新处理
-                $param['process_status'] = 0;
+                $param['video_process_status']  = 0;
+                $is_video_need_handle           = true;
             }
             VideoModel::updateById($video->id , array_unit($param , [
                 'name' ,
@@ -172,7 +178,8 @@ class VideoAction extends Action
                 'merge_video_subtitle' ,
                 'status' ,
                 'fail_reason' ,
-                'process_status' ,
+                'video_process_status' ,
+                'file_process_status' ,
                 'updated_at' ,
             ]));
             ResourceUtil::used($param['src']);
@@ -185,37 +192,14 @@ class VideoAction extends Action
                 ResourceUtil::delete($video->src);
             }
             DB::commit();
-            /**
-             * 建立图片目录
-             * 移动图片到指定的目录
-             */
-            $disk       = my_config('app.disk');
-            $save_dir   = '';
-            $prefix     = '';
-            if ($disk === 'local') {
-                $prefix             = FileUtil::prefix();
-                $source_save_dir    = '';
-                $target_save_dir    = '';
-                if ($param['type'] === 'pro') {
-                    $source_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($video->video_project->name);
-                    $target_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($video_project->name);
-                } else {
-                    $dirname            = my_config('app.dir')['video'];
-                    $date_string        = date('Ymd' , strtotime($video->video_project->created_at));
-                    $source_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($dirname . '/' . $date_string);
-                    $target_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($dirname . '/' . date('Ymd'));
-                }
-                if (
-                    $source_save_dir !== $target_save_dir &&
-                    File::exists($source_save_dir) &&
-                    !File::exists($target_save_dir)
-                ) {
-                    File::move($source_save_dir , $target_save_dir);
-                }
-                $save_dir = $target_save_dir;
+            if ($is_video_need_handle) {
+                // 视频处理
+                VideoHandleJob::withChain([
+                    new VideoResourceHandleJob($video->id) ,
+                ])->dispatch($video->id);
+            } else {
+                VideoResourceHandleJob::dispatch($video->id);
             }
-            // 视频处理
-            VideoHandleJob::dispatch($video->id , $prefix , $save_dir);
             return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
@@ -258,7 +242,7 @@ class VideoAction extends Action
             if (empty($video_project)) {
                 return self::error('专题不存在' , ['video_project_id' => '专题不存在']);
             }
-            if (VideoModel::findByVideoSubjectIdAndIndex($video_project->id , $param['index'])) {
+            if (VideoModel::findByVideoProjectIdAndIndex($video_project->id , $param['index'])) {
                 return self::error('索引已经存在' , ['index' => '索引已经存在']);
             }
             $param['category_id'] = 0;
@@ -287,6 +271,8 @@ class VideoAction extends Action
         $param['updated_at']    = $datetime;
         $param['created_at']    = $param['created_at'] === '' ? $datetime : $param['created_at'];
         $video_subtitles        = $param['video_subtitles'] === '' ? [] : json_decode($param['video_subtitles'] , true);
+        $param['video_process_status']  = 0;
+        $param['file_process_status']   = 2;
         try {
             DB::beginTransaction();
             $id = VideoModel::insertGetId(array_unit($param , [
@@ -308,6 +294,8 @@ class VideoAction extends Action
                 'status' ,
                 'merge_video_subtitle' ,
                 'fail_reason' ,
+                'video_process_status' ,
+                'file_process_status' ,
                 'updated_at' ,
                 'created_at' ,
             ]));
@@ -326,30 +314,7 @@ class VideoAction extends Action
                 ResourceUtil::used($v['src']);
             }
             DB::commit();
-            /**
-             * 建立图片目录
-             * 移动图片到指定的目录
-             */
-            $disk       = my_config('app.disk');
-            $save_dir   = '';
-            $prefix     = '';
-            if ($disk === 'local') {
-                $prefix = FileUtil::prefix();
-                if ($param['type'] === 'pro') {
-                    $save_dir = FileUtil::generateRealPathByRelativePathWithoutPrefix($video_project->name);
-                } else {
-                    $dirname = my_config('app.dir')['video'];
-                    $save_dir = FileUtil::generateRealPathByRelativePathWithoutPrefix($dirname . '/' . date('Ymd'));
-                }
-                if (!File::exists($save_dir)) {
-                    File::mkdir($save_dir , 0777 , true);
-                }
-            }
-            /**
-             * 链接队列任务：按顺序执行队列任务，如果其中一个任务执行失败那么整个任务将会失败
-             */
-            // 队列任务：视频资源处理
-            VideoHandleJob::dispatch($id , $prefix , $save_dir);
+            VideoHandleJob::dispatch($id);
             return self::success('操作成功' , $id);
         } catch(Exception $e) {
             throw $e;
@@ -433,7 +398,7 @@ class VideoAction extends Action
             $video = VideoHandler::handle($video , [
                 'video_project'
             ]);
-            if ($video->process_status !== -1) {
+            if ($video->video_process_status !== -1) {
                 return self::error('包含无效处理状态视频' , '' , 403);
             }
             if ($video->type === 'pro' && empty($video->video_project)) {
@@ -464,7 +429,7 @@ class VideoAction extends Action
                 File::mkdir($save_dir , 0777 , true);
             }
             VideoModel::updateById($video->id , [
-                'process_status' => 0 ,
+                'video_process_status' => 0 ,
             ]);
             VideoHandleJob::dispatch($video->id , $prefix , $save_dir);
         }

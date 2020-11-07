@@ -223,7 +223,7 @@
 <!--                            <tr :class="{error: val.error.created_at}">-->
 <!--                                <td>创建时间</td>-->
 <!--                                <td>-->
-<!--                                    <DatePicker type="datetime" v-model="createTime" format="yyyy-MM-dd HH:mm:ss" @on-change="setDatetimeEvent" class="iview-form-input"></DatePicker>-->
+<!--                                    <i-date-picker type="datetime" v-model="createTime" format="yyyy-MM-dd HH:mm:ss" @on-change="setDatetimeEvent" class="iview-form-input"></i-date-picker>-->
 <!--                                    <span class="need"></span>-->
 <!--                                    <div class="msg">如不提供，则默认使用当前时间</div>-->
 <!--                                    <div class="e-msg">{{ val.error.created_at }}</div>-->

@@ -86,6 +86,7 @@ class AdminAction extends Action
                 'phone' ,
                 'email' ,
                 'role_id' ,
+                'sex' ,
             ]));
             ResourceUtil::used($param['avatar']);
             if ($res->avatar !== $param['avatar']) {

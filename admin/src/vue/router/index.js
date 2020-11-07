@@ -10,8 +10,9 @@ const router = new VueRouter({
  * ****************
  */
 router.beforeEach((to , from , next) => {
-    const token = G.s.get('token');
-    if (!G.isNull(token)) {
+    const token = G.cookie.get('token');
+    debugger
+    if (!G.isEmptyString(token)) {
         if (to.name === 'login') {
             // 已经跳转到首页
             next({name: 'home'});

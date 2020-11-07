@@ -67,18 +67,18 @@ class VideoModel extends Model
     public static function countByDateAndProcessStatus(string $date , int $process_status): int
     {
         return self::whereRaw('date_format(created_at , "%Y-%m-%d") = ?' , $date)
-            ->where('process_status' , $process_status)
+            ->where('video_process_status' , $process_status)
             ->count();
     }
 
     public static function countByProcessStatus(int $process_status): int
     {
-        return self::where('process_status' , $process_status)
+        return self::where('video_process_status' , $process_status)
             ->count();
     }
 
     // 检查剧集是否已经存在
-    public static function findByVideoSubjectIdAndIndex(int $video_project_id , int $index): ?VideoModel
+    public static function findByVideoProjectIdAndIndex(int $video_project_id , int $index): ?VideoModel
     {
         return self::where([
             ['type' , '=' , 'pro'] ,
@@ -87,12 +87,12 @@ class VideoModel extends Model
         ])->first();
     }
 
-    public static function findExcludeSelfByVideoIdAndVideoSubjectIdAndIndex(int $video_id , int $video_project_id , int $index): ?VideoModel
+    public static function findByExcludeIdAndVideoProjectIdAndIndex(int $exclude_id , int $video_project_id , int $index): ?VideoModel
     {
         return self::where([
+            ['id' , '!=' , $exclude_id] ,
             ['type' , '=' , 'pro'] ,
-            ['id' , '!=' , $video_id] ,
-            ['video_project_id' , '=' , $video_id] ,
+            ['video_project_id' , '=' , $video_project_id] ,
             ['index' , '=' , $index] ,
         ])->first();
     }

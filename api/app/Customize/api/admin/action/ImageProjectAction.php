@@ -4,7 +4,7 @@
 namespace App\Customize\api\admin\action;
 
 use App\Customize\api\admin\handler\ImageProjectHandler;
-use App\Customize\api\admin\job\ImageSubjectResourceHandleJob;
+use App\Customize\api\admin\job\ImageProjectResourceHandleJob;
 use App\Customize\api\admin\model\CategoryModel;
 use App\Customize\api\admin\model\ImageModel;
 use App\Customize\api\admin\model\ImageProjectCommentImageModel;
@@ -16,7 +16,7 @@ use App\Customize\api\admin\model\ImageSubjectModel;
 use App\Customize\api\admin\model\TagModel;
 use App\Customize\api\admin\model\UserModel;
 use App\Customize\api\admin\util\FileUtil;
-use App\Customize\api\admin\util\ImageSubjectUtil;
+use App\Customize\api\admin\util\ImageProjectUtil;
 use App\Customize\api\admin\util\ResourceUtil;
 use App\Http\Controllers\api\admin\Base;
 use Core\Lib\File;
@@ -80,15 +80,18 @@ class ImageProjectAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
-        $image_subject = ImageProjectModel::find($id);
-        if (empty($image_subject)) {
+        $image_project = ImageProjectModel::find($id);
+        if (empty($image_project)) {
             return self::error('记录不存在' , '' , 404);
+        }
+        if (!in_array($image_project->process_status , [-1 , 2])) {
+            return self::error('当前状态禁止操作！仅在：处理失败 或 处理完成 状态允许修改' , '' , 403);
         }
         if ($param['type'] === 'pro') {
             if ($param['name'] === '') {
                 return self::error('名称尚未提供' , ['name' => '名称尚未提供']);
             }
-            if (ImageProjectModel::findByNameAndExcludeId($param['name'] , $image_subject->id)) {
+            if (ImageProjectModel::findByNameAndExcludeId($param['name'] , $image_project->id)) {
                 return self::error('名称已经被使用' , ['name' => '名称已经被使用']);
             }
         }
@@ -118,39 +121,12 @@ class ImageProjectAction extends Action
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
         $images                 = $param['images'] === '' ? [] : json_decode($param['images'] , true);
         $tags                   = $param['tags'] === '' ? [] : json_decode($param['tags'] , true);
-
-        /**
-         * 建立图片目录
-         * 移动图片到指定的目录
-         */
-        $disk       = my_config('app.disk');
-        $save_dir   = '';
-        $prefix     = '';
-        if ($disk === 'local') {
-            $prefix             = FileUtil::prefix();
-            $source_save_dir    = '';
-            $target_save_dir    = '';
-            if ($param['type'] === 'pro') {
-                $source_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($image_subject->name);
-                $target_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($param['name']);
-            } else {
-                $dirname            = my_config('app.dir')['image'];
-                $date_string        = date('Ymd' , strtotime($image_subject->created_at));
-                $source_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($dirname . '/' . $date_string);
-                $target_save_dir    = FileUtil::generateRealPathByRelativePathWithoutPrefix($dirname . '/' . date('Ymd'));
-            }
-            if (
-                $source_save_dir !== $target_save_dir &&
-                File::exists($source_save_dir) &&
-                !File::exists($target_save_dir)
-            ) {
-                File::move($source_save_dir , $target_save_dir);
-            }
-            $save_dir = $target_save_dir;
-        }
+        $param['process_status'] = 0;
+        $param['updated_at']    = $datetime;
+        $param['created_at']    = $param['created_at'] === '' ? $image_project->created_at : date('Y-m-d H:i:s' , strtotime($param['created_at']));
         try {
             DB::beginTransaction();
-            ImageProjectModel::updateById($image_subject->id , array_unit($param , [
+            ImageProjectModel::updateById($image_project->id , array_unit($param , [
                 'name' ,
                 'user_id' ,
                 'module_id' ,
@@ -164,13 +140,15 @@ class ImageProjectAction extends Action
                 'praise_count' ,
                 'status' ,
                 'fail_reason' ,
+                'process_status' ,
                 'updated_at' ,
+                'created_at' ,
             ]));
             ResourceUtil::used($param['thumb']);
-            if ($image_subject->thumb !== $param['thumb']) {
-                ResourceUtil::delete($image_subject->thumb);
+            if ($image_project->thumb !== $param['thumb']) {
+                ResourceUtil::delete($image_project->thumb);
             }
-            $my_tags = RelationTagModel::getByRelationTypeAndRelationId('image_project' , $image_subject->id);
+            $my_tags = RelationTagModel::getByRelationTypeAndRelationId('image_project' , $image_project->id);
             foreach ($tags as $v)
             {
                 foreach ($my_tags as $v1)
@@ -189,7 +167,7 @@ class ImageProjectAction extends Action
                 }
                 RelationTagModel::insertGetId([
                     'relation_type' => 'image_project' ,
-                    'relation_id'   => $image_subject->id ,
+                    'relation_id'   => $image_project->id ,
                     'tag_id'        => $tag->id ,
                     'name'          => $tag->name ,
                     'module_id'     => $tag->module_id ,
@@ -204,7 +182,7 @@ class ImageProjectAction extends Action
             foreach ($images as $v)
             {
                 ImageModel::insertGetId([
-                    'image_subject_id'  => $image_subject->id ,
+                    'image_project_id'  => $image_project->id ,
                     'src'               => $v ,
                     'updated_at'        => $datetime ,
                     'created_at'        => $datetime ,
@@ -213,7 +191,7 @@ class ImageProjectAction extends Action
             }
             DB::commit();
             // 图片迁移
-            ImageSubjectResourceHandleJob::dispatch($id , $prefix , $save_dir);
+            ImageProjectResourceHandleJob::dispatch($id);
             return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
@@ -272,29 +250,11 @@ class ImageProjectAction extends Action
         }
         $datetime               = current_datetime();
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
-        $param['created_at']    = $param['created_at'] === '' ? $datetime : $param['created_at'];
+        $param['updated_at']    = $datetime;
+        $param['created_at']    = $param['created_at'] === '' ? $datetime : date('Y-m-d H:i:s' , strtotime($param['created_at']));
         $images                 = $param['images'] === '' ? [] : json_decode($param['images'] , true);
         $tags                   = $param['tags'] === '' ? [] : json_decode($param['tags'] , true);
-
-        /**
-         * 建立图片目录
-         * 移动图片到指定的目录
-         */
-        $disk       = my_config('app.disk');
-        $save_dir   = '';
-        $prefix     = '';
-        if ($disk === 'local') {
-            $prefix = FileUtil::prefix();
-            if ($param['type'] === 'pro') {
-                $save_dir = FileUtil::generateRealPathByRelativePathWithoutPrefix($param['name']);
-            } else {
-                $dirname = my_config('app.dir')['image'];
-                $save_dir = FileUtil::generateRealPathByRelativePathWithoutPrefix($dirname . '/' . date('Ymd'));
-            }
-            if (!File::exists($save_dir)) {
-                File::mkdir($save_dir , 0777 , true);
-            }
-        }
+        $param['process_status'] = 0;
         try {
             DB::beginTransaction();
             $id = ImageProjectModel::insertGetId(array_unit($param , [
@@ -311,6 +271,8 @@ class ImageProjectAction extends Action
                 'praise_count' ,
                 'status' ,
                 'fail_reason' ,
+                'process_status' ,
+                'updated_at' ,
                 'created_at' ,
             ]));
             ResourceUtil::used($param['thumb']);
@@ -338,7 +300,7 @@ class ImageProjectAction extends Action
             foreach ($images as $v)
             {
                 ImageModel::insertGetId([
-                    'image_subject_id'  => $id ,
+                    'image_project_id'  => $id ,
                     'src'               => $v ,
                     'updated_at'        => $datetime ,
                     'created_at'        => $datetime ,
@@ -347,7 +309,7 @@ class ImageProjectAction extends Action
             }
             DB::commit();
             // 图片迁移
-            ImageSubjectResourceHandleJob::dispatch($id , $prefix , $save_dir);
+            ImageProjectResourceHandleJob::dispatch($id);
             return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
@@ -376,7 +338,7 @@ class ImageProjectAction extends Action
     {
         try {
             DB::beginTransaction();
-            ImageSubjectUtil::delete($id);
+            ImageProjectUtil::delete($id);
             DB::commit();
             return self::success('操作成功');
         } catch(Exception $e) {
@@ -392,7 +354,7 @@ class ImageProjectAction extends Action
             DB::beginTransaction();
             foreach ($ids as $id)
             {
-                ImageSubjectUtil::delete($id);
+                ImageProjectUtil::delete($id);
             }
             DB::commit();
             return self::success('操作成功');

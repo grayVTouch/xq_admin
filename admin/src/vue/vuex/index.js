@@ -1,5 +1,5 @@
 
-import position from '@asset/js/position.js';
+import position from '../../util/position.js';
 
 /**
  * @author running

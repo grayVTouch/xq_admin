@@ -18,7 +18,7 @@
 
                 <div class="table">
 
-                    <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
+                    <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectionChangeEvent" :loading="val.pending.getData">
                         <template v-slot:cn="{row,index}">
                             <template v-if="row.floor > 1">{{ '|' + '_'.repeat(row.floor * 2) + row.cn }}</template>
                             <template v-else>{{ row.cn }}</template>

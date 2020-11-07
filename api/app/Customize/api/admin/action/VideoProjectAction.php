@@ -228,7 +228,10 @@ class VideoProjectAction extends Action
             }
         }
         $datetime = current_datetime();
-        $param['release_year']  = $param['release_date'] === '' ? null : date('Y' , strtotime($param['release_date']));
+
+//        var_dump($param['release_date']);
+
+//        $param['release_year']  = $param['release_date'] === '' ? null : date('Y' , strtotime($param['release_date']));
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
         $param['updated_at']    = $datetime;
         $param['created_at']    = $datetime;

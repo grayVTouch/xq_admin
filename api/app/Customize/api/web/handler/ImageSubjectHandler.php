@@ -46,7 +46,7 @@ class ImageSubjectHandler extends Handler
             $subject = null;
         }
 
-        $images = ImageModel::getByImageSubjectId($res->id);
+        $images = ImageModel::getByImageProjectId($res->id);
         $images = ImageHandler::handleAll($images);
 
         $tags = RelationTagModel::getByRelationTypeAndRelationId('image_project' , $res->id);

@@ -82,7 +82,7 @@
 
                 <div class="table">
 
-                    <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" :loading="val.pending.getData">
+                    <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectionChangeEvent" :loading="val.pending.getData">
                         <template v-slot:default="{row,index}"><my-switch v-model="row.default" :loading="val.pending['default_' + row.id]" :extra="{id: row.id , field: 'default'}" @on-change="updateBoolValEvent" /></template>
                         <template v-slot:is_linked="{row,index}"><my-switch v-model="row.is_linked" :loading="val.pending['is_linked_' + row.id]" :extra="{id: row.id , field: 'is_linked'}" @on-change="updateBoolValEvent" /></template>
                         <template v-slot:action="{row , index}">

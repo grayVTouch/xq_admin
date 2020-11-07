@@ -10,13 +10,13 @@ class ImageModel extends Model
 {
     protected $table = 'xq_image';
 
-    public static function delByImageSubjectId(int $image_subject_id): int
+    public static function delByImageProjectId(int $image_project_id): int
     {
-        return self::where('image_subject_id' , $image_subject_id)->delete();
+        return self::where('image_project_id' , $image_project_id)->delete();
     }
 
-    public static function getByImageSubjectId(int $image_subject_id): Collection
+    public static function getByImageProjectId(int $image_project_id): Collection
     {
-        return self::where('image_subject_id' , $image_subject_id)->get();
+        return self::where('image_project_id' , $image_project_id)->get();
     }
 }

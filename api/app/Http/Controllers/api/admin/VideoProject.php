@@ -37,8 +37,8 @@ class VideoProject extends Base
         $param['name']          = $param['name'] ?? '';
         $param['thumb']         = $param['thumb'] ?? '';
         $param['score']          = $param['score'] ?? '';
-        $param['release_time']          = $param['release_time'] ?? null;
-        $param['end_time']          = $param['end_time'] ?? null;
+        $param['release_date ']          = $param['release_date'] ?? '';
+        $param['end_date']          = $param['end_date'] ?? '';
         $param['status']          = $param['status'] ?? '';
         $param['count']          = $param['count'] ?? '';
         $param['category_id']          = $param['category_id'] ?? '';
@@ -61,8 +61,8 @@ class VideoProject extends Base
         $param['name']          = $param['name'] ?? '';
         $param['thumb']         = $param['thumb'] ?? '';
         $param['score']          = $param['score'] ?? '';
-        $param['release_time']          = $param['release_time'] ?? null;
-        $param['end_time']          = $param['end_time'] ?? null;
+        $param['release_date ']  = $param['release_date'] ?? '';
+        $param['end_date']          = $param['end_date'] ?? '';
         $param['status']          = $param['status'] ?? '';
         $param['count']          = $param['count'] ?? '';
         $param['category_id']          = $param['category_id'] ?? '';
@@ -72,6 +72,7 @@ class VideoProject extends Base
         $param['weight']          = $param['weight'] ?? '';
         $param['tags']          = $param['tags'] ?? '';
 
+//        var_dump($param['release_date']);
         $res = VideoProjectAction::store($this ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);

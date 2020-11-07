@@ -301,7 +301,7 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <Table border :columns="table.field" :data="table.data" @on-selection-change="selectedEvent" style="width: 100%;">
+                                        <Table border :columns="table.field" :data="table.data" @on-selection-change="selectionChangeEvent" style="width: 100%;">
                                             <template v-slot:path="{row,index}">
                                                 <Poptip trigger="hover" placement="right" :transfer="true">
                                                     <img :src="row.src ? row.src : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image" @click="link(row.src)" alt="">

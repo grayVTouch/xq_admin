@@ -19,7 +19,7 @@ class CreateImageProjectCommentTable extends Migration
         Schema::create($this->table , function (Blueprint $table) {
             $table->id();
             $table->text('content')->comment('内容');
-            $table->unsignedBigInteger('image_subject_id')->default(0)->comment('xq_image_subject.id');
+            $table->unsignedBigInteger('image_project_id')->default(0)->comment('xq_image_project.id');
             $table->unsignedBigInteger('user_id')->default(0)->comment('xq_user.id');
             $table->unsignedBigInteger('p_id')->default(0)->comment('xq_image_subject_comment.id');
             $table->unsignedBigInteger('praise_count')->default(0)->comment('获赞次数');

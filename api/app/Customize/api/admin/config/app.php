@@ -16,9 +16,11 @@ return [
 
     // 相关目录
     'dir' => [
-        'image'     => '非专题图片' ,
-        'video'     => '非专题视频' ,
-        'system'    => 'system' ,
+        'image'         => '非专题图片' ,
+        'video'         => '非专题视频' ,
+        'system'        => '系统资源' ,
+        'image_project' => '专题图片' ,
+        'video_project' => '专题视频' ,
     ] ,
 
     // 每页显示记录数
