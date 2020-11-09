@@ -129,6 +129,10 @@ module.exports = {
             '@api': path.resolve(__dirname , './src/api') ,
             '@plugin': path.resolve(__dirname , './src/plugin') ,
             '@vue': path.resolve(__dirname , './src/vue') ,
+            '@bootstrap': path.resolve(__dirname , './src/bootstrap') ,
+            '@config': path.resolve(__dirname , './src/config') ,
+            '@permission': path.resolve(__dirname , './src/permission') ,
+            '@util': path.resolve(__dirname , './src/util') ,
         }
     } ,
 

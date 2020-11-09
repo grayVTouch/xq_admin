@@ -68,13 +68,13 @@ export default {
 
         getData () {
             this.pending('getData' , true);
-            Api.pannel.info((msg , data , code) => {
+            Api.pannel.info().then((res) => {
                 this.pending('getData' , false);
-                if (code != TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
-                this.info = data;
+                this.info = res.data;
 
             });
         } ,

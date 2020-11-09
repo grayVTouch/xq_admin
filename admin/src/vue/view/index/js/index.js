@@ -1,7 +1,8 @@
-import base from '../../public/base.vue';
-import menu from '../../public/common/menu.vue';
-import route from './route.js';
-import routes from '../../../router/routes.js';
+// import base from '@vue/view/public/base.vue';
+import menu from '@vue/view/public/menu.vue';
+import route from '@vue/router/index.js';
+import routes from '@vue/router/routes.js';
+import navigation from '@vue/view/public/navigation.vue';
 
 export default {
     name: 'index' ,
@@ -22,6 +23,8 @@ export default {
                 views: [] ,
                 // 视图之间传递的参数
                 params: [] ,
+                // 垂直滚动条的宽度
+                yScrollbarWidth: 0 ,
             } ,
 
             // 客户端位置：带数据结构
@@ -34,7 +37,7 @@ export default {
     mounted () {
         this.initDom();
         this.initValue();
-        this.initPosition();
+        // this.initPosition();
         this.initTab();
         this.initStyle();
         this.initEvent();
@@ -43,6 +46,7 @@ export default {
 
     components: {
         'my-menu': menu ,
+        'my-navigation': navigation ,
     } ,
 
     mixins: [
@@ -66,7 +70,7 @@ export default {
         } ,
 
         initDom () {
-            this.dom.tabItemstainer = G(this.$el);
+            this.dom.main = G(this.$el);
             this.dom.menu = G(this.$refs.menu);
             this.dom.menuInner = G(this.$refs['menu-inner']);
             this.dom.logo = G(this.$refs.logo);
@@ -88,27 +92,26 @@ export default {
         } ,
 
         initData () {
-            Api.admin.info((msg , data , code) => {
-                if (code !== TopContext.code.Success) {
-                    // Prompt.alert(data);
-                    this.message('error' , msg);
-                    return ;
-                }
-                // 数据预处理
-                const user = data.user ? data.user : {
-                    permission: [] ,
-                };
-                // 无结构权限列表
-                const permission = data.user.permission ? data.user.permission : [];
-                // 有结构权限列表
-                const permissionWithStructure = G.t.childrens(0 , permission , this.field , false , true);
-                this.$store.dispatch('user' , user);
-                this.$store.dispatch('permission' , permission);
-                this.$store.dispatch('permissionWithStructure' , permissionWithStructure);
-                this.$nextTick(() => {
-                    this.initAfterLoaded();
+            Api.admin.info()
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    const user = res.data ? res.data : {
+                        permission: []
+                    };
+                    // 无结构权限列表
+                    const permission = user.permission ? user.permission : [];
+                    // 有结构权限列表
+                    const permissionWithStructure = G.tree.childrens(0 , permission , this.field , false , true);
+                    this.$store.dispatch('user' , user);
+                    this.$store.dispatch('myPermission' , permission);
+                    this.$store.dispatch('myPermissionWithStructure' , permissionWithStructure);
+                    this.$nextTick(() => {
+                        this.initAfterLoaded();
+                    });
                 });
-            });
         } ,
 
         // 获取当前登录用户信息
@@ -124,7 +127,7 @@ export default {
             this.val.avatarH = this.dom.avatar.height('border-box');
             this.val.navH = this.dom.nav.height('border-box');
             // this.val.infoH = this.dom.info.height('border-box');
-
+            this.val.yScrollbarWidth = this.dom.main.yScrollbarWidth();
         } ,
 
         initArea () {
@@ -141,38 +144,7 @@ export default {
         } ,
 
         initMenu () {
-            const self = this;
-            this.ins.ic = new InfiniteClassification(this.dom.menu.get(0) , {
-                // 菜单展开动画过渡时间
-                time: 200 ,
-                // 次要的图标类型，new || number || switch
-                icon: 'switch' ,
 
-
-                // id: [23] ,
-                // id: [4] ,
-                // id: [19] ,
-
-                // 初始状态，spread || shrink
-                status: 'shrink' ,
-                // 层级视觉显示效果
-                amount: 12 ,
-                // 同层级是否互斥
-                exclution: false ,
-                // 是否菜单也可被选中
-                menuFocus: false ,
-                // 点击项后是否选中
-                focus: true ,
-                // 是否选中顶级菜单
-                topFocus: false ,
-                // 子级项点击后回调
-                child (id) {
-                    const topRoute = self.topRoute(id);
-                    let route = self.findRouteById(id);
-                    let text = self.genTabName(topRoute , route);
-                    self.open(text , route.path);
-                }
-            });
         } ,
 
         // 初始化
@@ -187,8 +159,8 @@ export default {
         } ,
 
         initLeftSlidebar () {
-            let slidebar = G.s.get('slidebar');
-            if (G.isNull(slidebar)) {
+            let slidebar = G.cookie.get('slidebar');
+            if (G.isEmptyString(slidebar)) {
                 return ;
             }
             if (slidebar === 'horizontal') {
@@ -245,7 +217,8 @@ export default {
             this.dom.avatar.removeClass('shrink');
             this.dom.menu.removeClass('shrink');
             this.dom.content.removeClass('spread');
-            this.ins.ic.icon('switch');
+            this.dom.nav.removeClass('spread');
+            // this.ins.ic.icon('switch');
             //
             // // 菜单展开
             // this.dom.menu.animate({
@@ -267,7 +240,8 @@ export default {
             //     paddingLeft: this.val.menuInnerW + 'px' ,
             // } , null , this.val.duration);
 
-            G.s.set('slidebar' , 'horizontal');
+            G.cookie.set('slidebar' , 'horizontal');
+            this.$store.dispatch('slidebar' , G.cookie.get('slidebar'));
         } ,
 
         vertical () {
@@ -277,7 +251,8 @@ export default {
             this.dom.avatar.addClass('shrink');
             this.dom.menu.addClass('shrink');
             this.dom.content.addClass('spread');
-            this.ins.ic.icon('text');
+            this.dom.nav.addClass('spread');
+            // this.ins.ic.icon('text');
 
             // 菜单展开
             // this.dom.menu.animate({
@@ -299,7 +274,8 @@ export default {
             // this.dom.content.animate({
             //     paddingLeft: this.val.menuMinW + 'px' ,
             // } , null , this.val.duration);
-            G.s.set('slidebar' , 'vertical');
+            G.cookie.set('slidebar' , 'vertical');
+            this.$store.dispatch('slidebar' , G.cookie.get('slidebar'));
         } ,
 
         // 显示

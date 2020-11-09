@@ -104,9 +104,6 @@ export default {
                 return ;
             }
             const filterRes = this.filter();
-
-            console.log('filterRes' , filterRes);
-
             if (!filterRes.status) {
                 this.error(filterRes.error);
                 // this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));

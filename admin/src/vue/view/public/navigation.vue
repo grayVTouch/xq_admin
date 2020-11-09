@@ -1,24 +1,31 @@
 <template>
     <div class="navigation">
         <!-- 导航内容 -->
-        <div class="nav" :class="{fixed: fixed}" ref="nav">
-            <div class="left">
-                <img :src="topRoute.bIco" class="image" alt="">
-                <span class="cn">{{ topRoute.cn }}</span>
-                <span class="delimiter">/</span>
-                <span class="en">{{ topRoute.en }}</span>
-                &nbsp;&nbsp;
-<!--                <button v-ripple class="run-button run-button-blue" @click.prevent="reload()">-->
-<!--                    <i class="run-iconfont run-reset"></i>标签页刷新-->
-<!--                </button>-->
+        <div ref="nav"
+             class="nav"
+             :class="{fixed: fixed , spread: state().slidebar === 'vertical'}"
+             :style="`width: ${fixed ? 'calc(100% - ' + $parent.val.yScrollbarWidth + 'px)' : ''};right: ${fixed ? $parent.val.yScrollbarWidth + 'px' : '0'}`"
+        >
 
-            </div>
-            <div class="right">
-                <!-- 面包屑 -->
-                <template v-for="(v,k) in position">
-                    <span v-ripple class="text" :class="{'run-cursor-not-allow':  !v.view }" @click="open(v)">{{ v.cn }}</span>
-                    <span class="delimiter" v-if="!(k == position.length - 1)">/</span>
-                </template>
+            <div class="inner">
+                <div class="left">
+                    <img :src="topRoute.bIco" class="image" alt="">
+                    <span class="cn">{{ topRoute.cn }}</span>
+                    <span class="delimiter">/</span>
+                    <span class="en">{{ topRoute.en }}</span>
+                    &nbsp;&nbsp;
+                    <!--                <button v-ripple class="run-button run-button-blue" @click.prevent="reload()">-->
+                    <!--                    <i class="run-iconfont run-reset"></i>标签页刷新-->
+                    <!--                </button>-->
+
+                </div>
+                <div class="right">
+                    <!-- 面包屑 -->
+                    <template v-for="(v,k) in position">
+                        <span v-ripple class="text" :class="{'run-cursor-not-allow':  !v.view }" @click="open(v)">{{ v.cn }}</span>
+                        <span class="delimiter" v-if="!(k == position.length - 1)">/</span>
+                    </template>
+                </div>
             </div>
         </div>
     </div>
@@ -32,20 +39,18 @@
                 dom: {} ,
                 instance: {} ,
                 fixed: false ,
-                value: {} ,
+                val: {} ,
             };
         } ,
         props: {
             topRoute: {
                 type: Object ,
-                required: true ,
                 default () {
                     return {};
                 } ,
             } ,
             position: {
                 type: Array ,
-                required: true ,
                 default () {
                     return [];
                 } ,
@@ -53,6 +58,7 @@
         } ,
         mounted () {
             this.initDom();
+            this.initValue();
             this.init();
         } ,
         methods: {
@@ -62,23 +68,20 @@
                 this.dom.scrollContainer = G(this.$parent.$el);
             } ,
 
+            initValue () {
+
+            } ,
+
             init () {
-                this.value.navH = this.dom.root.height('content-box');
+                this.val.navH = this.dom.root.height('content-box');
                 this.fixNav();
                 // this.dom.win.on('scroll' , this.fixNav.bind(this) , true , false);
-
                 this.dom.scrollContainer.on('scroll' , this.fixNav.bind(this) , true , false);
             } ,
 
             fixNav () {
-                // let y = window.pageYOffset;
                 let y = this.dom.scrollContainer.scrollTop();
-                console.log();
-                if (0 <= y && y <= this.value.navH) {
-                    this.fixed = false;
-                } else {
-                    this.fixed = true;
-                }
+                this.fixed = !(0 <= y && y <= this.val.navH);
             } ,
 
             // 打开新标签页
@@ -97,4 +100,4 @@
         }
     }
 </script>
-<style scoped src="../css/navigation.css"></style>
+<style scoped src="./css/navigation.css"></style>

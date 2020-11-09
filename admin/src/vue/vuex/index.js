@@ -1,5 +1,5 @@
 
-import position from '../../util/position.js';
+import permissions from '@permission/permission.js';
 
 /**
  * @author running
@@ -9,37 +9,47 @@ export default new Vuex.Store({
     state: {
         // 当前登录用户
         user: {} ,
+
         // 当前登录用户权限
-        permission: [] ,
+        myPermission: [] ,
+
+        // 带数据结构的权限
+        myPermissionWithStructure: [] ,
 
         // 当前位置
-        position ,
+        permissions ,
 
         context: TopContext ,
 
         business: TopContext.business ,
 
         areaDomHInContent: 0 ,
+
+        slidebar: 'horizontal' ,
     } ,
     mutations: {
         user (state , payload) {
             state.user = payload;
         } ,
 
-        permission (state , payload) {
-            state.permission = payload;
+        myPermission (state , payload) {
+            state.myPermission = payload;
         } ,
 
-        permissionWithStructure (state , payload) {
-            state.permissionWithStructure = payload;
+        myPermissionWithStructure (state , payload) {
+            state.myPermissionWithStructure = payload;
         } ,
 
         areaDomHInContent (state , payload) {
             state.areaDomHInContent = payload;
         } ,
 
-        position (state , payload) {
-            state.position = payload;
+        permissions (state , payload) {
+            state.permissions = payload;
+        } ,
+
+        slidebar (state , payload) {
+            state.slidebar = payload;
         } ,
     } ,
     actions: {
@@ -47,20 +57,24 @@ export default new Vuex.Store({
             context.commit('user' , payload);
         } ,
 
-        permission (context , payload) {
-            context.commit('permission' , payload);
+        myPermission (context , payload) {
+            context.commit('myPermission' , payload);
         } ,
 
-        position (context , payload) {
-            context.commit('position' , payload);
+        permissions (context , payload) {
+            context.commit('permissions' , payload);
         } ,
 
-        permissionWithStructure (context , payload) {
-            context.commit('permissionWithStructure' , payload);
+        myPermissionWithStructure (context , payload) {
+            context.commit('myPermissionWithStructure' , payload);
         } ,
 
         areaDomHInContent (context , payload) {
             context.commit('areaDomHInContent' , payload);
+        } ,
+
+        slidebar (context , payload) {
+            context.commit('slidebar' , payload);
         } ,
     } ,
 });

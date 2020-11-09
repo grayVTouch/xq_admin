@@ -26,10 +26,7 @@ class AdminAction extends Action
 {
     public static function info(Base $context , array $param)
     {
-        $user = user();
-        return self::success('' , [
-            'user' => $user
-        ]);
+        return self::success('' , user());
     }
 
     public static function search(Base $context , $value , array $param = [])

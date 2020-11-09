@@ -4,19 +4,19 @@
             <div class="inner" ref="menu-inner">
                 <div class="line logo" ref="logo">
                     <div class="c-left image-outer">
-                        <div class="inner"><img :src="$store.state.context.res.logo" class="image"></div>
+                        <div class="inner"><img :src="state().context.res.logo" class="image"></div>
                     </div>
-                    <div class="c-right text-outer">{{ $store.state.context.os.name }}</div>
+                    <div class="c-right text-outer">{{ state().context.os.name }}</div>
                 </div>
 
                 <div class="line avatar" ref="avatar">
                     <div class="inner">
                         <div class="top">
                             <my-avatar
-                                    :src="$store.state.user.avatar"
+                                    :src="user().avatar"
                                     :mask="true"
-                                    :top-val="$store.state.user.username"
-                                    :btm-val="$store.state.user.role ? $store.state.user.role.name : '无'"
+                                    :top-val="user().username"
+                                    :btm-val="user().role ? user().role.name : '无'"
                             ></my-avatar>
                         </div>
                         <div class="btm">running</div>
@@ -47,13 +47,13 @@
                     <my-menu :data="$store.state.position"></my-menu>
                 </div>
 
-                <div class="line desc" ref="desc">{{ $store.state.context.os.name }}</div>
+                <div class="line desc" ref="desc">{{ state().context.os.name }}</div>
             </div>
         </div>
 
         <div class="content" ref="content">
             <div class="inner">
-                <div class="line nav" ref="nav">
+                <div class="line nav" :style="`padding-right: ${val.yScrollbarWidth}px`" ref="nav">
                     <div class="top toolbar" ref="toolbar">
 
                         <div class="left">
@@ -91,9 +91,9 @@
                             <div class="user" @mouseenter="showUserCtrl" @mouseleave="hideUserCtrl">
                                 <div class="ctrl">
                                     <div class="avatar">
-                                        <my-avatar :src="$store.state.user.avatar"></my-avatar>
+                                        <my-avatar :src="user().avatar"></my-avatar>
                                     </div>
-                                    <div class="username">{{ $store.state.user.username }}</div>
+                                    <div class="username">{{ user().username }}</div>
                                 </div>
                                 <div class="functions hide" ref="functions-for-user">
                                     <div class="function" @click="logout">
@@ -106,6 +106,7 @@
                         </div>
 
                     </div>
+
                     <div class="btm tabs" ref="tabs">
                         <!--多标签-->
                         <div class="multiple-tab">
@@ -115,11 +116,17 @@
                     </div>
                 </div>
 
-                <div class="line area" ref="area">
-                    <div class="inner" ref="tab-items"></div>
+                <div class="line view" ref="view">
+                    <my-navigation ref="navigation"></my-navigation>
+                    <div class="dynamic" ref="dynamic">
+                        <router-view></router-view>
+                    </div>
+                    <div class="to-top hide">
+                        <img src="" class="image" />
+                    </div>
                 </div>
 
-                <div class="line info hide" ref="info">{{ $store.state.context.os.name }}</div>
+                <div class="line info hide" ref="info">{{ state().context.os.name }}</div>
             </div>
         </div>
     </div>

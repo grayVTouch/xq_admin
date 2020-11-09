@@ -1,7 +1,7 @@
 
 import '@asset/css/vars.css';
 import '@asset/css/base.css';
-import '@asset/css/iview.css';
+import '@asset/css/iview_reset.css';
 
 /**
  * **************************
@@ -9,19 +9,19 @@ import '@asset/css/iview.css';
  * **************************
  */
 //
-import './util/my_plugin.js';
+import '@bootstrap/my_plugin.js';
 
-import './util/context.js';
-import './util/common.js';
-import './util/request.js';
-import './util/api.js';
+import '@config/context.js';
+import '@util/common.js';
+import '@util/request.js';
+import '@util/api.js';
 //
-import './util/vue.js';
-import './util/mixin.js';
-import './util/directive.js';
-import './util/iview.js';
+import '@bootstrap/vue.js';
+import '@vue/mixin/mixin.js';
+import '@vue/directive/directive.js';
+import '@bootstrap/iview.js';
 
-import './util/my_view.js';
+import '@bootstrap/my_view.js';
 //
 import router from '@vue/router/index.js';
 //
@@ -34,7 +34,6 @@ Vue.config.debug = debug;
 Vue.config.devtools = debug;
 
 Vue.config.productionTip = debug;
-
 
 /**
  * ****************

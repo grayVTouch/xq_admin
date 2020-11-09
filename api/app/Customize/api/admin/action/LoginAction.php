@@ -33,18 +33,14 @@ class LoginAction extends Action
             return self::error('必要参数丢失【captcha_key】');
         }
         if (!Captcha::check_api($param['captcha_code'] , $param['captcha_key'])) {
-            return self::error('' , [
-                'captcha_code' => '图形验证码错误',
-            ]);
+            return self::error('图形验证码错误' , ['captcha_code' => '图形验证码错误']);
         }
         $user = AdminModel::findByUsername($param['username']);
         if (empty($user)) {
             return self::error('用户不存在');
         }
         if (!Hash::check($param['password'] , $user->password)) {
-            return self::error('' , [
-                'password' => '密码错误' ,
-            ]);
+            return self::error('密码错误' , ['password' => '密码错误']);
         }
         $token = random(32 , 'mixed' , true);
         $datetime = date('Y-m-d H:i:s' , time() + 7 * 24 * 3600);

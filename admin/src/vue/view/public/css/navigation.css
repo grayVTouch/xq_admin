@@ -16,11 +16,15 @@
 }
 
 .navigation > .nav {
+    background-color: #777d8a;
     height: 100%;
+    /*background-color: #8e95a5;*/
+    /*transition: all 0.3s;*/
 }
 
+
+
 .navigation > .nav.fixed {
-    background-color: #8e95a5;
     z-index: 8;
     width: 100%;
     height: 60px;
@@ -28,7 +32,7 @@
     padding-right: 20px;
     position: fixed;
     top: 80px;
-    left: 0;
+    right: 0;
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -36,7 +40,11 @@
     -o-box-sizing: border-box;
 }
 
-.navigation > .nav.fixed:before {
+.navigation > .nav.fixed.spread {
+    padding-left: 70px;
+}
+
+.navigation > .nav.fixed > .inner:before {
     display: block;
     content: '';
     width: 100%;
@@ -53,7 +61,15 @@
     -o-transform: translateY(100%);
 }
 
-.navigation > .nav > * {
+.navigation > .nav > .inner {
+    height: 100%;
+}
+
+.navigation > .nav.fixed > .inner {
+
+}
+
+.navigation > .nav > .inner > * {
     height: 100%;
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -62,49 +78,49 @@
     -o-box-sizing: border-box;
 }
 
-.navigation > .nav > .left {
+.navigation > .nav > .inner > .left {
     float: left;
     font-size: 20px;
 }
 
-.navigation > .nav > .right {
+.navigation > .nav > .inner > .right {
     float: right;
 }
 
-.navigation > .nav > .left > .image {
+.navigation > .nav > .inner > .left > .image {
     width: 40px;
     height: 40px;
 }
 
-.navigation > .nav > .left > .cn {
+.navigation > .nav > .inner > .left > .cn {
     color: white;
 }
 
-.navigation > .nav > .left .delimiter {
+.navigation > .nav > .inner > .left .delimiter {
     color: white;
 }
 
-.navigation > .nav > .left > .en {
+.navigation > .nav > .inner > .left > .en {
     color: white;
 }
 
-.navigation > .nav > .right {
+.navigation > .nav > .inner > .right {
     color: #e4e4e4;
     font-size: 14px;
 }
 
-.navigation > .nav > .right > * {
+.navigation > .nav > .inner > .right > * {
 
 }
 
-.navigation > .nav > .right > .text {
+.navigation > .nav > .inner > .right > .text {
     cursor: pointer;
 }
 
-.navigation > .nav > .right > .delimiter {
+.navigation > .nav > .inner > .right > .delimiter {
     padding: 0 8px;
 }
 
-.navigation > .nav > .right > *:nth-last-of-type(1) {
+.navigation > .nav > .inner > .right > *:nth-last-of-type(1) {
     font-weight: bold;
 }

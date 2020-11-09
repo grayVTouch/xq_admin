@@ -1,6 +1,7 @@
 import routes from "./routes.js";
 
 const router = new VueRouter({
+    mode: 'history',
     routes ,
 });
 
@@ -11,7 +12,6 @@ const router = new VueRouter({
  */
 router.beforeEach((to , from , next) => {
     const token = G.cookie.get('token');
-    debugger
     if (!G.isEmptyString(token)) {
         if (to.name === 'login') {
             // 已经跳转到首页

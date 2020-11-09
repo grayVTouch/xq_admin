@@ -262,7 +262,7 @@ export default {
     methods: {
 
         genVideoSubtitle () {
-            const id = G.randomArr(6 , 'letter' , true);
+            const id = G.randomArray(6 , 'letter' , true);
             return {
                 id ,
                 name: '' ,

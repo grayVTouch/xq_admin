@@ -41,7 +41,6 @@
         methods: {
             initDynamicH () {
                 const maxH = this.dom.root.height('border-box');
-
                 const navigationH = this.dom.navigation.height('border-box');
                 const minH = 400;
                 const dynamicH = Math.max(minH , maxH - navigationH);

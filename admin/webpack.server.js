@@ -30,43 +30,22 @@ module.exports = merge(common, {
         // 全屏错误
         overlay: true ,
     } ,
-    rules: [
-        {
-            // test: /\.s?[ac]ss$/,
-            test: /\.css$/ ,
-            use: [
-                {
-                    loader: MiniCssExtractPlugin.loader,
-                    options: {
-                        /**
-                         * 如果没加 publicPath 的情况下，css 中通过 @import 或 url() 等引入的文件
-                         * 加载的目录会默认是 css 文件所在目录
-                         * 而实际上字体文件的定位是 dist 目录所在目录！
-                         * 所以需要给出 publicPath 指定 dist 编译的根目录
-                         */
-                        publicPath: '../',
-                    },
-                },
-                {
-                    loader: 'css-loader' ,
-                    options: {
-                        esModule: false ,
-                    }
-                } ,
-            ],
-        } ,
-        // {
-        //     // test: /\.s?[ac]ss$/,
-        //     test: /\.css$/,
-        //     use: [
-        //         'vue-style-loader',
-        //         {
-        //             loader: 'css-loader',
-        //             options: {
-        //                 esModule: false,
-        //             }
-        //         },
-        //     ]
-        // } ,
-    ] ,
+    module: {
+        rules: [
+            {
+                test: /\.css$/ ,
+                use: [
+                    'vue-style-loader' ,
+                    // 热模块加载 和 提取 css 不兼容
+                    // 具体请看该链接文章： https://blog.csdn.net/weixin_45615791/article/details/104294458
+                    {
+                        loader: 'css-loader' ,
+                        options: {
+                            esModule: false ,
+                        }
+                    } ,
+                ],
+            } ,
+        ] ,
+    } ,
 });

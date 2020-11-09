@@ -38,9 +38,7 @@ Vue.mixin({
             });
         } ,
 
-        state (key) {
-            return this.$store.state[key];
-        } ,
+
 
         modal (action , title , content = '' , onOk = null , merge = {}) {
             onOk = G.isFunction(onOk) ? onOk : () => {};
@@ -170,6 +168,23 @@ Vue.mixin({
         // 生成排序字符串
         generateOrderString (key , order) {
             return key + '|' + order;
+        } ,
+
+        state () {
+            return this.$store.state;
+        } ,
+
+        // 快捷方式：获取当前登录用户
+        user () {
+            return this.state().user;
+        } ,
+
+        topContext () {
+            return TopContext;
+        } ,
+
+        cookie () {
+            return G.cookie;
         } ,
 
     }
