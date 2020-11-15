@@ -177,10 +177,10 @@ export default {
 
         getData () {
             this.pending('getData' , true);
-            Api.admin_permission.index((msg , data , code) => {
+            Api.admin_permission.index().then((res) => {
                 this.pending('getData' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.handleData(data);
@@ -224,10 +224,10 @@ export default {
                     G.invoke(callback , self , false);
                     return ;
                 }
-                Api.admin_permission.destroyAll(ids , (msg , data , code) => {
-                    if (code !== TopContext.code.Success) {
+                Api.admin_permission.destroyAll(ids , (res) => {
+                    if (res.code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
-                        this.message('error' , msg);
+                        this.errorHandle(res.message);
                         return ;
                     }
                     G.invoke(callback , self , true);
@@ -245,11 +245,11 @@ export default {
 
             Api.admin_permission.localUpdate(record.id , {
                 [extra.field]: val
-            } , (msg , data , code) => {
+            } , (res) => {
                 this.pending(pendingKey , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     record[extra.field] = oVal;
-                    this.message('error' , msg);
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.message('success' , '操作成功');

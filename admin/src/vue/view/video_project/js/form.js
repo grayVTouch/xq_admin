@@ -192,10 +192,10 @@ export default {
 
         getModules () {
             this.pending('getModules' , true);
-            Api.module.all((msg , data , code) => {
+            Api.module.all().then((res) => {
                 this.pending('getModules' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.modules = data;
@@ -203,9 +203,9 @@ export default {
         } ,
 
         getTopTags () {
-            Api.tag.topByModuleId(this.form.module_id , (msg , data , code) => {
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+            Api.tag.topByModuleId(this.form.module_id , (res) => {
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.topTags = data;
@@ -217,10 +217,10 @@ export default {
             Api.category.search({
                 module_id: this.form.module_id ,
                 type: 'video_project' ,
-            } , (msg , data , code) => {
+            } , (res) => {
                 this.pending('getCategories' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     G.invoke(callback , null , false);
                     return ;
                 }
@@ -272,10 +272,10 @@ export default {
         submitEvent () {
             const self = this;
             this.pending('submit' , true);
-            const callback = (msg , data , code) => {
+            const callback = (res) => {
                 this.pending('submit' , false);
                 this.error();
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.errorHandle(msg , data , code);
                     return ;
                 }
@@ -305,10 +305,10 @@ export default {
         findById (id) {
             return new Promise((resolve , reject) => {
                 this._val('findById' , true);
-                Api.video_project.show(id , (msg , data , code) => {
+                Api.video_project.show(id , (res) => {
                     this._val('findById' , true);
-                    if (code !== TopContext.code.Success) {
-                        this.message('error' , msg);
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
                         reject();
                         return ;
                     }
@@ -360,9 +360,9 @@ export default {
                 module_id: this.form.module_id ,
                 value: this.videoSeries.value ,
                 limit: this.videoSeries.limit ,
-            } , (msg , data , code) => {
+            } , (res) => {
                 this.pending('searchVideoSeries' , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.error({subject_id: data});
                     return ;
                 }
@@ -401,9 +401,9 @@ export default {
                 module_id: this.form.module_id ,
                 value: this.videoCompany.value ,
                 limit: this.videoCompany.limit ,
-            } , (msg , data , code) => {
+            } , (res) => {
                 this.pending('searchVideoCompany' , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.error({video_company_id: data});
                     return ;
                 }
@@ -498,9 +498,9 @@ export default {
             Api.video_project.destroyTag({
                 video_project_id: this.form.id ,
                 tag_id: tagId ,
-            } , (msg , data , code) => {
+            } , (res) => {
                 this.pending('destroy_tag_' + tagId , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.error({tags: data});
                     return ;
                 }
@@ -533,9 +533,9 @@ export default {
                 name ,
                 module_id: this.form.module_id ,
                 user_id: this.form.user_id ,
-            } , (msg , data , code) => {
+            } , (res) => {
                 this.dom.tagInputOuter.removeClass('disabled');
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.error({tags: msg} , false);
                     return ;
                 }
@@ -550,9 +550,9 @@ export default {
                 value: this.users.value ,
                 limit: this.users.limit ,
                 page: this.users.page ,
-            }, (msg , data , code) => {
+            }, (res) => {
                 this.pending('searchUser' , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.error({user_id: data});
                     return ;
                 }

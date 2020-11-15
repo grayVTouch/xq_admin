@@ -16,7 +16,7 @@ export default new Vuex.Store({
         // 带数据结构的权限
         myPermissionWithStructure: [] ,
 
-        // 当前位置
+        // 带数据结构的菜单列表
         permissions ,
 
         context: TopContext ,
@@ -25,7 +25,17 @@ export default new Vuex.Store({
 
         areaDomHInContent: 0 ,
 
-        slidebar: 'horizontal' ,
+        // 侧边栏
+        slidebar: G.cookie.exists('slidebar') ? G.cookie.get('slidebar') : 'horizontal' ,
+
+        // 当前路由
+        currentRoute: {} ,
+
+        // 顶级路由
+        topRoute: {} ,
+
+        // 当前位置
+        positions: [] ,
     } ,
     mutations: {
         user (state , payload) {
@@ -50,6 +60,18 @@ export default new Vuex.Store({
 
         slidebar (state , payload) {
             state.slidebar = payload;
+        } ,
+
+        topRoute (state , payload) {
+            state.topRoute = payload;
+        } ,
+
+        currentRoute (state , payload) {
+            state.currentRoute = payload;
+        } ,
+
+        positions (state , payload) {
+            state.positions = payload;
         } ,
     } ,
     actions: {
@@ -76,5 +98,18 @@ export default new Vuex.Store({
         slidebar (context , payload) {
             context.commit('slidebar' , payload);
         } ,
+
+        topRoute (context , payload) {
+            context.commit('topRoute' , payload);
+        } ,
+
+        currentRoute (context , payload) {
+            context.commit('currentRoute' , payload);
+        } ,
+
+        positions (context , payload) {
+            context.commit('positions' , payload);
+        } ,
+
     } ,
 });

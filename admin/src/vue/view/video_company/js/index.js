@@ -238,10 +238,10 @@ export default {
 
         getModules () {
             this.pending('getModules' , true);
-            Api.module.all((msg , data , code) => {
+            Api.module.all().then((res) => {
                 this.pending('getModules' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.modules = data;
@@ -250,10 +250,10 @@ export default {
 
         getCountries () {
             this.pending('getCountries' , true);
-            Api.region.country((msg , data , code) => {
+            Api.region.country().then((res) => {
                 this.pending('getCountries' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.countriesInList = data;
@@ -289,10 +289,10 @@ export default {
 
         getData () {
             this.pending('getData' , true);
-            Api.video_company.index(this.search , (msg , data , code) => {
+            Api.video_company.index(this.search , (res) => {
                 this.pending('getData' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.table.total = data.total;
@@ -324,10 +324,10 @@ export default {
                     G.invoke(callback , this , false);
                     return ;
                 }
-                Api.video_company.destroyAll(idList , (msg , data , code) => {
-                    if (code !== TopContext.code.Success) {
+                Api.video_company.destroyAll(idList , (res) => {
+                    if (res.code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
-                        this.message('error' , msg);
+                        this.errorHandle(res.message);
                         return ;
                     }
                     G.invoke(callback , this , true);
@@ -381,11 +381,11 @@ export default {
         // 获取当前编辑记录详情
         findById (id , callback) {
             this._val('findById' , true);
-            Api.video_company.show(id , (msg , data , code) => {
+            Api.video_company.show(id , (res) => {
                 this._val('findById' , true);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     G.invoke(callback , null , false);
-                    this.message('error' , msg);
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.form = data;
@@ -419,10 +419,10 @@ export default {
         submitEvent () {
             const self = this;
             this.pending('submit' , true);
-            const callback = (msg , data , code) => {
+            const callback = (res) => {
                 this.pending('submit' , false);
                 this.error();
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.errorHandle(msg , data , code);
                     return ;
                 }
@@ -435,10 +435,10 @@ export default {
                 });
             };
             if (this.val.mode === 'edit') {
-                Api.video_company.update(this.form.id , this.form , callback);
+                Api.video_company.update(this.form.id , this.form).then(callback);
                 return ;
             }
-            Api.video_company.store(this.form , callback);
+            Api.video_company.store(this.form).then(callback);
         } ,
 
         searchEvent () {
@@ -463,9 +463,9 @@ export default {
                 type: this.countries.type ,
                 limit: this.countries.limit ,
                 page: this.countries.page ,
-            } , (msg , data , code) => {
+            } , (res) => {
                 this.pending('searchCountry' , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.error({country_id: data} , false);
                     return ;
                 }
@@ -495,9 +495,9 @@ export default {
                 value: this.users.value ,
                 limit: this.users.limit ,
                 page: this.users.page ,
-            }, (msg , data , code) => {
+            }, (res) => {
                 this.pending('searchUser' , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.error({user_id: data});
                     return ;
                 }

@@ -158,29 +158,32 @@ export default {
 
         getRoles () {
             this.pending('getRoles' , true);
-            Api.role.all((msg , data , code) => {
+            Api.role.all().then((res) => {
                 this.pending('getRoles' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
-                this.roles = data;
+                this.roles = res.data;
             });
         } ,
 
         getData () {
             this.pending('getData' , true);
-            Api.admin.index(this.search , (msg , data , code) => {
-                this.pending('getData' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
-                    return ;
-                }
-                this.table.total = data.total;
-                this.table.page = data.current_page;
-                this.handleData(data.data);
-                this.table.data = data.data;
-            });
+            Api.admin.index(this.search)
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    const data = res.data;
+                    this.handleData(data.data);
+                    this.table.total = data.total;
+                    this.table.page = data.current_page;
+                    this.table.data = data.data;
+                }).finally(() => {
+                    this.pending('getData' , false);
+                });
         } ,
 
         handleData (data) {
@@ -207,10 +210,10 @@ export default {
                     G.invoke(callback , this , false);
                     return ;
                 }
-                Api.admin.destroyAll(ids , (msg , data , code) => {
-                    if (code !== TopContext.code.Success) {
+                Api.admin.destroyAll(ids , (res) => {
+                    if (res.code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
-                        this.message('error' , msg);
+                        this.errorHandle(res.message);
                         return ;
                     }
                     G.invoke(callback , this , true);

@@ -213,11 +213,11 @@ export default {
 
             this.pending('getCategories' , true);
 
-            Api.category.searchByModuleId(moduleId , (msg , data , code) => {
+            Api.category.searchByModuleId(moduleId , (res) => {
                 this.pending('getCategories' , false);
 
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
 
@@ -227,10 +227,10 @@ export default {
 
         getModules () {
             this.pending('getModules' , true);
-            Api.module.all((msg , data , code) => {
+            Api.module.all().then((res) => {
                 this.pending('getModules' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.modules = data;
@@ -239,10 +239,10 @@ export default {
 
         getData () {
             this.pending('getData' , true);
-            Api.image_project.index(this.search , (msg , data , code) => {
+            Api.image_project.index(this.search , (res) => {
                 this.pending('getData' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.table.total = data.total;
@@ -275,10 +275,10 @@ export default {
             const self = this;
             this.confirmModal('你确定删除吗？'  , (res) => {
                 if (res) {
-                    Api.image_project.destroyAll(idList , (msg , data , code) => {
-                        if (code !== TopContext.code.Success) {
+                    Api.image_project.destroyAll(idList , (res) => {
+                        if (res.code !== TopContext.code.Success) {
                             G.invoke(callback , this , false);
-                            this.message('error' , msg);
+                            this.errorHandle(res.message);
                             return ;
                         }
                         G.invoke(callback , this , true);
@@ -337,9 +337,9 @@ export default {
         submitEvent () {
             const self = this;
             this.pending('submit' , true);
-            const callback = (msg , data , code) => {
+            const callback = (res) => {
                 this.pending('submit' , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.errorHandle(msg , data , code);
                     return ;
                 }
@@ -352,10 +352,10 @@ export default {
                 });
             };
             if (this.val.mode === 'edit') {
-                Api.image_project.update(this.form.id , this.form , callback);
+                Api.image_project.update(this.form.id , this.form).then(callback);
                 return ;
             }
-            Api.image_project.store(this.form , callback);
+            Api.image_project.store(this.form).then(callback);
         } ,
 
         closeFormModal () {

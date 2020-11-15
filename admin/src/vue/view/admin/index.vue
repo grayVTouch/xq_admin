@@ -1,5 +1,5 @@
 <template>
-    <my-base ref="base">
+<!--    <my-base ref="base">-->
         <div class="mask">
 
             <div class="line search">
@@ -60,7 +60,7 @@
                             <div class="field"></div>
                             <div class="value">
                                 <button type="submit" v-show="false"></button>
-                                <my-table-button size="medium" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</my-table-button>
+<!--                                <my-table-button size="medium" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</my-table-button>-->
                             </div>
                         </div>
                     </form>
@@ -127,10 +127,12 @@
             <div class="line page">
                 <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
             </div>
+
+            <my-form ref="form" :id="current.id" :mode="val.mode" @on-success="getData"></my-form>
         </div>
 
-        <my-form ref="form" :id="current.id" :mode="val.mode" @on-success="getData"></my-form>
-    </my-base>
+
+<!--    </my-base>-->
 </template>
 
 <script src="./js/index.js"></script>

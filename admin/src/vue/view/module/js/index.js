@@ -142,11 +142,11 @@ export default {
             this.pending(pendingKey , true);
             Api.module.localUpdate(extra.data.id , {
                 [extra.field]: val
-            } , (msg , data , code) => {
+            } , (res) => {
                 this.pending(pendingKey , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     extra.data[extra.field] = oVal;
-                    this.message('error' , msg);
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.message('success' , '操作成功');
@@ -158,10 +158,10 @@ export default {
 
         getData () {
             this.pending('getData' , true);
-            Api.module.index(this.search , (msg , data , code) => {
+            Api.module.index(this.search , (res) => {
                 this.pending('getData' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.table.total = data.total;
@@ -194,10 +194,10 @@ export default {
                     G.invoke(callback , this , false);
                     return ;
                 }
-                Api.module.destroyAll(idList , (msg , data , code) => {
-                    if (code !== TopContext.code.Success) {
+                Api.module.destroyAll(idList , (res) => {
+                    if (res.code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
-                        this.message('error' , msg);
+                        this.errorHandle(res.message);
                         return ;
                     }
                     G.invoke(callback , self , true);
@@ -252,10 +252,10 @@ export default {
         submitEvent () {
             const self = this;
             this.pending('submit' , true);
-            const callback = (msg , data , code) => {
+            const callback = (res) => {
                 this.pending('submit' , false);
                 this.error();
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.errorHandle(msg , data , code);
                     return ;
                 }
@@ -268,10 +268,10 @@ export default {
                 });
             };
             if (this.val.mode === 'edit') {
-                Api.module.update(this.form.id , this.form , callback);
+                Api.module.update(this.form.id , this.form).then(callback);
                 return ;
             }
-            Api.module.store(this.form , callback);
+            Api.module.store(this.form).then(callback);
         } ,
 
         closeFormModal () {

@@ -39,6 +39,7 @@ module.exports = {
         filename: 'js/[name]-[hash].js',
         path: path.resolve(__dirname, 'dist') ,
         chunkFilename: "js/chunk-[name]-[hash].js" ,
+        publicPath: '/' ,
     } ,
     module: {
         rules: [

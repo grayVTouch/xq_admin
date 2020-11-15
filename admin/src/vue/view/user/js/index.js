@@ -165,10 +165,10 @@ export default {
 
         getData () {
             this.pending('getData' , true);
-            Api.user.index(this.search , (msg , data , code) => {
+            Api.user.index(this.search , (res) => {
                 this.pending('getData' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.table.total = data.total;
@@ -202,10 +202,10 @@ export default {
                     G.invoke(callback , this , false);
                     return ;
                 }
-                Api.user.destroyAll(idList , (msg , data , code) => {
-                    if (code !== TopContext.code.Success) {
+                Api.user.destroyAll(idList , (res) => {
+                    if (res.code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
-                        this.message('error' , msg);
+                        this.errorHandle(res.message);
                         return ;
                     }
                     G.invoke(callback , this , true);
@@ -259,10 +259,10 @@ export default {
         submitEvent () {
             const self = this;
             this.pending('submit' , true);
-            const callback = (msg , data , code) => {
+            const callback = (res) => {
                 this.pending('submit' , false);
                 this.error();
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.errorHandle(msg , data , code);
                     return ;
                 }
@@ -275,10 +275,10 @@ export default {
                 });
             };
             if (this.val.mode === 'edit') {
-                Api.user.update(this.form.id , this.form , callback);
+                Api.user.update(this.form.id , this.form).then(callback);
                 return ;
             }
-            Api.user.store(this.form , callback);
+            Api.user.store(this.form).then(callback);
         } ,
 
         closeFormModal () {

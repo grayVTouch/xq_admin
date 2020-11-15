@@ -138,10 +138,10 @@ export default {
 
         getPositions () {
             this.pending('getPositions' , true);
-            Api.position.all((msg , data , code) => {
+            Api.position.all().then((res) => {
                 this.pending('getPositions' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.positions = data;
@@ -150,9 +150,9 @@ export default {
 
         getModules () {
             this.pending('getModules' , true);
-            Api.module.all((msg , data , code) => {
+            Api.module.all().then((res) => {
                 this.pending('getModules' , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.error('error' , data);
                     return ;
                 }
@@ -183,10 +183,10 @@ export default {
 
         getData () {
             this.pending('getData' , true);
-            Api.image_at_position.index(this.search , (msg , data , code) => {
+            Api.image_at_position.index(this.search , (res) => {
                 this.pending('getData' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.table.total = data.total;
@@ -218,10 +218,10 @@ export default {
                     G.invoke(callback , this , false);
                     return ;
                 }
-                Api.image_at_position.destroyAll(idList , (msg , data , code) => {
-                    if (code !== TopContext.code.Success) {
+                Api.image_at_position.destroyAll(idList , (res) => {
+                    if (res.code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
-                        this.message('error' , msg);
+                        this.errorHandle(res.message);
                         return ;
                     }
                     G.invoke(callback , this , true);
@@ -279,10 +279,10 @@ export default {
         submitEvent () {
             const self = this;
             this.pending('submit' , true);
-            const callback = (msg , data , code) => {
+            const callback = (res) => {
                 this.pending('submit' , false);
                 this.error();
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.errorHandle(msg , data , code);
                     return ;
                 }
@@ -295,10 +295,10 @@ export default {
                 });
             };
             if (this.val.mode === 'edit') {
-                Api.image_at_position.update(this.form.id , this.form , callback);
+                Api.image_at_position.update(this.form.id , this.form).then(callback);
                 return ;
             }
-            Api.image_at_position.store(this.form , callback);
+            Api.image_at_position.store(this.form).then(callback);
         } ,
 
         closeFormModal () {

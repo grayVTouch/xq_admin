@@ -46,16 +46,14 @@ export default {
             }));
         } ,
 
-
-
         captcha () {
-            Api.misc.captcha().then(({message , data , code}) => {
-                if (code !== TopContext.code.Success) {
-                    this.errorHandle(message , data , code);
+            Api.misc.captcha().then((res) => {
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
-                this.val.captcha = data;
-                this.form.captcha_key = data.key;
+                this.val.captcha = res.data;
+                this.form.captcha_key = res.data.key;
             });
         } ,
 
@@ -73,9 +71,9 @@ export default {
 
         usernameInputEvent () {
             this.error({username: ''} , false);
-            Api.login.avatar({username: this.form.username} , (msg , data , code) => {
+            Api.login.avatar({username: this.form.username} , (res) => {
                 this.val.avatar = '';
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     return ;
                 }
                 this.val.avatar = data;
@@ -110,21 +108,23 @@ export default {
                 return ;
             }
             this.pending('submit' , true);
-            Api.login.login(this.form).then(({message , data , code}) => {
+            Api.login.login(this.form).then((res) => {
                     this.pending('submit' , false);
                     this.error();
                     this.topMessage();
                     this.captcha();
-                    if (code !== TopContext.code.Success) {
-                        this.errorHandle(message , data , code);
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
                         return ;
                     }
                     this.request('submit' , false);
                     this.topMessage('登录成功，进入首页中...' , 'run-green');
-                    G.cookie.set('token' , data);
+                    G.cookie.set('token' , res.data);
                     G.setTimeout(() => {
+                        // 延迟一些时间跳转到首页
+                        // 给人更好的衔接感
                         this.push({name: 'home'});
-                    } , 1000);
+                    } , 800);
                 });
         } ,
     }

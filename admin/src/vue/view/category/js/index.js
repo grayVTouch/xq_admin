@@ -116,10 +116,10 @@ export default {
 
         getModules () {
             this.pending('getModules' , true);
-            Api.module.all((msg , data , code) => {
+            Api.module.all().then((res) => {
                 this.pending('getModules' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.modules = data;
@@ -128,10 +128,10 @@ export default {
 
         getCategories (moduleId) {
             this.pending('getCategories' , true);
-            Api.category.searchByModuleId(moduleId , (msg , data , code) => {
+            Api.category.searchByModuleId(moduleId , (res) => {
                 this.pending('getCategories' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 if (this.val.mode === 'edit') {
@@ -161,10 +161,10 @@ export default {
 
         getData () {
             this.pending('getData' , true);
-            Api.category.index((msg , data , code) => {
+            Api.category.index().then((res) => {
                 this.pending('getData' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.handleData(data);
@@ -206,10 +206,10 @@ export default {
                     G.invoke(callback , self , false);
                     return ;
                 }
-                Api.category.destroyAll(ids , (msg , data , code) => {
-                    if (code !== TopContext.code.Success) {
+                Api.category.destroyAll(ids , (res) => {
+                    if (res.code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
-                        this.message('error' , msg);
+                        this.errorHandle(res.message);
                         return ;
                     }
                     G.invoke(callback , self , true);
@@ -227,11 +227,11 @@ export default {
 
             Api.category.localUpdate(record.id , {
                 [extra.field]: val
-            } , (msg , data , code) => {
+            } , (res) => {
                 this.pending(pendingKey , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     record[extra.field] = oVal;
-                    this.message('error' , msg);
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.message('success' , '操作成功');
@@ -313,10 +313,10 @@ export default {
 
         submitEvent () {
             const self = this;
-            const callback = (msg , data , code) => {
+            const callback = (res) => {
                 this.pending('submit' , false);
                 this.error();
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.errorHandle(msg , data , code);
                     return ;
                 }
@@ -332,7 +332,7 @@ export default {
                 Api.category.update(this.form.id , this.form ,callback);
                 return ;
             }
-            Api.category.store(this.form , callback);
+            Api.category.store(this.form).then(callback);
         } ,
 
         closeFormModal () {

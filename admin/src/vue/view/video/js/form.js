@@ -279,10 +279,10 @@ export default {
             Api.category.search({
                 module_id: this.form.module_id ,
                 type: this.form.type === 'pro' ? 'video_project' : 'video' ,
-            } , (msg , data , code) => {
+            } , (res) => {
                 this.pending('getCategories' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     G.invoke(callback , null , false);
                     return ;
                 }
@@ -295,10 +295,10 @@ export default {
 
         getModules (callback) {
             this.pending('getModules' , true);
-            Api.module.all((msg , data , code) => {
+            Api.module.all().then((res) => {
                 this.pending('getModules' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     G.invoke(callback , null , false);
                     return ;
                 }
@@ -378,9 +378,9 @@ export default {
             Api.video_project.search({
                 module_id: this.form.module_id ,
                 value: this.videoProjects.value ,
-            } , (msg , data , code) => {
+            } , (res) => {
                 this.pending('searchImageSubject' , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.error({video_project_id: data});
                     return ;
                 }
@@ -415,9 +415,9 @@ export default {
 
         searchUser () {
             this.pending('searchUser' , true);
-            Api.user.search(this.users.value , (msg , data , code) => {
+            Api.user.search(this.users.value , (res) => {
                 this.pending('searchUser' , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.error({user_id: data});
                     return ;
                 }
@@ -451,10 +451,10 @@ export default {
         findById (id) {
             this._val('findById' , true);
             return new Promise((resolve , reject) => {
-                Api.video.show(id , (msg , data , code) => {
+                Api.video.show(id , (res) => {
                     this._val('findById' , false);
-                    if (code !== TopContext.code.Success) {
-                        this.message('error' , msg);
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
                         reject();
                         return ;
                     }
@@ -540,10 +540,10 @@ export default {
             const self = this;
             this.confirmModal('你确定删除吗？'  , (res) => {
                 if (res) {
-                    Api.video.destroyVideos(ids , (msg , data , code) => {
-                        if (code !== TopContext.code.Success) {
+                    Api.video.destroyVideos(ids , (res) => {
+                        if (res.code !== TopContext.code.Success) {
                             G.invoke(callback , this , false);
-                            this.message('error' , msg);
+                            this.errorHandle(res.message);
                             return ;
                         }
                         G.invoke(callback , this , true);
@@ -585,10 +585,10 @@ export default {
             const self = this;
             this.confirmModal('你确定删除吗？'  , (res) => {
                 if (res) {
-                    Api.video_subtitle.destroyAll(ids , (msg , data , code) => {
-                        if (code !== TopContext.code.Success) {
+                    Api.video_subtitle.destroyAll(ids , (res) => {
+                        if (res.code !== TopContext.code.Success) {
                             G.invoke(callback , this , false);
-                            this.message('error' , msg);
+                            this.errorHandle(res.message);
                             return ;
                         }
                         G.invoke(callback , this , true);
@@ -651,8 +651,8 @@ export default {
             videoSubtitle.uploaded = false;
             videoSubtitle.uploading = true;
             videoSubtitle.error = '';
-            Api.file.uploadSubtitle(videoSubtitle.file , (msg , data , code) => {
-                if (code !== TopContext.code.Success) {
+            Api.file.uploadSubtitle(videoSubtitle.file , (res) => {
+                if (res.code !== TopContext.code.Success) {
                     videoSubtitle.error = msg;
                     videoSubtitle.uploaded = false;
                     G.invoke(callback , null , false);
@@ -669,10 +669,10 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return ;
             }
-            const callback = (msg , data , code) => {
+            const callback = (res) => {
                 this.pending('submit' , false);
                 this.error();
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.errorHandle(msg , data , code);
                     return ;
                 }

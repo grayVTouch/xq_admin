@@ -3,6 +3,10 @@ import routes from "./routes.js";
 const router = new VueRouter({
     mode: 'history',
     routes ,
+    // 初始化滚动条位置
+    scrollBehavior (to, from, savedPosition) {
+        return { x: 0 , y: 0 };
+    }
 });
 
 /**

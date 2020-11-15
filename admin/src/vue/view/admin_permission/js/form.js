@@ -59,10 +59,10 @@ export default {
 
         getPermissions (callback) {
             this.pending('getPermissions' , true);
-            Api.admin_permission.index((msg , data , code) => {
+            Api.admin_permission.index().then((res) => {
                 this.pending('getPermissions' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.permissions = data;
@@ -113,10 +113,10 @@ export default {
 
         submitEvent () {
             const self = this;
-            const callback = (msg , data , code) => {
+            const callback = (res) => {
                 this.pending('submit' , false);
                 this.error();
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.errorHandle(msg , data , code);
                     return ;
                 }
@@ -133,7 +133,7 @@ export default {
                 Api.admin_permission.update(this.form.id , this.form ,callback);
                 return ;
             }
-            Api.admin_permission.store(this.form , callback);
+            Api.admin_permission.store(this.form).then(callback);
         } ,
 
         openFormDrawer () {

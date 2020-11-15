@@ -4,7 +4,7 @@
             <div class="inner" ref="menu-inner">
                 <div class="line logo" ref="logo">
                     <div class="c-left image-outer">
-                        <div class="inner"><img :src="state().context.res.logo" class="image"></div>
+                        <div class="inner"><img :src="state().context.res.logo" alt="" class="image"></div>
                     </div>
                     <div class="c-right text-outer">{{ state().context.os.name }}</div>
                 </div>
@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="line menus" ref="menus">
-                    <my-menu :data="$store.state.position"></my-menu>
+                    <my-menu ref="my-menu" @click="menuClickEvent"></my-menu>
                 </div>
 
                 <div class="line desc" ref="desc">{{ state().context.os.name }}</div>
@@ -53,13 +53,14 @@
 
         <div class="content" ref="content">
             <div class="inner">
-                <div class="line nav" :style="`padding-right: ${val.yScrollbarWidth}px`" ref="nav">
+<!--                <div class="line nav" :style="`padding-right: ${val.yScrollbarWidth}px`" ref="nav">-->
+                <div class="line nav" ref="top-nav">
                     <div class="top toolbar" ref="toolbar">
 
                         <div class="left">
                             <!-- 测试范例：翻译 -->
                             <Tooltip content="刷新当前标签页">
-                                <div v-ripple @click="reloadChildPage">
+                                <div v-ripple @click>
                                     <my-icon icon="reset"></my-icon>
                                 </div>
                             </Tooltip>
@@ -117,12 +118,40 @@
                 </div>
 
                 <div class="line view" ref="view">
-                    <my-navigation ref="navigation"></my-navigation>
-                    <div class="dynamic" ref="dynamic">
-                        <router-view></router-view>
+                    <!-- 视图导航 -->
+                    <div class="navigation">
+                        <div ref="btm-nav"
+                             class="nav"
+                             :class="{fixed: val.fixedNavigation , spread: state().slidebar === 'vertical'}"
+                        >
+                            <div class="inner">
+                                <div class="left">
+                                    <img :src="state().topRoute.bIco" class="image" alt="">
+                                    <span class="cn">{{ state().topRoute.cn }}</span>
+                                    <span class="delimiter">/</span>
+                                    <span class="en">{{ state().topRoute.en }}</span>
+                                </div>
+                                <div class="right">
+                                    <!-- 面包屑 -->
+                                    <template v-for="(v,k) in state().positions">
+                                        <span v-ripple class="text" :class="{'run-cursor-not-allow':  !v.view }" @click="open(v)">{{ v.cn }}</span>
+                                        <span class="delimiter" v-if="!(k == state().positions.length - 1)">/</span>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- 动态视图 -->
+                    <div class="dynamic" ref="dynamic">
+                        <keep-alive>
+                            <router-view></router-view>
+                        </keep-alive>
+                    </div>
+
+                    <!-- 滚动到顶部 -->
                     <div class="to-top hide">
-                        <img src="" class="image" />
+                        <img src="" alt="" class="image" />
                     </div>
                 </div>
 

@@ -241,10 +241,10 @@ export default {
 
         getModules () {
             this.pending('getModules' , true);
-            Api.module.all((msg , data , code) => {
+            Api.module.all().then((res) => {
                 this.pending('getModules' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.modules = data;
@@ -260,11 +260,11 @@ export default {
             }
             this.pending('getCategories' , true);
 
-            Api.category.searchByModuleId(moduleId , (msg , data , code) => {
+            Api.category.searchByModuleId(moduleId , (res) => {
                 this.pending('getCategories' , false);
 
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
 
@@ -274,10 +274,10 @@ export default {
 
         getData () {
             this.pending('getData' , true);
-            Api.video.index(this.search , (msg , data , code) => {
+            Api.video.index(this.search , (res) => {
                 this.pending('getData' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.table.total = data.total;
@@ -307,10 +307,10 @@ export default {
             const self = this;
             this.confirmModal('你确定删除吗？'  , (res) => {
                 if (res) {
-                    Api.video.destroyAll(idList , (msg , data , code) => {
-                        if (code !== TopContext.code.Success) {
+                    Api.video.destroyAll(idList , (res) => {
+                        if (res.code !== TopContext.code.Success) {
                             G.invoke(callback , this , false);
-                            this.message('error' , msg);
+                            this.errorHandle(res.message);
                             return ;
                         }
                         G.invoke(callback , this , true);
@@ -370,9 +370,9 @@ export default {
         submitEvent () {
             const self = this;
             this.pending('submit' , true);
-            const callback = (msg , data , code) => {
+            const callback = (res) => {
                 this.pending('submit' , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.errorHandle(msg , data , code);
                     return ;
                 }
@@ -385,10 +385,10 @@ export default {
                 });
             };
             if (this.val.mode === 'edit') {
-                Api.video.update(this.form.id , this.form , callback);
+                Api.video.update(this.form.id , this.form).then(callback);
                 return ;
             }
-            Api.video.store(this.form , callback);
+            Api.video.store(this.form).then(callback);
         } ,
 
         closeFormModal () {
@@ -434,9 +434,9 @@ export default {
 
         retryProcessVideos (ids , callback) {
             this.pending('retryProcessVideos' , true);
-            Api.video.retryProcessVideo(ids , (msg , data , code) => {
+            Api.video.retryProcessVideo(ids , (res) => {
                 this.pending('retryProcessVideos' , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     G.invoke(callback , null , false);
                     this.errorHandle(msg , data , code);
                     return ;

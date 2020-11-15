@@ -75,15 +75,15 @@ export default {
 
         findById (id) {
             return new Promise((resolve , reject) => {
-               Api.admin.show(id , (msg , data , code) => {
-                   if (code !== TopContext.code.Success) {
-                       this.errorHandle(msg);
+               Api.admin.show(id).then((res) => {
+                   if (res.code !== TopContext.code.Success) {
+                       this.errorHandle(res.message);
                        reject();
                        return ;
                    }
+                   const data = res.data;
                    delete data.password;
                    this.form = data;
-
                    resolve();
                });
             });
@@ -122,23 +122,23 @@ export default {
 
         getRoles () {
             this.pending('getRoles' , true);
-            Api.role.all((msg , data , code) => {
+            Api.role.all().then((res) => {
                 this.pending('getRoles' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
-                this.roles = data;
+                this.roles = res.data;
             });
         } ,
 
         submitEvent () {
             const self = this;
             this.pending('submit' , true);
-            const callback = (msg , data , code) => {
+            const callback = (res) => {
                 this.pending('submit' , false);
                 this.error();
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.errorHandle(msg , data , code);
                     return ;
                 }
@@ -151,10 +151,10 @@ export default {
                 });
             };
             if (this.mode === 'edit') {
-                Api.admin.update(this.form.id , this.form , callback);
+                Api.admin.update(this.form.id , this.form).then(callback);
                 return ;
             }
-            Api.admin.store(this.form , callback);
+            Api.admin.store(this.form).then(callback);
         } ,
     } ,
 }

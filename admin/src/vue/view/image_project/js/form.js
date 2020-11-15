@@ -200,10 +200,10 @@ export default {
             Api.category.search({
                 module_id: moduleId ,
                 type: type === 'pro' ? 'image_project' : 'image' ,
-            } , (msg , data , code) => {
+            } , (res) => {
                 this.pending('getCategories' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     G.invoke(callback , null , false);
                     return ;
                 }
@@ -216,10 +216,10 @@ export default {
 
         getModules (callback) {
             this.pending('getModules' , true);
-            Api.module.all((msg , data , code) => {
+            Api.module.all().then((res) => {
                 this.pending('getModules' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     G.invoke(callback , null , false);
                     return ;
                 }
@@ -231,9 +231,9 @@ export default {
         } ,
 
         getTopTags (moduleId) {
-            Api.tag.topByModuleId(moduleId , (msg , data , code) => {
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+            Api.tag.topByModuleId(moduleId , (res) => {
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.topTags = data;
@@ -312,9 +312,9 @@ export default {
                 value: this.users.value ,
                 limit: this.users.limit ,
                 page: this.users.page ,
-            }, (msg , data , code) => {
+            }, (res) => {
                 this.pending('searchUser' , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.error({user_id: data});
                     return ;
                 }
@@ -340,9 +340,9 @@ export default {
                 module_id: this.form.module_id ,
                 value: this.imageSubjects.value ,
                 limit: this.imageSubjects.limit ,
-            } , (msg , data , code) => {
+            } , (res) => {
                 this.pending('searchImageSubject' , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.error({image_subject_id: data});
                     return ;
                 }
@@ -390,10 +390,10 @@ export default {
         findById (id) {
             this._val('findById' , true);
             return new Promise((resolve , reject) => {
-                Api.image_project.show(id , (msg , data , code) => {
+                Api.image_project.show(id , (res) => {
                     this._val('findById' , false);
-                    if (code !== TopContext.code.Success) {
-                        this.message('error' , msg);
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
                         reject();
                         return ;
                     }
@@ -452,9 +452,9 @@ export default {
             const self = this;
             this.confirmModal('你确定删除吗？'  , (res) => {
                 if (res) {
-                    Api.image_project.destroyAllImageForImageSubject(ids , (msg , data , code) => {
-                        if (code !== TopContext.code.Success) {
-                            this.message('error' , msg);
+                    Api.image_project.destroyAllImageForImageSubject(ids , (res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            this.errorHandle(res.message);
                             return ;
                         }
                         G.invoke(callback , this , true);
@@ -556,9 +556,9 @@ export default {
             Api.image_project.destroyTag({
                 image_project_id: this.form.id ,
                 tag_id: tagId ,
-            } , (msg , data , code) => {
+            } , (res) => {
                 this.pending('destroy_tag_' + tagId , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.error({tags: data});
                     return ;
                 }
@@ -591,9 +591,9 @@ export default {
                 name ,
                 module_id: this.form.module_id ,
                 user_id: this.form.user_id ,
-            } , (msg , data , code) => {
+            } , (res) => {
                 this.dom.tagInputOuter.removeClass('disabled');
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.error({tags: msg} , false);
                     return ;
                 }
@@ -607,10 +607,10 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return ;
             }
-            const callback = (msg , data , code) => {
+            const callback = (res) => {
                 this.pending('submit' , false);
                 this.error();
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.errorHandle(msg , data , code);
                     return ;
                 }

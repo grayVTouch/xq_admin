@@ -51,10 +51,21 @@ export default [
         children: [
             {
                 path: 'pannel' ,
-                component: pannel ,
+                component: () => import('@vue/view/pannel/pannel.vue') ,
             } ,
         ]
     } ,
+    {
+        path: '/admin' ,
+        component: index ,
+        children: [
+            {
+                path: 'index' ,
+                component: () => import('@vue/view/admin/index.vue') ,
+            }
+        ] ,
+    } ,
+
     //
     // {
     //     path: '/pannel' ,

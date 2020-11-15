@@ -177,10 +177,10 @@ export default {
 
         getModules () {
             this.pending('getModules' , true);
-            Api.module.all((msg , data , code) => {
+            Api.module.all().then((res) => {
                 this.pending('getModules' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.modules = data;
@@ -199,10 +199,10 @@ export default {
 
         getData () {
             this.pending('getData' , true);
-            Api.tag.index(this.search , (msg , data , code) => {
+            Api.tag.index(this.search , (res) => {
                 this.pending('getData' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.table.total = data.total;
@@ -234,10 +234,10 @@ export default {
                     G.invoke(callback , this , false);
                     return ;
                 }
-                Api.tag.destroyAll(idList , (msg , data , code) => {
-                    if (code !== TopContext.code.Success) {
+                Api.tag.destroyAll(idList , (res) => {
+                    if (res.code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
-                        this.message('error' , msg);
+                        this.errorHandle(res.message);
                         return ;
                     }
                     G.invoke(callback , this , true);
@@ -278,10 +278,10 @@ export default {
         findById (id) {
             return new Promise((resolve , reject) => {
                 this._val('findById' , true);
-                Api.tag.show(id , (msg , data , code) => {
+                Api.tag.show(id , (res) => {
                     this._val('findById' , true);
-                    if (code !== TopContext.code.Success) {
-                        this.message('error' , msg);
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
                         reject();
                         return ;
                     }
@@ -313,10 +313,10 @@ export default {
         submitEvent () {
             const self = this;
             this.pending('submit' , true);
-            const callback = (msg , data , code) => {
+            const callback = (res) => {
                 this.pending('submit' , false);
                 this.error();
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.errorHandle(msg , data , code);
                     return ;
                 }
@@ -329,10 +329,10 @@ export default {
                 });
             };
             if (this.val.mode === 'edit') {
-                Api.tag.update(this.form.id , this.form , callback);
+                Api.tag.update(this.form.id , this.form).then(callback);
                 return ;
             }
-            Api.tag.store(this.form , callback);
+            Api.tag.store(this.form).then(callback);
         } ,
 
         closeFormModal () {
@@ -360,9 +360,9 @@ export default {
                 value: this.users.value ,
                 limit: this.users.limit ,
                 page: this.users.page ,
-            }, (msg , data , code) => {
+            }, (res) => {
                 this.pending('searchUser' , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.error({user_id: data});
                     return ;
                 }

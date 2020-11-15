@@ -115,8 +115,8 @@ export default {
         } ,
 
         getPermission () {
-            Api.admin_permission.index((msg , data , code) => {
-                if (code !== TopContext.code.Success) {
+            Api.admin_permission.index().then((res) => {
+                if (res.code !== TopContext.code.Success) {
                     this.errorHandle(msg , data , code);
                     return ;
                 }
@@ -131,10 +131,10 @@ export default {
 
         getData () {
             this.pending('getData' , true);
-            Api.role.index(this.search , (msg , data , code) => {
+            Api.role.index(this.search , (res) => {
                 this.pending('getData' , false);
-                if (code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                if (res.code !== TopContext.code.Success) {
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.table.total = data.total;
@@ -178,10 +178,10 @@ export default {
                     G.invoke(callback , this , false);
                     return ;
                 }
-                Api.role.destroyAll(idList , (msg , data , code) => {
-                    if (code !== TopContext.code.Success) {
+                Api.role.destroyAll(idList , (res) => {
+                    if (res.code !== TopContext.code.Success) {
                         G.invoke(callback , this , false);
-                        this.message('error' , msg);
+                        this.errorHandle(res.message);
                         return ;
                     }
                     G.invoke(callback , self , true);
@@ -199,9 +199,9 @@ export default {
 
             Api.role.localUpdate(record.id , {
                 [extra.field]: val
-            } , (msg , data , code) => {
+            } , (res) => {
                 this.pending(pendingKey , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     record[extra.field] = oVal;
                     this.notice(data);
                     return ;
@@ -254,10 +254,10 @@ export default {
         submitEvent () {
             const self = this;
             this.pending('submit' , true);
-            const callback = (msg , data , code) => {
+            const callback = (res) => {
                 this.pending('submit' , false);
                 this.error();
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.errorHandle(msg , data , code);
                     return ;
                 }
@@ -270,10 +270,10 @@ export default {
                 });
             };
             if (this.val.mode === 'edit') {
-                Api.role.update(this.form.id , this.form , callback);
+                Api.role.update(this.form.id , this.form).then(callback);
                 return ;
             }
-            Api.role.store(this.form , callback);
+            Api.role.store(this.form).then(callback);
         } ,
 
         closeFormModal () {
@@ -297,8 +297,8 @@ export default {
         allocateEvent (record) {
             this.role = G.copy(record);
             this._val('drawer' , true);
-            Api.role.permission(record.id , (msg , data , code) => {
-                if (code !== TopContext.code.Success) {
+            Api.role.permission(record.id , (res) => {
+                if (res.code !== TopContext.code.Success) {
                     this.errorHandle(msg , data , code);
                     return ;
                 }
@@ -339,9 +339,9 @@ export default {
             });
             Api.role.allocatePermission(this.role.id , {
                 permission: G.jsonEncode(ids)
-            } , (msg , data , code) => {
+            } , (res) => {
                 this.pending('allocatePermission' , false);
-                if (code !== TopContext.code.Success) {
+                if (res.code !== TopContext.code.Success) {
                     this.errorHandle(msg , data , code);
                     return ;
                 }
