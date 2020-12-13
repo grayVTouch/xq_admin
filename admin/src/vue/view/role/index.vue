@@ -115,7 +115,7 @@
                 <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
             </div>
 
-            <my-form-modal v-model="val.modal" :title="title" :loading="val.pending.submit">
+            <my-form-modal v-model="val.modal" :title="title" :loading="val.pending.submitEvent">
                 <template slot="default">
                     <form class="form" @submit.prevent="submitEvent">
                         <table class="input-table">
@@ -148,7 +148,7 @@
                     </form>
                 </template>
                 <template slot="footer">
-                    <i-button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent">确认</i-button>
+                    <i-button v-ripple type="primary" :loading="val.pending.submitEvent" @click="submitEvent">确认</i-button>
                     <i-button v-ripple type="error" @click="closeFormModal">关闭</i-button>
                 </template>
             </my-form-modal>

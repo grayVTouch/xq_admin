@@ -54,9 +54,7 @@ class DiskAction extends Action
         if (empty($param['prefix'])) {
             $repeat = DiskModel::findByExcludeIdAndPrefix($res->id , $param['prefix']);
             if (!empty($repeat)) {
-                return self::error('表单错误' , [
-                    'prefix' => '前缀已经存在，请重新输入' ,
-                ]);
+                return self::error('前缀已经存在，请重新输入');
             }
         }
 
@@ -125,9 +123,7 @@ class DiskAction extends Action
         }
 
         if (!File::isDir($param['path'])) {
-            return self::error('表单错误' , [
-                'path' => '请提供真实有效的磁盘目录绝对路径' ,
-            ]);
+            return self::error('请提供真实有效的磁盘目录绝对路径');
         }
 
         $repeat = DiskModel::findByExcludeIdAndPrefix($res->id , $param['prefix']);
@@ -182,9 +178,7 @@ class DiskAction extends Action
         }
 
         if (!File::isDir($param['path'])) {
-            return self::error('表单错误' , [
-                'path' => '请提供真实有效的磁盘目录绝对路径' ,
-            ]);
+            return self::error('请提供真实有效的磁盘目录绝对路径');
         }
 
         $repeat = DiskModel::findByPrefix($param['prefix']);

@@ -93,38 +93,38 @@ class VideoAction extends Action
             'video_project' ,
         ]);
         if ($video->type === 'pro' && empty($video->video_project)) {
-            return self::error('源视频所属的视频专题不存在' , ['video_project_id' => '源视频所属的视频专题不存在'] , 404);
+            return self::error('源视频所属的视频专题不存在' , '' , 404);
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , ['module_id' => '模块不存在']);
+            return self::error('模块不存在');
         }
         $video_project = null;
         if ($param['type'] === 'pro') {
             // 专题
             $video_project = VideoProjectModel::find($param['video_project_id']);
             if (empty($video_project)) {
-                return self::error('专题不存在' , ['video_project_id' => '专题不存在']);
+                return self::error('专题不存在');
             }
             if (VideoModel::findByExcludeIdAndVideoProjectIdAndIndex($video->id , $video_project->id , $param['index'])) {
-                return self::error('索引已经存在' , ['index' => '索引已经存在']);
+                return self::error('索引已经存在');
             }
             $param['category_id'] = 0;
         } else {
             // 杂项
             $category = CategoryModel::find($param['category_id']);
             if (empty($category)) {
-                return self::error('分类不存在' , ['category_id' => '分类不存在']);
+                return self::error('分类不存在');
             }
             $param['video_project_id']  = 0;
             $param['index']             = 0;
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+            return self::error('用户不存在');
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+            return self::error('请提供失败原因');
         }
         $datetime               = current_datetime();
         $param['weight']        = $param['weight'] === '' ? $video->weight : $param['weight'];
@@ -233,34 +233,34 @@ class VideoAction extends Action
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , ['module_id' => '模块不存在']);
+            return self::error('模块不存在');
         }
         $video_project = null;
         if ($param['type'] === 'pro') {
             // 专题
             $video_project = VideoProjectModel::find($param['video_project_id']);
             if (empty($video_project)) {
-                return self::error('专题不存在' , ['video_project_id' => '专题不存在']);
+                return self::error('专题不存在');
             }
             if (VideoModel::findByVideoProjectIdAndIndex($video_project->id , $param['index'])) {
-                return self::error('索引已经存在' , ['index' => '索引已经存在']);
+                return self::error('索引已经存在');
             }
             $param['category_id'] = 0;
         } else {
             // 杂项
             $category = CategoryModel::find($param['category_id']);
             if (empty($category)) {
-                return self::error('分类不存在' , ['category_id' => '分类不存在']);
+                return self::error('分类不存在');
             }
             $param['video_project_id']  = 0;
             $param['index']             = 0;
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+            return self::error('用户不存在');
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+            return self::error('请提供失败原因');
         }
         $datetime               = date('Y-m-d H:i:s');
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];

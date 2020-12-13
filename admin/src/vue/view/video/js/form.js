@@ -331,7 +331,7 @@ export default {
         } ,
 
         closeFormModal () {
-            if (this.pending('submit')) {
+            if (this.pending('submitEvent')) {
                 this.message('warning' , '请求中...请耐心等待');
                 return ;
             }
@@ -521,7 +521,7 @@ export default {
         } ,
 
         submitEvent () {
-            if (this.pending('submit')) {
+            if (this.pending('submitEvent')) {
                 this.message('warning' , '请求中...请耐心等待');
                 return ;
             }
@@ -539,7 +539,7 @@ export default {
                 });
             };
             const finalCallback = () => {
-                this.pending('submit' , false);
+                this.pending('submitEvent' , false);
             };
             const form = G.copy(this.form);
             // 字幕上传
@@ -550,7 +550,7 @@ export default {
                 };
             });
             form.video_subtitles = G.jsonEncode(form.video_subtitles);
-            this.pending('submit' , true);
+            this.pending('submitEvent' , true);
             if (this.mode === 'edit') {
                 Api.video.update(form.id , form).then(thenCallback).finally(finalCallback);
                 return ;

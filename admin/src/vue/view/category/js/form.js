@@ -121,7 +121,7 @@ export default {
         } ,
 
         closeFormModal () {
-            if (this.pending('submit')) {
+            if (this.pending('submitEvent')) {
                 this.message('warning' , '请求中...请耐心等待');
                 return;
             }
@@ -134,7 +134,7 @@ export default {
 
         submitEvent () {
             const self = this;
-            this.pending('submit' , true);
+            this.pending('submitEvent' , true);
             const thenCallback = (res) => {
                 if (res.code !== TopContext.code.Success) {
                     this.errorHandle(res.message);
@@ -149,7 +149,7 @@ export default {
                 });
             };
             const finalCallback = () => {
-                this.pending('submit' , false);
+                this.pending('submitEvent' , false);
                 this.error();
             };
             if (this.mode === 'edit') {

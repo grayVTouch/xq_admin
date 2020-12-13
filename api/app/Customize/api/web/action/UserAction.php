@@ -113,9 +113,7 @@ class UserAction extends Action
 //        }
         $user = UserModel::findByEmail($param['email']);
         if (!empty($user)) {
-            return self::error('' , [
-                'email' => '邮箱已经注册过，请登录'
-            ]);
+            return self::error('邮箱已经注册过，请登录');
         }
         if ($param['password'] !== $param['confirm_password']) {
             return self::error('两次输入的密码不一致');
@@ -123,22 +121,16 @@ class UserAction extends Action
         // 检查验证码是否正确
         $email_code = EmailCodeModel::findByEmailAndType($param['email'] , 'register');
         if (empty($email_code)) {
-            return self::error('' , [
-                'email' => '请先发送邮箱验证码'
-            ]);
+            return self::error('请先发送邮箱验证码');
         }
         $timestamp = time();
         $code_duration = my_config('app.code_duration');
         $expired_timestamp = strtotime($email_code->send_time) + $code_duration;
         if ($email_code->used || $timestamp > $expired_timestamp) {
-            return self::error('' , [
-                'email_code' => '邮箱验证码已经失效，请重新发送'
-            ]);
+            return self::error('邮箱验证码已经失效，请重新发送');
         }
         if ($email_code->code !== $param['email_code']) {
-            return self::error('' , [
-                'email_code' => '验证码错误'
-            ]);
+            return self::error('验证码错误');
         }
         $token = random(32 , 'mixed' , true);
         $datetime = date('Y-m-d H:i:s' , time() + 7 * 24 * 3600);
@@ -178,14 +170,10 @@ class UserAction extends Action
         }
         $user = UserModel::findByValueInUsernameOrEmailOrPhone($param['username']);
         if (empty($user)) {
-            return self::error('' , [
-                'username' => '用户不存在' ,
-            ]);
+            return self::error('用户不存在');
         }
         if (!Hash::check($param['password'] , $user->password)) {
-            return self::error('' , [
-                'password' => '密码错误' ,
-            ]);
+            return self::error('密码错误');
         }
         $token = random(32 , 'mixed' , true);
         $datetime = date('Y-m-d H:i:s' , time() + 7 * 24 * 3600);
@@ -238,22 +226,16 @@ class UserAction extends Action
         // 检查验证码是否正确
         $email_code = EmailCodeModel::findByEmailAndType($user->email , 'password');
         if (empty($email_code)) {
-            return self::error('' , [
-                'email' => '请先发送邮箱验证码'
-            ]);
+            return self::error('请先发送邮箱验证码');
         }
         $timestamp = time();
         $code_duration = my_config('app.code_duration');
         $expired_timestamp = strtotime($email_code->send_time) + $code_duration;
         if ($email_code->used || $timestamp > $expired_timestamp) {
-            return self::error('' , [
-                'email_code' => '邮箱验证码已经失效，请重新发送'
-            ]);
+            return self::error('邮箱验证码已经失效，请重新发送');
         }
         if ($email_code->code !== $param['email_code']) {
-            return self::error('' , [
-                'email_code' => '验证码错误'
-            ]);
+            return self::error('验证码错误');
         }
         try {
             DB::beginTransaction();
@@ -814,9 +796,7 @@ class UserAction extends Action
         }
         $user = user();
         if (!Hash::check($param['old_password'] , $user->password)) {
-            return self::error('' , [
-                'old_password' => '原密码错误'
-            ]);
+            return self::error('原密码错误');
         }
         if ($param['password'] !== $param['confirm_password']) {
             return self::error('两次输入的密码不一致');

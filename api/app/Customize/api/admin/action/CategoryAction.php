@@ -103,10 +103,10 @@ class CategoryAction extends Action
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+            return self::error('用户不存在');
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+            return self::error('请提供失败原因');
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         CategoryModel::updateById($category->id , array_unit($param , [
@@ -141,10 +141,10 @@ class CategoryAction extends Action
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+            return self::error('用户不存在');
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+            return self::error('请提供失败原因');
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $id = CategoryModel::insertGetId(array_unit($param , [

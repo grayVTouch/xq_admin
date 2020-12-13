@@ -98,7 +98,7 @@ export default {
         } ,
 
         submitEvent () {
-            if (!this.request('submit') || this.pending('submit')) {
+            if (!this.request('submit') || this.pending('submitEvent')) {
                 return ;
             }
             const filterRes = this.filter();
@@ -107,9 +107,9 @@ export default {
                 // this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
                 return ;
             }
-            this.pending('submit' , true);
+            this.pending('submitEvent' , true);
             Api.login.login(this.form).then((res) => {
-                    this.pending('submit' , false);
+                    this.pending('submitEvent' , false);
                     this.error();
                     this.topMessage();
                     this.captcha();

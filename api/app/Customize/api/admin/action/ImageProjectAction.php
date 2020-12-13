@@ -89,33 +89,33 @@ class ImageProjectAction extends Action
         }
         if ($param['type'] === 'pro') {
             if ($param['name'] === '') {
-                return self::error('名称尚未提供' , ['name' => '名称尚未提供']);
+                return self::error('名称尚未提供');
             }
             if (ImageProjectModel::findByNameAndExcludeId($param['name'] , $image_project->id)) {
-                return self::error('名称已经被使用' , ['name' => '名称已经被使用']);
+                return self::error('名称已经被使用');
             }
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , ['module_id' => '模块不存在']);
+            return self::error('模块不存在');
         }
         $category = CategoryModel::find($param['category_id']);
         if (empty($category)) {
-            return self::error('分类不存在' , ['category_id' => '分类不存在']);
+            return self::error('分类不存在');
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+            return self::error('用户不存在');
         }
         $image_subject = null;
         if ($param['type'] === 'pro') {
             $image_subject = ImageSubjectModel::find($param['image_subject_id']);
             if (empty($image_subject)) {
-                return self::error('专题不存在' , ['image_subject_id' => '专题不存在']);
+                return self::error('专题不存在');
             }
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+            return self::error('请提供失败原因');
         }
         $datetime               = current_datetime();
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
@@ -155,9 +155,7 @@ class ImageProjectAction extends Action
                 {
                     if ($v1->tag_id === $v) {
                         DB::rollBack();
-                        return self::error('' , [
-                            'tags' => '存在重复标签: name: ' . $v1->name . '; id: ' . $v1->tag_id ,
-                        ]);
+                        return self::error('存在重复标签: name: ' . $v1->name . '; id: ' . $v1->tag_id);
                     }
                 }
                 $tag = TagModel::find($v);
@@ -220,33 +218,33 @@ class ImageProjectAction extends Action
         }
         if ($param['type'] === 'pro') {
             if ($param['name'] === '') {
-                return self::error('名称尚未提供' , ['name' => '名称尚未提供']);
+                return self::error('名称尚未提供');
             }
             if (ImageProjectModel::findByName($param['name'])) {
-                return self::error('名称已经被使用' , ['name' => '名称已经被使用']);
+                return self::error('名称已经被使用');
             }
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , ['module_id' => '模块不存在']);
+            return self::error('模块不存在');
         }
         $category = CategoryModel::find($param['category_id']);
         if (empty($category)) {
-            return self::error('分类不存在' , ['category_id' => '分类不存在']);
+            return self::error('分类不存在');
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+            return self::error('用户不存在');
         }
         $image_subject = null;
         if ($param['type'] === 'pro') {
             $image_subject = ImageSubjectModel::find($param['image_subject_id']);
             if (empty($image_subject)) {
-                return self::error('专题不存在' , ['image_subject_id' => '专题不存在']);
+                return self::error('专题不存在');
             }
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+            return self::error('请提供失败原因');
         }
         $datetime               = current_datetime();
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];

@@ -53,18 +53,18 @@ class ImageSubjectAction extends Action
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , ['module_id' => '模块不存在']);
+            return self::error('模块不存在');
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+            return self::error('用户不存在');
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+            return self::error('请提供失败原因');
         }
         // 检查名称是否被使用
         if (ImageSubjectModel::findByNameAndExcludeId($param['name'] , $res->id)) {
-            return self::error('名称已经被使用' , ['name' => '名称已经被使用']);
+            return self::error('名称已经被使用');
         }
         $param['attr']          = $param['attr'] === '' ? '{}' : $param['attr'];
         $param['weight']        = $param['weight'] === '' ? $res->weight : $param['weight'];
@@ -110,18 +110,18 @@ class ImageSubjectAction extends Action
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , ['module_id' => '模块不存在']);
+            return self::error('模块不存在');
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+            return self::error('用户不存在');
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+            return self::error('请提供失败原因');
         }
         // 检查名称是否被使用
         if (ImageSubjectModel::findByName($param['name'])) {
-            return self::error('名称已经被使用' , ['name' => '名称已经被使用']);
+            return self::error('名称已经被使用');
         }
         $datetime               = current_datetime();
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];

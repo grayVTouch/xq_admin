@@ -53,8 +53,8 @@
                     </div>
 
                     <div class="line submit">
-                        <button type="submit" class="button-submit" :class="{disabled: val.pending.submit}" v-ripple>
-                            <my-loading v-if="val.pending.submit"></my-loading>
+                        <button type="submit" class="button-submit" :class="{disabled: val.pending.submitEvent}" v-ripple>
+                            <my-loading v-if="val.pending.submitEvent"></my-loading>
                             <template v-else>登录</template>
                         </button>
                     </div>

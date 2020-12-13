@@ -184,7 +184,7 @@ export default {
         } ,
 
         submitEvent () {
-            this.pending('submit' , true);
+            this.pending('submitEvent' , true);
             const thenCallback = (res) => {
                 this.error();
                 if (res.code !== TopContext.code.Success) {
@@ -200,7 +200,7 @@ export default {
                 });
             };
             const finalCallback = () => {
-                this.pending('submit' , false);
+                this.pending('submitEvent' , false);
             };
             const form = G.copy(this.form);
             form.images = G.jsonEncode(this.images);
@@ -257,7 +257,7 @@ export default {
         } ,
 
         closeFormModal () {
-            if (this.pending('submit')) {
+            if (this.pending('submitEvent')) {
                 this.message('warning' , '请求中...请耐心等待');
                 return;
             }

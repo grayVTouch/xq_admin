@@ -69,37 +69,35 @@ class VideoProjectAction extends Action
             return self::error('视频专题不存在' , '' , 404);
         }
         if (VideoProjectModel::findByNameAndExcludeId($param['name'] , $video_project->id)) {
-            return self::error('名称已经被使用' , ['name' => '名称已经被使用']);
+            return self::error('名称已经被使用');
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('' , [
-                'module_id' => '模块不存在' ,
-            ]);
+            return self::error('模块不存在');
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+            return self::error('用户不存在');
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+            return self::error('请提供失败原因');
         }
         $category = CategoryModel::find($param['category_id']);
         if (empty($category)) {
-            return self::error('分类不存在' , ['category_id' => '分类不存在']);
+            return self::error('分类不存在');
         }
         $video_series = null;
         if (!empty($param['video_series_id'])) {
             $video_series = VideoSeriesModel::find($param['video_series_id']);
             if (empty($video_series)) {
-                return self::error('视频系列不存在' , ['video_series_id' => '视频系列不存在']);
+                return self::error('视频系列不存在');
             }
         }
         $video_company = null;
         if (!empty($param['video_company_id'])) {
             $video_company = VideoCompanyModel::find($param['video_company_id']);
             if (empty($video_company)) {
-                return self::error('视频制作公司不存在' , ['video_company_id' => '视频制作公司不存在']);
+                return self::error('视频制作公司不存在');
             }
         }
         $datetime               = current_datetime();
@@ -194,37 +192,35 @@ class VideoProjectAction extends Action
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
         if (VideoProjectModel::findByName($param['name'])) {
-            return self::error('名称已经被使用' , ['name' => '名称已经被使用']);
+            return self::error('名称已经被使用');
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('' , [
-                'module_id' => '模块不存在' ,
-            ]);
+            return self::error('模块不存在');
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+            return self::error('用户不存在');
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+            return self::error('请提供失败原因');
         }
         $category = CategoryModel::find($param['category_id']);
         if (empty($category)) {
-            return self::error('分类不存在' , ['category_id' => '分类不存在']);
+            return self::error('分类不存在');
         }
         $video_series = null;
         if (!empty($param['video_series_id'])) {
             $video_series = VideoSeriesModel::find($param['video_series_id']);
             if (empty($video_series)) {
-                return self::error('视频系列不存在' , ['video_series_id' => '视频系列不存在']);
+                return self::error('视频系列不存在');
             }
         }
         $video_company = null;
         if (!empty($param['video_company_id'])) {
             $video_company = VideoCompanyModel::find($param['video_company_id']);
             if (empty($video_company)) {
-                return self::error('视频制作公司不存在' , ['video_company_id' => '视频制作公司不存在']);
+                return self::error('视频制作公司不存在');
             }
         }
         $datetime = current_datetime();

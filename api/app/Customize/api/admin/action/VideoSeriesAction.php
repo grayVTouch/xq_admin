@@ -50,18 +50,18 @@ class VideoSeriesAction extends Action
             return self::error('视频系列未找到' , '' , 404);
         }
         if (VideoSeriesModel::findByNameAndExcludeId($param['name'] , $res->id)) {
-            return self::error('名称已经被使用' , ['name' => '名称已经被使用']);
+            return self::error('名称已经被使用');
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , ['module_id' => '模块不存在']);
+            return self::error('模块不存在');
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+            return self::error('用户不存在');
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+            return self::error('请提供失败原因');
         }
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
         $param['updated_at']    = current_datetime();
@@ -91,18 +91,18 @@ class VideoSeriesAction extends Action
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
         if (VideoSeriesModel::findByName($param['name'])) {
-            return self::error('名称已经被使用' , ['name' => '名称已经被使用']);
+            return self::error('名称已经被使用');
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , ['module_id' => '模块不存在']);
+            return self::error('模块不存在');
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+            return self::error('用户不存在');
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+            return self::error('请提供失败原因');
         }
         $datetime = current_datetime();
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];

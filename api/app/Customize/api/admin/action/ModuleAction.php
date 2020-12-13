@@ -148,9 +148,7 @@ class ModuleAction extends Action
 
         if ($param['is_auth']) {
             if (empty($param['auth_password'])) {
-                return self::error('表单错误' , [
-                    'auth_password' => '请提供认证密码' ,
-                ]);
+                return self::error('请提供认证密码');
             }
         }
 

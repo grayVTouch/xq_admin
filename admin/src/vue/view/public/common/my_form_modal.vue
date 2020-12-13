@@ -22,7 +22,7 @@
 
 <script>
     export default {
-        name: "drawer" ,
+        name: "my-form-modal" ,
         data () {
             return {
                 valueCopy: false
@@ -109,7 +109,7 @@
     }
 
     .my-modal-body {
-        max-height: 750px;
+        max-height: 650px;
         overflow: auto;
     }
 </style>

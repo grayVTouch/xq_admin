@@ -55,22 +55,22 @@ class VideoCompanyAction extends Action
             return self::error('记录不存在' , '' , 404);
         }
         if (VideoCompanyModel::findByNameAndExcludeId($param['name'] , $res->id)) {
-            return self::error('名称已经被使用' , ['name' => '名称已经被使用']);
+            return self::error('名称已经被使用');
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , ['module_id' => '模块不存在']);
+            return self::error('模块不存在');
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+            return self::error('用户不存在');
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+            return self::error('请提供失败原因');
         }
         $country = RegionModel::find($param['country_id']);
         if (empty($country)) {
-            return self::error('国家不存在' , ['country_id' => '国家不存在']);
+            return self::error('国家不存在');
         }
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
         $param['country']       = $country->name;
@@ -117,24 +117,22 @@ class VideoCompanyAction extends Action
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
         if (VideoCompanyModel::findByName($param['name'])) {
-            return self::error('名称已经被使用' , ['name' => '名称已经被使用']);
+            return self::error('名称已经被使用');
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
-            return self::error('模块不存在' , ['module_id' => '模块不存在']);
+            return self::error('模块不存在');
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
-            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+            return self::error('用户不存在');
         }
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
-            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+            return self::error('请提供失败原因');
         }
         $country = RegionModel::find($param['country_id']);
         if (empty($country)) {
-            return self::error('表单错误' , [
-                'country_id' => '国家不存在' ,
-            ]);
+            return self::error('国家不存在');
         }
         $datetime               = current_datetime();
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];

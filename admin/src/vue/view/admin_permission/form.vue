@@ -5,7 +5,7 @@
             <div class="run-action-title">
                 <div class="left">{{ title }}</div>
                 <div class="right">
-                    <i-button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent">提交</i-button>
+                    <i-button v-ripple type="primary" :loading="val.pending.submitEvent" @click="submitEvent">提交</i-button>
                     <i-button v-ripple type="error" @click="closeFormModal">关闭</i-button>
                 </div>
             </div>
@@ -188,7 +188,7 @@
 
                     <tr>
                         <td colspan="2">
-                            <i-button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent">提交</i-button>
+                            <i-button v-ripple type="primary" :loading="val.pending.submitEvent" @click="submitEvent">提交</i-button>
                             <button v-show="false" type="submit"></button>
                         </td>
                     </tr>

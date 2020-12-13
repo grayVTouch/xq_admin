@@ -298,7 +298,7 @@ export default {
         } ,
 
         closeFormModal () {
-            if (this.pending('submit')) {
+            if (this.pending('submitEvent')) {
                 this.message('warning' , '请求中...请耐心等待');
                 return ;
             }
@@ -492,7 +492,7 @@ export default {
         } ,
 
         submitEvent () {
-            if (this.pending('submit')) {
+            if (this.pending('submitEvent')) {
                 this.message('warning' , '请求中...请耐心等待');
                 return ;
             }
@@ -511,7 +511,7 @@ export default {
                 });
             };
             const finalCallback = () => {
-                this.pending('submit' , false);
+                this.pending('submitEvent' , false);
             };
             const form = G.copy(this.form);
             form.images = G.jsonEncode(this.images);
@@ -519,7 +519,7 @@ export default {
                 return v.id;
             });
             form.tags = G.jsonEncode(form.tags);
-            this.pending('submit' , true);
+            this.pending('submitEvent' , true);
             if (this.mode === 'edit') {
                 Api.imageProject.update(form.id , form).then(thenCallback).finally(finalCallback);
                 return ;
