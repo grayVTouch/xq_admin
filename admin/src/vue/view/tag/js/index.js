@@ -120,7 +120,7 @@ export default {
 
     computed: {
         title () {
-            return this.val.mode === 'edit' ? '编辑' : '添加';
+            return this.myValue.mode === 'edit' ? '编辑' : '添加';
         } ,
 
         showBatchBtn () {
@@ -295,7 +295,7 @@ export default {
 
         edit (record) {
             this.current = record;
-            this._val('mode' , 'edit');
+            this.value('mode' , 'edit');
             this.$nextTick(() => {
                 this.$refs.form.openFormModal();
             });
@@ -314,7 +314,7 @@ export default {
         } ,
 
         addEvent () {
-            this._val('mode' , 'add');
+            this.value('mode' , 'add');
             this.$nextTick(() => {
                 this.$refs.form.openFormModal();
             });

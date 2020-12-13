@@ -153,7 +153,7 @@ export default {
                     this.errorHandle(res.message);
                     return ;
                 }
-                if (this.val.mode === 'edit') {
+                if (this.myValue.mode === 'edit') {
                     data = this.getCategoryExcludeSelfAndChildrenByIdAndData(this.form.id , data);
                 }
                 this.categories = data;
@@ -163,7 +163,7 @@ export default {
 
 
         moduleChangedEvent (moduleId) {
-            this.val.error.module_id = '';
+            this.myValue.error.module_id = '';
             this.form.p_id = 0;
             this.getCategories(moduleId);
         } ,
@@ -340,7 +340,7 @@ export default {
 
         edit (record) {
             this.current = record;
-            this._val('mode' , 'edit');
+            this.value('mode' , 'edit');
             this.$nextTick(() => {
                 this.$refs.form.openFormModal();
             });
@@ -359,7 +359,7 @@ export default {
         } ,
 
         addEvent () {
-            this._val('mode' , 'add');
+            this.value('mode' , 'add');
             this.$nextTick(() => {
                 this.$refs.form.openFormModal();
             });

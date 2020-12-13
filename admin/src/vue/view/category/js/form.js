@@ -105,7 +105,7 @@ export default {
         } ,
 
         openFormModal () {
-            this._val('show' , true);
+            this.value('show' , true);
             this.getModules();
 
             if (this.mode === 'add') {
@@ -125,7 +125,7 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return;
             }
-            this.val.show   = false;
+            this.myValue.show   = false;
             this.modules    = [];
             this.categories = [];
             this.form       = G.copy(form);
@@ -206,7 +206,7 @@ export default {
         } ,
 
         moduleChangedEvent (moduleId) {
-            this.val.error.module_id = '';
+            this.myValue.error.module_id = '';
             if (!G.isNumeric(moduleId)) {
                 return ;
             }
@@ -215,7 +215,7 @@ export default {
         } ,
 
         typeChangeEvent () {
-            this.val.error.type = '';
+            this.myValue.error.type = '';
             this.getCategories(this.form.module_id);
         } ,
 

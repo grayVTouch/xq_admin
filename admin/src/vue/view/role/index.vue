@@ -22,7 +22,7 @@
                     <div class="option">
                         <div class="field"></div>
                         <div class="value">
-                            <i-button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</i-button>
+                            <i-button v-ripple type="primary" :loading="myValue.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</i-button>
                         </div>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
                     <div class="option">
                         <div class="field"></div>
                         <div class="value">
-                            <i-button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</i-button>
+                            <i-button v-ripple type="primary" :loading="myValue.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</i-button>
                         </div>
                     </div>
 
@@ -70,7 +70,7 @@
                 <div class="run-action-title">
                     <div class="left">
                         <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
+                        <my-table-button type="error" @click="destroyAllEvent" :loading="myValue.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
                     </div>
                     <div class="right">
                         <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
@@ -85,7 +85,7 @@
                         数据列表&nbsp;&nbsp;&nbsp;
 
 <!--                        <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>-->
-<!--                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>-->
+<!--                        <my-table-button type="error" @click="destroyAllEvent" :loading="myValue.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>-->
                     </div>
                     <div class="right">
 <!--                        <Page :total="table.total" :page-size="TopContext.limit" :current="table.page" :show-total="true" :show-sizer="false" :show-elevator="true"  @on-change="pageEvent" />-->
@@ -94,11 +94,11 @@
 
                 <div class="table">
 
-                    <i-table border :loading="val.pending.getData" :height="TopContext.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectionChangeEvent">
+                    <i-table border :loading="myValue.pending.getData" :height="TopContext.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectionChangeEvent">
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
                             <my-table-button @click="allocateEvent(row)"><my-icon icon="privilege" />权限分配</my-table-button>
-                            <my-table-button type="error" :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
+                            <my-table-button type="error" :loading="myValue.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
                         </template>
                     </i-table>
 
@@ -108,31 +108,31 @@
 
             <div class="line operation">
                 <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
+                <my-table-button type="error" @click="destroyAllEvent" :loading="myValue.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
             </div>
 
             <div class="line page">
                 <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
             </div>
 
-            <my-form-modal v-model="val.modal" :title="title" :loading="val.pending.submitEvent">
+            <my-form-modal v-model="myValue.modal" :title="title" :loading="myValue.pending.submitEvent">
                 <template slot="default">
                     <form class="form" @submit.prevent="submitEvent">
                         <table class="input-table">
                             <tbody>
-                            <tr :class="{error: val.error.name}">
+                            <tr :class="{error: myValue.error.name}">
                                 <td>名称</td>
                                 <td>
-                                    <input type="text" v-model="form.name" @input="val.error.name=''" class="form-text">
+                                    <input type="text" v-model="form.name" @input="myValue.error.name=''" class="form-text">
                                     <span class="msg"></span>
                                     <span class="need">*</span>
                                     <span class="e-msg"></span>
                                 </td>
                             </tr>
-                            <tr :class="{error: val.error.weight}">
+                            <tr :class="{error: myValue.error.weight}">
                                 <td>权重</td>
                                 <td>
-                                    <input type="number" v-model="form.weight" @input="val.error.weight = ''" class="form-text">
+                                    <input type="number" v-model="form.weight" @input="myValue.error.weight = ''" class="form-text">
                                     <span class="msg">仅允许整数</span>
                                     <span class="need"></span>
                                     <span class="e-msg"></span>
@@ -148,17 +148,17 @@
                     </form>
                 </template>
                 <template slot="footer">
-                    <i-button v-ripple type="primary" :loading="val.pending.submitEvent" @click="submitEvent">确认</i-button>
+                    <i-button v-ripple type="primary" :loading="myValue.pending.submitEvent" @click="submitEvent">确认</i-button>
                     <i-button v-ripple type="error" @click="closeFormModal">关闭</i-button>
                 </template>
             </my-form-modal>
 
-            <my-form-drawer v-model="val.drawer">
+            <my-form-drawer v-model="myValue.drawer">
                 <template slot="header">
                     <div class="run-action-title">
                         <div class="left">权限分配</div>
                         <div class="right">
-                            <i-button v-ripple type="primary" :loading="val.pending.allocatePermission" @click="allocatePermission">提交</i-button>
+                            <i-button v-ripple type="primary" :loading="myValue.pending.allocatePermission" @click="allocatePermission">提交</i-button>
                             <i-button v-ripple type="error" @click="closeFormModal">关闭</i-button>
                         </div>
                     </div>

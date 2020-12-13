@@ -18,7 +18,7 @@
                             ref="table"
                             class="w-r-100"
                             border
-                            :loading="val.pending.searchUser"
+                            :loading="myValue.pending.searchUser"
                             :data="table.data"
                             :columns="table.field"
                             @on-row-click="rowClickEvent"

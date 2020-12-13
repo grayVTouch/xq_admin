@@ -31,8 +31,8 @@
                 <div class="left">
                     <my-table-button class="m-r-10" @click="addEvent"><my-icon icon="add" />添加</my-table-button>
                     <my-table-button class="m-r-10" @click="editEventByButton"><my-icon icon="edit" />编辑</my-table-button>
-                    <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
-                    <my-table-button class="m-r-10" @click="linkDiskEvent" :loading="val.pending.linkDisk"><my-icon icon="" />创建链接 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
+                    <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="myValue.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
+                    <my-table-button class="m-r-10" @click="linkDiskEvent" :loading="myValue.pending.linkDisk"><my-icon icon="" />创建链接 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
 
                 </div>
                 <div class="right">
@@ -57,18 +57,18 @@
                         :height="TopContext.table.height"
                         :columns="table.field"
                         :data="table.data"
-                        :loading="val.pending.getData"
+                        :loading="myValue.pending.getData"
                         @on-selection-change="selectionChangeEvent"
                         @on-row-click="rowClickEvent"
                         @on-row-dblclick="rowDblclickEvent"
                         @on-sort-change="sortChangeEvent"
                 >
-                    <template v-slot:is_default="{row,index}"><my-switch v-model="row.is_default" :loading="val.pending['is_default_' + row.id]" :extra="{id: row.id , field: 'is_default'}" @on-change="updateBoolValEvent" /></template>
-                    <template v-slot:is_linked="{row,index}"><my-switch v-model="row.is_linked" :loading="val.pending['is_linked_' + row.id]" :extra="{id: row.id , field: 'is_linked'}" @on-change="updateBoolValEvent" /></template>
+                    <template v-slot:is_default="{row,index}"><my-switch v-model="row.is_default" :loading="myValue.pending['is_default_' + row.id]" :extra="{id: row.id , field: 'is_default'}" @on-change="updateBoolValEvent" /></template>
+                    <template v-slot:is_linked="{row,index}"><my-switch v-model="row.is_linked" :loading="myValue.pending['is_linked_' + row.id]" :extra="{id: row.id , field: 'is_linked'}" @on-change="updateBoolValEvent" /></template>
                     <template v-slot:action="{row , index}">
                         <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑 {{ row.is_linked }}</my-table-button>
-                        <my-table-button type="error" :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
-                        <my-table-button v-if="!row.is_linked" :loading="val.pending['link_disk_' + row.id]" @click="linkDiskEvent(index , row)"><my-icon icon="shanchu" />创建链接</my-table-button>
+                        <my-table-button type="error" :loading="myValue.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
+                        <my-table-button v-if="!row.is_linked" :loading="myValue.pending['link_disk_' + row.id]" @click="linkDiskEvent(index , row)"><my-icon icon="shanchu" />创建链接</my-table-button>
                     </template>
                 </i-table>
 
@@ -79,14 +79,14 @@
         <div class="line operation">
             <my-table-button class="m-r-10" @click="addEvent"><my-icon icon="add" />添加</my-table-button>
             <my-table-button class="m-r-10" @click="editEventByButton"><my-icon icon="edit" />编辑</my-table-button>
-            <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
+            <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="myValue.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
         </div>
 
         <div class="line page">
             <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
         </div>
 
-        <my-form ref="form" :id="current.id" :mode="val.mode" @on-success="getData"></my-form>
+        <my-form ref="form" :id="current.id" :mode="myValue.mode" @on-success="getData"></my-form>
     </div>
 
 

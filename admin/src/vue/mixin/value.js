@@ -1,40 +1,40 @@
 export default {
     pending (key , val) {
         if (!G.isValid(val)) {
-            return this.val.pending[key];
+            return this.myValue.pending[key];
         }
-        this.val.pending[key] = val;
-        this.val.pending = {...this.val.pending , ...{[key]: val}};
+        this.myValue.pending[key] = val;
+        this.myValue.pending = {...this.myValue.pending , ...{[key]: val}};
     } ,
 
     error (error = {} , clear = true) {
         if (clear) {
-            this.val.error = {...error};
+            this.myValue.error = {...error};
             return ;
         }
-        this.val.error = {...this.val.error , ...error};
+        this.myValue.error = {...this.myValue.error , ...error};
     } ,
 
-    _val (key , val) {
+    setValue (key , val) {
         if (!G.isValid(val)) {
-            return this.val[key];
+            return this.value[key];
         }
-        this.val = {...this.val , ...{[key]: val}};
+        this.value = {...this.val , ...{[key]: val}};
     } ,
 
     select (key , val) {
         if (!G.isValid(val)) {
-            return this.val.select[key];
+            return this.myValue.select[key];
         }
-        this.val.select[key] = val;
-        this.val.select = {...this.val.select , ...{[key]: val}};
+        this.myValue.select[key] = val;
+        this.myValue.select = {...this.myValue.select , ...{[key]: val}};
     } ,
 
     request (name , val) {
         if (!G.isValid(val)) {
-            return this.val.request[name];
+            return this.myValue.request[name];
         }
-        this.val.request = {...this.val.request , ...{[name]: val}};
+        this.myValue.request = {...this.myValue.request , ...{[name]: val}};
     } ,
 
 };

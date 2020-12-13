@@ -36,7 +36,7 @@
                     <div class="left">
                         <my-table-button class="m-r-10" @click="addEvent"><my-icon icon="add" />添加</my-table-button>
                         <my-table-button class="m-r-10" @click="editEventByButton"><my-icon icon="edit" />编辑</my-table-button>
-                        <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
+                        <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="myValue.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
                     </div>
                     <div class="right">
                         <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
@@ -65,12 +65,12 @@
                             @on-row-dblclick="rowDblclickEvent"
                             @on-sort-change="sortChangeEvent"
                     >
-                        <template v-slot:is_enabled="{row,index}"><my-switch v-model="row.is_enabled" :loading="val.pending['is_enabled_' + row.id]" :extra="{field: 'is_enabled' , id: row.id}" @on-change="updateBoolValEvent" /></template>
-                        <template v-slot:is_default="{row,index}"><my-switch v-model="row.is_default" :loading="val.pending['is_default_' + row.id]" :extra="{field: 'is_default' , id: row.id}" @on-change="updateBoolValEvent" /></template>
-                        <template v-slot:is_auth="{row,index}"><my-switch v-model="row.auth" :loading="val.pending['is_auth_' + row.id]" :extra="{field: 'is_auth' , id: row.id}" @on-change="updateBoolValEvent" /></template>
+                        <template v-slot:is_enabled="{row,index}"><my-switch v-model="row.is_enabled" :loading="myValue.pending['is_enabled_' + row.id]" :extra="{field: 'is_enabled' , id: row.id}" @on-change="updateBoolValEvent" /></template>
+                        <template v-slot:is_default="{row,index}"><my-switch v-model="row.is_default" :loading="myValue.pending['is_default_' + row.id]" :extra="{field: 'is_default' , id: row.id}" @on-change="updateBoolValEvent" /></template>
+                        <template v-slot:is_auth="{row,index}"><my-switch v-model="row.auth" :loading="myValue.pending['is_auth_' + row.id]" :extra="{field: 'is_auth' , id: row.id}" @on-change="updateBoolValEvent" /></template>
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
-                            <my-table-button type="error" :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
+                            <my-table-button type="error" :loading="myValue.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
                         </template>
                     </i-table>
 
@@ -81,14 +81,14 @@
             <div class="line operation">
                 <my-table-button class="m-r-10" @click="addEvent"><my-icon icon="add" />添加</my-table-button>
                 <my-table-button class="m-r-10" @click="editEventByButton"><my-icon icon="edit" />编辑</my-table-button>
-                <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
+                <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="myValue.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
             </div>
 
             <div class="line page">
                 <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
             </div>
 
-            <my-form ref="form" :id="current.id" :mode="val.mode" @on-success="getData"></my-form>
+            <my-form ref="form" :id="current.id" :mode="myValue.mode" @on-success="getData"></my-form>
 
         </div>
 </template>

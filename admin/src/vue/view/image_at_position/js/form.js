@@ -129,7 +129,7 @@ export default {
         } ,
 
         openFormModal () {
-            this.val.show = true;
+            this.myValue.show = true;
             this.getModules();
             this.getPositions();
 
@@ -149,7 +149,7 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return;
             }
-            this.val.show   = false;
+            this.myValue.show   = false;
             this.positions  = [];
             this.form       = G.copy(form);
             this.ins.src.clearAll();

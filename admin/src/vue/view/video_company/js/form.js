@@ -126,7 +126,7 @@ export default {
         } ,
 
         openFormModal () {
-            this._val('show' , true);
+            this.value('show' , true);
             this.getModules();
 
             if (this.mode === 'add') {
@@ -148,7 +148,7 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return;
             }
-            this.val.show   = false;
+            this.myValue.show   = false;
             this.modules    = [];
             this.form       = G.copy(form);
             this.owner      = G.copy(owner);

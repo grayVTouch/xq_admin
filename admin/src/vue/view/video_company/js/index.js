@@ -320,7 +320,7 @@ export default {
 
         edit (record) {
             this.current = record;
-            this._val('mode' , 'edit');
+            this.value('mode' , 'edit');
             this.$nextTick(() => {
                 this.$refs.form.openFormModal();
             });
@@ -339,7 +339,7 @@ export default {
         } ,
 
         addEvent () {
-            this._val('mode' , 'add');
+            this.value('mode' , 'add');
             this.$nextTick(() => {
                 this.$refs.form.openFormModal();
             });

@@ -313,7 +313,7 @@ export default {
         } ,
 
         openFormModal () {
-            this.val.show = true;
+            this.myValue.show = true;
             this.getModules();
             // console.log(this.mode , '编辑模式');
             if (this.mode === 'edit') {
@@ -335,8 +335,8 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return ;
             }
-            this.val.show = false;
-            this.val.tab = 'base';
+            this.myValue.show = false;
+            this.myValue.tab = 'base';
 
             this.ins.thumb.clearAll();
             this.ins.video.clearAll();

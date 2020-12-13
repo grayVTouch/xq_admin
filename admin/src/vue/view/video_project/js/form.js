@@ -147,7 +147,7 @@ export default {
 
         // 模块发生变化的时候
         moduleChanged () {
-            this.val.error.module_id = '';
+            this.myValue.error.module_id = '';
             this.form.video_series_id = '';
             this.form.video_company_id = '';
             this.form.video_series = G.copy(videoSeries);
@@ -239,7 +239,7 @@ export default {
         } ,
 
         openFormModal () {
-            this.val.show = true;
+            this.myValue.show = true;
             this.getModules();
             if (this.mode === 'edit') {
                 this.findById(this.id)
@@ -261,7 +261,7 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return;
             }
-            this.val.show = false;
+            this.myValue.show = false;
             // 清除所有错误信息
             this.error();
             this.ins.thumb.clearAll();
@@ -362,7 +362,7 @@ export default {
         } ,
 
         createOrAppendTag () {
-            this.val.error.tags = '';
+            this.myValue.error.tags = '';
             const name = this.dom.tagInput.text().replace(/\s/g , '');
             this.dom.tagInput.html(name);
             if (!G.isValid(name)) {

@@ -1,9 +1,9 @@
 <template>
     <div>
         <my-form-modal
-                v-model="val.show"
+                v-model="myValue.show"
                 :title="title"
-                :loading="val.pending.submitEvent"
+                :loading="myValue.pending.submitEvent"
                 @on-ok="submitEvent"
                 @on-cancel="closeFormModal"
         >
@@ -11,17 +11,17 @@
                 <form class="form" @submit.prevent="submitEvent" ref="form">
                     <table class="input-table">
                         <tbody>
-                        <tr :class="{error: val.error.name}">
+                        <tr :class="{error: myValue.error.name}">
                             <td>名称</td>
                             <td>
-                                <input type="text" v-model="form.name"  @input="val.error.name = ''" class="form-text">
+                                <input type="text" v-model="form.name"  @input="myValue.error.name = ''" class="form-text">
                                 <span class="need">*</span>
                                 <div class="msg"></div>
-                                <div class="e-msg">{{ val.error.name }}</div>
+                                <div class="e-msg">{{ myValue.error.name }}</div>
                             </td>
                         </tr>
 
-                        <tr :class="{error: val.error.user_id}">
+                        <tr :class="{error: myValue.error.user_id}">
                             <td>所属用户：</td>
                             <td>
                                 <input type="text" readonly="readonly" :value="`${owner.username}【${owner.id}】`" class="form-text w-150 run-cursor-not-allow">
@@ -29,11 +29,11 @@
                                 <i-button @click="showUserSelector">搜索</i-button>
                                 <span class="need">*</span>
                                 <div class="msg"></div>
-                                <div class="e-msg">{{ val.error.user_id }}</div>
+                                <div class="e-msg">{{ myValue.error.user_id }}</div>
                             </td>
                         </tr>
 
-                        <tr :class="{error: val.error.type}">
+                        <tr :class="{error: myValue.error.type}">
                             <td>类型：</td>
                             <td>
                                 <i-select v-model="form.type" :style="`width: ${TopContext.style.inputItemW}px`" @on-change="typeChangeEvent">
@@ -41,54 +41,54 @@
                                 </i-select>
                                 <span class="msg"></span>
                                 <span class="need">*</span>
-                                <span class="e-msg">{{ val.error.type }}</span>
+                                <span class="e-msg">{{ myValue.error.type }}</span>
                             </td>
                         </tr>
 
-                        <tr :class="{error: val.error.module_id}">
+                        <tr :class="{error: myValue.error.module_id}">
                             <td>所属模块</td>
                             <td>
                                 <my-select :data="modules" v-model="form.module_id" @change="moduleChangedEvent" :width="TopContext.style.inputItemW"></my-select>
                                 <span class="need">*</span>
                                 <div class="msg"></div>
-                                <div class="e-msg">{{ val.error.module_id }}</div>
+                                <div class="e-msg">{{ myValue.error.module_id }}</div>
                             </td>
                         </tr>
 
-                        <tr :class="{error: val.error.p_id}">
+                        <tr :class="{error: myValue.error.p_id}">
                             <td>上级分类</td>
                             <td>
-                                <my-deep-select :data="categories" v-model="form.p_id" :has="true" :attr="val.attr"  @change="val.error.p_id = ''" :width="TopContext.style.inputItemW"></my-deep-select>
-                                <my-loading v-if="val.pending.getCategories"></my-loading>
+                                <my-deep-select :data="categories" v-model="form.p_id" :has="true" :attr="myValue.attr"  @change="myValue.error.p_id = ''" :width="TopContext.style.inputItemW"></my-deep-select>
+                                <my-loading v-if="myValue.pending.getCategories"></my-loading>
                                 <span class="need">*</span>
                                 <div class="msg">请务必选择模块、类型后操作</div>
-                                <div class="e-msg">{{ val.error.p_id }}</div>
+                                <div class="e-msg">{{ myValue.error.p_id }}</div>
                             </td>
                         </tr>
 
-                        <tr :class="{error: val.error.description}">
+                        <tr :class="{error: myValue.error.description}">
                             <td>描述</td>
                             <td>
-                                <textarea v-model="form.description" class="form-textarea" @input="val.error.description = ''"></textarea>
+                                <textarea v-model="form.description" class="form-textarea" @input="myValue.error.description = ''"></textarea>
                                 <span class="msg"></span>
                                 <span class="need"></span>
-                                <span class="e-msg">{{ val.error.description }}</span>
+                                <span class="e-msg">{{ myValue.error.description }}</span>
                             </td>
                         </tr>
 
-                        <tr :class="{error: val.error.enable}">
+                        <tr :class="{error: myValue.error.enable}">
                             <td>启用？</td>
                             <td>
-                                <i-radio-group v-model="form.is_enabled"  @input="val.error.is_enabled = ''">
+                                <i-radio-group v-model="form.is_enabled"  @input="myValue.error.is_enabled = ''">
                                     <i-radio v-for="(v,k) in TopContext.business.bool.integer" :key="k" :label="parseInt(k)">{{ v }}</i-radio>
                                 </i-radio-group>
                                 <span class="msg">默认：开启</span>
                                 <span class="need">*</span>
-                                <span class="e-msg">{{ val.error.is_enabled }}</span>
+                                <span class="e-msg">{{ myValue.error.is_enabled }}</span>
                             </td>
                         </tr>
 
-                        <tr :class="{error: val.error.status}">
+                        <tr :class="{error: myValue.error.status}">
                             <td>状态</td>
                             <td>
                                 <i-radio-group v-model="form.status">
@@ -96,27 +96,27 @@
                                 </i-radio-group>
                                 <span class="need">*</span>
                                 <div class="msg">默认：待审核</div>
-                                <div class="e-msg">{{ val.error.status }}</div>
+                                <div class="e-msg">{{ myValue.error.status }}</div>
                             </td>
                         </tr>
 
-                        <tr :class="{error: val.error.fail_reason}" v-show="form.status === -1">
+                        <tr :class="{error: myValue.error.fail_reason}" v-show="form.status === -1">
                             <td>失败原因</td>
                             <td>
-                                <textarea v-model="form.fail_reason" class="form-textarea" @input="val.error.fail_reason = ''"></textarea>
+                                <textarea v-model="form.fail_reason" class="form-textarea" @input="myValue.error.fail_reason = ''"></textarea>
                                 <span class="need">*</span>
                                 <div class="msg">当状态为审核失败的时候必填</div>
-                                <div class="e-msg">{{ val.error.fail_reason }}</div>
+                                <div class="e-msg">{{ myValue.error.fail_reason }}</div>
                             </td>
                         </tr>
 
-                        <tr :class="{error: val.error.weight}">
+                        <tr :class="{error: myValue.error.weight}">
                             <td>权重</td>
                             <td>
-                                <input type="number" class="form-text"  @input="val.error.weight = ''" v-model="form.weight">
+                                <input type="number" class="form-text"  @input="myValue.error.weight = ''" v-model="form.weight">
                                 <span class="msg">请提供整数</span>
                                 <span class="need"></span>
-                                <span class="e-msg">{{ val.error.weight }}</span>
+                                <span class="e-msg">{{ myValue.error.weight }}</span>
                             </td>
                         </tr>
 
@@ -131,7 +131,7 @@
                 </form>
             </template>
             <template slot="footer">
-                <i-button v-ripple type="primary" :loading="val.pending.submitEvent" @click="submitEvent">确认</i-button>
+                <i-button v-ripple type="primary" :loading="myValue.pending.submitEvent" @click="submitEvent">确认</i-button>
                 <i-button v-ripple type="error" @click="closeFormModal">关闭</i-button>
             </template>
         </my-form-modal>

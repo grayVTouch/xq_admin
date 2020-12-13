@@ -109,25 +109,25 @@ export default {
         } ,
 
         initValue () {
-            this.val.menuInnerW = this.dom.menuInner.width('border-box');
-            this.val.menuMinW = parseInt(this.dom.menu.getStyleVal('min-width'));
-            this.val.avatarW = this.dom.avatar.width('border-box');
-            this.val.avatarH = this.dom.avatar.height('border-box');
-            this.val.topNavH = this.dom.topNav.height('border-box');
-            this.val.btmNavH = this.dom.btmNav.height('border-box');
-            // this.val.infoH = this.dom.info.height('border-box');
+            this.myValue.menuInnerW = this.dom.menuInner.width('border-box');
+            this.myValue.menuMinW = parseInt(this.dom.menu.getStyleVal('min-width'));
+            this.myValue.avatarW = this.dom.avatar.width('border-box');
+            this.myValue.avatarH = this.dom.avatar.height('border-box');
+            this.myValue.topNavH = this.dom.topNav.height('border-box');
+            this.myValue.btmNavH = this.dom.btmNav.height('border-box');
+            // this.myValue.infoH = this.dom.info.height('border-box');
 
-            this.val.title = document.title;
+            this.myValue.title = document.title;
         } ,
 
         fixBtmNav () {
             let y = this.dom.view.scrollTop();
-            this.val.fixedNavigation = !(0 <= y && y < this.val.btmNavH);
+            this.myValue.fixedNavigation = !(0 <= y && y < this.myValue.btmNavH);
         } ,
 
         initArea () {
             const maxH = document.documentElement.clientHeight;
-            let areaH = maxH - this.val.navH;
+            let areaH = maxH - this.myValue.navH;
             this.dom.area.css({
                 height: areaH + 'px'
             });
@@ -203,13 +203,13 @@ export default {
                 deleted (tabId , tab) {
                     const index = self.findTabIndexByTabId(tabId);
                     self.tabs.splice(index , 1);
-                    if (self.val.tabId === tabId) {
-                        self._val('tabId' , '');
+                    if (self.myValue.tabId === tabId) {
+                        self.setValue('tabId' , '');
                     }
                 } ,
 
                 focus (tabId) {
-                    self._val('tabId' , tabId);
+                    self.setValue('tabId' , tabId);
                     const tab = self.findTabByTabId(tabId);
                     self.initPositions(tab.routeId);
                     self.pushByRouteId(tab.routeId);
@@ -321,7 +321,7 @@ export default {
         // 新开一个标签页
         createTab (routeId) {
             const route = this.findRouteById(routeId);
-            document.title = route.cn + '-' + this.val.title;
+            document.title = route.cn + '-' + this.myValue.title;
             if (TopContext.config.reuseTab) {
                 // 标签复用
                 const tab = this.findTabByRouteId(routeId);

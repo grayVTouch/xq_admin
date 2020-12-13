@@ -91,7 +91,7 @@ export default {
         } ,
 
         openFormModal () {
-            this._val('show' , true);
+            this.value('show' , true);
             this.getRoles();
 
             if (this.mode === 'add') {
@@ -102,7 +102,7 @@ export default {
             this.findById(this.id).then(() => {
                 // 做一些额外处理
                 this.ins.avatar.render(this.form.avatar);
-                this._val('birthday' , this.form.birthday);
+                this.value('birthday' , this.form.birthday);
             });
         } ,
 
@@ -111,8 +111,8 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return;
             }
-            this._val('show' , false);
-            this._val('birthday' , '');
+            this.value('show' , false);
+            this.value('birthday' , '');
             this.form = G.copy(form);
             this.ins.avatar.clearAll();
         } ,
@@ -130,7 +130,7 @@ export default {
         } ,
 
         birthdayChangeEvent (date) {
-            this.val.birthday = date;
+            this.myValue.birthday = date;
         } ,
 
         filter () {
@@ -153,7 +153,7 @@ export default {
         submitEvent () {
             const self = this;
             this.pending('submitEvent' , true);
-            this.form.birthday = this.val.birthday;
+            this.form.birthday = this.myValue.birthday;
             const filterRes = this.filter();
             if (!filterRes.status) {
                 this.error(filterRes.error , true);

@@ -21,7 +21,7 @@
                         <div class="field">模块：</div>
                         <div class="value">
                             <my-select :data="modules" empty="" v-model="search.module_id"></my-select>
-                            <my-loading v-if="val.pending.getModules"></my-loading>
+                            <my-loading v-if="myValue.pending.getModules"></my-loading>
                         </div>
                     </div>
 
@@ -43,7 +43,7 @@
                 <div class="left">
                     <my-table-button class="m-r-10" @click="addEvent"><my-icon icon="add" />添加</my-table-button>
 <!--                    <my-table-button class="m-r-10" @click="editEventByButton"><my-icon icon="edit" />编辑</my-table-button>-->
-<!--                    <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>-->
+<!--                    <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="myValue.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>-->
 
                 </div>
                 <div class="right">
@@ -68,7 +68,7 @@
                         :height="TopContext.table.height"
                         :columns="table.field"
                         :data="table.data"
-                        :loading="val.pending.getData"
+                        :loading="myValue.pending.getData"
                         @on-selection-change="selectionChangeEvent"
                         @on-row-click="rowClickEvent"
                         @on-row-dblclick="rowDblclickEvent"
@@ -84,7 +84,7 @@
         <div class="line operation">
             <my-table-button class="m-r-10" @click="addEvent"><my-icon icon="add" />添加</my-table-button>
 <!--            <my-table-button class="m-r-10" @click="editEventByButton"><my-icon icon="edit" />编辑</my-table-button>-->
-<!--            <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>-->
+<!--            <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="myValue.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>-->
 
         </div>
 
@@ -92,7 +92,7 @@
             <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
         </div>
 
-        <my-form ref="form" :id="current.id" :mode="val.mode" @on-success="getData"></my-form>
+        <my-form ref="form" :id="current.id" :mode="myValue.mode" @on-success="getData"></my-form>
     </div>
 </template>
 

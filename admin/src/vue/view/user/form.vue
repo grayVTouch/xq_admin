@@ -1,8 +1,8 @@
 <template>
     <my-form-modal
-            v-model="val.show"
+            v-model="myValue.show"
             :title="title"
-            :loading="val.pending.submitEvent"
+            :loading="myValue.pending.submitEvent"
             @on-ok="submitEvent"
             @on-cancel="closeFormModal"
     >
@@ -11,27 +11,27 @@
                 <table class="input-table">
                     <tbody>
 
-                    <tr :class="{error: val.error.username}">
+                    <tr :class="{error: myValue.error.username}">
                         <td>名称</td>
                         <td>
-                            <input type="text" v-model="form.username" @input="val.error.username=''" class="form-text">
+                            <input type="text" v-model="form.username" @input="myValue.error.username=''" class="form-text">
                             <span class="need">*</span>
                             <div class="msg"></div>
-                            <div class="e-msg">{{ val.error.username }}</div>
+                            <div class="e-msg">{{ myValue.error.username }}</div>
                         </td>
                     </tr>
 
-                    <tr :class="{error: val.error.password}">
+                    <tr :class="{error: myValue.error.password}">
                         <td>密码</td>
                         <td>
-                            <input type="text" v-model="form.password" @input="val.error.password=''" class="form-text">
+                            <input type="text" v-model="form.password" @input="myValue.error.password=''" class="form-text">
                             <span class="need"></span>
                             <div class="msg">为空，则使用原密码</div>
-                            <div class="e-msg">{{ val.error.password }}</div>
+                            <div class="e-msg">{{ myValue.error.password }}</div>
                         </td>
                     </tr>
 
-                    <tr :class="{error: val.error.avatar}">
+                    <tr :class="{error: myValue.error.avatar}">
                         <td>封面</td>
                         <td>
                             <div ref="avatar">
@@ -63,11 +63,11 @@
 
                             <span class="need"></span>
                             <div class="msg"></div>
-                            <div class="e-msg">{{ val.error.thumb }}</div>
+                            <div class="e-msg">{{ myValue.error.thumb }}</div>
                         </td>
                     </tr>
 
-                    <tr :class="{error: val.error.sex}">
+                    <tr :class="{error: myValue.error.sex}">
                         <td>性别</td>
                         <td>
                             <i-radio-group v-model="form.sex">
@@ -75,37 +75,37 @@
                             </i-radio-group>
                             <span class="need">*</span>
                             <div class="msg"></div>
-                            <div class="e-msg">{{ val.error.sex }}</div>
+                            <div class="e-msg">{{ myValue.error.sex }}</div>
                         </td>
                     </tr>
 
-                    <tr :class="{error: val.error.birthday}">
+                    <tr :class="{error: myValue.error.birthday}">
                         <td>生日</td>
                         <td>
-                            <i-date-picker v-model="val.birthday" type="date" class="iview-form-input" @on-change="birthdayChangeEvent"></i-date-picker>
+                            <i-date-picker v-model="myValue.birthday" type="date" class="iview-form-input" @on-change="birthdayChangeEvent"></i-date-picker>
                             <span class="need"></span>
                             <div class="msg"></div>
-                            <div class="e-msg">{{ val.error.birthday }}</div>
+                            <div class="e-msg">{{ myValue.error.birthday }}</div>
                         </td>
                     </tr>
 
-                    <tr :class="{error: val.error.phone}">
+                    <tr :class="{error: myValue.error.phone}">
                         <td>手机号码</td>
                         <td>
-                            <input type="text" v-model="form.phone" @input="val.error.phone=''" class="form-text">
+                            <input type="text" v-model="form.phone" @input="myValue.error.phone=''" class="form-text">
                             <span class="need"></span>
                             <div class="msg"></div>
-                            <div class="e-msg">{{ val.error.phone }}</div>
+                            <div class="e-msg">{{ myValue.error.phone }}</div>
                         </td>
                     </tr>
 
-                    <tr :class="{error: val.error.email}">
+                    <tr :class="{error: myValue.error.email}">
                         <td>电子邮件</td>
                         <td>
-                            <input type="text" v-model="form.email" @input="val.error.email=''" class="form-text">
+                            <input type="text" v-model="form.email" @input="myValue.error.email=''" class="form-text">
                             <span class="need"></span>
                             <div class="msg"></div>
-                            <div class="e-msg">{{ val.error.email }}</div>
+                            <div class="e-msg">{{ myValue.error.email }}</div>
                         </td>
                     </tr>
 
@@ -120,7 +120,7 @@
             </form>
         </template>
         <template slot="footer">
-            <i-button v-ripple type="primary" :loading="val.pending.submitEvent" @click="submitEvent">确认</i-button>
+            <i-button v-ripple type="primary" :loading="myValue.pending.submitEvent" @click="submitEvent">确认</i-button>
             <i-button v-ripple type="error" @click="closeFormModal">关闭</i-button>
         </template>
     </my-form-modal>

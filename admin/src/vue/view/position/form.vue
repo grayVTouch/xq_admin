@@ -1,9 +1,9 @@
 <template>
     <div>
         <my-form-modal
-                v-model="val.show"
+                v-model="myValue.show"
                 :title="title"
-                :loading="val.pending.submitEvent"
+                :loading="myValue.pending.submitEvent"
                 @on-ok="submitEvent"
                 @on-cancel="closeFormModal"
         >
@@ -11,25 +11,25 @@
                 <form class="form" @submit.prevent="submitEvent">
                     <table class="input-table">
                         <tbody>
-                        <tr :class="{error: val.error.value}">
+                        <tr :class="{error: myValue.error.value}">
                             <td>位置</td>
                             <td>
-                                <input type="text" v-model="form.value" @input="val.error.value=''" class="form-text">
+                                <input type="text" v-model="form.value" @input="myValue.error.value=''" class="form-text">
                                 <span class="need">*</span>
                                 <div class="msg"></div>
-                                <div class="e-msg">{{ val.error.value }}</div>
+                                <div class="e-msg">{{ myValue.error.value }}</div>
                             </td>
                         </tr>
-                        <tr :class="{error: val.error.name}">
+                        <tr :class="{error: myValue.error.name}">
                             <td>名称</td>
                             <td>
-                                <input type="text" v-model="form.name" @input="val.error.name=''" class="form-text">
+                                <input type="text" v-model="form.name" @input="myValue.error.name=''" class="form-text">
                                 <span class="need">*</span>
                                 <div class="msg"></div>
-                                <div class="e-msg">{{ val.error.name }}</div>
+                                <div class="e-msg">{{ myValue.error.name }}</div>
                             </td>
                         </tr>
-                        <tr :class="{error: val.error.platform}">
+                        <tr :class="{error: myValue.error.platform}">
                             <td>所属平台</td>
                             <td>
                                 <i-select v-model="form.platform" :style="`width: ${TopContext.style.inputItemW}px`">
@@ -37,16 +37,16 @@
                                 </i-select>
                                 <span class="need">*</span>
                                 <div class="msg"></div>
-                                <div class="e-msg">{{ val.error.platform }}</div>
+                                <div class="e-msg">{{ myValue.error.platform }}</div>
                             </td>
                         </tr>
-                        <tr :class="{error: val.error.description}">
+                        <tr :class="{error: myValue.error.description}">
                             <td>描述</td>
                             <td>
-                                <textarea v-model="form.description" class="form-textarea" @input="val.error.description = ''"></textarea>
+                                <textarea v-model="form.description" class="form-textarea" @input="myValue.error.description = ''"></textarea>
                                 <span class="need"></span>
                                 <div class="msg"></div>
-                                <div class="e-msg">{{ val.error.description }}</div>
+                                <div class="e-msg">{{ myValue.error.description }}</div>
                             </td>
                         </tr>
 
@@ -61,7 +61,7 @@
                 </form>
             </template>
             <template slot="footer">
-                <i-button v-ripple type="primary" :loading="val.pending.submitEvent" @click="submitEvent">确认</i-button>
+                <i-button v-ripple type="primary" :loading="myValue.pending.submitEvent" @click="submitEvent">确认</i-button>
                 <i-button v-ripple type="error" @click="closeFormModal">关闭</i-button>
             </template>
         </my-form-modal>

@@ -54,7 +54,7 @@ const table = {
 export default {
     computed: {
         title () {
-            return this.val.mode === 'edit' ? '编辑' : '添加';
+            return this.myValue.mode === 'edit' ? '编辑' : '添加';
         } ,
     } ,
 
@@ -173,7 +173,7 @@ export default {
             if (!G.isNumeric(moduleId)) {
                 return ;
             }
-            this.val.error.module_id = '';
+            this.myValue.error.module_id = '';
             this.form.category_id = '';
             this.form.image_subject_id = '';
             this.form.image_subject_id = '';
@@ -294,7 +294,7 @@ export default {
                     this.imageSubject   = this.form.image_subject ? this.form.image_subject: G.copy(imageSubject);
                 });
             }
-            this.val.show = true;
+            this.myValue.show = true;
         } ,
 
         closeFormModal () {
@@ -303,7 +303,7 @@ export default {
                 return ;
             }
             // debugger
-            this.val.show = false;
+            this.myValue.show = false;
             this.ins.thumb.clearAll();
             this.ins.images.clearAll();
             this.form           = G.copy(form);
@@ -315,7 +315,7 @@ export default {
             this.imageSubject  = G.copy(imageSubject);
             this.owner          = G.copy(owner);
             this.table          = G.copy(table);
-            this._val('tab' , 'base');
+            this.value('tab' , 'base');
         } ,
 
         destroy (id , callback) {
@@ -461,7 +461,7 @@ export default {
         } ,
 
         createOrAppendTag () {
-            this.val.error.tags = '';
+            this.myValue.error.tags = '';
             const name = this.dom.tagInput.text().replace(/\s/g , '');
             this.dom.tagInput.html(name);
             if (!G.isValid(name)) {

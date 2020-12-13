@@ -30,7 +30,7 @@
                             <div class="field">模块：</div>
                             <div class="value">
                                 <my-select :data="modules" v-model="search.module_id" empty="" @change="getCategories"></my-select>
-                                <my-loading v-if="val.pending.getModules"></my-loading>
+                                <my-loading v-if="myValue.pending.getModules"></my-loading>
                             </div>
                         </div>
 
@@ -38,7 +38,7 @@
                             <div class="field">分类：</div>
                             <div class="value">
                                 <my-deep-select :data="categories" v-model="search.category_id" :has="false" empty=""></my-deep-select>
-                                <my-loading v-if="val.pending.getCategories"></my-loading>
+                                <my-loading v-if="myValue.pending.getCategories"></my-loading>
                                 <span class="msg">请选择模块后操作</span>
                             </div>
                         </div>
@@ -84,8 +84,8 @@
                 <div class="run-action-title">
                     <div class="left">
                         <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
-                        <my-table-button @click="retryProcessVideosEvent" :loading="val.pending.retryProcessVideos"><my-icon icon="reset" />重新处理 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
+                        <my-table-button type="error" @click="destroyAllEvent" :loading="myValue.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
+                        <my-table-button @click="retryProcessVideosEvent" :loading="myValue.pending.retryProcessVideos"><my-icon icon="reset" />重新处理 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
                     </div>
                     <div class="right">
                         <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
@@ -109,7 +109,7 @@
                             :height="TopContext.table.height"
                             :columns="table.field"
                             :data="table.data"
-                            :loading="val.pending.getData"
+                            :loading="myValue.pending.getData"
                             @on-selection-change="selectionChangeEvent"
                             @on-row-click="rowClickEvent"
                             @on-row-dblclick="rowDblclickEvent"
@@ -146,8 +146,8 @@
                         </template>
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
-                            <my-table-button @click="retryProcessVideoEvent(row)" :loading="val.pending['retry_' + row.id]" v-if="row.process_status === -1"><my-icon icon="reset" />重新处理</my-table-button>
-                            <my-table-button type="error" :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
+                            <my-table-button @click="retryProcessVideoEvent(row)" :loading="myValue.pending['retry_' + row.id]" v-if="row.process_status === -1"><my-icon icon="reset" />重新处理</my-table-button>
+                            <my-table-button type="error" :loading="myValue.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
                         </template>
                     </i-table>
 
@@ -157,8 +157,8 @@
 
             <div class="line operation">
                 <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
-                <my-table-button @click="retryProcessVideosEvent" :loading="val.pending.retryProcessVideos"><my-icon icon="reset" />重新处理 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
+                <my-table-button type="error" @click="destroyAllEvent" :loading="myValue.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
+                <my-table-button @click="retryProcessVideosEvent" :loading="myValue.pending.retryProcessVideos"><my-icon icon="reset" />重新处理 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
             </div>
 
             <div class="line page">
@@ -166,7 +166,7 @@
                 <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
             </div>
 
-            <my-form ref="form" :id="current.id" :mode="val.mode" @on-success="getData"></my-form>
+            <my-form ref="form" :id="current.id" :mode="myValue.mode" @on-success="getData"></my-form>
 
         </div>
 </template>

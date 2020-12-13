@@ -14,7 +14,7 @@ export default {
 
     computed: {
         title () {
-            return this.val.mode === 'edit' ? '编辑' : '添加';
+            return this.myValue.mode === 'edit' ? '编辑' : '添加';
         } ,
     } ,
 
@@ -137,7 +137,7 @@ export default {
         } ,
 
         openFormModal () {
-            this._val('drawer' , true);
+            this.value('drawer' , true);
             this.getPermissions(() => {
                 if (this.mode === 'edit') {
                     this.permissions = this.getPermissionExcludeSelfAndChildrenById(this.form.id);
@@ -150,7 +150,7 @@ export default {
                 this.message('warning' ,'请求中...请耐心等待');
                 return ;
             }
-            this._val('drawer' , false);
+            this.value('drawer' , false);
             this.permissions = [];
             this.form = G.copy(form);
             this.ins.sIco.clearAll();

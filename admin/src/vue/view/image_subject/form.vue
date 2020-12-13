@@ -1,9 +1,9 @@
 <template>
     <div>
         <my-form-drawer
-                v-model="val.show"
+                v-model="myValue.show"
                 :title="title"
-                :loading="val.pending.submitEvent"
+                :loading="myValue.pending.submitEvent"
                 @on-ok="submitEvent"
                 @on-cancel="closeFormModal"
         >
@@ -11,7 +11,7 @@
             <div class="run-action-title" slot="header">
                 <div class="left">{{ title }}</div>
                 <div class="right">
-                    <i-button v-ripple type="primary" :loading="val.pending.submitEvent" @click="submitEvent"><my-icon icon="tijiao" />提交</i-button>
+                    <i-button v-ripple type="primary" :loading="myValue.pending.submitEvent" @click="submitEvent"><my-icon icon="tijiao" />提交</i-button>
                     <i-button v-ripple type="error" @click="closeFormModal"><my-icon icon="guanbi" />关闭</i-button>
                 </div>
             </div>
@@ -20,17 +20,17 @@
                 <table class="input-table">
                     <tbody>
 
-                    <tr :class="{error: val.error.name}">
+                    <tr :class="{error: myValue.error.name}">
                         <td>名称</td>
                         <td>
-                            <input type="text" v-model="form.name" @input="val.error.name=''" class="form-text">
+                            <input type="text" v-model="form.name" @input="myValue.error.name=''" class="form-text">
                             <span class="need">*</span>
                             <div class="msg"></div>
-                            <div class="e-msg">{{ val.error.name }}</div>
+                            <div class="e-msg">{{ myValue.error.name }}</div>
                         </td>
                     </tr>
 
-                    <tr :class="{error: val.error.user_id}">
+                    <tr :class="{error: myValue.error.user_id}">
                         <td>所属用户：</td>
                         <td>
                             <input type="text" readonly="readonly" :value="`${owner.username}【${owner.id}】`" class="form-text w-150 run-cursor-not-allow">
@@ -38,21 +38,21 @@
                             <i-button @click="showUserSelector">搜索</i-button>
                             <span class="need">*</span>
                             <div class="msg"></div>
-                            <div class="e-msg">{{ val.error.user_id }}</div>
+                            <div class="e-msg">{{ myValue.error.user_id }}</div>
                         </td>
                     </tr>
 
-                    <tr :class="{error: val.error.module_id}">
+                    <tr :class="{error: myValue.error.module_id}">
                         <td>所属模块</td>
                         <td>
-                            <my-select :width="TopContext.style.inputItemW" :data="modules" v-model="form.module_id" @change="val.error.module_id = ''"></my-select>
+                            <my-select :width="TopContext.style.inputItemW" :data="modules" v-model="form.module_id" @change="myValue.error.module_id = ''"></my-select>
                             <span class="need">*</span>
                             <div class="msg"></div>
-                            <div class="e-msg">{{ val.error.module_id }}</div>
+                            <div class="e-msg">{{ myValue.error.module_id }}</div>
                         </td>
                     </tr>
 
-                    <tr :class="{error: val.error.thumb}">
+                    <tr :class="{error: myValue.error.thumb}">
                         <td>封面</td>
                         <td>
                             <div ref="thumb">
@@ -84,11 +84,11 @@
 
                             <span class="need"></span>
                             <div class="msg"></div>
-                            <div class="e-msg">{{ val.error.thumb }}</div>
+                            <div class="e-msg">{{ myValue.error.thumb }}</div>
                         </td>
                     </tr>
 
-                    <tr :class="{error: val.error.attr}">
+                    <tr :class="{error: myValue.error.attr}">
                         <td>属性</td>
                         <td>
                             <div class="attr">
@@ -115,21 +115,21 @@
                             </div>
                             <span class="need"></span>
                             <div class="msg"></div>
-                            <div class="e-msg">{{ val.error.attr }}</div>
+                            <div class="e-msg">{{ myValue.error.attr }}</div>
                         </td>
                     </tr>
 
-                    <tr :class="{error: val.error.description}">
+                    <tr :class="{error: myValue.error.description}">
                         <td>描述</td>
                         <td>
-                            <textarea v-model="form.description" @input="val.error.description=''" class="form-textarea"></textarea>
+                            <textarea v-model="form.description" @input="myValue.error.description=''" class="form-textarea"></textarea>
                             <span class="need"></span>
                             <div class="msg"></div>
-                            <div class="e-msg">{{ val.error.description }}</div>
+                            <div class="e-msg">{{ myValue.error.description }}</div>
                         </td>
                     </tr>
 
-                    <tr :class="{error: val.error.status}">
+                    <tr :class="{error: myValue.error.status}">
                         <td>状态</td>
                         <td>
                             <i-radio-group v-model="form.status">
@@ -137,33 +137,33 @@
                             </i-radio-group>
                             <span class="need">*</span>
                             <div class="msg">默认：待审核</div>
-                            <div class="e-msg">{{ val.error.status }}</div>
+                            <div class="e-msg">{{ myValue.error.status }}</div>
                         </td>
                     </tr>
 
-                    <tr :class="{error: val.error.fail_reason}" v-show="form.status === -1">
+                    <tr :class="{error: myValue.error.fail_reason}" v-show="form.status === -1">
                         <td>失败原因</td>
                         <td>
-                            <textarea v-model="form.fail_reason" class="form-textarea" @input="val.error.fail_reason = ''"></textarea>
+                            <textarea v-model="form.fail_reason" class="form-textarea" @input="myValue.error.fail_reason = ''"></textarea>
                             <span class="need">*</span>
                             <div class="msg">当状态为审核失败的时候必填</div>
-                            <div class="e-msg">{{ val.error.fail_reason }}</div>
+                            <div class="e-msg">{{ myValue.error.fail_reason }}</div>
                         </td>
                     </tr>
 
-                    <tr :class="{error: val.error.weight}">
+                    <tr :class="{error: myValue.error.weight}">
                         <td>权重</td>
                         <td>
-                            <input type="number" v-model="form.weight" @input="val.error.weight = ''" class="form-text">
+                            <input type="number" v-model="form.weight" @input="myValue.error.weight = ''" class="form-text">
                             <span class="need"></span>
                             <div class="msg">仅允许整数</div>
-                            <div class="e-msg">{{ val.error.thumb }}</div>
+                            <div class="e-msg">{{ myValue.error.thumb }}</div>
                         </td>
                     </tr>
 
                     <tr>
                         <td colspan="2">
-                            <i-button v-ripple type="primary" :loading="val.pending.submitEvent" @click="submitEvent"><my-icon icon="tijiao" />提交</i-button>
+                            <i-button v-ripple type="primary" :loading="myValue.pending.submitEvent" @click="submitEvent"><my-icon icon="tijiao" />提交</i-button>
                             <button v-show="false" type="submit"></button>
                         </td>
                     </tr>

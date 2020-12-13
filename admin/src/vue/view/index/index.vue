@@ -53,7 +53,7 @@
 
         <div class="content" ref="content">
             <div class="inner">
-<!--                <div class="line nav" :style="`padding-right: ${val.yScrollbarWidth}px`" ref="nav">-->
+<!--                <div class="line nav" :style="`padding-right: ${myValue.yScrollbarWidth}px`" ref="nav">-->
                 <div class="line nav" ref="top-nav">
                     <div class="top toolbar" ref="toolbar">
 
@@ -122,7 +122,7 @@
                     <div class="navigation">
                         <div ref="btm-nav"
                              class="nav"
-                             :class="{fixed: val.fixedNavigation , spread: state().slidebar === 'vertical'}"
+                             :class="{fixed: myValue.fixedNavigation , spread: state().slidebar === 'vertical'}"
                         >
                             <div class="inner">
                                 <div class="left">

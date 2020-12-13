@@ -121,7 +121,7 @@ export default {
 
     computed: {
         title () {
-            return this.val.mode === 'edit' ? '编辑分类' : '添加分类';
+            return this.myValue.mode === 'edit' ? '编辑分类' : '添加分类';
         } ,
 
         showBatchBtn () {
@@ -157,7 +157,7 @@ export default {
         } ,
 
         moduleChangedEvent (moduleId) {
-            this.val.error.module_id = '';
+            this.myValue.error.module_id = '';
             this.form.p_id = 0;
             this.getNavs();
         } ,
@@ -258,7 +258,7 @@ export default {
             data.forEach((v) => {
                 ids.push(v.id);
             });
-            this._val('selectedIds' , ids);
+            this.value('selectedIds' , ids);
         } ,
 
         destroyEvent (index , record) {
@@ -272,10 +272,10 @@ export default {
 
         destroyAllEvent () {
             this.pending('destroyAll' , true);
-            this.destroyAll(this._val('selectedIds') , (success) => {
+            this.destroyAll(this.value('selectedIds') , (success) => {
                 this.pending('destroyAll' , false);
                 if (success) {
-                    this._val('selectedIds' , []);
+                    this.value('selectedIds' , []);
                 }
             });
         } ,
@@ -308,8 +308,8 @@ export default {
         } ,
 
         editEvent (record) {
-            this._val('modal' , true);
-            this._val('mode' , 'edit');
+            this.value('modal' , true);
+            this.value('mode' , 'edit');
             this.error();
             this.form = G.copy(record);
             this.getModules();
@@ -317,8 +317,8 @@ export default {
         } ,
 
         addEvent () {
-            this._val('modal' , true);
-            this._val('mode' , 'add');
+            this.value('modal' , true);
+            this.value('mode' , 'add');
             this.error();
             this.form = G.copy(form);
             this.getModules();
@@ -343,7 +343,7 @@ export default {
                 });
             };
             this.pending('submitEvent' , true);
-            if (this.val.mode === 'edit') {
+            if (this.myValue.mode === 'edit') {
                 Api.nav.update(this.form.id , this.form ,callback);
                 return ;
             }
@@ -355,7 +355,7 @@ export default {
                 this.message('warning' ,'请求中...请耐心等待');
                 return ;
             }
-            this._val('modal' , false);
+            this.value('modal' , false);
         } ,
 
     } ,

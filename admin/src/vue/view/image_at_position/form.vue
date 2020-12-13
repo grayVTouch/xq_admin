@@ -1,9 +1,9 @@
 <template>
     <div>
         <my-form-modal
-                v-model="val.show"
+                v-model="myValue.show"
                 :title="title"
-                :loading="val.pending.submitEvent"
+                :loading="myValue.pending.submitEvent"
                 @on-ok="submitEvent"
                 @on-cancel="closeFormModal"
         >
@@ -12,31 +12,31 @@
                     <table class="input-table">
                         <tbody>
 
-                        <tr :class="{error: val.error.module_id}">
+                        <tr :class="{error: myValue.error.module_id}">
                             <td>模块</td>
                             <td>
-                                <my-select :data="modules" v-model="form.module_id" @change="val.error.module_id = ''" :width="TopContext.style.inputItemW"></my-select>
-                                <my-loading v-if="val.pending.getModules"></my-loading>
+                                <my-select :data="modules" v-model="form.module_id" @change="myValue.error.module_id = ''" :width="TopContext.style.inputItemW"></my-select>
+                                <my-loading v-if="myValue.pending.getModules"></my-loading>
                                 <span class="need">*</span>
                                 <div class="msg"></div>
-                                <div class="e-msg">{{ val.error.module_id }}</div>
+                                <div class="e-msg">{{ myValue.error.module_id }}</div>
                             </td>
                         </tr>
 
-                        <tr :class="{error: val.error.position_id}">
+                        <tr :class="{error: myValue.error.position_id}">
                             <td>位置</td>
                             <td>
-                                <i-select v-model="form.position_id" @on-change="val.error.position_id = ''" :style="`width: ${TopContext.style.inputItemW}px`">
+                                <i-select v-model="form.position_id" @on-change="myValue.error.position_id = ''" :style="`width: ${TopContext.style.inputItemW}px`">
                                     <i-option v-for="v in positions" :value="v.id" :key="v.id">{{ v.name + `【${v.platform}】` }}</i-option>
                                 </i-select>
-                                <my-loading v-if="val.pending.getPositions"></my-loading>
+                                <my-loading v-if="myValue.pending.getPositions"></my-loading>
                                 <span class="need">*</span>
                                 <div class="msg"></div>
-                                <div class="e-msg">{{ val.error.position_id }}</div>
+                                <div class="e-msg">{{ myValue.error.position_id }}</div>
                             </td>
                         </tr>
 
-                        <tr :class="{error: val.error.src}">
+                        <tr :class="{error: myValue.error.src}">
                             <td>图片</td>
                             <td>
                                 <div ref="src">
@@ -68,17 +68,17 @@
 
                                 <span class="need"></span>
                                 <div class="msg"></div>
-                                <div class="e-msg">{{ val.error.src }}</div>
+                                <div class="e-msg">{{ myValue.error.src }}</div>
                             </td>
                         </tr>
 
-                        <tr :class="{error: val.error.link}">
+                        <tr :class="{error: myValue.error.link}">
                             <td>链接</td>
                             <td>
-                                <input type="text" v-model="form.link" @input="val.error.link=''" class="form-text">
+                                <input type="text" v-model="form.link" @input="myValue.error.link=''" class="form-text">
                                 <span class="need"></span>
                                 <div class="msg"></div>
-                                <div class="e-msg">{{ val.error.link }}</div>
+                                <div class="e-msg">{{ myValue.error.link }}</div>
                             </td>
                         </tr>
 
@@ -93,7 +93,7 @@
                 </form>
             </template>
             <template slot="footer">
-                <i-button v-ripple type="primary" :loading="val.pending.submitEvent" @click="submitEvent">确认</i-button>
+                <i-button v-ripple type="primary" :loading="myValue.pending.submitEvent" @click="submitEvent">确认</i-button>
                 <i-button v-ripple type="error" @click="closeFormModal">关闭</i-button>
             </template>
         </my-form-modal>

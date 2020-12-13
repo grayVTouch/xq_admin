@@ -18,7 +18,7 @@
                             ref="table"
                             class="w-r-100"
                             border
-                            :loading="val.pending.getData"
+                            :loading="myValue.pending.getData"
                             :data="table.data"
                             :columns="table.field"
                             @on-row-click="rowClickEvent">

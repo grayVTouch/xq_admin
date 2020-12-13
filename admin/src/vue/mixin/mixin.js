@@ -18,7 +18,7 @@ Vue.mixin({
     data () {
         return {
             TopContext ,
-            val: {
+            myValue: {
                 pending: {} ,
                 error: {} ,
                 select: {} ,

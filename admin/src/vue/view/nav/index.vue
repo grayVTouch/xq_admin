@@ -8,7 +8,7 @@
                 <div class="left">
                     <my-table-button class="m-r-10" @click="addEvent"><my-icon icon="add" />添加</my-table-button>
                     <my-table-button class="m-r-10" @click="editEventByButton"><my-icon icon="edit" />编辑</my-table-button>
-                    <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
+                    <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="myValue.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
                 </div>
                 <div class="right"></div>
             </div>
@@ -30,7 +30,7 @@
                         :height="TopContext.table.height"
                         :columns="table.field"
                         :data="table.data"
-                        :loading="val.pending.getData"
+                        :loading="myValue.pending.getData"
                         @on-selection-change="selectionChangeEvent"
                         @on-row-click="rowClickEvent"
                         @on-row-dblclick="rowDblclickEvent"
@@ -41,11 +41,11 @@
                         <template v-else>{{ row.name + `【${row.module ? row.module.name : 'unknow'}】` }}</template>
                     </template>
                     <!--                        <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>-->
-                    <template v-slot:is_enabled="{row,index}"><my-switch v-model="row.is_enabled" :loading="val.pending['is_enabled__' + row.id]" :extra="{id: row.id , field: 'is_enabled'}" @on-change="updateBoolValEvent" /></template>
+                    <template v-slot:is_enabled="{row,index}"><my-switch v-model="row.is_enabled" :loading="myValue.pending['is_enabled__' + row.id]" :extra="{id: row.id , field: 'is_enabled'}" @on-change="updateBoolValEvent" /></template>
 
                     <template v-slot:action="{row , index}">
                         <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
-                        <my-table-button type="error" :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
+                        <my-table-button type="error" :loading="myValue.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
                     </template>
                 </i-table>
 
@@ -56,12 +56,12 @@
         <div class="line operation">
             <my-table-button class="m-r-10" @click="addEvent"><my-icon icon="add" />添加</my-table-button>
             <my-table-button class="m-r-10" @click="editEventByButton"><my-icon icon="edit" />编辑</my-table-button>
-            <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
+            <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="myValue.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
         </div>
 
         <div class="line page hide"></div>
 
-        <my-form ref="form" :id="current.id" :mode="val.mode" @on-success="getData"></my-form>
+        <my-form ref="form" :id="current.id" :mode="myValue.mode" @on-success="getData"></my-form>
     </div>
 </template>
 

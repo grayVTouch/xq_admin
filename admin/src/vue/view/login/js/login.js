@@ -40,7 +40,7 @@ export default {
     methods: {
 
         topMessage (text = '' , classname = '') {
-            this._val('message' , Object.assign({} , {
+            this.value('message' , Object.assign({} , {
                 text ,
                 class: classname
             }));
@@ -52,7 +52,7 @@ export default {
                     this.errorHandle(res.message);
                     return ;
                 }
-                this.val.captcha = res.data;
+                this.myValue.captcha = res.data;
                 this.form.captcha_key = res.data.key;
             });
         } ,
@@ -60,23 +60,23 @@ export default {
         focusEvent (e) {
             const tar = G(e.currentTarget);
             const name = tar.data('name');
-            this.val.focus = {...this.val.focus , ...{[name]: true}};
+            this.myValue.focus = {...this.myValue.focus , ...{[name]: true}};
         } ,
 
         blurEvent (e) {
             const tar = G(e.currentTarget);
             const name = tar.data('name');
-            this.val.focus = {...this.val.focus , ...{[name]: false}};
+            this.myValue.focus = {...this.myValue.focus , ...{[name]: false}};
         } ,
 
         usernameInputEvent () {
             this.error({username: ''} , false);
             Api.login.avatar({username: this.form.username} , (res) => {
-                this.val.avatar = '';
+                this.myValue.avatar = '';
                 if (res.code !== TopContext.code.Success) {
                     return ;
                 }
-                this.val.avatar = data;
+                this.myValue.avatar = data;
             });
         } ,
 

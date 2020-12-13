@@ -52,14 +52,14 @@
             } ,
 
             init () {
-                this.val.navH = this.dom.root.height('content-box');
+                this.myValue.navH = this.dom.root.height('content-box');
                 this.fixNav();
                 this.dom.scrollContainer.on('scroll' , this.fixNav.bind(this) , true , false);
             } ,
 
             fixNav () {
                 let y = this.dom.scrollContainer.scrollTop();
-                this.fixed = !(0 <= y && y < this.val.navH);
+                this.fixed = !(0 <= y && y < this.myValue.navH);
             } ,
 
             // 打开新标签页

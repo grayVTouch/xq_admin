@@ -5,7 +5,7 @@
             :height="TopContext.table.height"
             :columns="table.field"
             :data="table.data"
-            :loading="val.pending.getData"
+            :loading="myValue.pending.getData"
             @on-selection-change="selectionChangeEvent"
             @on-row-dblclick="editEvent"
             @on-row-click="rowClickEvent"

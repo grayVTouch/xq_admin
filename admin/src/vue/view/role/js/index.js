@@ -97,7 +97,7 @@ export default {
 
     computed: {
         title () {
-            return this.val.mode === 'edit' ? '编辑' : '添加';
+            return this.myValue.mode === 'edit' ? '编辑' : '添加';
         } ,
 
         showBatchBtn () {
@@ -241,15 +241,15 @@ export default {
         } ,
 
         editEvent (record) {
-            this._val('modal' , true);
-            this._val('mode' , 'edit');
+            this.value('modal' , true);
+            this.value('mode' , 'edit');
             this.error();
             this.form = G.copy(record);
         } ,
 
         addEvent () {
-            this._val('modal' , true);
-            this._val('mode' , 'add');
+            this.value('modal' , true);
+            this.value('mode' , 'add');
             this.error();
             this.form = G.copy(form);
         } ,
@@ -272,7 +272,7 @@ export default {
                     self.closeFormModal();
                 });
             };
-            if (this.val.mode === 'edit') {
+            if (this.myValue.mode === 'edit') {
                 Api.role.update(this.form.id , this.form).then(callback);
                 return ;
             }
@@ -284,7 +284,7 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return;
             }
-            this.val.modal = false;
+            this.myValue.modal = false;
         } ,
 
         searchEvent () {
@@ -299,7 +299,7 @@ export default {
 
         allocateEvent (record) {
             this.role = G.copy(record);
-            this._val('drawer' , true);
+            this.value('drawer' , true);
             Api.role.permission(record.id , (res) => {
                 if (res.code !== TopContext.code.Success) {
                     this.errorHandle(res.message);
@@ -319,7 +319,7 @@ export default {
                     v.checked = false;
                     v.selected = false;
                 });
-                const permission = G.t.childrens(0 , permissions , this.val.attr , false , true);
+                const permission = G.t.childrens(0 , permissions , this.myValue.attr , false , true);
                 this.permission = permission;
                 this.rolePermission = data;
             });
@@ -330,7 +330,7 @@ export default {
                 this.message('请求中...请耐心等待');
                 return ;
             }
-            this._val('drawer' , false);
+            this.value('drawer' , false);
             this.rolePermission = [];
         } ,
 

@@ -261,7 +261,7 @@ export default {
             data.forEach((v) => {
                 ids.push(v.id);
             });
-            this._val('selectedIds' , ids);
+            this.value('selectedIds' , ids);
         } ,
 
         destroyEvent (index , record) {
@@ -275,16 +275,16 @@ export default {
 
         destroyAllEvent () {
             this.pending('destroyAll' , true);
-            this.destroyAll(this._val('selectedIds') , (success) => {
+            this.destroyAll(this.value('selectedIds') , (success) => {
                 this.pending('destroyAll' , false);
                 if (success) {
-                    this._val('selectedIds' , []);
+                    this.value('selectedIds' , []);
                 }
             });
         } ,
 
         editEvent (v) {
-            this._val('mode' , 'edit');
+            this.value('mode' , 'edit');
             this.form = G.copy(v);
             this.$nextTick(() => {
                 this.$refs.form.openFormModal();
@@ -292,7 +292,7 @@ export default {
         } ,
 
         addEvent () {
-            this._val('mode' , 'add');
+            this.value('mode' , 'add');
             this.form = {};
             this.$nextTick(() => {
                 this.$refs.form.openFormModal();

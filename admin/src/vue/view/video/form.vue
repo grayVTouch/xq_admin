@@ -1,12 +1,12 @@
 <template>
-    <my-form-drawer :title="title" v-model="val.show">
+    <my-form-drawer :title="title" v-model="myValue.show">
 
         <template slot="header">
 
             <div class="run-action-title">
                 <div class="left">{{ title }}</div>
                 <div class="right">
-                    <i-button v-ripple type="primary" :loading="val.pending.submitEvent" @click="submitEvent"><my-icon icon="tijiao" />提交</i-button>
+                    <i-button v-ripple type="primary" :loading="myValue.pending.submitEvent" @click="submitEvent"><my-icon icon="tijiao" />提交</i-button>
                     <i-button v-ripple type="error" @click="closeFormModal"><my-icon icon="guanbi" />关闭</i-button>
                 </div>
             </div>
@@ -16,25 +16,25 @@
         <template slot="default">
             <form @submit.prevent="submitEvent" class="form">
                 <div class="menu">
-                    <div class="menu-item" v-ripple :class="{cur: val.tab === 'base'}" @click="val.tab = 'base'">基本信息</div>
-                    <div class="menu-item" v-ripple :class="{cur: val.tab === 'image'}" @click="val.tab = 'image'">视频信息</div>
+                    <div class="menu-item" v-ripple :class="{cur: myValue.tab === 'base'}" @click="myValue.tab = 'base'">基本信息</div>
+                    <div class="menu-item" v-ripple :class="{cur: myValue.tab === 'image'}" @click="myValue.tab = 'image'">视频信息</div>
                 </div>
                 <div class="menu-mapping-content">
-                    <div class="" v-show="val.tab === 'base'">
+                    <div class="" v-show="myValue.tab === 'base'">
                         <table class="input-table">
                             <tbody>
 
-                            <tr :class="{error: val.error.name}">
+                            <tr :class="{error: myValue.error.name}">
                                 <td>名称：</td>
                                 <td>
-                                    <input type="text" class="form-text" v-model="form.name" @input="val.error.name = ''">
+                                    <input type="text" class="form-text" v-model="form.name" @input="myValue.error.name = ''">
                                     <span class="need"></span>
                                     <div class="msg"></div>
-                                    <div class="e-msg">{{ val.error.name }}</div>
+                                    <div class="e-msg">{{ myValue.error.name }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.type}">
+                            <tr :class="{error: myValue.error.type}">
                                 <td>类型：</td>
                                 <td>
                                     <i-radio-group v-model="form.type" @on-change="typeChangedEvent">
@@ -42,11 +42,11 @@
                                     </i-radio-group>
                                     <span class="need">*</span>
                                     <div class="msg">默认：杂类</div>
-                                    <div class="e-msg">{{ val.error.type }}</div>
+                                    <div class="e-msg">{{ myValue.error.type }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.user_id}">
+                            <tr :class="{error: myValue.error.user_id}">
                                 <td>所属用户：</td>
                                 <td>
                                     <input type="text" readonly="readonly" :value="`${owner.username}【${owner.id}】`" class="form-text w-180 run-cursor-not-allow">
@@ -54,33 +54,33 @@
                                     <i-button @click="showUserSelector">搜索</i-button>
                                     <span class="need">*</span>
                                     <div class="msg"></div>
-                                    <div class="e-msg">{{ val.error.user_id }}</div>
+                                    <div class="e-msg">{{ myValue.error.user_id }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.module_id}">
+                            <tr :class="{error: myValue.error.module_id}">
                                 <td>所属模块：</td>
                                 <td>
                                     <my-select :data="modules" v-model="form.module_id" @change="moduleChangedEvent" :width="TopContext.style.inputItemW"></my-select>
-                                    <my-loading v-if="val.pending.getModules"></my-loading>
+                                    <my-loading v-if="myValue.pending.getModules"></my-loading>
                                     <span class="need">*</span>
                                     <div class="msg"></div>
-                                    <div class="e-msg">{{ val.error.module_id }}</div>
+                                    <div class="e-msg">{{ myValue.error.module_id }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.category_id}" v-show="form.type === 'misc'">
+                            <tr :class="{error: myValue.error.category_id}" v-show="form.type === 'misc'">
                                 <td>所属分类：</td>
                                 <td>
-                                    <my-deep-select :data="categories" v-model="form.category_id" @change="val.error.category_id = ''" :has="false" :width="TopContext.style.inputItemW"></my-deep-select>
+                                    <my-deep-select :data="categories" v-model="form.category_id" @change="myValue.error.category_id = ''" :has="false" :width="TopContext.style.inputItemW"></my-deep-select>
                                     <span class="need">*</span>
-                                    <my-loading v-if="val.pending.getCategories"></my-loading>
+                                    <my-loading v-if="myValue.pending.getCategories"></my-loading>
                                     <div class="msg">请务必在选择模块后操作</div>
-                                    <div class="e-msg">{{ val.error.category_id }}</div>
+                                    <div class="e-msg">{{ myValue.error.category_id }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.video_project_id}" v-show="form.type === 'pro'">
+                            <tr :class="{error: myValue.error.video_project_id}" v-show="form.type === 'pro'">
                                 <td>视频专题：</td>
                                 <td>
                                     <input type="text" readonly="readonly" :value="`${videoProject.name}【${videoProject.id}】`" class="form-text w-180 run-cursor-not-allow">
@@ -88,21 +88,21 @@
                                     <i-button @click="showVideoProjectSelector">搜索</i-button>
                                     <span class="need">*</span>
                                     <div class="msg">请务必在选择模块后操作；输入关联主体id、名称可查询</div>
-                                    <div class="e-msg">{{ val.error.video_project_id }}</div>
+                                    <div class="e-msg">{{ myValue.error.video_project_id }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.index}">
+                            <tr :class="{error: myValue.error.index}">
                                 <td>视频索引</td>
                                 <td>
-                                    <input type="number" v-model="form.index" @input="val.error.index = ''" class="form-text">
+                                    <input type="number" v-model="form.index" @input="myValue.error.index = ''" class="form-text">
                                     <span class="need">*</span>
                                     <div class="msg">仅允许整数</div>
-                                    <div class="e-msg">{{ val.error.index }}</div>
+                                    <div class="e-msg">{{ myValue.error.index }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.thumb}">
+                            <tr :class="{error: myValue.error.thumb}">
                                 <td>封面</td>
                                 <td>
                                     <div ref="thumb">
@@ -134,61 +134,61 @@
 
                                     <span class="need"></span>
                                     <div class="msg"></div>
-                                    <div class="e-msg">{{ val.error.thumb }}</div>
+                                    <div class="e-msg">{{ myValue.error.thumb }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.weight}">
+                            <tr :class="{error: myValue.error.weight}">
                                 <td>权重</td>
                                 <td>
-                                    <input type="number" v-model="form.weight" @input="val.error.weight = ''" class="form-text">
+                                    <input type="number" v-model="form.weight" @input="myValue.error.weight = ''" class="form-text">
                                     <span class="need"></span>
                                     <div class="msg">仅允许整数</div>
-                                    <div class="e-msg">{{ val.error.thumb }}</div>
+                                    <div class="e-msg">{{ myValue.error.thumb }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.view_count}">
+                            <tr :class="{error: myValue.error.view_count}">
                                 <td>浏览次数</td>
                                 <td>
-                                    <input type="number" v-model="form.view_count" @input="val.error.view_count = ''" class="form-text">
+                                    <input type="number" v-model="form.view_count" @input="myValue.error.view_count = ''" class="form-text">
                                     <span class="need"></span>
                                     <div class="msg">仅允许整数</div>
-                                    <div class="e-msg">{{ val.error.view_count }}</div>
+                                    <div class="e-msg">{{ myValue.error.view_count }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.play_count}">
+                            <tr :class="{error: myValue.error.play_count}">
                                 <td>获赞次数</td>
                                 <td>
-                                    <input type="number" v-model="form.play_count" @input="val.error.play_count = ''" class="form-text">
+                                    <input type="number" v-model="form.play_count" @input="myValue.error.play_count = ''" class="form-text">
                                     <span class="need"></span>
                                     <div class="msg">仅允许整数</div>
-                                    <div class="e-msg">{{ val.error.play_count }}</div>
+                                    <div class="e-msg">{{ myValue.error.play_count }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.praise_count}">
+                            <tr :class="{error: myValue.error.praise_count}">
                                 <td>获赞次数</td>
                                 <td>
-                                    <input type="number" v-model="form.praise_count" @input="val.error.praise_count = ''" class="form-text">
+                                    <input type="number" v-model="form.praise_count" @input="myValue.error.praise_count = ''" class="form-text">
                                     <span class="need"></span>
                                     <div class="msg">仅允许整数</div>
-                                    <div class="e-msg">{{ val.error.praise_count }}</div>
+                                    <div class="e-msg">{{ myValue.error.praise_count }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.against_count}">
+                            <tr :class="{error: myValue.error.against_count}">
                                 <td>反对次数</td>
                                 <td>
-                                    <input type="number" v-model="form.against_count" @input="val.error.against_count = ''" class="form-text">
+                                    <input type="number" v-model="form.against_count" @input="myValue.error.against_count = ''" class="form-text">
                                     <span class="need"></span>
                                     <div class="msg">仅允许整数</div>
-                                    <div class="e-msg">{{ val.error.against_count }}</div>
+                                    <div class="e-msg">{{ myValue.error.against_count }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.status}">
+                            <tr :class="{error: myValue.error.status}">
                                 <td>状态</td>
                                 <td>
                                     <i-radio-group v-model="form.status">
@@ -196,51 +196,51 @@
                                     </i-radio-group>
                                     <span class="need">*</span>
                                     <div class="msg">默认：审核中</div>
-                                    <div class="e-msg">{{ val.error.status }}</div>
+                                    <div class="e-msg">{{ myValue.error.status }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.fail_reason}" v-show="form.status === -1">
+                            <tr :class="{error: myValue.error.fail_reason}" v-show="form.status === -1">
                                 <td>失败原因</td>
                                 <td>
-                                    <textarea v-model="form.fail_reason" class="form-textarea" @input="val.error.fail_reason = ''"></textarea>
+                                    <textarea v-model="form.fail_reason" class="form-textarea" @input="myValue.error.fail_reason = ''"></textarea>
                                     <span class="need">*</span>
                                     <div class="msg">当状态为审核失败的时候必填</div>
-                                    <div class="e-msg">{{ val.error.fail_reason }}</div>
+                                    <div class="e-msg">{{ myValue.error.fail_reason }}</div>
                                 </td>
                             </tr>
 
-                            <tr :class="{error: val.error.description}">
+                            <tr :class="{error: myValue.error.description}">
                                 <td>描述</td>
                                 <td>
                                     <textarea v-model="form.description" class="form-textarea"></textarea>
                                     <span class="need"></span>
                                     <div class="msg"></div>
-                                    <div class="e-msg">{{ val.error.description }}</div>
+                                    <div class="e-msg">{{ myValue.error.description }}</div>
                                 </td>
                             </tr>
 
-<!--                            <tr :class="{error: val.error.created_at}">-->
+<!--                            <tr :class="{error: myValue.error.created_at}">-->
 <!--                                <td>创建时间</td>-->
 <!--                                <td>-->
 <!--                                    <i-date-picker type="datetime" v-model="createTime" format="yyyy-MM-dd HH:mm:ss" @on-change="setDatetimeEvent" class="iview-form-input"></i-date-picker>-->
 <!--                                    <span class="need"></span>-->
 <!--                                    <div class="msg">如不提供，则默认使用当前时间</div>-->
-<!--                                    <div class="e-msg">{{ val.error.created_at }}</div>-->
+<!--                                    <div class="e-msg">{{ myValue.error.created_at }}</div>-->
 <!--                                </td>-->
 <!--                            </tr>-->
 
                             <tr>
                                 <td colspan="2">
                                     <button class="hide" type="submit"><my-icon icon="tijiao" />提交</button>
-                                    <i-button v-ripple type="primary" :loading="val.pending.submitEvent" @click="submitEvent"><my-icon icon="tijiao" />提交</i-button>
+                                    <i-button v-ripple type="primary" :loading="myValue.pending.submitEvent" @click="submitEvent"><my-icon icon="tijiao" />提交</i-button>
                                 </td>
                             </tr>
 
                             </tbody>
                         </table>
                     </div>
-                    <div class="" v-show="val.tab === 'image'">
+                    <div class="" v-show="myValue.tab === 'image'">
                         <div class="video-info">
                             <div class="line upload-video">
                                 <div class="run-title">
@@ -250,7 +250,7 @@
                                 <div>
                                     <table class="input-table">
                                         <tbody>
-                                        <tr :class="{error: val.error.src}">
+                                        <tr :class="{error: myValue.error.src}">
                                             <td>
                                                 <div ref="video">
                                                     <!-- 上传图片组件 -->
@@ -284,7 +284,7 @@
                                                     支持的视频格式有：mov,mp4,mkv,rm,rmvb,avi,flv
                                                     <template v-if="mode === 'edit'"><br><b>当视频处理状态不是 处理完成 或 处理失败 的时候禁止更改</b></template>
                                                 </div>
-                                                <div class="e-msg">{{ val.error.src }}</div>
+                                                <div class="e-msg">{{ myValue.error.src }}</div>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -330,7 +330,7 @@
 
                                                 <div class="action">
                                                     <i-button v-ripple @click="addVideoSubtitleEvent">新增</i-button>
-<!--                                                    <i-button v-ripple :loading="val.pending.uploadVideoSubtitle" :disabled="canUploadVideoSubtitle" @click="uploadVideoSubtitleEvent">上传</i-button>-->
+<!--                                                    <i-button v-ripple :loading="myValue.pending.uploadVideoSubtitle" :disabled="canUploadVideoSubtitle" @click="uploadVideoSubtitleEvent">上传</i-button>-->
                                                 </div>
 
 <!--                                                <div class="msg">在提交修改之前，请务必点击上传文件先将字幕文件保存到服务器！</div>-->
@@ -346,7 +346,7 @@
                                     <div class="run-title">
                                         <div class="left">视频列表</div>
                                         <div class="right">
-                                            <my-table-button type="error" :loading="val.pending['destroyVideos']" v-if="videoSelection.length > 0" @click="destroyVideosEvent">删除选中项 （{{ videoSelection.length }}）</my-table-button>
+                                            <my-table-button type="error" :loading="myValue.pending['destroyVideos']" v-if="videoSelection.length > 0" @click="destroyVideosEvent">删除选中项 （{{ videoSelection.length }}）</my-table-button>
                                         </div>
                                     </div>
                                     <div>
@@ -361,7 +361,7 @@
                                                 <video muted="muted" controls :src="row.src ? row.src : TopContext.res.notFound" :height="TopContext.table.videoH"></video>
                                             </template>
                                             <template v-slot:action="{row,index}">
-                                                <my-table-button :loading="val.pending['delete_' + row.id]" @click="destroyVideoEvent(index , row)">删除</my-table-button>
+                                                <my-table-button :loading="myValue.pending['delete_' + row.id]" @click="destroyVideoEvent(index , row)">删除</my-table-button>
                                                 <my-table-button @click="openWindow(row.src , '_blank')">预览</my-table-button>
                                             </template>
                                         </i-table>
@@ -369,7 +369,7 @@
                                 </div>
 
                                 <div class="line">
-                                    <my-table-button type="error" :loading="val.pending['destroyVideos']" v-if="videoSelection.length > 0" @click="destroyVideosEvent">删除选中项 （{{ videoSelection.length }}）</my-table-button>
+                                    <my-table-button type="error" :loading="myValue.pending['destroyVideos']" v-if="videoSelection.length > 0" @click="destroyVideosEvent">删除选中项 （{{ videoSelection.length }}）</my-table-button>
                                 </div>
                             </div>
 
@@ -378,7 +378,7 @@
                                     <div class="run-title">
                                         <div class="left">字幕列表</div>
                                         <div class="right">
-                                            <my-table-button type="error" :loading="val.pending['destroyVideoSubtitles']" v-if="videoSubtitleSelection.length > 0" @click="destroyVideoSubtitlesEvent">删除选中项 （{{ videoSubtitleSelection.length }}）</my-table-button>
+                                            <my-table-button type="error" :loading="myValue.pending['destroyVideoSubtitles']" v-if="videoSubtitleSelection.length > 0" @click="destroyVideoSubtitlesEvent">删除选中项 （{{ videoSubtitleSelection.length }}）</my-table-button>
                                         </div>
                                     </div>
                                     <div>
@@ -390,14 +390,14 @@
                                         >
                                             <template v-slot:src="{row,index}">{{ row.src }}</template>
                                             <template v-slot:action="{row,index}">
-                                                <my-table-button :loading="val.pending['delete_' + row.id]" @click="destroyVideoSubtitleEvent(index , row)">删除</my-table-button>
+                                                <my-table-button :loading="myValue.pending['delete_' + row.id]" @click="destroyVideoSubtitleEvent(index , row)">删除</my-table-button>
                                             </template>
                                         </i-table>
                                     </div>
                                 </div>
 
                                 <div class="line">
-                                    <my-table-button type="error" :loading="val.pending['destroyVideoSubtitles']" v-if="videoSubtitleSelection.length > 0" @click="destroyVideoSubtitlesEvent">删除选中项 （{{ videoSubtitleSelection.length }}）</my-table-button>
+                                    <my-table-button type="error" :loading="myValue.pending['destroyVideoSubtitles']" v-if="videoSubtitleSelection.length > 0" @click="destroyVideoSubtitlesEvent">删除选中项 （{{ videoSubtitleSelection.length }}）</my-table-button>
                                 </div>
                             </div>
 
