@@ -1,8 +1,4 @@
 export default {
-    bool_for_int: {
-        0: '否',
-        1: '是'
-    } ,
 
     bool: {
         integer: {
@@ -15,13 +11,13 @@ export default {
         } ,
     } ,
 
-    admin_permission: {
+    adminPermission: {
         type: {
             view: 'view' ,
             api: 'api'
         }
     } ,
-    image_project: {
+    imageProject: {
         type: {
             pro: '专题' ,
             misc: '杂项' ,
@@ -34,9 +30,9 @@ export default {
         }
     } ,
 
-    video_project: {
+    videoProject: {
 
-        end_status: {
+        endStatus: {
             making : '连载中' ,
             completed: '已完结' ,
             terminated: '已终止'
@@ -88,7 +84,7 @@ export default {
         } ,
     } ,
 
-    image_subject: {
+    imageSubject: {
         status: {
             '-1' : '审核失败' ,
             0: '待审核' ,
@@ -96,7 +92,7 @@ export default {
         }
     } ,
 
-    video_subject: {
+    videoSubject: {
         status: {
             '-1' : '审核失败' ,
             0: '待审核' ,
@@ -104,7 +100,7 @@ export default {
         }
     } ,
 
-    video_series: {
+    videoSeries: {
         status: {
             '-1' : '审核失败' ,
             0: '待审核' ,
@@ -112,7 +108,7 @@ export default {
         }
     } ,
 
-    video_company: {
+    videoCompany: {
         status: {
             '-1' : '审核失败' ,
             0: '待审核' ,
@@ -133,6 +129,19 @@ export default {
             '-1' : '审核失败' ,
             0: '待审核' ,
             1: '审核通过'
-        }
+        } ,
+        type: {
+            image: '图片' ,
+            video: '视频' ,
+            image_project: '图片专题' ,
+            video_project: '视频专题' ,
+        } ,
+    } ,
+
+    nav: {
+        type: {
+            image_project: '图片专题' ,
+            video_project: '视频专题' ,
+        } ,
     } ,
 };

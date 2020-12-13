@@ -1,11 +1,21 @@
+import myForm from '../form.vue';
 
-const form = {
-    os: 'windows' ,
-    default: 0 ,
-};
+const current = {id: 0};
+
+const search = {};
 
 export default {
     name: "index",
+
+    components: {
+        'my-form': myForm ,
+    } ,
+
+    computed: {
+        showBatchBtn () {
+            return this.selection.length > 0;
+        } ,
+    } ,
 
     data () {
         return {
@@ -16,15 +26,11 @@ export default {
             ins: {} ,
             val: {
                 pending: {} ,
-                modal: false ,
                 error: {} ,
                 // edit-编辑 add-添加
                 mode: '' ,
-                selectedIds: [] ,
-                // 抽屉
-                drawer: false ,
-
             } ,
+
             table: {
                 field: [
                     {
@@ -73,7 +79,7 @@ export default {
                     } ,
                     {
                         title: '默认？' ,
-                        slot: 'default' ,
+                        slot: 'is_default' ,
                         minWidth: TopContext.table.status ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'right' ,
@@ -81,7 +87,7 @@ export default {
                     {
                         title: '已创建软连接？' ,
                         slot: 'is_linked' ,
-                        minWidth: TopContext.table.status ,
+                        minWidth: TopContext.table.status + 40 ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'right' ,
                     } ,
@@ -91,23 +97,26 @@ export default {
                         minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
-                    {
-                        title: '操作' ,
-                        slot: 'action' ,
-                        minWidth: TopContext.table.action + 100 ,
-                        align: TopContext.table.alignCenter ,
-                        fixed: 'right' ,
-                    } ,
+                    // {
+                    //     title: '操作' ,
+                    //     slot: 'action' ,
+                    //     minWidth: TopContext.table.action + 100 ,
+                    //     align: TopContext.table.alignCenter ,
+                    //     fixed: 'right' ,
+                    // } ,
                 ] ,
                 total: 0 ,
                 page: 1 ,
                 data: [] ,
             } ,
+
             search: {
                 limit: TopContext.limit
             } ,
-            form: G.copy(form)  ,
-            modules: [] ,
+
+            selection: [] ,
+
+            current: G.copy(current)
         };
     } ,
 
@@ -117,28 +126,7 @@ export default {
         this.getData();
     } ,
 
-    computed: {
-        title () {
-            return this.val.mode === 'edit' ? '编辑' : '添加';
-        } ,
-
-        showBatchBtn () {
-            return this.val.selectedIds.length > 0;
-        } ,
-    } ,
-
     methods: {
-
-        getModules () {
-            Api.module.all().then((res) => {
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                this.modules = data;
-            });
-        } ,
-
 
         initDom () {
         } ,
@@ -150,32 +138,32 @@ export default {
 
         getData () {
             this.pending('getData' , true);
-            Api.disk.index(this.search , (res) => {
-                this.pending('getData' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                this.table.total = data.total;
-                this.table.page = data.current_page;
-                this.handleData(data.data);
-                this.table.data = data.data;
-            });
-        } ,
-
-        handleData (data) {
-            data.forEach((v) => {
-                this.pending(`default_${v.id}` , false);
-                this.pending(`delete_${v.id}` , false);
-            });
+            this.selection = [];
+            Api.disk
+                .index(this.search)
+                .then((res) => {
+                    this.pending('getData' , false);
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    const data = res.data;
+                    data.data.forEach((v) => {
+                        this.pending(`default_${v.id}` , false);
+                        this.pending(`delete_${v.id}` , false);
+                    });
+                    this.table.total = data.total;
+                    this.table.page = data.current_page;
+                    this.table.data = data.data;
+                });
         } ,
 
         destroy (id , callback) {
             this.destroyAll([id] , callback);
         } ,
 
-        destroyAll (idList , callback) {
-            if (idList.length < 1) {
+        destroyAll (ids , callback) {
+            if (ids.length < 1) {
                 this.message('warning' ,'请选择待删除的项');
                 G.invoke(callback , this , false);
                 return ;
@@ -186,104 +174,22 @@ export default {
                     G.invoke(callback , this , false);
                     return ;
                 }
-                Api.disk.destroyAll(idList , (res) => {
-                    if (res.code !== TopContext.code.Success) {
-                        G.invoke(callback , this , false);
-                        this.errorHandle(res.message);
-                        return ;
-                    }
-                    G.invoke(callback , this , true);
-                    this.message('success' , '操作成功' , '影响的记录数：' + data);
-                    this.getData();
-                });
+                Api.disk
+                    .destroyAll(ids)
+                    .then((res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            G.invoke(callback , this , false);
+                            this.errorHandle(res.message);
+                            return ;
+                        }
+                        G.invoke(callback , this , true);
+                        this.message('success' , '操作成功');
+                        this.getData();
+                    })
+                    .finally(() => {
+
+                    });
             });
-        } ,
-
-        selectionChangeEvent (data) {
-            const ids = [];
-            data.forEach((v) => {
-                ids.push(v.id);
-            });
-            this.val.selectedIds = ids;
-        } ,
-
-        destroyEvent (index , record) {
-            const pendingKey = 'delete_' + record.id;
-            this.pending(pendingKey , true);
-            this.destroy(record.id , () => {
-                this.pending(pendingKey , false);
-
-            });
-        } ,
-
-        destroyAllEvent () {
-            this.pending('destroyAll' , true);
-            this.destroyAll(this.val.selectedIds , (success) => {
-                this.pending('destroyAll' , false);
-                if (success) {
-                    this.val.selectedIds = [];
-                }
-            });
-        } ,
-
-        editEvent (record) {
-            this._val('modal' , true);
-            this._val('mode' , 'edit');
-            this.error();
-            this.form = G.copy(record);
-            this.getModules();
-        } ,
-
-        addEvent () {
-            this._val('modal' , true);
-            this._val('mode' , 'add');
-            this.error();
-            this.form = G.copy(form);
-            this.getModules();
-        } ,
-
-        submitEvent () {
-            const self = this;
-            this.pending('submit' , true);
-            const callback = (res) => {
-                this.pending('submit' , false);
-                this.error();
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(msg , data , code);
-                    return ;
-                }
-                this.successHandle((keep) => {
-                    self.getData();
-                    if (keep) {
-                        return ;
-                    }
-                    self.closeFormModal();
-                });
-            };
-            if (this.val.mode === 'edit') {
-                Api.disk.update(this.form.id , this.form).then(callback);
-                return ;
-            }
-            Api.disk.store(this.form).then(callback);
-        } ,
-
-        closeFormModal () {
-            if (this.pending('submit')) {
-                this.message('warning' , '请求中...请耐心等待');
-                return;
-            }
-            this.val.modal = false;
-
-        } ,
-
-        searchEvent () {
-            this.search.page = 1;
-            this.getData();
-        } ,
-
-        pageEvent (page) {
-            this.search.page = page;
-            this.getData();
         } ,
 
         findRecordById (id) {
@@ -302,42 +208,165 @@ export default {
             const pendingKey = `${extra.field}_${extra.id}`;
             const record = this.findRecordById(extra.id);
             this.pending(pendingKey , true);
+            Api.disk
+                .localUpdate(record.id , {
+                    [extra.field]: val
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        record[extra.field] = oVal;
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    this.message('success' , '操作成功');
+                    this.getData();
+                })
+                .finally(() => {
+                    this.pending(pendingKey , false);
+                });
+        } ,
 
-            Api.disk.localUpdate(record.id , {
-                [extra.field]: val
-            } , (res) => {
+        linkDiskEvent () {
+            const ids = this.selection.map((v) => {
+                return v.id;
+            });
+            this.linkDisk(ids);
+
+        } ,
+
+        linkDisk (ids) {
+            if (ids.length < 1) {
+                this.errorHandle('请选择项');
+                return ;
+            }
+            this.pending('linkDisk' , true);
+            Api.disk
+                .linkDisk(ids)
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    this.message('success' , '操作成功');
+                    this.getData();
+                })
+                .finally(() => {
+                    this.pending('linkDisk' , false);
+                });
+        } ,
+
+        destroyEvent (index , record) {
+            const pendingKey = 'delete_' + record.id;
+            this.pending(pendingKey , true);
+            this.destroy(record.id , () => {
                 this.pending(pendingKey , false);
-                if (res.code !== TopContext.code.Success) {
-                    record[extra.field] = oVal;
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                this.message('success' , '操作成功');
-                this.getData();
+
             });
         } ,
 
-        linkDiskEvent (index , row) {
-            const loadingKey = 'link_disk' + row.id;
-            this._val(loadingKey , true);
-            this.linkDisk([row.id] , () => {
-                this._val(loadingKey , false);
+        destroyAllEvent () {
+            this.pending('destroyAll' , true);
+            const ids = this.selection.map((v) => {
+                return v.id;
             });
-
+            this.destroyAll(ids , (success) => {
+                this.pending('destroyAll' , false);
+                if (success) {
+                    this.selection = [];
+                }
+            });
         } ,
 
-        linkDisk (ids , callback) {
-            Api.disk.linkDisk(ids , (res) => {
-                if (G.isFunction(callback)) {
-                    callback();
-                }
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                this.message('success' , msg);
-                this.getData();
-            })
+        selectionChangeEvent (selection) {
+            this.selection = selection;
+        } ,
+
+        searchEvent () {
+            this.search.page = 1;
+            this.getData();
+        } ,
+
+        resetEvent () {
+            this.search = G.copy(search);
+            this.getData();
+        } ,
+
+        pageEvent (page) {
+            this.search.page = page;
+            this.getData();
+        } ,
+
+        sortChangeEvent (data) {
+            if (data.order === TopContext.sort.none) {
+                this.search.order = '';
+            } else {
+                this.search.order = this.generateOrderString(data.key , data.order);
+            }
+            this.table.page = 1;
+            this.getData();
+        } ,
+
+        isOnlyOneSelection () {
+            return this.selection.length === 1;
+        } ,
+
+        isEmptySelection () {
+            return this.selection.length === 0;
+        } ,
+
+        hasSelection () {
+            return this.selection.length > 0;
+        } ,
+
+        getFirstSelection () {
+            return this.selection[0];
+        } ,
+
+        checkOneSelection () {
+            if (!this.hasSelection()) {
+                this.errorHandle('请选择项');
+                return false;
+            }
+            if (!this.isOnlyOneSelection()) {
+                this.errorHandle('请仅选择一项');
+                return false;
+            }
+            return true;
+        } ,
+
+        edit (record) {
+            this.current = record;
+            this._val('mode' , 'edit');
+            this.$nextTick(() => {
+                this.$refs.form.openFormModal();
+            });
+        } ,
+
+        editEvent (record) {
+            this.edit(record);
+        } ,
+
+        editEventByButton () {
+            if (!this.checkOneSelection()) {
+                return ;
+            }
+            const current = this.getFirstSelection();
+            this.edit(current);
+        } ,
+
+        addEvent () {
+            this._val('mode' , 'add');
+            this.$nextTick(() => {
+                this.$refs.form.openFormModal();
+            });
+        } ,
+
+        rowClickEvent (row , index) {
+            this.$refs.table.toggleSelect(index);
+        } ,
+
+        rowDblclickEvent (row , index) {
+            this.editEvent(row);
         } ,
     } ,
 }

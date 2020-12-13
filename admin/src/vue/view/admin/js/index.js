@@ -1,9 +1,7 @@
-import MyForm from '../form.vue';
+import myForm from '../form.vue';
 
 const search = {
-    role_id: '' ,
     limit: TopContext.limit ,
-    order: '' ,
 };
 
 const current = {id: 0};
@@ -12,7 +10,7 @@ export default {
     name: "index",
 
     components: {
-        'my-form': MyForm ,
+        'my-form': myForm ,
     } ,
 
     data () {
@@ -148,7 +146,7 @@ export default {
     computed: {
 
         showBatchBtn () {
-            return this.val.selectedIds.length > 0;
+            return this.selection.length > 0;
         } ,
     } ,
 
@@ -210,35 +208,22 @@ export default {
                     G.invoke(callback , this , false);
                     return ;
                 }
-                Api.admin.destroyAll(ids , (res) => {
-                    if (res.code !== TopContext.code.Success) {
-                        G.invoke(callback , this , false);
-                        this.errorHandle(res.message);
-                        return ;
-                    }
-                    G.invoke(callback , this , true);
-                    this.message('success' , '操作成功，影响的记录数：' + data);
-                    this.getData();
-                });
+                Api.admin.destroyAll(ids)
+                    .then((res) => {
+                            if (res.code !== TopContext.code.Success) {
+                                G.invoke(callback , this , false);
+                                this.errorHandle(res.message);
+                                return ;
+                            }
+                            G.invoke(callback , this , true);
+                            this.message('success' , '操作成功');
+                            this.getData();
+                    });
             });
         } ,
 
         selectionChangeEvent (selection) {
             this.selection = selection;
-        } ,
-
-        getIdsFromSelection () {
-            return this.selection.map((v) => {
-                v.id;
-            });
-        } ,
-
-        rowClickEvent (row , index) {
-            this.$refs.table.toggleSelect(index);
-        } ,
-
-        rowDblclickEvent (row , index) {
-            this.editEvent(row);
         } ,
 
         destroyEvent (index , record) {
@@ -252,12 +237,40 @@ export default {
 
         destroyAllEvent () {
             this.pending('destroyAll' , true);
-            this.destroyAll(this.getIdsFromSelection() , (success) => {
+            const ids = this.selection.map((v) => {
+                return v.id;
+            });
+            this.destroyAll(ids , (success) => {
                 this.pending('destroyAll' , false);
                 if (success) {
-                    this.val.selectedIds = [];
+                    this.selection = [];
                 }
             });
+        } ,
+
+        searchEvent () {
+            this.search.page = 1;
+            this.getData();
+        } ,
+
+        resetEvent () {
+            this.search = G.copy(search);
+            this.getData();
+        } ,
+
+        pageEvent (page) {
+            this.search.page = page;
+            this.getData();
+        } ,
+
+        sortChangeEvent (data) {
+            if (data.order === TopContext.sort.none) {
+                this.search.order = '';
+            } else {
+                this.search.order = this.generateOrderString(data.key , data.order);
+            }
+            this.table.page = 1;
+            this.getData();
         } ,
 
         isOnlyOneSelection () {
@@ -315,31 +328,13 @@ export default {
             });
         } ,
 
-        searchEvent () {
-            this.search.page = 1;
-            this.getData();
+        rowClickEvent (row , index) {
+            this.$refs.table.toggleSelect(index);
         } ,
 
-        pageEvent (page) {
-            this.search.page = page;
-            this.getData();
+        rowDblclickEvent (row , index) {
+            this.editEvent(row);
         } ,
 
-        sortChangeEvent (data) {
-            if (data.order === TopContext.sort.none) {
-                this.search.order = '';
-            } else {
-                this.search.order = this.generateOrderString(data.key , data.order);
-            }
-            this.table.page = 1;
-            this.getData();
-        } ,
-    } ,
-
-    watch: {
-        form (form , oldVal) {
-            this.val.birthday = form.birthday;
-            this.ins.avatar.render(form.avatar);
-        } ,
     } ,
 }

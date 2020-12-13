@@ -30,6 +30,7 @@ export default {
 
             val: {
                 show: false ,
+                birthday: '' ,
             } ,
 
             dom: {} ,
@@ -116,10 +117,6 @@ export default {
             this.ins.avatar.clearAll();
         } ,
 
-        setDate (date) {
-            this.form.birthday = date;
-        } ,
-
         getRoles () {
             this.pending('getRoles' , true);
             Api.role.all().then((res) => {
@@ -132,14 +129,19 @@ export default {
             });
         } ,
 
+        birthdayChangeEvent (date) {
+            this.val.birthday = date;
+        } ,
+
         submitEvent () {
             const self = this;
             this.pending('submit' , true);
+            this.form.birthday = this.val.birthday;
             const callback = (res) => {
                 this.pending('submit' , false);
                 this.error();
                 if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(msg , data , code);
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.successHandle((keep) => {

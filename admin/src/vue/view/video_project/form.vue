@@ -1,11 +1,11 @@
 <template>
-    <my-form-drawer v-model="val.drawer">
+    <my-form-drawer v-model="val.show">
         <template slot="header">
             <div class="run-action-title">
                 <div class="left">{{ title }}</div>
                 <div class="right">
-                    <Button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent"><my-icon icon="tijiao" />提交</Button>
-                    <Button v-ripple type="error" @click="closeFormDrawer"><my-icon icon="guanbi" />关闭</Button>
+                    <i-button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent"><my-icon icon="tijiao" />提交</i-button>
+                    <i-button v-ripple type="error" @click="closeFormModal"><my-icon icon="guanbi" />关闭</i-button>
                 </div>
             </div>
         </template>
@@ -26,9 +26,9 @@
                     <tr :class="{error: val.error.user_id}">
                         <td>所属用户：</td>
                         <td>
-                            <input type="text" readonly="readonly" :value="`${getUsername(users.current.username , users.current.nickname)}【${users.current.id}】`" class="form-text w-150 run-cursor-not-allow">
+                            <input type="text" readonly="readonly" :value="`${owner.username}【${owner.id}】`" class="form-text w-150 run-cursor-not-allow">
                             如需重新搜索，请点击
-                            <Button @click="searchUserEvent">搜索</Button>
+                            <i-button @click="showUserSelector">搜索</i-button>
                             <span class="need">*</span>
                             <div class="msg"></div>
                             <div class="e-msg">{{ val.error.user_id }}</div>
@@ -38,7 +38,7 @@
                     <tr :class="{error: val.error.module_id}">
                         <td>所属模块</td>
                         <td>
-                            <my-select :data="modules" v-model="form.module_id" @change="moduleChanged"></my-select>
+                            <my-select :width="TopContext.style.inputItemW" :data="modules" v-model="form.module_id" @change="moduleChanged"></my-select>
                             <span class="need">*</span>
                             <div class="msg"></div>
                             <div class="e-msg">{{ val.error.module_id }}</div>
@@ -48,7 +48,7 @@
                     <tr :class="{error: val.error.category_id}">
                         <td>所属分类：</td>
                         <td>
-                            <my-deep-select :data="categories" v-model="form.category_id" @change="val.error.category_id = ''" :has="false"></my-deep-select>
+                            <my-deep-select :width="TopContext.style.inputItemW" :data="categories" v-model="form.category_id" @change="val.error.category_id = ''" :has="false"></my-deep-select>
                             <my-loading v-if="val.pending.getCategories"></my-loading>
                             <span class="need">*</span>
                             <div class="msg">请务必在选择模块后操作</div>
@@ -60,9 +60,9 @@
                     <tr :class="{error: val.error.video_series_id}">
                         <td>视频系列：</td>
                         <td>
-                            <input type="text" readonly="readonly" :value="`${videoSeries.current.name}【${videoSeries.current.id}】`" class="form-text w-180 run-cursor-not-allow">
+                            <input type="text" readonly="readonly" :value="`${videoSeries.name}【${videoSeries.id}】`" class="form-text w-180 run-cursor-not-allow">
                             如需重新搜索，请点击
-                            <Button @click="searchVideoSeriesEvent">搜索</Button>
+                            <i-button @click="showVideoSeriesSelector">搜索</i-button>
                             <span class="need"></span>
                             <div class="msg">请务必在选择模块后操作；输入id、名称可查询</div>
                             <div class="e-msg">{{ val.error.video_series_id }}</div>
@@ -72,9 +72,9 @@
                     <tr :class="{error: val.error.video_company_id}">
                         <td>视频制作公司：</td>
                         <td>
-                            <input type="text" readonly="readonly" :value="`${videoCompany.current.name}【${videoCompany.current.id}】`" class="form-text w-180 run-cursor-not-allow">
+                            <input type="text" readonly="readonly" :value="`${videoCompany.name}【${videoCompany.id}】`" class="form-text w-180 run-cursor-not-allow">
                             如需重新搜索，请点击
-                            <Button @click="searchVideoCompanyEvent">搜索</Button>
+                            <i-button @click="showVideoCompanySelector">搜索</i-button>
                             <span class="need"></span>
                             <div class="msg">请务必在选择模块后操作；输入id、名称可查询</div>
                             <div class="e-msg">{{ val.error.video_company_id }}</div>
@@ -214,9 +214,9 @@
                     <tr :class="{error: val.error.end_status}">
                         <td>完结状态</td>
                         <td>
-                            <RadioGroup v-model="form.end_status">
-                                <Radio v-for="(v,k) in $store.state.business.video_project.end_status" :key="k" :label="k">{{ v }}</Radio>
-                            </RadioGroup>
+                            <i-radio-group v-model="form.end_status">
+                                <i-radio v-for="(v,k) in TopContext.business.videoProject.endStatus" :key="k" :label="k">{{ v }}</i-radio>
+                            </i-radio-group>
                             <span class="need">*</span>
                             <div class="msg">默认：已完结</div>
                             <div class="e-msg">{{ val.error.end_status }}</div>
@@ -236,9 +236,9 @@
                     <tr :class="{error: val.error.status}">
                         <td>状态</td>
                         <td>
-                            <RadioGroup v-model="form.status">
-                                <Radio v-for="(v,k) in $store.state.business.video_project.status" :key="k" :label="parseInt(k)">{{ v }}</Radio>
-                            </RadioGroup>
+                            <i-radio-group v-model="form.status">
+                                <i-radio v-for="(v,k) in TopContext.business.videoProject.status" :key="k" :label="parseInt(k)">{{ v }}</i-radio>
+                            </i-radio-group>
                             <span class="need">*</span>
                             <div class="msg">默认：待审核</div>
                             <div class="e-msg">{{ val.error.status }}</div>
@@ -268,8 +268,8 @@
                     <tr>
                         <td colspan="2">
                             <button type="submit" v-show="false"></button>
-                            <Button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent"><my-icon icon="tijiao" />提交</Button>
-                            <Button v-ripple type="error" @click="closeFormDrawer"><my-icon icon="guanbi" />关闭</Button>
+                            <i-button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent"><my-icon icon="tijiao" />提交</i-button>
+                            <i-button v-ripple type="error" @click="closeFormModal"><my-icon icon="guanbi" />关闭</i-button>
                         </td>
                     </tr>
                     </tbody>
@@ -277,86 +277,9 @@
             </form>
         </template>
 
-        <!-- 请选择视频系列 -->
-        <my-form-modal v-model="val.modalForVideoSeries" title="请选择视频系列" :width="1000">
-            <template slot="footer">
-                <Button v-ripple type="error" @click="val.modalForVideoSeries=false">取消</Button>
-            </template>
-            <template slot="default">
-                <div class="search-modal">
-                    <div class="input">
-                        <div class="input-mask"><input type="text" v-model="videoSeries.value" @keyup.enter="searchVideoSeries" placeholder="请输入搜索值"></div>
-                        <div class="msg">输入id、名称可查询</div>
-                    </div>
-                    <div class="list">
-                        <Table border  :loading="val.pending.searchVideoSeries" :data="videoSeries.data" :columns="videoSeries.field" @on-row-click="updateVideoSeriesEvent">
-                            <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
-                            <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
-                            <template v-slot:action="{row,index}">
-                                <my-table-button>选择</my-table-button>
-                            </template>
-                        </Table>
-                    </div>
-                    <div class="pager">
-                        <my-page :total="videoSeries.total" :limit="videoSeries.limit" :page="videoSeries.page" @on-change="videoSeriesPageEvent"></my-page>
-                    </div>
-                </div>
-            </template>
-        </my-form-modal>
-
-        <!-- 请选择视频制作公司 -->
-        <my-form-modal v-model="val.modalForVideoCompany" title="请选择视频制作公司" :width="1000">
-            <template slot="footer">
-                <Button v-ripple type="error" @click="val.modalForVideoCompany=false">取消</Button>
-            </template>
-            <template slot="default">
-
-                <div class="search-modal">
-                    <div class="input">
-                        <div class="input-mask"><input type="text" v-model="videoCompany.value" @keyup.enter="searchVideoCompany" placeholder="请输入搜索值"></div>
-                        <div class="msg">输入id、名称可查询</div>
-                    </div>
-                    <div class="list">
-                        <Table border  :loading="val.pending.searchVideoCompany" :data="videoCompany.data" :columns="videoCompany.field" @on-row-click="updateVideoCompanyEvent">
-                            <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
-                            <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
-                            <template v-slot:action="{row,index}">
-                                <my-table-button>选择</my-table-button>
-                            </template>
-                        </Table>
-                    </div>
-                    <div class="pager">
-                        <my-page :total="videoCompany.total" :limit="videoCompany.limit" :page="videoCompany.page" @on-change="videoCompanyPageEvent"></my-page>
-                    </div>
-                </div>
-            </template>
-        </my-form-modal>
-
-        <!-- 请选择用户 -->
-        <my-form-modal v-model="val.modalForUser" title="请选择用户" :width="1000">
-            <template slot="footer">
-                <Button v-ripple type="error" @click="val.modalForUser=false">取消</Button>
-            </template>
-            <template slot="default">
-                <div class="search-modal">
-                    <div class="input">
-                        <div class="input-mask"><input type="text" v-model="users.value" @keyup.enter="searchUser" placeholder="请输入搜索值"></div>
-                        <div class="msg">输入id、用户名、手机号码、邮箱可查询</div>
-                    </div>
-                    <div class="list">
-                        <Table border :loading="val.pending.searchUser" :data="users.data" :columns="users.field" @on-row-click="updateUserEvent">
-                            <template v-slot:avatar="{row,index}"><img :src="row.avatar ? row.avatar : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
-                            <template v-slot:action="{row,index}"><my-table-button>选择</my-table-button></template>
-                        </Table>
-                    </div>
-                    <div class="pager">
-                        <my-page :total="users.total" :limit="users.limit" :page="users.page" @on-change="userPageEvent"></my-page>
-                    </div>
-                </div>
-            </template>
-        </my-form-modal>
-
-
+        <my-user-selector ref="user-selector" @on-change="userChangeEvent"></my-user-selector>
+        <my-video-series-selector ref="video-series-selector" :moduleId="form.module_id" @on-change="videoSeriesChangeEvent"></my-video-series-selector>
+        <my-video-company-selector ref="video-company-selector" :moduleId="form.module_id" @on-change="videoCompanyChangeEvent"></my-video-company-selector>
     </my-form-drawer>
 </template>
 

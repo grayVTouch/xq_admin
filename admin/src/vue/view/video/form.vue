@@ -1,13 +1,13 @@
 <template>
-    <my-form-drawer :title="title" v-model="val.drawer">
+    <my-form-drawer :title="title" v-model="val.show">
 
         <template slot="header">
 
             <div class="run-action-title">
                 <div class="left">{{ title }}</div>
                 <div class="right">
-                    <Button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent"><my-icon icon="tijiao" />提交</Button>
-                    <Button v-ripple type="error" @click="closeFormDrawer"><my-icon icon="guanbi" />关闭</Button>
+                    <i-button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent"><my-icon icon="tijiao" />提交</i-button>
+                    <i-button v-ripple type="error" @click="closeFormModal"><my-icon icon="guanbi" />关闭</i-button>
                 </div>
             </div>
 
@@ -37,9 +37,9 @@
                             <tr :class="{error: val.error.type}">
                                 <td>类型：</td>
                                 <td>
-                                    <RadioGroup v-model="form.type" @on-change="typeChangedEvent">
-                                        <Radio v-for="(v,k) in $store.state.business.video.type" :key="k" :label="k">{{ v }}</Radio>
-                                    </RadioGroup>
+                                    <i-radio-group v-model="form.type" @on-change="typeChangedEvent">
+                                        <i-radio v-for="(v,k) in TopContext.business.video.type" :key="k" :label="k">{{ v }}</i-radio>
+                                    </i-radio-group>
                                     <span class="need">*</span>
                                     <div class="msg">默认：杂类</div>
                                     <div class="e-msg">{{ val.error.type }}</div>
@@ -49,9 +49,9 @@
                             <tr :class="{error: val.error.user_id}">
                                 <td>所属用户：</td>
                                 <td>
-                                    <input type="text" readonly="readonly" :value="`${getUsername(users.current.username , users.current.nickname)}【${users.current.id}】`" class="form-text w-180 run-cursor-not-allow">
+                                    <input type="text" readonly="readonly" :value="`${owner.username}【${owner.id}】`" class="form-text w-180 run-cursor-not-allow">
                                     如需重新搜索，请点击
-                                    <Button @click="searchUserEvent">搜索</Button>
+                                    <i-button @click="showUserSelector">搜索</i-button>
                                     <span class="need">*</span>
                                     <div class="msg"></div>
                                     <div class="e-msg">{{ val.error.user_id }}</div>
@@ -61,7 +61,7 @@
                             <tr :class="{error: val.error.module_id}">
                                 <td>所属模块：</td>
                                 <td>
-                                    <my-select :data="modules" v-model="form.module_id" @change="moduleChangedEvent"></my-select>
+                                    <my-select :data="modules" v-model="form.module_id" @change="moduleChangedEvent" :width="TopContext.style.inputItemW"></my-select>
                                     <my-loading v-if="val.pending.getModules"></my-loading>
                                     <span class="need">*</span>
                                     <div class="msg"></div>
@@ -72,7 +72,7 @@
                             <tr :class="{error: val.error.category_id}" v-show="form.type === 'misc'">
                                 <td>所属分类：</td>
                                 <td>
-                                    <my-deep-select :data="categories" v-model="form.category_id" @change="val.error.category_id = ''" :has="false"></my-deep-select>
+                                    <my-deep-select :data="categories" v-model="form.category_id" @change="val.error.category_id = ''" :has="false" :width="TopContext.style.inputItemW"></my-deep-select>
                                     <span class="need">*</span>
                                     <my-loading v-if="val.pending.getCategories"></my-loading>
                                     <div class="msg">请务必在选择模块后操作</div>
@@ -83,9 +83,9 @@
                             <tr :class="{error: val.error.video_project_id}" v-show="form.type === 'pro'">
                                 <td>视频专题：</td>
                                 <td>
-                                    <input type="text" readonly="readonly" :value="`${videoProjects.current.name}【${videoProjects.current.id}】`" class="form-text w-180 run-cursor-not-allow">
+                                    <input type="text" readonly="readonly" :value="`${videoProject.name}【${videoProject.id}】`" class="form-text w-180 run-cursor-not-allow">
                                     如需重新搜索，请点击
-                                    <Button @click="searchVideoProjectEvent">搜索</Button>
+                                    <i-button @click="showVideoProjectSelector">搜索</i-button>
                                     <span class="need">*</span>
                                     <div class="msg">请务必在选择模块后操作；输入关联主体id、名称可查询</div>
                                     <div class="e-msg">{{ val.error.video_project_id }}</div>
@@ -191,9 +191,9 @@
                             <tr :class="{error: val.error.status}">
                                 <td>状态</td>
                                 <td>
-                                    <RadioGroup v-model="form.status">
-                                        <Radio v-for="(v,k) in $store.state.business.video.status" :key="k" :label="parseInt(k)">{{ v }}</Radio>
-                                    </RadioGroup>
+                                    <i-radio-group v-model="form.status">
+                                        <i-radio v-for="(v,k) in TopContext.business.video.status" :key="k" :label="parseInt(k)">{{ v }}</i-radio>
+                                    </i-radio-group>
                                     <span class="need">*</span>
                                     <div class="msg">默认：审核中</div>
                                     <div class="e-msg">{{ val.error.status }}</div>
@@ -233,7 +233,7 @@
                             <tr>
                                 <td colspan="2">
                                     <button class="hide" type="submit"><my-icon icon="tijiao" />提交</button>
-                                    <Button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent"><my-icon icon="tijiao" />提交</Button>
+                                    <i-button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent"><my-icon icon="tijiao" />提交</i-button>
                                 </td>
                             </tr>
 
@@ -303,9 +303,9 @@
                                         <tr>
                                             <td>合并字幕？</td>
                                             <td>
-                                                <RadioGroup v-model="form.merge_video_subtitle">
-                                                    <Radio v-for="(v,k) in $store.state.context.business.bool.integer" :key="k" :label="parseInt(k)">{{ v }}</Radio>
-                                                </RadioGroup>
+                                                <i-radio-group v-model="form.merge_video_subtitle">
+                                                    <i-radio v-for="(v,k) in TopContext.business.bool.integer" :key="k" :label="parseInt(k)">{{ v }}</i-radio>
+                                                </i-radio-group>
                                                 <span class="need">*</span>
                                                 <div class="msg">默认：否；<br>当选择合并字幕的时候服务端会将字幕列表中的首个字幕合并到视频并删除其他字幕，合并完成也会删除合并字幕仅保留合并后的视频文件</div>
                                                 <div class="e-msg">{{ form.merge_video_subtitle }}</div>
@@ -329,8 +329,8 @@
                                                 </div>
 
                                                 <div class="action">
-                                                    <Button v-ripple @click="addVideoSubtitleEvent">新增</Button>
-<!--                                                    <Button v-ripple :loading="val.pending.uploadVideoSubtitle" :disabled="canUploadVideoSubtitle" @click="uploadVideoSubtitleEvent">上传</Button>-->
+                                                    <i-button v-ripple @click="addVideoSubtitleEvent">新增</i-button>
+<!--                                                    <i-button v-ripple :loading="val.pending.uploadVideoSubtitle" :disabled="canUploadVideoSubtitle" @click="uploadVideoSubtitleEvent">上传</i-button>-->
                                                 </div>
 
 <!--                                                <div class="msg">在提交修改之前，请务必点击上传文件先将字幕文件保存到服务器！</div>-->
@@ -341,52 +341,63 @@
                                 </div>
                             </div>
 
-                            <div class="line files">
+                            <div class="line files" v-if="mode === 'edit'">
                                 <div class="line">
                                     <div class="run-title">
                                         <div class="left">视频列表</div>
                                         <div class="right">
-                                            <my-table-button type="error" :loading="val.pending['destroyVideos']" v-if="val.selectedIdsForVideo.length > 0" @click="destroyVideosEvent">删除选中项 （{{ val.selectedIdsForVideo.length }}）</my-table-button>
+                                            <my-table-button type="error" :loading="val.pending['destroyVideos']" v-if="videoSelection.length > 0" @click="destroyVideosEvent">删除选中项 （{{ videoSelection.length }}）</my-table-button>
                                         </div>
                                     </div>
                                     <div>
-                                        <Table style="width: 100%;" border :columns="videos.field" :data="videos.data" @on-selection-change="selectedVideoEvent">
+                                        <i-table
+                                                class="w-r-100"
+                                                border
+                                                :columns="videos.field"
+                                                :data="videos.data"
+                                                @on-selection-change="videoSelectionChangeEvent"
+                                        >
                                             <template v-slot:src="{row,index}">
-                                                <video muted="muted" controls :src="row.src ? row.src : $store.state.context.res.notFound" :height="$store.state.context.table.videoH"></video>
+                                                <video muted="muted" controls :src="row.src ? row.src : TopContext.res.notFound" :height="TopContext.table.videoH"></video>
                                             </template>
                                             <template v-slot:action="{row,index}">
                                                 <my-table-button :loading="val.pending['delete_' + row.id]" @click="destroyVideoEvent(index , row)">删除</my-table-button>
-                                                <my-table-button @click="link(row.src , '_blank')">预览</my-table-button>
+                                                <my-table-button @click="openWindow(row.src , '_blank')">预览</my-table-button>
                                             </template>
-                                        </Table>
+                                        </i-table>
                                     </div>
                                 </div>
 
                                 <div class="line">
-                                    <my-table-button type="error" :loading="val.pending['destroyVideos']" v-if="val.selectedIdsForVideo.length > 0" @click="destroyVideosEvent">删除选中项 （{{ val.selectedIdsForVideo.length }}）</my-table-button>
+                                    <my-table-button type="error" :loading="val.pending['destroyVideos']" v-if="videoSelection.length > 0" @click="destroyVideosEvent">删除选中项 （{{ videoSelection.length }}）</my-table-button>
                                 </div>
                             </div>
 
-                            <div class="line files">
+                            <div class="line files" v-if="mode === 'edit'">
                                 <div class="line">
                                     <div class="run-title">
                                         <div class="left">字幕列表</div>
                                         <div class="right">
-                                            <my-table-button type="error" :loading="val.pending['destroyVideoSubtitles']" v-if="val.selectedIdsForSubtitle.length > 0" @click="destroyVideoSubtitlesEvent">删除选中项 （{{ val.selectedIdsForSubtitle.length }}）</my-table-button>
+                                            <my-table-button type="error" :loading="val.pending['destroyVideoSubtitles']" v-if="videoSubtitleSelection.length > 0" @click="destroyVideoSubtitlesEvent">删除选中项 （{{ videoSubtitleSelection.length }}）</my-table-button>
                                         </div>
                                     </div>
                                     <div>
-                                        <Table style="width: 100%;" border :columns="videoSubtitles.field" :data="videoSubtitles.data" @on-selection-change="selectedSubtitleEvent">
+                                        <i-table
+                                                class="w-r-100"
+                                                border :columns="videoSubtitles.field"
+                                                :data="videoSubtitles.data"
+                                                @on-selection-change="videoSubtitleSelectionChangeEvent"
+                                        >
                                             <template v-slot:src="{row,index}">{{ row.src }}</template>
                                             <template v-slot:action="{row,index}">
                                                 <my-table-button :loading="val.pending['delete_' + row.id]" @click="destroyVideoSubtitleEvent(index , row)">删除</my-table-button>
                                             </template>
-                                        </Table>
+                                        </i-table>
                                     </div>
                                 </div>
 
                                 <div class="line">
-                                    <my-table-button type="error" :loading="val.pending['destroyVideoSubtitles']" v-if="val.selectedIdsForSubtitle.length > 0" @click="destroyVideoSubtitlesEvent">删除选中项 （{{ val.selectedIdsForSubtitle.length }}）</my-table-button>
+                                    <my-table-button type="error" :loading="val.pending['destroyVideoSubtitles']" v-if="videoSubtitleSelection.length > 0" @click="destroyVideoSubtitlesEvent">删除选中项 （{{ videoSubtitleSelection.length }}）</my-table-button>
                                 </div>
                             </div>
 
@@ -396,58 +407,8 @@
             </form>
 
             <!-- 请选择用户 -->
-            <my-form-modal v-model="val.modalForUser" title="请选择用户" :width="1000">
-                <template slot="footer">
-                    <Button v-ripple type="error" @click="val.modalForUser=false">取消</Button>
-                </template>
-                <template slot="default">
-                    <div class="search-modal">
-                        <div class="input">
-                            <div class="input-mask"><input type="text" v-model="users.value" @keyup.enter="searchUser" placeholder="请输入搜索值"></div>
-                            <div class="msg">输入用户id、用户名、手机号码、邮箱可查询用户</div>
-                        </div>
-                        <div class="list">
-                            <Table border :loading="val.pending.searchUser" :data="users.data" :columns="users.field" @on-row-click="updateUserEvent">
-                                <template v-slot:avatar="{row,index}"><img :src="row.avatar ? row.avatar : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
-                                <template v-slot:action="{row,index}">
-                                    <my-table-button>选择</my-table-button>
-                                </template>
-                            </Table>
-                        </div>
-                        <div class="pager">
-                            <my-page :total="users.total" :limit="users.limit" :page="users.page" @on-change="userPageEvent"></my-page>
-                        </div>
-                    </div>
-                </template>
-            </my-form-modal>
-
-            <!-- 视频专题 -->
-            <my-form-modal v-model="val.modalForVideoProject" title="请选择视频专题" :width="1000">
-                <template slot="footer">
-                    <Button v-ripple type="error" @click="val.modalForVideoProject=false">取消</Button>
-                </template>
-                <template slot="default">
-
-                    <div class="search-modal">
-                        <div class="input">
-                            <div class="input-mask"><input type="text" v-model="videoProjects.value" @keyup.enter="searchVideoProject" placeholder="请输入搜索值"></div>
-                            <div class="msg"></div>
-                        </div>
-                        <div class="list">
-                            <Table border  :loading="val.pending.searchVideoProject" :data="videoProjects.data" :columns="videoProjects.field" @on-row-click="updateVideoProjectEvent">
-                                <template v-slot:thumb="{row,index}"><img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image"></template>
-                                <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
-                                <template v-slot:action="{row,index}">
-                                    <my-table-button>选择</my-table-button>
-                                </template>
-                            </Table>
-                        </div>
-                        <div class="pager">
-                            <my-page :total="videoProjects.total" :limit="videoProjects.limit" :page="videoProjects.page" @on-change="videoProjectPageEvent"></my-page>
-                        </div>
-                    </div>
-                </template>
-            </my-form-modal>
+            <my-user-selector ref="user-selector" @on-change="userChangeEvent"></my-user-selector>
+            <my-video-project-selector ref="video-project-selector" :moduleId="form.module_id" @on-change="videoProjectChangeEvent"></my-video-project-selector>
 
         </template>
     </my-form-drawer>

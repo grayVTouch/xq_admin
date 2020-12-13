@@ -29,7 +29,8 @@ class Disk extends Base
         $param['path']          = $param['path'] ?? '';
         $param['os']            = $param['os'] ?? '';
         $param['prefix']        = $param['prefix'] ?? '';
-        $param['default']       = $param['default'] ?? '';
+        $param['is_default']       = $param['is_default'] ?? '';
+        $param['is_linked']       = $param['is_linked'] ?? '';
         $res = DiskAction::localUpdate($this , $id ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -43,7 +44,8 @@ class Disk extends Base
         $param['path']          = $param['path'] ?? '';
         $param['os']            = $param['os'] ?? '';
         $param['prefix']        = $param['prefix'] ?? '';
-        $param['default']       = $param['default'] ?? '';
+        $param['is_default']       = $param['is_default'] ?? '';
+        $param['is_linked']       = $param['is_linked'] ?? '';
         $res = DiskAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -57,7 +59,8 @@ class Disk extends Base
         $param['path']          = $param['path'] ?? '';
         $param['os']            = $param['os'] ?? '';
         $param['prefix']        = $param['prefix'] ?? '';
-        $param['default']       = $param['default'] ?? '';
+        $param['is_default']       = $param['is_default'] ?? '';
+        $param['is_linked']       = $param['is_linked'] ?? '';
         $res = DiskAction::store($this ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);

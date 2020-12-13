@@ -25,7 +25,7 @@ module.exports = merge(common, {
                              * 而实际上字体文件的定位是 dist 目录所在目录！
                              * 所以需要给出 publicPath 指定 dist 编译的根目录
                              */
-                            publicPath: '../',
+                            // publicPath: '../',
                         },
                     },
                     {

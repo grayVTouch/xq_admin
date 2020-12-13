@@ -1,6 +1,11 @@
 <template>
     <my-form-modal
-            v-model="val.show" :title="title" :loading="val.pending.submit" @on-ok="submitEvent" @on-cancel="closeFormModal">
+            v-model="val.show"
+            :title="title"
+            :loading="val.pending.submit"
+            @on-ok="submitEvent"
+            @on-cancel="closeFormModal"
+    >
         <template slot="default">
             <form class="form" @submit.prevent="submitEvent">
                 <table class="input-table">
@@ -29,7 +34,7 @@
                     <tr :class="{error: val.error.role_id}">
                         <td>角色</td>
                         <td>
-                            <my-select :data="roles" v-model="form.role_id"></my-select>
+                            <my-select :data="roles" v-model="form.role_id" width="400"></my-select>
                             <my-loading v-if="val.pending.getRoles"></my-loading>
                             <span class="need">*</span>
                             <div class="msg"></div>
@@ -76,9 +81,9 @@
                     <tr :class="{error: val.error.sex}">
                         <td>性别</td>
                         <td>
-                            <RadioGroup v-model="form.sex">
-                                <Radio v-for="(v,k) in $store.state.business.user.sex" :key="k" :label="k">{{ v }}</Radio>
-                            </RadioGroup>
+                            <i-radio-group v-model="form.sex">
+                                <i-radio v-for="(v,k) in TopContext.business.user.sex" :key="k" :label="k">{{ v }}</i-radio>
+                            </i-radio-group>
                             <span class="need">*</span>
                             <div class="msg"></div>
                             <div class="e-msg">{{ val.error.sex }}</div>
@@ -88,7 +93,7 @@
                     <tr :class="{error: val.error.birthday}">
                         <td>生日</td>
                         <td>
-                            <i-date-picker v-model="val.birthday" format="yyyy-MM-dd" class="iview-form-input" @on-change="setDate"></i-date-picker>
+                            <i-date-picker v-model="val.birthday" type="date" class="iview-form-input" @on-change="birthdayChangeEvent"></i-date-picker>
                             <span class="need"></span>
                             <div class="msg"></div>
                             <div class="e-msg">{{ val.error.birthday }}</div>
@@ -125,9 +130,10 @@
                 </table>
             </form>
         </template>
+
         <template slot="footer">
-            <Button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent">确认</Button>
-            <Button v-ripple type="error" @click="closeFormModal">关闭</Button>
+            <i-button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent">确认</i-button>
+            <i-button v-ripple type="error" @click="closeFormModal">关闭</i-button>
         </template>
     </my-form-modal>
 </template>

@@ -36,7 +36,7 @@ class DiskAction extends Action
         $os_range   = my_config_keys('business.os_for_disk');
 
         $validator = Validator::make($param , [
-            'default'   => ['sometimes' , 'integer' , Rule::in($bool_range)] ,
+            'is_default'   => ['sometimes' , 'integer' , Rule::in($bool_range)] ,
             'os'        => ['sometimes' , Rule::in($os_range)] ,
             'is_linked' => ['sometimes' , 'integer' , Rule::in($bool_range)] ,
         ]);
@@ -71,7 +71,7 @@ class DiskAction extends Action
         $param['path']      = $param['path'] === '' ? $res->path : $param['path'];
         $param['os']        = $param['os'] === '' ? $res->os : $param['os'];
         $param['prefix']    = $param['prefix'] === '' ? $res->prefix : $param['prefix'];
-        $param['default']   = $param['default'] === '' ? $res->default : $param['default'];
+        $param['is_default']   = $param['is_default'] === '' ? $res->is_default : $param['is_default'];
         $param['is_linked'] = $param['is_linked'] === '' ? $res->is_linked : $param['is_linked'];
 
         try {
@@ -81,12 +81,12 @@ class DiskAction extends Action
                 'path' ,
                 'os' ,
                 'prefix' ,
-                'default' ,
+                'is_default' ,
                 'is_linked' ,
                 'updated_at' ,
             ]));
 
-            if ($param['default']) {
+            if ($param['is_default']) {
                 DiskModel::setNotDefaultByExcludeId($res->id);
             }
 
@@ -109,7 +109,7 @@ class DiskAction extends Action
         $validator = Validator::make($param , [
             'path'      => 'required' ,
             'prefix'    => 'required' ,
-            'default'   => ['required' , 'integer' , Rule::in($bool_range)] ,
+            'is_default'   => ['required' , 'integer' , Rule::in($bool_range)] ,
             'is_linked' => ['required' , 'integer' , Rule::in($bool_range)] ,
             'os'        => ['required' , Rule::in($os_range)] ,
         ]);
@@ -145,12 +145,12 @@ class DiskAction extends Action
                 'path' ,
                 'os' ,
                 'prefix' ,
-                'default' ,
+                'is_default' ,
                 'is_linked' ,
                 'updated_at' ,
             ]));
 
-            if ($param['default']) {
+            if ($param['is_default']) {
                 DiskModel::setNotDefaultByExcludeId($res->id);
             }
 
@@ -173,7 +173,7 @@ class DiskAction extends Action
         $validator = Validator::make($param , [
             'path'      => 'required' ,
             'prefix'    => 'required' ,
-            'default'   => ['required' , 'integer' , Rule::in($bool_range)] ,
+            'is_default'   => ['required' , 'integer' , Rule::in($bool_range)] ,
             'os'        => ['required' , Rule::in($os_range)] ,
         ]);
 
@@ -202,11 +202,11 @@ class DiskAction extends Action
                 'path' ,
                 'os' ,
                 'prefix' ,
-                'default' ,
+                'is_default' ,
                 'created_at' ,
             ]));
 
-            if ($param['default']) {
+            if ($param['is_default']) {
                 DiskModel::setNotDefaultByExcludeId($id);
             }
 

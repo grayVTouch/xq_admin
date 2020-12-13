@@ -8,44 +8,41 @@ const search = genUrl('search_video_project');
 const destroyTag = genUrl('destroy_video_project_tag');
 
 export default {
-    index (data , success , error) {
-        return request(index , 'get' , data , success , error);
+    index (param) {
+        return Http.get(index , param);
     } ,
 
-    localUpdate (id , data , success , error) {
-        const url = localUpdate.replace('{id}' , id);
-        return request(url , 'patch' , data , success , error)
+    localUpdate (id , data) {
+        return Http.patch(localUpdate.replace('{id}' , id) , null , data)
     } ,
 
-    update (id , data , success , error) {
-        const url = update.replace('{id}' , id);
-        return request(url , 'put' , data , success , error)
+    update (id , data) {
+        return Http.put(update.replace('{id}' , id) , null , data);
     } ,
 
-    store (data , success , error) {
-        return request(store , 'post' , data , success , error)
+    store (data) {
+        return Http.post(store , null , data);
     } ,
 
-    show (id , success , error) {
-        return request(show.replace('{id}' , id) , 'get' , null , success , error)
+    show (id) {
+        return Http.get(show.replace('{id}' , id));
     } ,
 
-    destroy (id , success , error) {
-        const url = destroy.replace('{id}' , id);
-        return request(url , 'delete' , null , success , error)
+    destroy (id) {
+        return Http.delete(destroy.replace('{id}' , id));
     } ,
 
-    destroyAll (idList , success , error) {
-        return request(destroyAll , 'delete' , {
-            ids: G.jsonEncode(idList)
-        } , success , error)
+    destroyAll (ids) {
+        return Http.delete(destroyAll , null , {
+            ids: G.jsonEncode(ids)
+        })
     } ,
 
-    search (data , success , error) {
-        return request(search , 'get' , data , success , error);
+    search (param) {
+        return Http.get(search , param);
     } ,
 
-    destroyTag (data , success , error) {
-        return request(destroyTag , 'delete' , data , success , error);
+    destroyTag (data) {
+        return Http.delete(destroyTag , null , data);
     } ,
 };

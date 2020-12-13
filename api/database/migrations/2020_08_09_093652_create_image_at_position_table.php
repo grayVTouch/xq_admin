@@ -20,7 +20,7 @@ class CreateImageAtPositionTable extends Migration
             $table->unsignedBigInteger('position_id')->default(0)->comment('xq_position.id');
             $table->unsignedBigInteger('module_id')->default(0)->comment('xq_module.id');
             $table->string('platform' , 255)->default('')->comment('缓存字段，xq_position.platform');
-            $table->string('path' , 500)->default('')->comment('路径');
+            $table->string('src' , 500)->default('')->comment('图片路径');
             $table->string('link' , 500)->default('')->comment('跳转链接');
 
             $table->timestamps();

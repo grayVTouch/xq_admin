@@ -65,6 +65,105 @@ export default [
             }
         ] ,
     } ,
+    {
+        path: '/user' ,
+        component: index ,
+        children: [
+            {
+                path: 'index' ,
+                component: () => import('@vue/view/user/index.vue') ,
+            }
+        ] ,
+    } ,
+    {
+        path: '/image' ,
+        component: index ,
+        children: [
+            {
+                path: 'subject' ,
+                component: () => import('@vue/view/image_subject/index.vue') ,
+            } ,
+            {
+                path: 'project' ,
+                component: () => import('@vue/view/image_project/index.vue') ,
+            } ,
+        ] ,
+    } ,
+    {
+        path: '/video' ,
+        component: index ,
+        children: [
+            {
+                path: 'series' ,
+                component: () => import('@vue/view/video_series/index.vue') ,
+            } ,
+            {
+                path: 'company' ,
+                component: () => import('@vue/view/video_company/index.vue') ,
+            } ,
+            {
+                path: 'project' ,
+                component: () => import('@vue/view/video_project/index.vue') ,
+            } ,
+            {
+                path: 'index' ,
+                component: () => import('@vue/view/video/index.vue') ,
+            } ,
+        ] ,
+    } ,
+    {
+        path: '/tag' ,
+        component: index ,
+        children: [
+            {
+                path: 'index' ,
+                component: () => import('@vue/view/tag/index.vue') ,
+            } ,
+        ] ,
+    } ,
+    {
+        path: '/category' ,
+        component: index ,
+        children: [
+            {
+                path: 'index' ,
+                component: () => import('@vue/view/category/index.vue') ,
+            } ,
+        ] ,
+    } ,
+    {
+        path: '/module' ,
+        component: index ,
+        children: [
+            {
+                path: 'index' ,
+                component: () => import('@vue/view/module/index.vue') ,
+            } ,
+        ] ,
+    } ,
+
+    {
+        path: '/system' ,
+        component: index ,
+        children: [
+            {
+                path: 'disk' ,
+                component: () => import('@vue/view/disk/index.vue') ,
+            } ,
+            {
+                path: 'navigation' ,
+                component: () => import('@vue/view/nav/index.vue') ,
+            } ,
+            {
+                path: 'position' ,
+                component: () => import('@vue/view/position/index.vue') ,
+            } ,
+            {
+                path: 'imageAtPosition' ,
+                component: () => import('@vue/view/image_at_position/index.vue') ,
+            } ,
+        ] ,
+    } ,
 
     //
     // {

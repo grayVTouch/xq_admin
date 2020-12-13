@@ -4,7 +4,7 @@
 namespace App\Customize\api\admin\handler;
 
 
-use App\Customize\api\admin\model\NavModel;
+use App\Customize\api\admin\model\Model;
 use App\Customize\api\admin\model\ModuleModel;
 use stdClass;
 use function api\admin\get_config_key_mapping_value;
@@ -13,27 +13,34 @@ use function core\convert_object;
 
 class NavHandler extends Handler
 {
-    public static function handle(?NavModel $model , bool $deep = true): ?stdClass
+    public static function handle(?Model $model , array $with = [] , bool $deep = true): ?stdClass
     {
         if (empty($model)) {
             return null;
         }
-        $res = convert_object($model);
-        if ($deep) {
-            $nav = $res->p_id ? NavModel::find($res->p_id) : null;
-            $nav = self::handle($nav , false);
-        } else {
-            $nav = null;
+
+        $model = convert_object($model);
+
+        $model->__is_enabled__ = get_config_key_mapping_value('business.bool_for_int' , $model->is_enabled);
+        $model->__type__ = get_config_key_mapping_value('business.type_for_nav' , $model->type);
+
+        if (in_array('module' , $with)) {
+            $module = ModuleModel::find($model->module_id);
+            $module = ModuleHandler::handle($module);
+            $model->module = $module;
         }
-        $module = ModuleModel::find($res->module_id);
-        ModuleHandler::handle($module);
 
-        $res->module = $module;
-        $res->nav = $nav;
+        if (in_array('parent' , $with)) {
+            if ($deep) {
+                $nav = $model->p_id ? Model::find($model->p_id) : null;
+                $nav = self::handle($nav , $with , false);
+            } else {
+                $nav = null;
+            }
+            $model->parent = $nav;
+        }
 
-        $res->__platform__ = get_config_key_mapping_value('business.platform' , $res->platform);
-
-        return $res;
+        return $model;
     }
 
 

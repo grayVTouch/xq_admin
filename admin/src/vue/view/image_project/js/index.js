@@ -1,5 +1,12 @@
 import Form from '../form.vue';
 
+const current = {id: 0};
+
+const search = {
+    limit: TopContext.limit ,
+    category_id: '' ,
+};
+
 export default {
     name: "index",
 
@@ -98,7 +105,15 @@ export default {
                         align: TopContext.table.alignCenter
                     } ,
                     {
-                        title: '状态' ,
+                        title: '处理状态' ,
+                        key: '__process_status__' ,
+                        // slot: 'status' ,
+                        minWidth: TopContext.table.status ,
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
+                    } ,
+                    {
+                        title: '审核状态' ,
                         key: '__status__' ,
                         slot: 'status' ,
                         minWidth: TopContext.table.status ,
@@ -147,33 +162,23 @@ export default {
                         minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
-                    {
-                        title: '操作' ,
-                        slot: 'action' ,
-                        minWidth: TopContext.table.action ,
-                        align: TopContext.table.alignCenter ,
-                        fixed: 'right' ,
-                    } ,
                 ] ,
                 total: 0 ,
                 page: 1 ,
                 data: [] ,
             } ,
 
-            search: {
-                limit: TopContext.limit ,
-                user_id: '' ,
-                module_id: '' ,
-                category_id: '' ,
-                subject_id: '' ,
-                status: '' ,
-            } ,
+            search: G.copy(search) ,
 
             modules: [] ,
 
             categories: [] ,
 
             form: {}  ,
+
+            current: G.copy(current) ,
+
+            selection: [] ,
         };
     } ,
 
@@ -182,12 +187,11 @@ export default {
         this.initIns();
         this.getData();
         this.getModules();
-        // this.getCategories();
     } ,
 
     computed: {
         showBatchBtn () {
-            return this.val.selectedIds.length > 0;
+            return this.selection.length > 0;
         } ,
     } ,
 
@@ -204,62 +208,67 @@ export default {
         } ,
 
         getCategories (moduleId) {
+            this.categories = [];
             this.search.category_id = '';
-            this.categories         = [];
-
             if (!G.isNumeric(moduleId)) {
                 return ;
             }
-
             this.pending('getCategories' , true);
-
-            Api.category.searchByModuleId(moduleId , (res) => {
-                this.pending('getCategories' , false);
-
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-
-                this.categories = data;
-            });
+            Api.category
+                .search({
+                    module_id: moduleId ,
+                    type: 'image_project' ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    this.categories = res.data;
+                })
+                .finally(() => {
+                    this.pending('getCategories' , false);
+                });
         } ,
 
         getModules () {
             this.pending('getModules' , true);
-            Api.module.all().then((res) => {
-                this.pending('getModules' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                this.modules = data;
-            });
+            Api.module
+                .all()
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    this.modules = res.data;
+                }).finally(() => {
+                    this.pending('getModules' , false);
+                });
         } ,
 
         getData () {
             this.pending('getData' , true);
-            Api.image_project.index(this.search , (res) => {
-                this.pending('getData' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                this.table.total = data.total;
-                this.table.page = data.current_page;
-                this.handleData(data.data);
-                this.table.data = data.data;
-            });
-        } ,
+            Api.imageProject
+                .index(this.search)
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    const data = res.data;
+                    data.data.forEach((v) => {
+                        this.pending(`delete_${v.id}` , false);
 
-
-        handleData (data) {
-            data.forEach((v) => {
-                this.pending(`delete_${v.id}` , false);
-
-                v.images = v.images ? v.images : [];
-                v.tags = v.tags ? v.tags : [];
-            });
+                        v.images = v.images ? v.images : [];
+                        v.tags = v.tags ? v.tags : [];
+                    });
+                    this.table.total = data.total;
+                    this.table.page = data.current_page;
+                    this.table.data = data.data;
+                })
+                .finally(() => {
+                    this.pending('getData' , false);
+                });
         } ,
 
         destroy (id , callback) {
@@ -275,14 +284,14 @@ export default {
             const self = this;
             this.confirmModal('你确定删除吗？'  , (res) => {
                 if (res) {
-                    Api.image_project.destroyAll(idList , (res) => {
+                    Api.imageProject.destroyAll(idList , (res) => {
                         if (res.code !== TopContext.code.Success) {
                             G.invoke(callback , this , false);
                             this.errorHandle(res.message);
                             return ;
                         }
                         G.invoke(callback , this , true);
-                        this.message('success' , '操作成功' , '影响的记录数：' + data);
+                        this.message('success' , '操作成功');
                         this.getData();
                     });
                     return ;
@@ -291,12 +300,8 @@ export default {
             });
         } ,
 
-        selectionChangeEvent (data) {
-            const ids = [];
-            data.forEach((v) => {
-                ids.push(v.id);
-            });
-            this.val.selectedIds = ids;
+        selectionChangeEvent (selection) {
+            this.selection = selection;
         } ,
 
         destroyEvent (index , record) {
@@ -310,61 +315,15 @@ export default {
 
         destroyAllEvent () {
             this.pending('destroyAll' , true);
-            this.destroyAll(this.val.selectedIds , (success) => {
+            const ids = this.selection.map((v) => {
+                return v.id;
+            });
+            this.destroyAll(ids , (success) => {
                 this.pending('destroyAll' , false);
                 if (success) {
-                    this.val.selectedIds = [];
+                    this.selection = [];
                 }
             });
-        } ,
-
-        editEvent (record) {
-            this._val('mode' , 'edit');
-            this.form = G.copy(record);
-            this.$nextTick(() => {
-                this.$refs.form.openFormDrawer();
-            });
-        } ,
-
-        addEvent () {
-            this._val('mode' , 'add');
-            this.form = {};
-            this.$nextTick(() => {
-                this.$refs.form.openFormDrawer();
-            });
-        } ,
-
-        submitEvent () {
-            const self = this;
-            this.pending('submit' , true);
-            const callback = (res) => {
-                this.pending('submit' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(msg , data , code);
-                    return ;
-                }
-                this.successHandle((keep) => {
-                    self.getData();
-                    if (keep) {
-                        return ;
-                    }
-                    self.closeFormModal();
-                });
-            };
-            if (this.val.mode === 'edit') {
-                Api.image_project.update(this.form.id , this.form).then(callback);
-                return ;
-            }
-            Api.image_project.store(this.form).then(callback);
-        } ,
-
-        closeFormModal () {
-            if (this.pending('submit')) {
-                this.message('warning' , '请求中...请耐心等待');
-                return;
-            }
-            this.val.modal = false;
-
         } ,
 
         searchEvent () {
@@ -372,9 +331,87 @@ export default {
             this.getData();
         } ,
 
+        resetEvent () {
+            this.search = G.copy(search);
+            this.getData();
+        } ,
+
         pageEvent (page) {
             this.search.page = page;
             this.getData();
+        } ,
+
+        sortChangeEvent (data) {
+            if (data.order === TopContext.sort.none) {
+                this.search.order = '';
+            } else {
+                this.search.order = this.generateOrderString(data.key , data.order);
+            }
+            this.table.page = 1;
+            this.getData();
+        } ,
+
+        isOnlyOneSelection () {
+            return this.selection.length === 1;
+        } ,
+
+        isEmptySelection () {
+            return this.selection.length === 0;
+        } ,
+
+        hasSelection () {
+            return this.selection.length > 0;
+        } ,
+
+        getFirstSelection () {
+            return this.selection[0];
+        } ,
+
+        checkOneSelection () {
+            if (!this.hasSelection()) {
+                this.errorHandle('请选择项');
+                return false;
+            }
+            if (!this.isOnlyOneSelection()) {
+                this.errorHandle('请仅选择一项');
+                return false;
+            }
+            return true;
+        } ,
+
+        edit (record) {
+            this.current = record;
+            this._val('mode' , 'edit');
+            this.$nextTick(() => {
+                this.$refs.form.openFormModal();
+            });
+        } ,
+
+        editEvent (record) {
+            this.edit(record);
+        } ,
+
+        editEventByButton () {
+            if (!this.checkOneSelection()) {
+                return ;
+            }
+            const current = this.getFirstSelection();
+            this.edit(current);
+        } ,
+
+        addEvent () {
+            this._val('mode' , 'add');
+            this.$nextTick(() => {
+                this.$refs.form.openFormModal();
+            });
+        } ,
+
+        rowClickEvent (row , index) {
+            this.$refs.table.toggleSelect(index);
+        } ,
+
+        rowDblclickEvent (row , index) {
+            this.editEvent(row);
         } ,
     } ,
 }

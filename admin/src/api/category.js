@@ -10,52 +10,49 @@ const searchByModuleId = genUrl('search_category_by_module_id');
 const search = genUrl('search_category');
 
 export default {
-    index (success , error) {
-        return request(index , 'get' , null , success , error);
+
+    index (param) {
+        return Http.get(index , param);
     } ,
 
-    searchByModuleId (moduleId , success , error) {
-        return request(searchByModuleId , 'get' , {
+    localUpdate (id , data) {
+        return Http.patch(localUpdate.replace('{id}' , id) , null , data);
+    } ,
+
+    update (id , data) {
+        return Http.put(update.replace('{id}' , id) , null , data);
+    } ,
+
+    store (data) {
+        return Http.post(store , null , data);
+    } ,
+
+    show (id) {
+        return Http.get(show.replace('{id}' , id));
+    } ,
+
+    destroy (id) {
+        return Http.delete(destroy.replace('{id}' , id));
+    } ,
+
+    destroyAll (ids) {
+        return Http.delete(destroyAll , null ,{
+            ids: G.jsonEncode(ids)
+        });
+    } ,
+
+    searchByModuleId (moduleId) {
+        return Http.get(searchByModuleId , {
             module_id: moduleId
-        } , success , error);
+        });
     } ,
 
-    search (data , success , error) {
-        return request(search , 'get' , data , success , error);
+    search (param) {
+        return Http.get(search , param);
     } ,
 
-    localUpdate (id , data , success , error) {
-        const url = localUpdate.replace('{id}' , id);
-        return request(url , 'patch' , data , success , error)
-    } ,
-
-    update (id , data , success , error) {
-        const url = update.replace('{id}' , id);
-        return request(url , 'put' , data , success , error)
-    } ,
-
-    store (data , success , error) {
-        return request(store , 'post' , data , success , error)
-    } ,
-
-    show (id , success , error) {
-        const url = show.replace('{id}' , id);
-        return request(show , 'get' , null , success , error)
-    } ,
-
-    destroy (id , success , error) {
-        const url = destroy.replace('{id}' , id);
-        return request(url , 'delete' , null , success , error)
-    } ,
-
-    destroyAll (idList , success , error) {
-        return request(destroyAll , 'delete' , {
-            ids: G.jsonEncode(idList)
-        } , success , error)
-    } ,
-
-    categoryExcludeSelfAndChildren (id , success , error) {
-        return request(categoryExcludeSelfAndChildren.replace('{id}' , id) , 'get' , null , success , error)
+    categoryExcludeSelfAndChildren (id) {
+        return Http.get(categoryExcludeSelfAndChildren.replace('{id}' , id));
     } ,
 
 };

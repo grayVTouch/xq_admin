@@ -129,7 +129,7 @@ class ImageProject extends Base
     public function destroyTag()
     {
         $param = $this->request->post();
-        $param['image_subject_id'] = $param['image_subject_id'] ?? '';
+        $param['image_project_id'] = $param['image_project_id'] ?? '';
         $param['tag_id'] = $param['tag_id'] ?? '';
         $res = ImageProjectAction::destroyTag($this , $param);
         if ($res['code'] != 0) {

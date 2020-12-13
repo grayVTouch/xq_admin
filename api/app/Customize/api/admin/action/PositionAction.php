@@ -80,7 +80,7 @@ class PositionAction extends Action
         if (empty($role)) {
             return self::error('位置不存在' , '' , 404);
         }
-        $role = PositionModel::handle($role);
+        $role = PositionHandler::handle($role);
         return self::success('' , $role);
     }
 

@@ -4,6 +4,8 @@
 namespace App\Customize\api\admin\handler;
 
 use App\Customize\api\admin\model\Model;
+use App\Customize\api\admin\model\ModuleModel;
+use App\Customize\api\admin\model\UserModel;
 use stdClass;
 use function api\admin\get_config_key_mapping_value;
 
@@ -16,11 +18,20 @@ class ModuleHandler extends Handler
         if (empty($model)) {
             return null;
         }
-        $res = convert_object($model);
+        $model = convert_object($model);
 
-        $res->__is_enabled__ = get_config_key_mapping_value('business.bool_for_int' , $res->is_enabled);
+        $model->__is_enabled__ = get_config_key_mapping_value('business.bool_for_int' , $model->is_enabled);
+        $model->__is_auth__ = get_config_key_mapping_value('business.bool_for_int' , $model->is_auth);
+        $model->__is_default__ = get_config_key_mapping_value('business.bool_for_int' , $model->is_default);
 
-        return $res;
+        if (in_array('user' , $with)) {
+            $user = UserModel::find($model->user_id);
+            $user = UserHandler::handle($user);
+            $model->user = $user;
+        }
+
+
+        return $model;
     }
 
 }

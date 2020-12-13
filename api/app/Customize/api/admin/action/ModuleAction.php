@@ -63,9 +63,7 @@ class ModuleAction extends Action
             DB::commit();
             return self::success('操作成功');
         } catch(Exception $e) {
-
             DB::rollBack();
-
             throw $e;
         }
     }
@@ -194,7 +192,7 @@ class ModuleAction extends Action
         if (empty($res)) {
             return self::error('模块不存在' , '' , 404);
         }
-        $res = ModuleModel::handle($res);
+        $res = ModuleHandler::handle($res);
         return self::success('' , $res);
     }
 

@@ -12,7 +12,7 @@ class DiskModel extends Model
 
     public static function findDefault(): ?DiskModel
     {
-        return self::where('default' , 1)->first();
+        return self::where('is_default' , 1)->first();
     }
 
     public static function findByPrefix(string $prefix = ''): ?DiskModel
@@ -33,7 +33,7 @@ class DiskModel extends Model
     {
         return self::where('id' , '!=' , $id)
             ->update([
-                'default' => 0 ,
+                'is_default' => 0 ,
             ]);
     }
 

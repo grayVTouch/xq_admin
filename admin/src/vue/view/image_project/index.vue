@@ -1,6 +1,5 @@
 <template>
-    <my-base ref="base">
-        <div class="mask">
+        <div class="view-item">
 
             <div class="line search">
                 <div class="run-title">
@@ -45,25 +44,25 @@
                         <div class="option">
                             <div class="field">类型：</div>
                             <div class="value">
-                                <RadioGroup v-model="search.type">
-                                    <Radio v-for="(v,k) in $store.state.context.business.image_project.type" :key="k" :label="k">{{ v }}</Radio>
-                                </RadioGroup>
+                                <i-radio-group v-model="search.type">
+                                    <i-radio v-for="(v,k) in TopContext.business.imageProject.type" :key="k" :label="k">{{ v }}</i-radio>
+                                </i-radio-group>
                             </div>
                         </div>
 
                         <div class="option">
                             <div class="field">关联主体id：</div>
                             <div class="value">
-                                <input type="number" class="form-text" v-model="search.subject_id">
+                                <input type="number" class="form-text" v-model="search.image_subject_id" />
                             </div>
                         </div>
 
                         <div class="option">
                             <div class="field">状态：</div>
                             <div class="value">
-                                <RadioGroup v-model="search.status">
-                                    <Radio v-for="(v,k) in $store.state.context.business.image_project.status" :key="k" :label="parseInt(k)">{{ v }}</Radio>
-                                </RadioGroup>
+                                <i-radio-group v-model="search.status">
+                                    <i-radio v-for="(v,k) in TopContext.business.imageProject.status" :key="k" :label="parseInt(k)">{{ v }}</i-radio>
+                                </i-radio-group>
                             </div>
                         </div>
 
@@ -71,56 +70,20 @@
                             <div class="field"></div>
                             <div class="value">
                                 <button type="submit" v-show="false"></button>
-                                <Button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
+                                <my-table-button @click="searchEvent"><my-icon icon="search" mode="right" />搜索</my-table-button>
+                                <my-table-button @click="resetEvent" class="m-l-10"><my-icon icon="reset" mode="right" />重置</my-table-button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
 
-            <div class="line order">
-                <div class="run-title">
-                    <div class="left">排序</div>
-                    <div class="right"></div>
-                </div>
-
-                <div class="filter-option">
-
-                    <div class="option">
-                        <div class="field">id：</div>
-                        <div class="value">
-                            <RadioGroup v-model="search.order">
-                                <Radio label="id|asc">升序</Radio>
-                                <Radio label="id|desc">降序</Radio>
-                            </RadioGroup>
-                        </div>
-                    </div>
-
-                    <div class="option">
-                        <div class="field">权重：</div>
-                        <div class="value">
-                            <RadioGroup v-model="search.order">
-                                <Radio label="weight|asc">升序</Radio>
-                                <Radio label="weight|desc">降序</Radio>
-                            </RadioGroup>
-                        </div>
-                    </div>
-
-                    <div class="option">
-                        <div class="field"></div>
-                        <div class="value">
-                            <Button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
             <div class="line">
                 <div class="run-action-title">
                     <div class="left">
-                        <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="val.selectedIds.length > 0">（{{ val.selectedIds.length }}）</span></my-table-button>
+                        <my-table-button class="m-r-10" @click="addEvent"><my-icon icon="add" />添加</my-table-button>
+                        <my-table-button class="m-r-10" @click="editEventByButton"><my-icon icon="edit" />编辑</my-table-button>
+                        <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
                     </div>
                     <div class="right">
                         <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
@@ -137,14 +100,21 @@
 
                 <div class="table">
 
-                    <Table border :height="$store.state.context.table.height"  :columns="table.field" :data="table.data" @on-selection-change="selectionChangeEvent" :loading="val.pending.getData" @on-row-dblclick="editEvent">
+                    <i-table
+                            ref="table"
+                            class="w-r-100"
+                            border
+                            :height="TopContext.table.height"
+                            :columns="table.field"
+                            :data="table.data"
+                            :loading="val.pending.getData"
+                            @on-selection-change="selectionChangeEvent"
+                            @on-row-dblclick="editEvent"
+                            @on-row-click="rowClickEvent"
+                            @on-sort-change="sortChangeEvent"
+                    >
                         <template v-slot:thumb="{row,index}">
-                            <Poptip trigger="hover" placement="right" :transfer="true">
-                                <img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image" @click="link(row.thumb)" alt="">
-                                <div slot="content" class="table-preview-image-style">
-                                    <img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" class="image" @click="link(row.thumb)" alt="">
-                                </div>
-                            </Poptip>
+                            <my-table-preview :src="row.thumb"></my-table-preview>
                         </template>
                         <template v-slot:user_id="{row,index}">
                             {{ row.user ? `${row.user.username}【${row.user.id}】` : `unknow【${row.user_id}】` }}
@@ -164,23 +134,23 @@
                         </template>
 
                         <template v-slot:images="{row,index}">
-<!--                            <Poptip placement="right" width="400" title="图片列表" :transfer="true" trigger="hover">-->
-                                <Button>{{ row.images.length }}P</Button>
+<!--                            <i-poptip placement="right" width="400" title="图片列表" :transfer="true" trigger="hover">-->
+                                <i-button>{{ row.images.length }}P</i-button>
 <!--                                <div slot="content">-->
 <!--                                    <table class="line-table">-->
 <!--                                        <tbody>-->
 <!--                                        <tr v-for="v in row.images" :key="v.id">-->
-<!--                                            <td><img :src="v.path ? v.path : $store.state.context.res.notFound" @click="link(v.path , '__blank')" class="image"></td>-->
+<!--                                            <td><img :src="v.path ? v.path : TopContext.res.notFound" @click="openWindow(v.path , '__blank')" class="image"></td>-->
 <!--                                        </tr>-->
 <!--                                        </tbody>-->
 <!--                                    </table>-->
 <!--                                </div>-->
-<!--                            </Poptip>-->
+<!--                            </i-poptip>-->
                         </template>
 
                         <template v-slot:tags="{row,index}">
-                            <Poptip placement="right" width="400" title="标签" :transfer="true" trigger="hover">
-                                <Button>悬浮可查看详情</Button>
+                            <i-poptip placement="right" width="400" title="标签" :transfer="true" trigger="hover">
+                                <i-button>悬浮可查看详情</i-button>
                                 <div slot="content">
                                     <table class="line-table">
                                         <tbody>
@@ -190,58 +160,34 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            </Poptip>
+                            </i-poptip>
                         </template>
 
-                        <template v-slot:action="{row , index}">
-                            <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
-                            <my-table-button type="error" :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
-                        </template>
-                    </Table>
+                    </i-table>
 
                 </div>
 
             </div>
 
             <div class="line operation">
-                <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="val.selectedIds.length > 0">（{{ val.selectedIds.length }}）</span></my-table-button>
+                <my-table-button class="m-r-10" @click="addEvent"><my-icon icon="add" />添加</my-table-button>
+                <my-table-button class="m-r-10" @click="editEventByButton"><my-icon icon="edit" />编辑</my-table-button>
+                <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
             </div>
 
             <div class="line page">
-<!--                <Page :total="table.total" :page-size="$store.state.context.limit" :current="table.page" :show-total="true" :show-sizer="false" :show-elevator="true"  @on-change="pageEvent" />-->
+<!--                <Page :total="table.total" :page-size="TopContext.limit" :current="table.page" :show-total="true" :show-sizer="false" :show-elevator="true"  @on-change="pageEvent" />-->
                 <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
             </div>
 
-            <my-form
-                    ref="form"
-                    :data="form"
-                    :mode="val.mode"
-                    @on-success="getData"
-            ></my-form>
+            <my-form ref="form" :id="current.id" :mode="val.mode" @on-success="getData"></my-form>
 
         </div>
-    </my-base>
 </template>
 
 <script src="./js/index.js"></script>
 
+<style src="../public/css/base.css"></style>
 <style scoped>
-    .mask {
 
-    }
-
-    .mask > .line {
-        margin-bottom: 15px;
-    }
-
-    .mask > .line:nth-last-of-type(1) {
-        margin-bottom: 0;
-    }
-
-    .mask > .data > .table {
-        overflow: hidden;
-        overflow-x: auto;
-        width: 100%;
-    }
 </style>

@@ -9,37 +9,44 @@ const destroy = genUrl('admin/{id}');
 const destroyAll = genUrl('destroy_all_admin');
 
 export default {
-    info () {
-        return request(info , 'get');
-    } ,
-
-    search (value) {
-        return request(search , 'get' , {value});
-    } ,
 
     index (param) {
-        return request(index , 'get' , param);
+        return Http.get(index , param);
+    } ,
+
+    localUpdate (id , data) {
+        return Http.patch(localUpdate.replace('{id}' , id) , null , data);
     } ,
 
     update (id , data) {
-        return request(update.replace('{id}' , id) , 'put' , null , data);
+        return Http.put(update.replace('{id}' , id) , null , data);
     } ,
 
     store (data) {
-        return request(store , 'post' , null , data);
+        return Http.post(store , null , data);
     } ,
 
     show (id) {
-        return request(show.replace('{id}' , id) , 'get');
+        return Http.get(show.replace('{id}' , id));
     } ,
 
     destroy (id) {
-        return request(destroy.replace('{id}' , id) , 'delete');
+        return Http.delete(destroy.replace('{id}' , id));
     } ,
 
     destroyAll (ids) {
-        return request(destroyAll , 'delete' , null , {
-            ids: G.jsonEncode(ids) ,
+        return Http.delete(destroyAll , null ,{
+            ids: G.jsonEncode(ids)
+        });
+    } ,
+
+    info () {
+        return Http.get(info);
+    } ,
+
+    search (value) {
+        return Http.get(search , {
+            value
         });
     } ,
 };

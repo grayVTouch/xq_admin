@@ -31,7 +31,7 @@ class ImageAtPosition extends Base
         $param = $this->request->post();
         $param['module_id']   = $param['module_id'] ?? '';
         $param['position_id']   = $param['position_id'] ?? '';
-        $param['path']          = $param['path'] ?? '';
+        $param['src']          = $param['src'] ?? '';
         $param['link']          = $param['link'] ?? '';
         $res = ImageAtPositionAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
@@ -45,7 +45,7 @@ class ImageAtPosition extends Base
         $param = $this->request->post();
         $param['module_id']   = $param['module_id'] ?? '';
         $param['position_id']   = $param['position_id'] ?? '';
-        $param['path']          = $param['path'] ?? '';
+        $param['src']          = $param['src'] ?? '';
         $param['link']          = $param['link'] ?? '';
         $res = ImageAtPositionAction::store($this ,$param);
         if ($res['code'] != 0) {

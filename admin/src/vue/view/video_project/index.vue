@@ -1,6 +1,5 @@
 <template>
-    <my-base ref="base">
-        <div class="mask">
+        <div class="view-item">
 
             <div class="line search">
                 <div class="run-title">
@@ -41,56 +40,21 @@
                             <div class="field"></div>
                             <div class="value">
                                 <button type="submit" v-show="false"></button>
-                                <Button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
+                                <my-table-button @click="searchEvent"><my-icon icon="search" mode="right" />搜索</my-table-button>
+                                <my-table-button @click="resetEvent"><my-icon icon="reset" mode="right" />重置</my-table-button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
 
-            <div class="line order">
-                <div class="run-title">
-                    <div class="left">排序</div>
-                    <div class="right"></div>
-                </div>
-
-                <div class="filter-option">
-
-                    <div class="option">
-                        <div class="field">id：</div>
-                        <div class="value">
-                            <RadioGroup v-model="search.order">
-                                <Radio label="id|asc">升序</Radio>
-                                <Radio label="id|desc">降序</Radio>
-                            </RadioGroup>
-                        </div>
-                    </div>
-
-                    <div class="option">
-                        <div class="field">权重：</div>
-                        <div class="value">
-                            <RadioGroup v-model="search.order">
-                                <Radio label="weight|asc">升序</Radio>
-                                <Radio label="weight|desc">降序</Radio>
-                            </RadioGroup>
-                        </div>
-                    </div>
-
-                    <div class="option">
-                        <div class="field"></div>
-                        <div class="value">
-                            <Button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
             <div class="line">
                 <div class="run-action-title">
                     <div class="left">
-                        <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="val.selectedIds.length > 0">（{{ val.selectedIds.length }}）</span></my-table-button>
+                        <my-table-button class="m-r-10" @click="addEvent"><my-icon icon="add" />添加</my-table-button>
+                        <my-table-button class="m-r-10" @click="editEventByButton"><my-icon icon="edit" />编辑</my-table-button>
+                        <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
+
                     </div>
                     <div class="right">
                         <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
@@ -107,16 +71,21 @@
 
                 <div class="table">
 
-                    <Table border :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectionChangeEvent" :loading="val.pending.getData" @on-row-dblclick="editEvent">
+                    <i-table
+                            ref="table"
+                            class="w-r-100"
+                            border
+                            :height="TopContext.table.height"
+                            :columns="table.field"
+                            :data="table.data"
+                            :loading="val.pending.getData"
+                            @on-selection-change="selectionChangeEvent"
+                            @on-row-click="rowClickEvent"
+                            @on-row-dblclick="rowDblclickEvent"
+                            @on-sort-change="sortChangeEvent"
+                    >
                         <template v-slot:name="{row,index}">{{ row.name }}</template>
-                        <template v-slot:thumb="{row,index}">
-                            <Poptip trigger="hover" placement="right" :transfer="true">
-                                <img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" :height="$store.state.context.table.imageH" class="image" @click="link(row.thumb)" alt="">
-                                <div slot="content" class="table-preview-image-style">
-                                    <img :src="row.thumb ? row.thumb : $store.state.context.res.notFound" class="image" @click="link(row.thumb)" alt="">
-                                </div>
-                            </Poptip>
-                        </template>
+                        <template v-slot:thumb="{row,index}"><my-table-preview :src="row.thumb"></my-table-preview></template>
                         <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
                         <template v-slot:category_id="{row,index}">{{ row.category ? `${row.category.name}【${row.category.id}】` : `unknow【${row.category_id}】` }}</template>
                         <template v-slot:video_series_id="{row,index}">{{ row.video_series ? `${row.video_series.name}【${row.video_series.id}】` : `unknow【${row.video_series_id}】` }}</template>
@@ -124,8 +93,8 @@
                         <template v-slot:user_id="{row,index}">{{ row.user ? `${row.user.username}【${row.user.id}】` : `unknow【${row.user_id}】` }}</template>
                         <template v-slot:status="{row,index}"><b :class="{'run-red': row.status === -1 , 'run-gray': row.status === 0 , 'run-green': row.status === 1}">{{ row.__status__ }}</b></template>
                         <template v-slot:tags="{row,index}">
-                            <Poptip placement="right" width="400" title="标签" :transfer="true" trigger="hover">
-                                <Button>悬浮可查看详情</Button>
+                            <i-poptip placement="right" width="400" title="标签" :transfer="true" trigger="hover">
+                                <i-button>悬浮可查看详情</i-button>
                                 <div slot="content">
                                     <table class="line-table">
                                         <tbody>
@@ -135,7 +104,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            </Poptip>
+                            </i-poptip>
                         </template>
                         <template v-slot:status="{row,index}">
                             <span class="run-weight" :class="{'run-red': row.status == 'making' , 'run-green': row.status === 'completed' , 'run-gray': row.status === 'terminated'}">{{ row.__status__ }}</span>
@@ -144,45 +113,28 @@
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
                             <my-table-button type="error" :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
                         </template>
-                    </Table>
+                    </i-table>
 
                 </div>
 
             </div>
 
             <div class="line operation">
-                <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="val.selectedIds.length > 0">（{{ val.selectedIds.length }}）</span></my-table-button>
+                <my-table-button class="m-r-10" @click="addEvent"><my-icon icon="add" />添加</my-table-button>
+                <my-table-button class="m-r-10" @click="editEventByButton"><my-icon icon="edit" />编辑</my-table-button>
+                <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
             </div>
 
             <div class="line page">
                 <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
             </div>
 
-            <my-form ref="form" :mode="val.mode" :data="form" @on-success="getData"></my-form>
+            <my-form ref="form" :mode="val.mode" :id="current.id" @on-success="getData"></my-form>
 
         </div>
-    </my-base>
 </template>
 
 <script src="./js/index.js"></script>
 
-<style scoped>
-    .mask {
-
-    }
-
-    .mask > .line {
-        margin-bottom: 15px;
-    }
-
-    .mask > .line:nth-last-of-type(1) {
-        margin-bottom: 0;
-    }
-
-    .mask > .data > .table {
-        overflow: hidden;
-        overflow-x: auto;
-        width: 100%;
-    }
-</style>
+<style src="../public/css/base.css"></style>
+<style scoped></style>

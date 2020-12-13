@@ -8,119 +8,20 @@ const form = {
     tags: [] ,
     score: 0 ,
     count: 0 ,
-    status: 0 ,
+    status: 1 ,
 };
 
-const users = {
-    data: [],
-    field: [
-        {
-            title: 'id' ,
-            key: 'id' ,
-            center: TopContext.table.alignCenter ,
-            width: TopContext.table.id ,
-        } ,
-        {
-            title: '名称' ,
-            key: 'username' ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '头像' ,
-            slot: 'avatar' ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '创建时间' ,
-            key: 'created_at' ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '操作' ,
-            slot: 'action' ,
-        } ,
-    ] ,
-    current: {
-        id: 0 ,
-        username: 'unknow' ,
-    } ,
-    limit: TopContext.limit ,
-    value: '' ,
-    page: 1 ,
-    total: 0 ,
-};
-
-const videoSeries = {
-    total: 0 ,
-    page: 1 ,
-    field: [
-        {
-            title: 'id' ,
-            key: 'id' ,
-        } ,
-        {
-            title: '名称' ,
-            key: 'name' ,
-        } ,
-        {
-            title: '创建时间' ,
-            key: 'created_at' ,
-        } ,
-        {
-            title: '操作' ,
-            slot: 'action' ,
-            minWidth: TopContext.table.action ,
-            align: TopContext.table.alignCenter ,
-        } ,
-    ] ,
-    data: [] ,
-    current: {
-        id: 0 ,
-        name: 'unknow' ,
-    } ,
-    limit: TopContext.limit ,
-    value: '' ,
-};
-
-const videoCompany = {
-    total: 0 ,
-    page: 1 ,
-    field: [
-        {
-            title: 'id' ,
-            key: 'id' ,
-        } ,
-        {
-            title: '名称' ,
-            key: 'name' ,
-        } ,
-        {
-            title: '创建时间' ,
-            key: 'created_at' ,
-        } ,
-        {
-            title: '操作' ,
-            slot: 'action' ,
-            minWidth: TopContext.table.action ,
-            align: TopContext.table.alignCenter ,
-        } ,
-    ] ,
-    data: [] ,
-    current: {
-        id: 0 ,
-        name: 'unknow' ,
-    } ,
-    limit: TopContext.limit ,
-    value: '' ,
-};
+const owner = {id: 0 , username: 'unknow'};
+const videoSeries = {id: 0 , name: 'unknow'};
+const videoCompany = {id: 0 , name: 'unknow'};
 
 export default {
     name: "index",
 
     props: {
-        data: {
-            type: Object ,
-            required: true ,
+        id: {
+            type: Number ,
+            default: 0 ,
         } ,
         mode: {
             type: String ,
@@ -135,24 +36,23 @@ export default {
             val: {
                 pending: {} ,
                 error: {} ,
-                drawer: false ,
-                modalForVideoSeries: false ,
-                modalForVideoCompany: false ,
-                modalForUser: false ,
+                show: false ,
             } ,
+
             // 发布时间
             releaseDate: '' ,
+
             // 完结时间
             endDate: '' ,
 
             // 视频系列
-            videoSeries: G.copy(videoSeries , true) ,
+            videoSeries: G.copy(videoSeries) ,
 
             // 视频制作公司
-            videoCompany: G.copy(videoCompany , true) ,
+            videoCompany: G.copy(videoCompany) ,
 
             // 用户
-            users: G.copy(users , true) ,
+            owner: G.copy(owner) ,
 
             // 搜索条件
             search: {
@@ -163,7 +63,7 @@ export default {
             modules: [] ,
 
             // 当前修改事物
-            form: G.copy(form , true) ,
+            form: G.copy(form) ,
 
             // 标签
             tags: [] ,
@@ -192,43 +92,57 @@ export default {
 
         getModules () {
             this.pending('getModules' , true);
-            Api.module.all().then((res) => {
-                this.pending('getModules' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                this.modules = data;
-            });
+            Api.module
+                .all()
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    this.modules = res.data;
+                })
+                .finally(() => {
+                    this.pending('getModules' , false);
+                });
         } ,
 
         getTopTags () {
-            Api.tag.topByModuleId(this.form.module_id , (res) => {
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                this.topTags = data;
-            });
+            this.pending('getTopTags' , true);
+            Api.tag
+                .topByModuleId(this.form.module_id)
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    this.topTags = res.data;
+                })
+                .finally(() => {
+                    this.pending('getTopTags' , false);
+                });
         } ,
 
         getCategories (callback) {
             this.pending('getCategories' , true);
-            Api.category.search({
-                module_id: this.form.module_id ,
-                type: 'video_project' ,
-            } , (res) => {
-                this.pending('getCategories' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    G.invoke(callback , null , false);
-                    return ;
-                }
-                this.categories = data;
-                this.$nextTick(() => {
-                    G.invoke(callback , null , true);
+            Api.category
+                .search({
+                    module_id: this.form.module_id ,
+                    type: 'video_project' ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        G.invoke(callback , null , false);
+                        return ;
+                    }
+                    this.categories = res.data;
+                    this.$nextTick(() => {
+                        G.invoke(callback , null , true);
+                    });
+                })
+                .finally(() => {
+                    this.pending('getCategories' , false);
                 });
-            });
         } ,
 
         // 模块发生变化的时候
@@ -236,8 +150,8 @@ export default {
             this.val.error.module_id = '';
             this.form.video_series_id = '';
             this.form.video_company_id = '';
-            this.form.video_series = G.copy(videoSeries.current);
-            this.form.video_company = G.copy(videoCompany.current);
+            this.form.video_series = G.copy(videoSeries);
+            this.form.video_company = G.copy(videoCompany);
             this.topTags = [];
             this.getTopTags();
             this.getCategories();
@@ -270,13 +184,11 @@ export default {
         } ,
 
         submitEvent () {
-            const self = this;
             this.pending('submit' , true);
-            const callback = (res) => {
-                this.pending('submit' , false);
+            const thenCallback = (res) => {
                 this.error();
                 if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(msg , data , code);
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.successHandle((keep) => {
@@ -284,155 +196,84 @@ export default {
                     if (keep) {
                         return ;
                     }
-                    this.closeFormDrawer();
+                    this.closeFormModal();
                 });
+            };
+            const finalCallback = () => {
+                this.pending('submit' , false);
             };
             const form = G.copy(this.form);
             form.images = G.jsonEncode(this.images);
-            form.tags = [];
-            this.tags.forEach((v) => {
-                form.tags.push(v.id);
+            form.tags = this.tags.map((v) => {
+                return v.id;
             });
             form.tags = G.jsonEncode(form.tags);
             if (this.mode === 'edit') {
-                Api.video_project.update(form.id , form , callback);
+                Api.videoProject.update(form.id , form).then(thenCallback).finally(finalCallback);
                 return ;
             }
-            Api.video_project.store(form , callback);
+            Api.videoProject.store(form).then(thenCallback).finally(finalCallback);
         } ,
 
         // 获取当前编辑记录详情
         findById (id) {
             return new Promise((resolve , reject) => {
-                this._val('findById' , true);
-                Api.video_project.show(id , (res) => {
-                    this._val('findById' , true);
-                    if (res.code !== TopContext.code.Success) {
-                        this.errorHandle(res.message);
-                        reject();
-                        return ;
-                    }
-                    data.score = parseFloat(data.score);
-                    this.form = data;
-                    resolve();
-                });
+                this.pending('findById' , true);
+                Api.videoProject
+                    .show(id)
+                    .then((res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            this.errorHandle(res.message);
+                            reject();
+                            return ;
+                        }
+                        const data = res.data;
+                        data.score = parseFloat(data.score);
+                        this.form = data;
+                        resolve();
+                    })
+                    .finally(() => {
+                        this.pending('findById' , false);
+                    });
             });
         } ,
 
-        openFormDrawer () {
-            this._val('drawer' , true);
+        openFormModal () {
+            this.val.show = true;
             this.getModules();
             if (this.mode === 'edit') {
-                this.getTopTags();
-                this.getCategories();
-                this.findById(this.data.id).then((res) => {
-                    this.ins.thumb.render(this.form.thumb);
-                    this.videoSeries.current    = this.form.video_series ? this.form.video_series : G.copy(videoSeries.current);
-                    this.videoCompany.current   = this.form.video_company ? this.form.video_company : G.copy(videoCompany.current);
-                    this.users.current          = this.form.user ? this.form.user : G.copy(users.current);
-                    this.releaseDate            = this.form.release_date;
-                    this.endDate                = this.form.end_date;
-                });
+                this.findById(this.id)
+                    .then((res) => {
+                        this.ins.thumb.render(this.form.thumb);
+                        this.videoSeries    = this.form.video_series ? this.form.video_series : G.copy(videoSeries);
+                        this.owner          = this.form.user ? this.form.user : G.copy(owner);
+                        this.videoCompany   = this.form.video_company ? this.form.video_company : G.copy(videoCompany);
+                        this.releaseDate            = this.form.release_date;
+                        this.endDate                = this.form.end_date;
+                        this.getTopTags();
+                        this.getCategories();
+                    });
             }
         } ,
 
-        closeFormDrawer () {
+        closeFormModal () {
             if (this.pending('submit')) {
                 this.message('warning' , '请求中...请耐心等待');
                 return;
             }
-            this._val('drawer' , false);
+            this.val.show = false;
             // 清除所有错误信息
-            this.error({});
+            this.error();
             this.ins.thumb.clearAll();
-            this.form = G.copy(form);
-            this.tags = [];
-            this.topTags = [];
-            this.categories = [];
-            this.users = G.copy(users);
-            this.videoCompany = G.copy(videoCompany);
-            this.videoSeries = G.copy(videoSeries);
-        } ,
-
-        searchVideoSeries () {
-            this.pending('searchVideoSeries' , true);
-            Api.video_series.search({
-                module_id: this.form.module_id ,
-                value: this.videoSeries.value ,
-                limit: this.videoSeries.limit ,
-            } , (res) => {
-                this.pending('searchVideoSeries' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.error({subject_id: data});
-                    return ;
-                }
-                this.videoSeries.page = data.current_page;
-                this.videoSeries.total = data.total;
-                this.videoSeries.data = data.data;
-            });
-        } ,
-
-        updateVideoSeriesEvent (row , index) {
-            this.error({video_series_id: ''} , false);
-            this.form.video_series_id = row.id;
-            this._val('modalForVideoSeries' , false);
-            this.videoSeries.current = G.copy(row);
-            this.videoSeries.data = [];
-        } ,
-
-        searchVideoSeriesEvent (e) {
-            if (this.form.module_id < 1) {
-                this.error({video_series_id: '请选择模块后操作'});
-                return ;
-            }
-            this._val('modalForVideoSeries' , true);
-            this.searchVideoSeries();
-        } ,
-
-        videoSeriesPageEvent (page) {
-            this.videoSeries.page = page;
-            this.searchVideoSeries();
-        } ,
-
-
-        searchVideoCompany () {
-            this.pending('searchVideoCompany' , true);
-            Api.video_company.search({
-                module_id: this.form.module_id ,
-                value: this.videoCompany.value ,
-                limit: this.videoCompany.limit ,
-            } , (res) => {
-                this.pending('searchVideoCompany' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.error({video_company_id: data});
-                    return ;
-                }
-                this.videoCompany.page = data.current_page;
-                this.videoCompany.total = data.total;
-                this.videoCompany.data = data.data;
-            });
-        } ,
-
-        updateVideoCompanyEvent (row , index) {
-            this.error({video_company_id: ''} , false);
-            this.form.video_company_id = row.id;
-            this.videoCompany.current = G.copy(row);
-            this._val('modalForVideoCompany' , false);
-            this.videoCompany.data = [];
-        } ,
-
-        searchVideoCompanyEvent (e) {
-            if (this.form.module_id < 1) {
-                this.error({video_company_id: '请选择模块后操作'});
-                return ;
-            }
-            this.searchVideoCompany();
-            this._val('modalForVideoCompany' , true);
-        } ,
-
-        videoCompanyPageEvent (page) {
-            this.videoCompany.page = page;
-            this.searchVideoCompany();
+            this.form           = G.copy(form);
+            this.tags           = [];
+            this.topTags        = [];
+            this.categories     = [];
+            this.videoCompany   = G.copy(videoCompany);
+            this.videoSeries    = G.copy(videoSeries);
+            this.owner          = G.copy(owner);
+            this.releaseDate    = '';
+            this.endDate        = '';
         } ,
 
         setReleaseDateEvent (date) {
@@ -493,26 +334,31 @@ export default {
                 }
                 return ;
             }
+            const pendingKey = 'destroy_tag_' + tagId;
             // 编辑模式
-            this.pending('destroy_tag_' + tagId , true);
-            Api.video_project.destroyTag({
-                video_project_id: this.form.id ,
-                tag_id: tagId ,
-            } , (res) => {
-                this.pending('destroy_tag_' + tagId , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.error({tags: data});
-                    return ;
-                }
-                for (let i = 0; i < this.form.tags.length; ++i)
-                {
-                    const tag = this.form.tags[i];
-                    if (tag.tag_id === tagId) {
-                        this.form.tags.splice(i , 1);
-                        i--;
+            this.pending(pendingKey , true);
+            Api.videoProject
+                .destroyTag({
+                    video_project_id: this.form.id ,
+                    tag_id: tagId ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.error({tags: res.data});
+                        return ;
                     }
-                }
-            });
+                    for (let i = 0; i < this.form.tags.length; ++i)
+                    {
+                        const tag = this.form.tags[i];
+                        if (tag.tag_id === tagId) {
+                            this.form.tags.splice(i , 1);
+                            i--;
+                        }
+                    }
+                })
+                .finally(() => {
+                    this.pending(pendingKey , false);
+                });
         } ,
 
         createOrAppendTag () {
@@ -529,59 +375,55 @@ export default {
             }
             this.dom.tagInput.origin('blur');
             this.dom.tagInputOuter.addClass('disabled');
-            Api.tag.findOrCreateTag({
-                name ,
-                module_id: this.form.module_id ,
-                user_id: this.form.user_id ,
-            } , (res) => {
-                this.dom.tagInputOuter.removeClass('disabled');
-                if (res.code !== TopContext.code.Success) {
-                    this.error({tags: msg} , false);
-                    return ;
-                }
-                this.tags.push(data);
-                this.dom.tagInput.html('');
-            });
+            Api.tag
+                .findOrCreateTag({
+                    name ,
+                    module_id: this.form.module_id ,
+                    user_id: this.form.user_id ,
+                })
+                .then((res) => {
+                    this.dom.tagInputOuter.removeClass('disabled');
+                    if (res.code !== TopContext.code.Success) {
+                        this.error({tags: msg} , false);
+                        return ;
+                    }
+                    this.tags.push(res.data);
+                    this.dom.tagInput.html('');
+                })
+                .finally(() => {
+
+                });
         } ,
 
-        searchUser () {
-            this.pending('searchUser' , true);
-            Api.user.search({
-                value: this.users.value ,
-                limit: this.users.limit ,
-                page: this.users.page ,
-            }, (res) => {
-                this.pending('searchUser' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.error({user_id: data});
-                    return ;
-                }
-                this.users.total = data.total;
-                this.users.page = data.current_page;
-                this.users.data = data.data;
-            });
+        userChangeEvent (res) {
+            this.error({user_id: ''} , false);
+            this.form.user_id   = res.id;
+            this.owner          = res;
         } ,
 
-        userPageEvent (page) {
-            this.users.page = page;
-            this.searchUser();
+        showUserSelector () {
+            this.$refs['user-selector'].show();
         } ,
 
-        searchUserEvent (e) {
-            this.searchUser();
-            this._val('modalForUser' , true);
+        videoSeriesChangeEvent (res) {
+            this.error({video_series_id: ''} , false);
+            this.form.video_series_id   = res.id;
+            this.videoSeries            = res;
         } ,
 
-        updateUserEvent (row , index) {
-            this.error({user_id: ''}, false);
-            this.form.user_id = row.id;
-            this._val('modalForUser', false);
-            this.users.data = [];
-            this.users.current = G.copy(row);
+        showVideoSeriesSelector () {
+            this.$refs['video-series-selector'].show();
         } ,
-    } ,
 
-    watch: {
+        videoCompanyChangeEvent (res) {
+            this.error({video_company_id: ''} , false);
+            this.form.video_company_id   = res.id;
+            this.videoCompany            = res;
+        } ,
+
+        showVideoCompanySelector () {
+            this.$refs['video-company-selector'].show();
+        } ,
 
     } ,
 

@@ -61,23 +61,23 @@ export default [
         children: [
             {
                 cn: '图片主体' ,
-                en: '' ,
+                en: 'Image Subject' ,
                 // 路由路径
-                path: '/image_subject/index' ,
-                hidden: false ,
-                view: true ,
-                sIco: '' ,
-                bIco: '' ,
-                children: [] ,
-            } ,
-            {
-                cn: '图片专题' ,
-                en: '' ,
-                path: '/image_project/index' ,
+                path: '/image/subject' ,
                 hidden: false ,
                 view: true ,
                 sIco: subjectIco ,
                 bIco: subjectIco ,
+                children: [] ,
+            } ,
+            {
+                cn: '图片专题' ,
+                en: 'Image Project' ,
+                path: '/image/project' ,
+                hidden: false ,
+                view: true ,
+                sIco: imageIco ,
+                bIco: imageIco ,
                 children: [] ,
             } ,
         ] ,
@@ -96,49 +96,49 @@ export default [
             {
                 key: 'video_series' ,
                 cn: '视频系列' ,
-                en: '' ,
+                en: 'Video Series' ,
                 // 路由路径
-                path: '/video_series/index' ,
+                path: '/video/series' ,
                 hidden: false ,
                 view: true ,
-                sIco: '' ,
-                bIco: '' ,
+                sIco: videoIco ,
+                bIco: videoIco ,
                 children: [] ,
             } ,
             {
                 key: 'video_company' ,
                 cn: '视频制作公司' ,
-                en: '' ,
+                en: 'Video Company' ,
                 // 路由路径
-                path: '/video_company/index' ,
+                path: '/video/company' ,
                 hidden: false ,
                 view: true ,
-                sIco: '' ,
-                bIco: '' ,
+                sIco: videoIco ,
+                bIco: videoIco ,
                 children: [] ,
             } ,
             {
                 key: 'video_project' ,
                 cn: '视频专题' ,
-                en: '' ,
+                en: 'Video Project' ,
                 // 路由路径
-                path: '/video_project/index' ,
+                path: '/video/project' ,
                 hidden: false ,
                 view: true ,
-                sIco: '' ,
-                bIco: '' ,
+                sIco: videoIco ,
+                bIco: videoIco ,
                 children: [] ,
             } ,
             {
                 key: 'video' ,
                 cn: '视频列表' ,
-                en: '' ,
+                en: 'Video' ,
                 // 路由路径
                 path: '/video/index' ,
                 hidden: false ,
                 view: true ,
-                sIco: '' ,
-                bIco: '' ,
+                sIco: videoIco ,
+                bIco: videoIco ,
                 children: [] ,
             } ,
         ] ,
@@ -178,44 +178,44 @@ export default [
         bIco: moduleIco ,
         children: [] ,
     } ,
-    {
-
-        cn: '权限管理' ,
-        en: 'Permission' ,
-        // 路由路径
-        path: '' ,
-        hidden: false ,
-        view: false ,
-        sIco: permissionIco ,
-        bIco: permissionIco ,
-        children: [
-            {
-
-                cn: '角色列表' ,
-                en: '' ,
-                // 路由路径
-                path: '/role/index' ,
-                hidden: false ,
-                view: true ,
-
-                sIco: '' ,
-                bIco: '' ,
-                children: [] ,
-            } ,
-            {
-
-                cn: '权限列表' ,
-                en: '' ,
-                // 路由路径
-                path: '/admin_permission/index' ,
-                hidden: false ,
-                view: true ,
-                sIco: '' ,
-                bIco: '' ,
-                children: [] ,
-            } ,
-        ] ,
-    } ,
+    // {
+    //
+    //     cn: '权限管理' ,
+    //     en: 'Permission' ,
+    //     // 路由路径
+    //     path: '' ,
+    //     hidden: false ,
+    //     view: false ,
+    //     sIco: permissionIco ,
+    //     bIco: permissionIco ,
+    //     children: [
+    //         {
+    //
+    //             cn: '角色列表' ,
+    //             en: '' ,
+    //             // 路由路径
+    //             path: '/role/index' ,
+    //             hidden: false ,
+    //             view: true ,
+    //
+    //             sIco: '' ,
+    //             bIco: '' ,
+    //             children: [] ,
+    //         } ,
+    //         {
+    //
+    //             cn: '权限列表' ,
+    //             en: '' ,
+    //             // 路由路径
+    //             path: '/admin_permission/index' ,
+    //             hidden: false ,
+    //             view: true ,
+    //             sIco: '' ,
+    //             bIco: '' ,
+    //             children: [] ,
+    //         } ,
+    //     ] ,
+    // } ,
     {
 
         cn: '系统管理' ,
@@ -230,46 +230,46 @@ export default [
             {
 
                 cn: '存储管理' ,
-                en: '' ,
+                en: 'Disk' ,
                 // 路由路径
-                path: '/disk/index' ,
+                path: '/system/disk' ,
                 hidden: false ,
                 view: true ,
-                sIco: '' ,
-                bIco: '' ,
+                sIco: systemIco ,
+                bIco: systemIco ,
                 children: [] ,
             } ,
             {
                 cn: '导航菜单' ,
-                en: '' ,
+                en: 'Navigation' ,
                 // 路由路径
-                path: '/nav/index' ,
+                path: '/system/navigation' ,
                 hidden: false ,
                 view: true ,
-                sIco: '' ,
-                bIco: '' ,
+                sIco: systemIco ,
+                bIco: systemIco ,
                 children: [] ,
             } ,
             {
                 cn: '定点位置' ,
-                en: '' ,
+                en: 'Position' ,
                 // 路由路径
-                path: '/position/index' ,
+                path: '/system/position' ,
                 hidden: false ,
                 view: true ,
-                sIco: '' ,
-                bIco: '' ,
+                sIco: systemIco ,
+                bIco: systemIco ,
                 children: [] ,
             } ,
             {
                 cn: '定点图片' ,
-                en: '' ,
+                en: 'Image At Position' ,
                 // 路由路径
-                path: '/image_at_position/index' ,
+                path: '/system/imageAtPosition' ,
                 hidden: false ,
                 view: true ,
-                sIco: '' ,
-                bIco: '' ,
+                sIco: systemIco ,
+                bIco: systemIco ,
                 children: [] ,
             } ,
         ] ,

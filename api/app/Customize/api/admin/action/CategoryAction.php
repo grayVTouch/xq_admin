@@ -7,6 +7,7 @@ namespace App\Customize\api\admin\action;
 
 use App\Customize\api\admin\handler\CategoryHandler;
 use App\Customize\api\admin\model\CategoryModel;
+use App\Customize\api\admin\model\UserModel;
 use App\Http\Controllers\api\admin\Base;
 use Core\Lib\Category;
 use Illuminate\Support\Facades\Validator;
@@ -22,7 +23,11 @@ class CategoryAction extends Action
     public static function index(Base $context , array $param = [])
     {
         $res = CategoryModel::getAll();
-        $res = CategoryHandler::handleAll($res);
+        $res = CategoryHandler::handleAll($res , [
+            'module' ,
+            'parent' ,
+            'user' ,
+        ]);
         $res = object_to_array($res);
         $res = Category::childrens(0 , $res , [
             'id'    => 'id' ,
@@ -47,7 +52,7 @@ class CategoryAction extends Action
     {
         $bool_range = my_config_keys('business.bool_for_int');
         $validator = Validator::make($param , [
-            'enable'   => ['sometimes', Rule::in($bool_range)],
+            'is_enabled'   => ['sometimes', Rule::in($bool_range)],
             'weight'    => 'sometimes|integer',
             'p_id'    => 'sometimes|integer',
             'module_id'    => 'sometimes|integer',
@@ -61,7 +66,7 @@ class CategoryAction extends Action
         }
         $param['name']     = $param['name'] === '' ? $category->name : $param['name'];
         $param['description'] = $param['description'] === '' ? $category->description : $param['description'];
-        $param['enable']   = $param['enable'] === '' ? $category->enable : $param['enable'];
+        $param['is_enabled']   = $param['is_enabled'] === '' ? $category->is_enabled : $param['is_enabled'];
         $param['weight']    = $param['weight'] === '' ? $category->weight : $param['weight'];
         $param['p_id']     = $param['p_id'] === '' ? $category->p_id : $param['p_id'];
         $param['module_id']     = $param['module_id'] === '' ? $category->module_id : $param['module_id'];
@@ -69,7 +74,7 @@ class CategoryAction extends Action
         CategoryModel::updateById($category->id , array_unit($param , [
             'name' ,
             'description' ,
-            'enable' ,
+            'is_enabled' ,
             'weight' ,
             'p_id' ,
             'module_id' ,
@@ -82,10 +87,12 @@ class CategoryAction extends Action
         $bool_range = my_config_keys('business.bool_for_int');
         $validator = Validator::make($param , [
             'name'    => 'required',
-            'enable'   => ['required', Rule::in($bool_range)],
+            'is_enabled'   => ['required', Rule::in($bool_range)],
             'p_id'    => 'required|integer',
             'weight'    => 'sometimes|integer',
             'module_id'    => 'required|integer',
+            'user_id'       => 'required|integer',
+            'type'          => 'required',
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
@@ -94,14 +101,25 @@ class CategoryAction extends Action
         if (empty($category)) {
             return self::error('分类不存在' , '' , 404);
         }
+        $user = UserModel::find($param['user_id']);
+        if (empty($user)) {
+            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+        }
+        if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
+            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
+        }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         CategoryModel::updateById($category->id , array_unit($param , [
             'name' ,
             'description' ,
-            'enable' ,
+            'is_enabled' ,
             'weight' ,
             'p_id' ,
             'module_id' ,
+            'user_id' ,
+            'type' ,
+            'status' ,
+            'fail_reason' ,
         ]));
         return self::success('操作成功');
     }
@@ -110,23 +128,37 @@ class CategoryAction extends Action
     {
         $bool_range = my_config_keys('business.bool_for_int');
         $validator = Validator::make($param , [
-            'name'    => 'required',
-            'enable'  => ['required', Rule::in($bool_range)],
-            'p_id'    => 'required|integer',
-            'weight'  => 'sometimes|integer',
-            'module_id'  => 'required|integer',
+            'name'          => 'required',
+            'is_enabled'    => ['required', Rule::in($bool_range)],
+            'p_id'          => 'required|integer',
+            'weight'        => 'sometimes|integer',
+            'module_id'     => 'required|integer',
+            'user_id'       => 'required|integer',
+            'type'          => 'required',
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
+        }
+        $user = UserModel::find($param['user_id']);
+        if (empty($user)) {
+            return self::error('用户不存在' , ['user_id' => '用户不存在']);
+        }
+        if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
+            return self::error('请提供失败原因' , ['fail_reason' => '请提供失败原因']);
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $id = CategoryModel::insertGetId(array_unit($param , [
             'name' ,
             'description' ,
-            'enable' ,
+            'is_enabled' ,
             'weight' ,
             'p_id' ,
+            'p_id' ,
             'module_id' ,
+            'user_id' ,
+            'type' ,
+            'status' ,
+            'fail_reason' ,
         ]));
         return self::success('' , $id);
     }
@@ -137,7 +169,11 @@ class CategoryAction extends Action
         if (empty($category)) {
             return self::error('分类不存在' , '' , 404);
         }
-        $category = CategoryHandler::handle($category);
+        $category = CategoryHandler::handle($category , [
+            'module' ,
+            'parent' ,
+            'user' ,
+        ]);
         return self::success('' , $category);
     }
 

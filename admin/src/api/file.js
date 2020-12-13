@@ -1,21 +1,21 @@
 export default {
-    uploadImage (query , file , success , error) {
-        return request(TopContext.uploadImageApi + (query && !G.isEmptyObject(query) ? '?' + G.buildQuery(query) : '') , 'post' , G.formData('file' , file) , success , error);
+    uploadImage (param , file) {
+        return Http.post(TopContext.uploadImageApi , param , G.formData('file' , file));
     } ,
 
-    uploadVideo (file , success , error) {
-        return request(TopContext.uploadVideoApi , 'post' , G.formData('file' , file) , success , error);
+    uploadVideo (file) {
+        return Http.post(TopContext.uploadVideoApi , null , G.formData('file' , file));
     } ,
 
-    uploadSubtitle (file , success , error) {
-        return request(TopContext.uploadSubtitleApi , 'post' , G.formData('file' , file) , success , error);
+    uploadSubtitle (file) {
+        return Http.post(TopContext.uploadSubtitleApi , null , G.formData('file' , file));
     } ,
 
-    uploadOffice (file , success , error) {
-        return request(TopContext.uploadOfficeApi , 'post' , G.formData('file' , file) , success , error);
+    uploadOffice (file) {
+        return Http.post(TopContext.uploadOfficeApi , null , G.formData('file' , file));
     } ,
 
-    upload (file , success , error) {
-        return request(TopContext.uploadApi , 'post' , G.formData('file' , file) , success , error);
+    upload (file) {
+        return Http.post(TopContext.uploadApi , null , G.formData('file' , file));
     } ,
 };

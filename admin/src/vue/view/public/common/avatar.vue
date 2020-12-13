@@ -4,7 +4,7 @@
             <div class="top">{{ topVal }}</div>
             <div class="btm">{{ btmVal }}</div>
         </div>
-        <img :src="src ? src : $store.state.context.res.avatar" class="image">
+        <img :src="src ? src : TopContext.res.avatar" class="image">
     </div>
 </template>
 

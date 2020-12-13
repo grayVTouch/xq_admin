@@ -31,11 +31,14 @@ class CategoryModel extends Model
             ->get();
     }
 
-    public static function getByFilter(array $filter = null): Collection
+    public static function index(array $field = null , array $filter = null , array $order = null): Collection
     {
+        $field = $field ?? 'g.*';
         $filter = $filter ?? [];
+        $order = $order ?? ['field' => 'id' , 'value' => 'desc'];
         $filter['module_id']    = $filter['module_id'] ?? '';
         $filter['type']         = $filter['type'] ?? '';
+
         $where = [];
         if ($filter['module_id'] !== '') {
             $where[] = ['module_id' , '=' , $filter['module_id']];

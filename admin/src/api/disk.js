@@ -8,44 +8,40 @@ const destroyAll = genUrl('destroy_all_disk');
 const linkDisk = genUrl('link_disk');
 
 export default {
-    index (data , success , error) {
-        return request(index , 'get' , data , success , error);
+    index (param) {
+        return Http.get(index , param);
     } ,
 
-    localUpdate (id , data , success , error) {
-        const url = localUpdate.replace('{id}' , id);
-        return request(url , 'patch' , data , success , error)
+    localUpdate (id , data) {
+        return Http.patch(localUpdate.replace('{id}' , id) , null , data)
     } ,
 
-    update (id , data , success , error) {
-        const url = update.replace('{id}' , id);
-        return request(url , 'put' , data , success , error)
+    update (id , data) {
+        return Http.put(update.replace('{id}' , id) , null , data);
     } ,
 
-    store (data , success , error) {
-        return request(store , 'post' , data , success , error)
+    store (data) {
+        return Http.post(store , null , data);
     } ,
 
-    show (id , success , error) {
-        const url = show.replace('{id}' , id);
-        return request(show , 'get' , null , success , error)
+    show (id) {
+        return Http.get(show.replace('{id}' , id));
     } ,
 
-    destroy (id , success , error) {
-        const url = destroy.replace('{id}' , id);
-        return request(url , 'delete' , null , success , error)
+    destroy (id) {
+        return Http.delete(destroy.replace('{id}' , id));
     } ,
 
-    destroyAll (ids , success , error) {
-        return request(destroyAll , 'delete' , {
+    destroyAll (ids) {
+        return Http.delete(destroyAll , null , {
             ids: G.jsonEncode(ids)
-        } , success , error)
+        })
     } ,
 
-    linkDisk (ids , success , error) {
-        return request(linkDisk , 'post' , {
+    linkDisk (ids) {
+        return Http.post(linkDisk , null , {
             ids: G.jsonEncode(ids)
-        } , success , error)
+        });
     } ,
 
 };

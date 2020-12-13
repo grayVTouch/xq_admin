@@ -5,8 +5,8 @@
             <div class="run-action-title">
                 <div class="left">{{ title }}</div>
                 <div class="right">
-                    <Button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent">提交</Button>
-                    <Button v-ripple type="error" @click="closeFormDrawer">关闭</Button>
+                    <i-button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent">提交</i-button>
+                    <i-button v-ripple type="error" @click="closeFormModal">关闭</i-button>
                 </div>
             </div>
         </template>
@@ -63,9 +63,9 @@
                     <tr :class="{error: val.error.type}">
                         <td>类型</td>
                         <td>
-                            <RadioGroup v-model="form.type" @on-change="val.error.type = ''">
-                                <Radio v-for="(v,k) in $store.state.business.admin_permission.type" :key="k" :label="k">{{ v }}</Radio>
-                            </RadioGroup>
+                            <i-radio-group v-model="form.type" @on-change="val.error.type = ''">
+                                <i-radio v-for="(v,k) in TopContext.business.admin_permission.type" :key="k" :label="k">{{ v }}</i-radio>
+                            </i-radio-group>
                             <span class="need">*</span>
                             <div class="msg"></div>
                             <div class="e-msg">{{ val.error.type }}</div>
@@ -74,9 +74,9 @@
                     <tr :class="{error: val.error.is_menu}">
                         <td>菜单？</td>
                         <td>
-                            <RadioGroup v-model="form.is_menu"  @on-change="val.error.is_menu = ''">
-                                <Radio v-for="(v,k) in $store.state.business.bool_for_int" :key="k" :label="parseInt(k)">{{ v }}</Radio>
-                            </RadioGroup>
+                            <i-radio-group v-model="form.is_menu"  @on-change="val.error.is_menu = ''">
+                                <i-radio v-for="(v,k) in TopContext.business.bool.integer" :key="k" :label="parseInt(k)">{{ v }}</i-radio>
+                            </i-radio-group>
                             <span class="need">*</span>
                             <div class="msg">默认：否</div>
                             <div class="e-msg">{{ val.error.is_menu }}</div>
@@ -85,9 +85,9 @@
                     <tr :class="{error: val.error.is_view}">
                         <td>视图？</td>
                         <td>
-                            <RadioGroup v-model="form.is_view"  @on-change="val.error.is_view = ''">
-                                <Radio v-for="(v,k) in $store.state.business.bool_for_int" :key="k" :label="parseInt(k)">{{ v }}</Radio>
-                            </RadioGroup>
+                            <i-radio-group v-model="form.is_view"  @on-change="val.error.is_view = ''">
+                                <i-radio v-for="(v,k) in TopContext.business.bool.integer" :key="k" :label="parseInt(k)">{{ v }}</i-radio>
+                            </i-radio-group>
                             <span class="need">*</span>
                             <div class="msg">默认：是</div>
                             <div class="e-msg">{{ val.error.is_view }}</div>
@@ -96,9 +96,9 @@
                     <tr :class="{error: val.error.enable}">
                         <td>启用？</td>
                         <td>
-                            <RadioGroup v-model="form.enable"  @input="val.error.enable = ''">
-                                <Radio v-for="(v,k) in $store.state.business.bool_for_int" :key="k" :label="parseInt(k)">{{ v }}</Radio>
-                            </RadioGroup>
+                            <i-radio-group v-model="form.enable"  @input="val.error.enable = ''">
+                                <i-radio v-for="(v,k) in TopContext.business.bool.integer" :key="k" :label="parseInt(k)">{{ v }}</i-radio>
+                            </i-radio-group>
                             <span class="need">*</span>
                             <div class="msg">默认：开启</div>
                             <div class="e-msg">{{ val.error.enable }}</div>
@@ -188,7 +188,7 @@
 
                     <tr>
                         <td colspan="2">
-                            <Button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent">提交</Button>
+                            <i-button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent">提交</i-button>
                             <button v-show="false" type="submit"></button>
                         </td>
                     </tr>

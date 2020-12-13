@@ -33,7 +33,7 @@ class ImageAtPositionAction extends Action
         $validator = Validator::make($param , [
             'module_id'     => 'required' ,
             'position_id'   => 'required' ,
-            'path'          => 'required' ,
+            'src'          => 'required' ,
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
@@ -57,13 +57,13 @@ class ImageAtPositionAction extends Action
             ImageAtPositionModel::updateById($res->id , array_unit($param , [
                 'position_id' ,
                 'platform' ,
-                'path' ,
+                'src' ,
                 'link' ,
                 'module_id' ,
             ]));
-            ResourceUtil::used($param['path']);
-            if ($res->path !== $param['path']) {
-                ResourceUtil::delete($res->path);
+            ResourceUtil::used($param['src']);
+            if ($res->src !== $param['src']) {
+                ResourceUtil::delete($res->src);
             }
             DB::commit();
             return self::success('操作成功');
@@ -79,7 +79,7 @@ class ImageAtPositionAction extends Action
         $validator = Validator::make($param , [
             'position_id'   => 'required' ,
             'module_id'     => 'required' ,
-            'path'          => 'required' ,
+            'src'          => 'required' ,
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
@@ -99,11 +99,11 @@ class ImageAtPositionAction extends Action
             $id = ImageAtPositionModel::insertGetId(array_unit($param , [
                 'position_id' ,
                 'platform' ,
-                'path' ,
+                'src' ,
                 'link' ,
                 'module_id' ,
             ]));
-            ResourceUtil::used($param['path']);
+            ResourceUtil::used($param['src']);
             DB::commit();
             return self::success('' , $id);
         } catch(Exception $e) {
@@ -114,12 +114,12 @@ class ImageAtPositionAction extends Action
 
     public static function show(Base $context , $id , array $param = [])
     {
-        $role = ImageAtPositionModel::find($id);
-        if (empty($role)) {
+        $res = ImageAtPositionModel::find($id);
+        if (empty($res)) {
             return self::error('id 对应记录不存在' , '' , 404);
         }
-        $role = ImageAtPositionModel::handle($role);
-        return self::success('' , $role);
+        $res = ImageAtPositionHandler::handle($res);
+        return self::success('' , $res);
     }
 
     public static function destroy(Base $context , $id , array $param = [])
@@ -131,14 +131,13 @@ class ImageAtPositionAction extends Action
         try {
             DB::beginTransaction();
             $count = ImageAtPositionModel::destroy($id);
-            ResourceUtil::delete($res->path);
+            ResourceUtil::delete($res->src);
             DB::commit();
             return self::success($count);
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
         }
-
     }
 
     public static function destroyAll(Base $context , array $ids , array $param = [])
@@ -148,7 +147,7 @@ class ImageAtPositionAction extends Action
             $res = ImageAtPositionModel::find($ids);
             foreach ($res as $v)
             {
-                ResourceUtil::delete($v->path);
+                ResourceUtil::delete($v->src);
             }
             $count = ImageAtPositionModel::destroy($ids);
             DB::commit();

@@ -1,34 +1,34 @@
+import myForm from '../form.vue';
 
-const form = {
-    module_id: '' ,
-    position_id: '' ,
+const current = {id: 0};
+
+const search = {
+    limit: TopContext.limit,
 };
 
 export default {
     name: "index",
 
+    computed: {
+        showBatchBtn () {
+            return this.selection.length > 0;
+        } ,
+    } ,
+
+    components: {
+        'my-form': myForm ,
+    } ,
+
     data () {
         return {
-            filter: {
-                id: '' ,
-            } ,
-            dom: {} ,
-            ins: {} ,
+            dom: {},
+
+            ins: {},
+
             val: {
-                pending: {} ,
-                modal: false ,
-                error: {} ,
                 // edit-编辑 add-添加
-                mode: '' ,
-                selectedIds: [] ,
-
-            } ,
-
-            // 表单中的模块
-            modules: [] ,
-
-            // 这个属于保护字段！！不允许使用
-            positions: [] ,
+                mode: '',
+            },
 
             table: {
                 field: [
@@ -54,7 +54,7 @@ export default {
                     } ,
                     {
                         title: '图片' ,
-                        slot: 'path' ,
+                        slot: 'src' ,
                         minWidth: TopContext.table.image ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
@@ -65,17 +65,6 @@ export default {
                         minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
-
-                    // {
-                    //     title: '文件名' ,
-                    //     key: 'name' ,
-                    //     align: TopContext.table.alignCenter ,
-                    // } ,
-                    // {
-                    //     title: 'mime' ,
-                    //     key: 'mime' ,
-                    //     align: TopContext.table.alignCenter ,
-                    // } ,
                     {
                         title: '链接' ,
                         key: 'link' ,
@@ -88,26 +77,28 @@ export default {
                         minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
-                    {
-                        title: '操作' ,
-                        slot: 'action' ,
-                        minWidth: TopContext.table.action ,
-                        align: TopContext.table.alignCenter ,
-                        fixed: 'right' ,
-                    } ,
-                ] ,
-                total: 0 ,
-                page: 1 ,
-                data: [] ,
-                limit: TopContext.limit ,
-            } ,
+                    // {
+                    //     title: '操作' ,
+                    //     slot: 'action' ,
+                    //     minWidth: TopContext.table.action ,
+                    //     align: TopContext.table.alignCenter ,
+                    //     fixed: 'right' ,
+                    // } ,
+                ],
+                total: 0,
+                page: 1,
+                data: [],
+            },
 
-            search: {
-                limit: TopContext.limit ,
-                module_id: '' ,
-                position_id: '' ,
-            } ,
-            form: G.copy(form)  ,
+
+            search: G.copy(search) ,
+
+            modules: [],
+
+            current: G.copy(current) ,
+
+            selection: [] ,
+
         };
     } ,
 
@@ -116,98 +107,61 @@ export default {
         this.initIns();
         this.getData();
         this.getModules();
-        this.getPositions();
-    } ,
-
-    computed: {
-        title () {
-            return this.val.mode === 'edit' ? '编辑' : '添加';
-        } ,
-
-        showBatchBtn () {
-            return this.val.selectedIds.length > 0;
-        } ,
     } ,
 
     methods: {
 
-
-        initDom () {
-            this.dom.path = G(this.$refs.path);
-        } ,
-
-        getPositions () {
-            this.pending('getPositions' , true);
-            Api.position.all().then((res) => {
-                this.pending('getPositions' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                this.positions = data;
-            });
-        } ,
-
         getModules () {
             this.pending('getModules' , true);
-            Api.module.all().then((res) => {
-                this.pending('getModules' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.error('error' , data);
-                    return ;
-                }
-                this.modules = data;
-            });
+            Api.module
+                .all()
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    this.modules = res.data;
+                })
+                .finally(() => {
+                    this.pending('getModules' , false);
+                });
         } ,
 
 
+        initDom () {
+
+        } ,
+
         initIns () {
-            const self = this;
-            this.ins.path = new Uploader(this.dom.path.get(0) , {
-                api: this.imageApi(true) ,
-                mode: 'override' ,
-                clear: true ,
-                uploaded (file , data , code) {
-                    if (code !== TopContext.code.Success) {
-                        this.status(file.id , false);
-                        return ;
-                    }
-                    this.status(file.id , true);
-                    self.form.path = data.data;
-                } ,
-                cleared () {
-                    self.form.path = '';
-                } ,
-            });
+
         } ,
 
         getData () {
             this.pending('getData' , true);
-            Api.image_at_position.index(this.search , (res) => {
-                this.pending('getData' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                this.table.total = data.total;
-                this.table.page = data.current_page;
-                this.handleData(data.data);
-                this.table.data = data.data;
-            });
-        } ,
-
-        handleData (data) {
-            data.forEach((v) => {
-                this.pending(`delete_${v.id}` , false);
-            });
+            Api.imageAtPosition
+                .index(this.search)
+                .then((res) => {
+                    this.pending('getData' , false);
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    const data = res.data;
+                    data.data.forEach((v) => {
+                        this.pending(`delete_${v.id}` , false);
+                    });
+                    this.table.total = data.total;
+                    this.table.page = data.current_page;
+                    this.table.data = data.data;
+                });
         } ,
 
         destroy (id , callback) {
             this.destroyAll([id] , callback);
         } ,
 
-        destroyAll (idList , callback) {
-            if (idList.length < 1) {
+        destroyAll (ids , callback) {
+            if (ids.length < 1) {
                 this.message('warning' ,'请选择待删除的项');
                 G.invoke(callback , this , false);
                 return ;
@@ -218,25 +172,19 @@ export default {
                     G.invoke(callback , this , false);
                     return ;
                 }
-                Api.image_at_position.destroyAll(idList , (res) => {
-                    if (res.code !== TopContext.code.Success) {
-                        G.invoke(callback , this , false);
-                        this.errorHandle(res.message);
-                        return ;
-                    }
-                    G.invoke(callback , this , true);
-                    this.message('success' , '操作成功' , '影响的记录数：' + data);
-                    this.getData();
-                });
+                Api.imageAtPosition
+                    .destroyAll(ids)
+                    .then((res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            G.invoke(callback , this , false);
+                            this.errorHandle(res.message);
+                            return ;
+                        }
+                        G.invoke(callback , this , true);
+                        this.message('success' , '操作成功');
+                        this.getData();
+                    });
             });
-        } ,
-
-        selectionChangeEvent (data) {
-            const ids = [];
-            data.forEach((v) => {
-                ids.push(v.id);
-            });
-            this.val.selectedIds = ids;
         } ,
 
         destroyEvent (index , record) {
@@ -250,64 +198,19 @@ export default {
 
         destroyAllEvent () {
             this.pending('destroyAll' , true);
-            this.destroyAll(this.val.selectedIds , (success) => {
+            const ids = this.selection.map((v) => {
+                return v.id;
+            });
+            this.destroyAll(ids , (success) => {
                 this.pending('destroyAll' , false);
                 if (success) {
-                    this.val.selectedIds = [];
+                    this.selection = [];
                 }
             });
         } ,
 
-        editEvent (record) {
-            this._val('modal' , true);
-            this._val('mode' , 'edit');
-            this.error();
-            this.form = G.copy(record);
-            this.getPositions();
-            this.getModules();
-        } ,
-
-        addEvent () {
-            this._val('modal' , true);
-            this._val('mode' , 'add');
-            this.error();
-            this.form = G.copy(form);
-            this.getPositions();
-            this.getModules();
-        } ,
-
-        submitEvent () {
-            const self = this;
-            this.pending('submit' , true);
-            const callback = (res) => {
-                this.pending('submit' , false);
-                this.error();
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(msg , data , code);
-                    return ;
-                }
-                this.successHandle((keep) => {
-                    self.getData();
-                    if (keep) {
-                        return ;
-                    }
-                    self.closeFormModal();
-                });
-            };
-            if (this.val.mode === 'edit') {
-                Api.image_at_position.update(this.form.id , this.form).then(callback);
-                return ;
-            }
-            Api.image_at_position.store(this.form).then(callback);
-        } ,
-
-        closeFormModal () {
-            if (this.pending('submit')) {
-                this.message('warning' , '请求中...请耐心等待');
-                return;
-            }
-            this.val.modal = false;
-            this.ins.path.clearAll();
+        selectionChangeEvent (selection) {
+            this.selection = selection;
         } ,
 
         searchEvent () {
@@ -315,15 +218,87 @@ export default {
             this.getData();
         } ,
 
+        resetEvent () {
+            this.search = G.copy(search);
+            this.getData();
+        } ,
+
         pageEvent (page) {
             this.search.page = page;
             this.getData();
         } ,
-    } ,
 
-    watch: {
-        form (form) {
-            this.ins.path.render(form.path);
+        sortChangeEvent (data) {
+            if (data.order === TopContext.sort.none) {
+                this.search.order = '';
+            } else {
+                this.search.order = this.generateOrderString(data.key , data.order);
+            }
+            this.table.page = 1;
+            this.getData();
+        } ,
+
+        isOnlyOneSelection () {
+            return this.selection.length === 1;
+        } ,
+
+        isEmptySelection () {
+            return this.selection.length === 0;
+        } ,
+
+        hasSelection () {
+            return this.selection.length > 0;
+        } ,
+
+        getFirstSelection () {
+            return this.selection[0];
+        } ,
+
+        checkOneSelection () {
+            if (!this.hasSelection()) {
+                this.errorHandle('请选择项');
+                return false;
+            }
+            if (!this.isOnlyOneSelection()) {
+                this.errorHandle('请仅选择一项');
+                return false;
+            }
+            return true;
+        } ,
+
+        edit (record) {
+            this.current = record;
+            this._val('mode' , 'edit');
+            this.$nextTick(() => {
+                this.$refs.form.openFormModal();
+            });
+        } ,
+
+        editEvent (record) {
+            this.edit(record);
+        } ,
+
+        editEventByButton () {
+            if (!this.checkOneSelection()) {
+                return ;
+            }
+            const current = this.getFirstSelection();
+            this.edit(current);
+        } ,
+
+        addEvent () {
+            this._val('mode' , 'add');
+            this.$nextTick(() => {
+                this.$refs.form.openFormModal();
+            });
+        } ,
+
+        rowClickEvent (row , index) {
+            this.$refs.table.toggleSelect(index);
+        } ,
+
+        rowDblclickEvent (row , index) {
+            this.editEvent(row);
         } ,
     } ,
 }

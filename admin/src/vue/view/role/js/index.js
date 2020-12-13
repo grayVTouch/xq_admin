@@ -101,7 +101,7 @@ export default {
         } ,
 
         showBatchBtn () {
-            return this.val.selectedIds.length > 0;
+            return this.selection.length > 0;
         } ,
     } ,
 
@@ -117,7 +117,7 @@ export default {
         getPermission () {
             Api.admin_permission.index().then((res) => {
                 if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(msg , data , code);
+                    this.errorHandle(res.message);
                     return ;
                 }
                 data.forEach((v) => {
@@ -215,7 +215,7 @@ export default {
             data.forEach((v) => {
                 ids.push(v.id);
             });
-            this.val.selectedIds = ids;
+            this.selection = ids;
         } ,
 
         destroyEvent (index , record) {
@@ -229,10 +229,13 @@ export default {
 
         destroyAllEvent () {
             this.pending('destroyAll' , true);
-            this.destroyAll(this.val.selectedIds , (success) => {
+            const ids = this.selection.map((v) => {
+                return v.id;
+            });
+            this.destroyAll(ids , (success) => {
                 this.pending('destroyAll' , false);
                 if (success) {
-                    this.val.selectedIds = [];
+                    this.selection = [];
                 }
             });
         } ,
@@ -258,7 +261,7 @@ export default {
                 this.pending('submit' , false);
                 this.error();
                 if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(msg , data , code);
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.successHandle((keep) => {
@@ -299,7 +302,7 @@ export default {
             this._val('drawer' , true);
             Api.role.permission(record.id , (res) => {
                 if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(msg , data , code);
+                    this.errorHandle(res.message);
                     return ;
                 }
                 const permissions = [...this.permissions];
@@ -322,7 +325,7 @@ export default {
             });
         } ,
 
-        closeFormDrawer() {
+        closeFormModal() {
             if (this.pending('allocatePermission')) {
                 this.message('请求中...请耐心等待');
                 return ;
@@ -342,7 +345,7 @@ export default {
             } , (res) => {
                 this.pending('allocatePermission' , false);
                 if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(msg , data , code);
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.successHandle((keep) => {
@@ -350,7 +353,7 @@ export default {
                     if (keep) {
                         return ;
                     }
-                    this.closeFormDrawer();
+                    this.closeFormModal();
                 });
             });
         } ,

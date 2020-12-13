@@ -20,9 +20,10 @@ class Nav extends Base
         return success($res['message'] , $res['data']);
     }
 
-    public function getByModuleId(int $module_id)
+    public function search()
     {
-        $res = NavAction::getByModuleId($this , $module_id);
+        $param = $this->request->query();
+        $res = NavAction::search($this , $param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }

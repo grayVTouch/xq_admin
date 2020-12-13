@@ -42,7 +42,7 @@
                     p_id:   'parentId' ,
                 });
                 G.tree.loop(permissions , (v) => {
-                    if (this.state().context.debug) {
+                    if (this.TopContext.debug) {
                         return ;
                     }
                     // 权限处理
@@ -96,8 +96,7 @@
                     spreadFirst: false ,
                     // 子级项点击后回调
                     child (id) {
-                        // self.open(id);
-                        self.$emit('click' , id);
+                        self.$emit('on-focus' , id);
                     }
                 });
             } ,

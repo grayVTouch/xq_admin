@@ -1,0 +1,161 @@
+<template>
+    <div>
+        <my-form-modal
+                v-model="val.show"
+                :title="title"
+                :loading="val.pending.submit"
+                @on-ok="submitEvent"
+                @on-cancel="closeFormModal"
+        >
+            <template slot="default">
+                <form class="form" @submit.prevent="submitEvent">
+                    <table class="input-table">
+                        <tbody>
+                        <tr :class="{error: val.error.name}">
+                            <td>名称</td>
+                            <td>
+                                <input type="text" v-model="form.name" @input="val.error.name=''" class="form-text">
+                                <span class="need">*</span>
+                                <div class="msg"></div>
+                                <div class="e-msg">{{ val.error.name }}</div>
+                            </td>
+                        </tr>
+
+                        <tr :class="{error: val.error.user_id}">
+                            <td>所属用户：</td>
+                            <td>
+                                <input type="text" readonly="readonly" :value="`${owner.username}【${owner.id}】`" class="form-text w-150 run-cursor-not-allow">
+                                如需重新搜索，请点击
+                                <i-button @click="showUserSelector">搜索</i-button>
+                                <span class="need">*</span>
+                                <div class="msg"></div>
+                                <div class="e-msg">{{ val.error.user_id }}</div>
+                            </td>
+                        </tr>
+
+                        <tr :class="{error: val.error.module_id}">
+                            <td>所属模块</td>
+                            <td>
+                                <my-select :data="modules" v-model="form.module_id" @change="val.error.module_id = ''" :width="TopContext.style.inputItemW"></my-select>
+                                <my-loading v-if="val.pending.getModules"></my-loading>
+                                <span class="need">*</span>
+                                <div class="msg"></div>
+                                <div class="e-msg">{{ val.error.module_id }}</div>
+                            </td>
+                        </tr>
+
+                        <tr :class="{error: val.error.thumb}">
+                            <td>封面</td>
+                            <td>
+                                <div ref="thumb">
+                                    <!-- 上传图片组件 -->
+                                    <div class='uploader'>
+                                        <div class="upload">
+                                            <div class="handler">
+
+                                                <div class="line input hide">
+                                                    <input type="file" class="file-input">
+                                                </div>
+
+                                                <div class="line icon">
+                                                    <div class="ico">
+                                                        <div class="feedback run-action-feedback-round"><i class="iconfont run-iconfont run-iconfont-shangchuan"></i></div>
+                                                        <div class="clear run-action-feedback-round" title="清空"><i class="iconfont run-iconfont run-iconfont-qingkong"></i></div>
+                                                    </div>
+                                                    <div class="text">请选择要上传的文件</div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="msg"></div>
+                                        </div>
+                                        <div class="preview"></div>
+
+                                    </div>
+                                </div>
+
+                                <span class="need"></span>
+                                <div class="msg"></div>
+                                <div class="e-msg">{{ val.error.thumb }}</div>
+                            </td>
+                        </tr>
+
+                        <tr :class="{error: val.error.country_id}">
+                            <td>所属国家：</td>
+                            <td>
+                                <input type="text" readonly="readonly" :value="`${country.name}【${country.id}】`" class="form-text w-150 run-cursor-not-allow">
+                                如需重新搜索，请点击
+                                <i-button @click="showCountrySelector">搜索</i-button>
+                                <span class="need">*</span>
+                                <div class="msg">请务必在选择模块后操作</div>
+                                <div class="e-msg">{{ val.error.country_id }}</div>
+                            </td>
+                        </tr>
+
+                        <tr :class="{error: val.error.description}">
+                            <td>描述</td>
+                            <td>
+                                <textarea v-model="form.description" class="form-textarea"></textarea>
+                                <span class="need"></span>
+                                <div class="msg"></div>
+                                <div class="e-msg">{{ val.error.description }}</div>
+                            </td>
+                        </tr>
+
+                        <tr :class="{error: val.error.status}">
+                            <td>状态</td>
+                            <td>
+                                <i-radio-group v-model="form.status">
+                                    <i-radio v-for="(v,k) in TopContext.business.imageSubject.status" :key="k" :label="parseInt(k)">{{ v }}</i-radio>
+                                </i-radio-group>
+                                <span class="need">*</span>
+                                <div class="msg">默认：待审核</div>
+                                <div class="e-msg">{{ val.error.status }}</div>
+                            </td>
+                        </tr>
+
+                        <tr :class="{error: val.error.fail_reason}" v-show="form.status === -1">
+                            <td>失败原因</td>
+                            <td>
+                                <textarea v-model="form.fail_reason" class="form-textarea" @input="val.error.fail_reason = ''"></textarea>
+                                <span class="need">*</span>
+                                <div class="msg">当状态为审核失败的时候必填</div>
+                                <div class="e-msg">{{ val.error.fail_reason }}</div>
+                            </td>
+                        </tr>
+
+                        <tr :class="{error: val.error.weight}">
+                            <td>权重</td>
+                            <td>
+                                <input type="number" v-model="form.weight" @input="val.error.weight = ''" class="form-text">
+                                <span class="msg">仅允许整数</span>
+                                <span class="need"></span>
+                                <span class="e-msg"></span>
+                            </td>
+                        </tr>
+
+                        <tr v-show="false">
+                            <td colspan="2">
+                                <button type="submit"></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </template>
+            <template slot="footer">
+                <i-button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent">确认</i-button>
+                <i-button v-ripple type="error" @click="closeFormModal">关闭</i-button>
+            </template>
+        </my-form-modal>
+
+        <my-user-selector ref="user-selector" @on-change="userChangeEvent"></my-user-selector>
+        <my-country-selector ref="country-selector" @on-change="countryChangeEvent"></my-country-selector>
+    </div>
+</template>
+
+<script src="./js/form.js"></script>
+
+<style scoped>
+
+</style>

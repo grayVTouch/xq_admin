@@ -390,13 +390,13 @@ class ImageProjectAction extends Action
     public static function destroyTag(Base $context , array $param = []): array
     {
         $validator = Validator::make($param , [
-            'image_subject_id' => 'required|integer' ,
+            'image_project_id' => 'required|integer' ,
             'tag_id'           => 'required|integer' ,
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
-        $count = RelationTagModel::delByRelationTypeAndRelationIdAndTagId('image_project' , $param['image_subject_id'] , $param['tag_id']);
+        $count = RelationTagModel::delByRelationTypeAndRelationIdAndTagId('image_project' , $param['image_project_id'] , $param['tag_id']);
         return self::success('操作成功' , $count);
     }
 }

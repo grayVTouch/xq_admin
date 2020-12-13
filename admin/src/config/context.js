@@ -3,6 +3,7 @@
 import business from './business.js';
 import table from './table.js';
 import config from './config.js';
+import style from './style.js';
 
 /**
  * ******************
@@ -39,8 +40,9 @@ window.TopContext = {
     } ,
     business ,
     table ,
+    style ,
     // 每页显示记录数
-    limit: 20 ,
+    limit: 8 ,
     config ,
     // 系统信息
     os: {

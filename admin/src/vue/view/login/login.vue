@@ -3,7 +3,7 @@
         <div class="login">
             <div class="logo">
                 <div class="outer">
-                    <img :src="val.avatar ? val.avatar : $store.state.context.res.avatar" class="image">
+                    <img :src="val.avatar ? val.avatar : TopContext.res.avatar" class="image">
                 </div>
             </div>
             <div class="message" :class="val.message.class">{{ val.message.text }}</div>

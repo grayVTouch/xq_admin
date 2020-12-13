@@ -4,9 +4,9 @@
             <div class="inner" ref="menu-inner">
                 <div class="line logo" ref="logo">
                     <div class="c-left image-outer">
-                        <div class="inner"><img :src="state().context.res.logo" alt="" class="image"></div>
+                        <div class="inner"><img :src="TopContext.res.logo" alt="" class="image"></div>
                     </div>
-                    <div class="c-right text-outer">{{ state().context.os.name }}</div>
+                    <div class="c-right text-outer">{{ TopContext.os.name }}</div>
                 </div>
 
                 <div class="line avatar" ref="avatar">
@@ -19,7 +19,7 @@
                                     :btm-val="user().role ? user().role.name : '无'"
                             ></my-avatar>
                         </div>
-                        <div class="btm">running</div>
+                        <div class="btm">{{ getUsername(user().username , user().nickname) }}</div>
                     </div>
                 </div>
 
@@ -44,10 +44,10 @@
                 </div>
 
                 <div class="line menus" ref="menus">
-                    <my-menu ref="my-menu" @click="menuClickEvent"></my-menu>
+                    <my-menu ref="my-menu" @on-focus="menuFocusEvent"></my-menu>
                 </div>
 
-                <div class="line desc" ref="desc">{{ state().context.os.name }}</div>
+                <div class="line desc" ref="desc">{{ TopContext.os.name }}</div>
             </div>
         </div>
 
@@ -145,7 +145,9 @@
                     <!-- 动态视图 -->
                     <div class="dynamic" ref="dynamic">
                         <keep-alive>
-                            <router-view></router-view>
+<!--                            <transition name="fade-in-out">-->
+                                <router-view class="fade-in-out"></router-view>
+<!--                            </transition>-->
                         </keep-alive>
                     </div>
 
@@ -155,11 +157,11 @@
                     </div>
                 </div>
 
-                <div class="line info hide" ref="info">{{ state().context.os.name }}</div>
+                <div class="line info hide" ref="info">{{ TopContext.os.name }}</div>
             </div>
         </div>
     </div>
 </template>
 
 <script src="./js/index.js"></script>
-<style src="./css/index.css"></style>
+<style scoped src="./css/index.css"></style>

@@ -48,7 +48,7 @@ class Category extends Base
         $param['p_id']        = $param['p_id'] ?? '';
         $param['name']        = $param['name'] ?? '';
         $param['description'] = $param['description'] ?? '';
-        $param['enable']    = $param['enable'] ?? '';
+        $param['is_enabled']    = $param['is_enabled'] ?? '';
         $param['weight']    = $param['weight'] ?? '';
         $param['module_id']        = $param['module_id'] ?? '';
         $res = CategoryAction::localUpdate($this , $id ,$param);
@@ -64,7 +64,7 @@ class Category extends Base
         $param['p_id']        = $param['p_id'] ?? '';
         $param['name']        = $param['name'] ?? '';
         $param['description'] = $param['description'] ?? '';
-        $param['enable']    = $param['enable'] ?? '';
+        $param['is_enabled']    = $param['is_enabled'] ?? '';
         $param['weight']    = $param['weight'] ?? '';
         $param['module_id']        = $param['module_id'] ?? '';
         $res = CategoryAction::update($this , $id ,$param);
@@ -80,7 +80,7 @@ class Category extends Base
         $param['p_id']        = $param['p_id'] ?? '';
         $param['name']        = $param['name'] ?? '';
         $param['description'] = $param['description'] ?? '';
-        $param['enable']    = $param['enable'] ?? '';
+        $param['is_enabled']    = $param['is_enabled'] ?? '';
         $param['weight']    = $param['weight'] ?? '';
         $param['module_id']        = $param['module_id'] ?? '';
         $res = CategoryAction::store($this ,$param);

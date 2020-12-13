@@ -117,7 +117,7 @@ export default {
                 this.pending('submit' , false);
                 this.error();
                 if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(msg , data , code);
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.successHandle((keep) => {
@@ -125,7 +125,7 @@ export default {
                     if (keep) {
                         return ;
                     }
-                    self.closeFormDrawer();
+                    self.closeFormModal();
                 });
             };
             this.pending('submit' , true);
@@ -136,7 +136,7 @@ export default {
             Api.admin_permission.store(this.form).then(callback);
         } ,
 
-        openFormDrawer () {
+        openFormModal () {
             this._val('drawer' , true);
             this.getPermissions(() => {
                 if (this.mode === 'edit') {
@@ -145,7 +145,7 @@ export default {
             });
         } ,
 
-        closeFormDrawer () {
+        closeFormModal () {
             if (this.pending('submit')) {
                 this.message('warning' ,'请求中...请耐心等待');
                 return ;

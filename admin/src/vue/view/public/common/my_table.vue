@@ -1,0 +1,34 @@
+<template>
+    <i-table
+            class="w-r-100"
+            border
+            :height="TopContext.table.height"
+            :columns="table.field"
+            :data="table.data"
+            :loading="val.pending.getData"
+            @on-selection-change="selectionChangeEvent"
+            @on-row-dblclick="editEvent"
+            @on-row-click="rowClickEvent"
+            @on-sort-change="sortChangeEvent"
+    >
+        <slot></slot>
+    </i-table>
+</template>
+
+<script>
+    export default {
+        name: "my_table" ,
+
+        props: {
+
+        } ,
+
+        methods: {
+
+        } ,
+    }
+</script>
+
+<style scoped>
+
+</style>

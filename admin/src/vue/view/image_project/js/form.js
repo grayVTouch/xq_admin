@@ -13,87 +13,14 @@ const form = {
     tags: [] ,
 };
 
-
-const users = {
-    data: [],
-    field: [
-        {
-            title: 'id' ,
-            key: 'id' ,
-            center: TopContext.table.alignCenter ,
-            width: TopContext.table.id ,
-        } ,
-        {
-            title: '名称' ,
-            key: 'username' ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '头像' ,
-            slot: 'avatar' ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '创建时间' ,
-            key: 'created_at' ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '操作' ,
-            slot: 'action' ,
-        } ,
-    ] ,
-    current: {
-        id: 0 ,
-        username: 'unknow' ,
-    } ,
-    limit: TopContext.limit ,
-    value: '' ,
-    page: 1 ,
-    total: 0 ,
+const owner = {
+    id: 0 ,
+    username: 'unknow' ,
 };
 
-const imageSubjects = {
-    data: [],
-    field: [
-        {
-            title: 'id' ,
-            key: 'id' ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '名称' ,
-            key: 'name' ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '模块【id】' ,
-            slot: 'module_id' ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '封面' ,
-            slot: 'thumb' ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '创建时间' ,
-            key: 'created_at' ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '操作' ,
-            slot: 'action' ,
-        } ,
-    ] ,
-    current: {
-        id: 0 ,
-        name: 'unknow' ,
-    },
-    total: 0 ,
-    page: 1 ,
-    value: '' ,
-    limit: TopContext.limit ,
+const imageSubject = {
+    id: 0 ,
+    name: 'unknow' ,
 };
 
 const table = {
@@ -134,20 +61,16 @@ export default {
     data () {
         return {
             val: {
+                show: false ,
+                showImageSubjectSelector: false ,
                 tab: 'base' ,
-                pending: {} ,
-                error: {} ,
-                selectedIds: [] ,
-                modalForImageSubject: false ,
-                modalForUser: false ,
-                drawer: false ,
             } ,
 
             // 用户
-            users: G.copy(users , true),
+            owner: G.copy(owner),
 
             // 关联主体
-            imageSubjects: G.copy(imageSubjects , true),
+            imageSubject: G.copy(imageSubject),
 
             // 标签
             tags: [] ,
@@ -171,18 +94,20 @@ export default {
 
             images: [] ,
 
-            form: G.copy(form , true) ,
+            form: G.copy(form) ,
+
+            selection: [] ,
         };
     } ,
 
     props: {
-        data: {
-            type: Object ,
-            required: true ,
+        id: {
+            type: Number ,
+            default: 0 ,
         } ,
         mode: {
             type: String ,
-            required: true ,
+            default: 'add' ,
         } ,
     } ,
 
@@ -196,22 +121,24 @@ export default {
 
         getCategories (moduleId , type , callback) {
             this.pending('getCategories' , true);
-            // console.log(this.form.type);
-            Api.category.search({
-                module_id: moduleId ,
-                type: type === 'pro' ? 'image_project' : 'image' ,
-            } , (res) => {
-                this.pending('getCategories' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    G.invoke(callback , null , false);
-                    return ;
-                }
-                this.categories = data;
-                this.$nextTick(() => {
-                    G.invoke(callback , null , true);
+            Api.category
+                .search({
+                    module_id: moduleId ,
+                    type: type === 'pro' ? 'image_project' : 'image' ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        G.invoke(callback , null , false);
+                        return ;
+                    }
+                    this.categories = res.data;
+                    this.$nextTick(() => {
+                        G.invoke(callback , null , true);
+                    });
+                }).finally(() => {
+                    this.pending('getCategories' , false);
                 });
-            });
         } ,
 
         getModules (callback) {
@@ -223,7 +150,7 @@ export default {
                     G.invoke(callback , null , false);
                     return ;
                 }
-                this.modules = data;
+                this.modules = res.data;
                 this.$nextTick(() => {
                     G.invoke(callback , null , true);
                 });
@@ -231,16 +158,21 @@ export default {
         } ,
 
         getTopTags (moduleId) {
-            Api.tag.topByModuleId(moduleId , (res) => {
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                this.topTags = data;
-            });
+            Api.tag
+                .topByModuleId(moduleId)
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    this.topTags = res.data;
+                });
         } ,
 
         moduleChangedEvent (moduleId) {
+            if (!G.isNumeric(moduleId)) {
+                return ;
+            }
             this.val.error.module_id = '';
             this.form.category_id = '';
             this.form.image_subject_id = '';
@@ -306,80 +238,24 @@ export default {
             });
         } ,
 
-        searchUser () {
-            this.pending('searchUser' , true);
-            Api.user.search({
-                value: this.users.value ,
-                limit: this.users.limit ,
-                page: this.users.page ,
-            }, (res) => {
-                this.pending('searchUser' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.error({user_id: data});
-                    return ;
-                }
-                this.users.total = data.total;
-                this.users.page = data.current_page;
-                this.users.data = data.data;
-            });
-        } ,
-
-        userPageEvent (page) {
-            this.users.page = page;
-            this.searchUser();
-        } ,
-
-        imageSubjectPageEvent (page) {
-            this.imageSubjects.page = page;
-            this.searchImageSubject();
-        } ,
-
-        searchImageSubject () {
-            this.pending('searchImageSubject' , true);
-            Api.image_subject.search({
-                module_id: this.form.module_id ,
-                value: this.imageSubjects.value ,
-                limit: this.imageSubjects.limit ,
-            } , (res) => {
-                this.pending('searchImageSubject' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.error({image_subject_id: data});
-                    return ;
-                }
-                this.imageSubjects.page = data.current_page;
-                this.imageSubjects.total = data.total;
-                this.imageSubjects.data = data.data;
-            });
-        } ,
-
-        searchSubjectEvent (e) {
-            if (this.form.module_id < 1) {
-                this.error({image_subject_id: '请选择模块后操作'});
-                return ;
-            }
-            this.searchImageSubject();
-            this._val('modalForImageSubject' , true);
-        } ,
-
-        searchUserEvent (e) {
-            this.searchUser();
-            this._val('modalForUser' , true);
-        } ,
-
-        updateImageSubjectEvent (row , index) {
-            this._val('modalForImageSubject' , false);
-            this.error({image_subject_id: ''} , false);
-            this.form.image_subject_id = row.id;
-            this.imageSubjects.current = row;
-            this.imageSubjects.data = [];
-        } ,
-
-        updateUserEvent (row , index) {
-            this._val('modalForUser' , false);
+        userChangeEvent (user) {
             this.error({user_id: ''} , false);
-            this.form.user_id = row.id;
-            this.users.current = row;
-            this.users.data = [];
+            this.form.user_id   = user.id;
+            this.owner          = user;
+        } ,
+
+        showUserSelector () {
+            this.$refs['user-selector'].show();
+        } ,
+
+        imageSubjectChangeEvent (res) {
+            this.error({image_subject_id: ''} , false);
+            this.form.image_subject_id  = res.id;
+            this.imageSubject           = res;
+        } ,
+
+        showImageSubjectSelector () {
+            this.$refs['image-subject-selector'].show();
         } ,
 
         selectedTagEvent () {
@@ -388,43 +264,46 @@ export default {
 
         // 获取当前编辑记录详情
         findById (id) {
-            this._val('findById' , true);
+            this.pending('findById' , true);
             return new Promise((resolve , reject) => {
-                Api.image_project.show(id , (res) => {
-                    this._val('findById' , false);
-                    if (res.code !== TopContext.code.Success) {
-                        this.errorHandle(res.message);
-                        reject();
-                        return ;
-                    }
-                    this.form = data;
-                    resolve();
-                });
+                Api.imageProject.show(id)
+                    .then((res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            this.errorHandle(res.message);
+                            reject();
+                            return ;
+                        }
+                        this.form = res.data;
+                        resolve();
+                    }).finally(() => {
+                        this.pending('findById' , false);
+                    });
             });
         } ,
 
-        openFormDrawer () {
+        openFormModal () {
             this.getModules();
             if (this.mode === 'edit') {
-                this.getTopTags(this.data.module_id);
-                this.getCategories(this.data.module_id , this.data.type);
-                this.findById(this.data.id).then((res) => {
-                    this.ins.thumb.render(this.form.thumb);
+                this.findById(this.id).then((res) => {
+                    this.getTopTags(this.form.module_id);
+                    this.getCategories(this.form.module_id , this.form.type);
 
+                    this.ins.thumb.render(this.form.thumb);
                     this.table.data             = this.form.images;
-                    this.users.current          = this.form.user ? this.form.user : G.copy(users.current);
-                    this.imageSubjects.current  = this.form.image_subject ? this.form.image_subject: G.copy(imageSubjects.current);
+                    this.owner          = this.form.user ? this.form.user : G.copy(owner);
+                    this.imageSubject   = this.form.image_subject ? this.form.image_subject: G.copy(imageSubject);
                 });
             }
-            this._val('drawer' , true);
+            this.val.show = true;
         } ,
 
-        closeFormDrawer () {
+        closeFormModal () {
             if (this.pending('submit')) {
                 this.message('warning' , '请求中...请耐心等待');
                 return ;
             }
-            this._val('drawer' , false);
+            // debugger
+            this.val.show = false;
             this.ins.thumb.clearAll();
             this.ins.images.clearAll();
             this.form           = G.copy(form);
@@ -433,8 +312,8 @@ export default {
             this.topTags        = [];
             this.modules        = [];
             this.categories     = [];
-            this.imageSubjects  = G.copy(imageSubjects);
-            this.users          = G.copy(users);
+            this.imageSubject  = G.copy(imageSubject);
+            this.owner          = G.copy(owner);
             this.table          = G.copy(table);
             this._val('tab' , 'base');
         } ,
@@ -452,34 +331,35 @@ export default {
             const self = this;
             this.confirmModal('你确定删除吗？'  , (res) => {
                 if (res) {
-                    Api.image_project.destroyAllImageForImageSubject(ids , (res) => {
-                        if (res.code !== TopContext.code.Success) {
-                            this.errorHandle(res.message);
-                            return ;
-                        }
-                        G.invoke(callback , this , true);
-                        this.message('success' , '操作成功' , '影响的记录数：' + data);
-                        for (let i = 0; i < this.table.data.length; ++i)
-                        {
-                            const cur = this.table.data[i];
-                            if (G.contain(cur.id , ids)) {
-                                this.table.data.splice(i , 1);
-                                i--;
+                    Api.imageProject
+                        .destroyAllImageForImageSubject(ids)
+                        .then((res) => {
+                            if (res.code !== TopContext.code.Success) {
+                                this.errorHandle(res.message);
+                                return ;
                             }
-                        }
-                    });
+                            G.invoke(callback , this , true);
+                            this.message('success' , '操作成功');
+                            for (let i = 0; i < this.table.data.length; ++i)
+                            {
+                                const cur = this.table.data[i];
+                                if (G.contain(cur.id , ids)) {
+                                    this.table.data.splice(i , 1);
+                                    i--;
+                                }
+                            }
+                        })
+                        .finally(() => {
+
+                        });
                     return ;
                 }
                 G.invoke(callback , this , false);
             });
         } ,
 
-        selectionChangeEvent (data) {
-            const ids = [];
-            data.forEach((v) => {
-                ids.push(v.id);
-            });
-            this.val.selectedIds = ids;
+        selectionChangeEvent (selection) {
+            this.selection = selection;
         } ,
 
         destroyEvent (index , record) {
@@ -493,10 +373,13 @@ export default {
 
         destroyAllEvent () {
             this.pending('destroyAll' , true);
-            this.destroyAll(this.val.selectedIds , (success) => {
+            const ids = this.selection.map((v) => {
+                return v.id;
+            });
+            this.destroyAll(ids , (success) => {
                 this.pending('destroyAll' , false);
                 if (success) {
-                    this.val.selectedIds = [];
+                    this.selection = [];
                 }
             });
         } ,
@@ -552,25 +435,29 @@ export default {
                 return ;
             }
             // 编辑模式
-            this.pending('destroy_tag_' + tagId , true);
-            Api.image_project.destroyTag({
-                image_project_id: this.form.id ,
-                tag_id: tagId ,
-            } , (res) => {
-                this.pending('destroy_tag_' + tagId , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.error({tags: data});
-                    return ;
-                }
-                for (let i = 0; i < this.form.tags.length; ++i)
-                {
-                    const tag = this.form.tags[i];
-                    if (tag.tag_id === tagId) {
-                        this.form.tags.splice(i , 1);
-                        i--;
+            const pendingKey = 'destroy_tag_' + tagId;
+            this.pending(pendingKey , true);
+            Api.imageProject
+                .destroyTag({
+                    image_project_id: this.form.id ,
+                    tag_id: tagId ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
                     }
-                }
-            });
+                    for (let i = 0; i < this.form.tags.length; ++i)
+                    {
+                        const tag = this.form.tags[i];
+                        if (tag.tag_id === tagId) {
+                            this.form.tags.splice(i , 1);
+                            i--;
+                        }
+                    }
+                }).finally(() => {
+                    this.pending(pendingKey , false);
+                })
         } ,
 
         createOrAppendTag () {
@@ -587,19 +474,21 @@ export default {
             }
             this.dom.tagInput.origin('blur');
             this.dom.tagInputOuter.addClass('disabled');
-            Api.tag.findOrCreateTag({
-                name ,
-                module_id: this.form.module_id ,
-                user_id: this.form.user_id ,
-            } , (res) => {
-                this.dom.tagInputOuter.removeClass('disabled');
-                if (res.code !== TopContext.code.Success) {
-                    this.error({tags: msg} , false);
-                    return ;
-                }
-                this.tags.push(data);
-                this.dom.tagInput.html('');
-            });
+            Api.tag
+                .findOrCreateTag({
+                    name ,
+                    module_id: this.form.module_id ,
+                    user_id: this.form.user_id ,
+                })
+                .then((res) => {
+                    this.dom.tagInputOuter.removeClass('disabled');
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    this.tags.push(res.data);
+                    this.dom.tagInput.html('');
+                });
         } ,
 
         submitEvent () {
@@ -607,11 +496,10 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return ;
             }
-            const callback = (res) => {
-                this.pending('submit' , false);
+            const thenCallback = (res) => {
                 this.error();
                 if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(msg , data , code);
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.successHandle((keep) => {
@@ -619,22 +507,28 @@ export default {
                     if (keep) {
                         return ;
                     }
-                    this.closeFormDrawer();
+                    this.closeFormModal();
                 });
             };
+            const finalCallback = () => {
+                this.pending('submit' , false);
+            };
             const form = G.copy(this.form);
-                form.images = G.jsonEncode(this.images);
-                form.tags = [];
-            this.tags.forEach((v) => {
-                form.tags.push(v.id);
+            form.images = G.jsonEncode(this.images);
+            form.tags = this.tags.map((v) => {
+                return v.id;
             });
             form.tags = G.jsonEncode(form.tags);
             this.pending('submit' , true);
             if (this.mode === 'edit') {
-                Api.image_project.update(form.id , form , callback);
+                Api.imageProject.update(form.id , form).then(thenCallback).finally(finalCallback);
                 return ;
             }
-            Api.image_project.store(form , callback);
+            Api.imageProject.store(form).then(thenCallback).finally(finalCallback);
+        } ,
+
+        rowClickEvent (row , index) {
+            this.$refs.table.toggleSelect(index);
         } ,
 
     } ,

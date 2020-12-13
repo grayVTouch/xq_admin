@@ -27,6 +27,7 @@ export default {
                 fixedNavigation: false ,
                 // 文档标题
                 title: '' ,
+                once: true ,
             } ,
 
             // 已经产生的标签
@@ -208,12 +209,13 @@ export default {
                 } ,
 
                 focus (tabId) {
-                    console.log('标签切换了');
                     self._val('tabId' , tabId);
                     const tab = self.findTabByTabId(tabId);
                     self.initPositions(tab.routeId);
                     self.pushByRouteId(tab.routeId);
                     self.$refs['my-menu'].ins.ic.focus(tab.routeId);
+                    // self.$refs['my-menu'].ins.ic.spreadSpecified(tab.routeId);
+                    // self.$refs['my-menu'].ins.ic.spreadSpecified(tab.routeId);
                 } ,
             });
         } ,
@@ -269,7 +271,7 @@ export default {
         } ,
 
         // 侧边菜单栏按钮点击事件
-        menuClickEvent (routeId) {
+        menuFocusEvent (routeId) {
             this.createTab(routeId);
         } ,
 
@@ -306,7 +308,7 @@ export default {
             return -1;
         } ,
 
-        // 关闭标签页（删除标签 + 标签对应内容）
+        // 关闭标签页
         closeTabByTabId (tabId) {
             this.ins.tab.closeTab(tabId);
         } ,

@@ -25,4 +25,26 @@ class NavModel extends Model
             ->get();
     }
 
+    public static function search(?array $filter , array $field = null , array $order = []): Collection
+    {
+        $filter = $filter ?? [];
+        $filter['module_id'] = $filter['module_id'] ?? '';
+
+        $field = $field ?? '*';
+
+        $order['field'] = $order['field'] ?? 'id';
+        $order['value'] = $order['value'] ?? 'asc';
+
+        $where = [];
+
+        if ($filter['module_id'] === '') {
+            $where[] = ['module_id' , '=' , $filter['module_id']];
+        }
+
+        return self::select($field)
+            ->where($where)
+            ->orderBy($order['field'] , $order['value'])
+            ->get();
+    }
+
 }

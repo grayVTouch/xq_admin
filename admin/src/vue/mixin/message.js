@@ -7,8 +7,6 @@ export default {
         });
     } ,
 
-
-
     modal (action , title , content = '' , onOk = null , merge = {}) {
         onOk = G.isFunction(onOk) ? onOk : () => {};
         return this.$Modal[action]({
@@ -27,10 +25,6 @@ export default {
             ...merge ,
         });
     } ,
-
-
-
-
 
     errorHandle (message) {
         return this.modal('error' ,'错误信息' ,  message);

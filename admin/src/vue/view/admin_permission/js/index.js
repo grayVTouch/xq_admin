@@ -112,7 +112,7 @@ export default {
                 fixed: 'right' ,
             } ,
         ];
-        if (!this.$store.state.context.debug) {
+        if (!this.TopContext.debug) {
             // 仅在调试模式可供修改
             field.shift();
             field.pop();
@@ -152,7 +152,7 @@ export default {
 
     computed: {
         showBatchBtn () {
-            return this.val.selectedIds.length > 0;
+            return this.selection.length > 0;
         } ,
     } ,
 
@@ -287,7 +287,7 @@ export default {
             this._val('mode' , 'edit');
             this.form = G.copy(v);
             this.$nextTick(() => {
-                this.$refs.form.openFormDrawer();
+                this.$refs.form.openFormModal();
             });
         } ,
 
@@ -295,7 +295,7 @@ export default {
             this._val('mode' , 'add');
             this.form = {};
             this.$nextTick(() => {
-                this.$refs.form.openFormDrawer();
+                this.$refs.form.openFormModal();
             });
         } ,
 

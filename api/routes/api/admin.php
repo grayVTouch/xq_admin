@@ -2,30 +2,60 @@
 
 use App\Customize\api\admin\middleware\CustomizeMiddleware;
 use App\Customize\api\admin\middleware\UserAuthMiddleware;
+use App\Http\Controllers\api\admin\AdminPermission;
+use App\Http\Controllers\api\admin\Category;
+use App\Http\Controllers\api\admin\Disk;
+use App\Http\Controllers\api\admin\File;
+use App\Http\Controllers\api\admin\ImageAtPosition;
+use App\Http\Controllers\api\admin\ImageProject;
+use App\Http\Controllers\api\admin\ImageSubject;
+use App\Http\Controllers\api\admin\Job;
+use App\Http\Controllers\api\admin\Login;
+use App\Http\Controllers\api\admin\Misc;
+use App\Http\Controllers\api\admin\Module;
+use App\Http\Controllers\api\admin\Nav;
+use App\Http\Controllers\api\admin\Pannel;
+use App\Http\Controllers\api\admin\Position;
+use App\Http\Controllers\api\admin\Region;
+use App\Http\Controllers\api\admin\Role;
+use App\Http\Controllers\api\admin\Tag;
+use App\Http\Controllers\api\admin\User;
+use App\Http\Controllers\api\admin\video;
+use App\Http\Controllers\api\admin\VideoCompany;
+use App\Http\Controllers\api\admin\VideoProject;
+use App\Http\Controllers\api\admin\VideoSeries;
+use App\Http\Controllers\api\admin\VideoSubtitle;
 use Illuminate\Support\Facades\Route;
+
+
+use App\Http\Controllers\api\admin\Admin;
+use App\Http\Controllers\api\admin\Test;
 
 Route::prefix('admin')
     ->namespace('api\admin\\')
     ->middleware([
         CustomizeMiddleware::class
     ])
+    // 明明路由前缀（避免冲突）
     ->name('api.admin.')
     ->group(function(){
         Route::middleware([])
             ->group(function(){
-                Route::any('test' , 'Test@index');
+                Route::any('test' , [Test::class , 'index']);
+                Route::any('test' , [Test::class , 'index']);
 
 
                 // 不用登录的相关接口
-                Route::get('captcha' , 'Misc@captcha');
-                Route::post('login' , 'Login@login');
-                Route::get('avatar' , 'Login@avatar');
+                Route::get('captcha'    , [Misc::class , 'captcha'])->name('captcha');
+                Route::post('login'     , [Login::class , 'login'])->name('login');
+                Route::get('avatar'     , [Login::class , 'avatar'])->name('avatar');
 
-                Route::post('upload' , 'File@upload');
-                Route::post('upload_image' , 'File@uploadImage');
-                Route::post('upload_video' , 'File@uploadVideo');
-                Route::post('upload_subtitle' , 'File@uploadSubtitle');
-                Route::post('upload_office' , 'File@uploadOffice');
+                Route::post('upload'            , [File::class , 'upload'])->name('upload');
+                Route::post('upload_image'      , [File::class , 'uploadImage'])->name('upload_image');
+                Route::post('upload_video'      , [File::class , 'uploadVideo'])->name('upload_video');
+                Route::post('upload_subtitle'   , [File::class , 'uploadSubtitle'])->name('upload_subtitle');
+                Route::post('upload_office'     , [File::class , 'uploadOffice'])->name('upload_office');
+
             });
 
         Route::middleware([
@@ -38,63 +68,63 @@ Route::prefix('admin')
              * 后台用户
              * *****************************
              */
-            Route::get('info' , 'Admin@info');
-            Route::get('search_admin' , 'Admin@search');
-            Route::get('admin' , 'Admin@index');
-            Route::get('admin/{id}' , 'Admin@show');
-            Route::put('admin/{id}' , 'Admin@update');
-            Route::post('admin' , 'Admin@store');
+            Route::get('info'           , [Admin::class , 'info'])->name('admin_info');
+            Route::get('search_admin'   , [Admin::class , 'search'])->name('search_admin');
+            Route::get('admin'          , [Admin::class , 'index'])->name('admin_index');
+            Route::get('admin/{id}'     , [Admin::class , 'show'])->name('admin_show');
+            Route::put('admin/{id}'     , [Admin::class , 'update'])->name('admin_update');
+            Route::post('admin'         , [Admin::class , 'store'])->name('admin_store');
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_admin' , 'Admin@destroyAll');
-            Route::delete('admin/{id}' , 'Admin@destroy');
+            Route::delete('destroy_all_admin'   , [Admin::class , 'destroyAll']);
+            Route::delete('admin/{id}'          , [Admin::class , 'destroy']);
 
             /**
              * ********************
              * 用户相关
              * ********************
              */
-            Route::get('search_user' , 'User@search');
-            Route::get('user' , 'User@index');
-            Route::get('user/{id}' , 'User@show');
-            Route::put('user/{id}' , 'User@update');
-            Route::post('user' , 'User@store');
+            Route::get('search_user'    , [User::class , 'search']);
+            Route::get('user'           , [User::class , 'index']);
+            Route::get('user/{id}'      , [User::class , 'show']);
+            Route::put('user/{id}'      , [User::class , 'update']);
+            Route::post('user'          , [User::class , 'store']);
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_user' , 'User@destroyAll');
-            Route::delete('user/{id}' , 'User@destroy');
+            Route::delete('destroy_all_user'    , [User::class , 'destroyAll']);
+            Route::delete('user/{id}'           , [User::class , 'destroy']);
 
             /**
              * 权限管理
              */
-            Route::get('admin_permission' , 'AdminPermission@index');
-            Route::get('admin_permission/{id}' , 'AdminPermission@show');
-            Route::get('admin_permission/{id}/all' , 'AdminPermission@allExcludeSelfAndChildren');
-            Route::patch('admin_permission/{id}' , 'AdminPermission@localUpdate');
-            Route::put('admin_permission/{id}' , 'AdminPermission@update');
-            Route::post('admin_permission' , 'AdminPermission@store');
+            Route::get('admin_permission'           , [AdminPermission::class , 'index']);
+            Route::get('admin_permission/{id}'      , [AdminPermission::class , 'show']);
+            Route::get('admin_permission/{id}/all'  , [AdminPermission::class , 'allExcludeSelfAndChildren']);
+            Route::patch('admin_permission/{id}'    , [AdminPermission::class , 'localUpdate']);
+            Route::put('admin_permission/{id}'      , [AdminPermission::class , 'update']);
+            Route::post('admin_permission'          , [AdminPermission::class , 'store']);
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_admin_permission/' , 'AdminPermission@destroyAll');
-            Route::delete('admin_permission/{id}' , 'AdminPermission@destroy');
+            Route::delete('destroy_all_admin_permission/'   , [AdminPermission::class , 'destroyAll']);
+            Route::delete('admin_permission/{id}'           , [AdminPermission::class , 'destroy']);
 
             /**
              * ******************
              * 角色管理
              * ******************
              */
-            Route::get('role' , 'Role@index');
-            Route::get('role/{id}' , 'Role@show');
-            Route::get('role/{id}/permission' , 'Role@permission');
-            Route::patch('role/{id}' , 'Role@localUpdate');
-            Route::put('role/{id}' , 'Role@update');
-            Route::post('role' , 'Role@store');
+            Route::get('role'                   , [Role::class , 'index']);
+            Route::get('role/{id}'              , [Role::class , 'show']);
+            Route::get('role/{id}/permission'   , [Role::class , 'permission']);
+            Route::patch('role/{id}'            , [Role::class , 'localUpdate']);
+            Route::put('role/{id}'              , [Role::class , 'update']);
+            Route::post('role'                  , [Role::class , 'store']);
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_role' , 'Role@destroyAll');
-            Route::delete('role/{id}' , 'Role@destroy');
-            Route::post('role/{id}/allocate_permission' , 'Role@allocatePermission');
-            Route::get('all_role' , 'Role@all');
+            Route::delete('destroy_all_role'    , [Role::class , 'destroyAll']);
+            Route::delete('role/{id}'           , [Role::class , 'destroy']);
+            Route::post('role/{id}/allocate_permission' , [Role::class , 'allocatePermission']);
+            Route::get('all_role'                       , [Role::class , 'all']);
 
 
             /**
@@ -102,16 +132,16 @@ Route::prefix('admin')
              * 模块管理
              * ******************
              */
-            Route::get('module' , 'Module@index');
-            Route::get('module/{id}' , 'Module@show');
-            Route::patch('module/{id}' , 'Module@localUpdate');
-            Route::put('module/{id}' , 'Module@update');
-            Route::post('module' , 'Module@store');
+            Route::get('module'         , [Module::class , 'index']);
+            Route::get('module/{id}'    , [Module::class , 'show']);
+            Route::patch('module/{id}'  , [Module::class , 'localUpdate']);
+            Route::put('module/{id}'    , [Module::class , 'update']);
+            Route::post('module'        , [Module::class , 'store']);
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_module' , 'Module@destroyAll');
-            Route::delete('module/{id}' , 'Module@destroy');
-            Route::get('get_all_module' , 'Module@all');
+            Route::delete('destroy_all_module'  , [Module::class , 'destroyAll']);
+            Route::delete('module/{id}'         , [Module::class , 'destroy']);
+            Route::get('get_all_module'         , [Module::class , 'all']);
 
 
             /**
@@ -119,117 +149,116 @@ Route::prefix('admin')
              * 标签管理
              * ******************
              */
-            Route::get('tag' , 'Tag@index');
-            Route::get('tag/{id}' , 'Tag@show');
-            Route::patch('tag/{id}' , 'Tag@localUpdate');
-            Route::put('tag/{id}' , 'Tag@update');
-            Route::post('tag' , 'Tag@store');
-            Route::post('find_or_create_tag' , 'Tag@findOrCreate');
+            Route::get('tag'            , [Tag::class , 'index']);
+            Route::get('tag/{id}'       , [Tag::class , 'show']);
+            Route::patch('tag/{id}'     , [Tag::class , 'localUpdate']);
+            Route::put('tag/{id}'       , [Tag::class , 'update']);
+            Route::post('tag'           , [Tag::class , 'store']);
+            Route::post('find_or_create_tag' , [Tag::class , 'findOrCreate']);
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_tag' , 'Tag@destroyAll');
-            Route::delete('tag/{id}' , 'Tag@destroy');
-            Route::get('search_tag' , 'Tag@search');
-            Route::get('top_by_module_id' , 'Tag@topByModuleId');
+            Route::delete('destroy_all_tag' , [Tag::class , 'destroyAll']);
+            Route::delete('tag/{id}'        , [Tag::class , 'destroy']);
+            Route::get('search_tag'         , [Tag::class , 'search']);
+            Route::get('top_by_module_id'   , [Tag::class , 'topByModuleId']);
 
 
             /**
              * 分类管理
              */
-            Route::get('category' , 'Category@index');
-            Route::get('search_category_by_module_id' , 'Category@searchByModuleId');
-            Route::get('search_category' , 'Category@search');
-            Route::get('category/{id}/all' , 'Category@allExcludeSelfAndChildren');
-            Route::get('category/{id}' , 'Category@show');
-            Route::patch('category/{id}' , 'Category@localUpdate');
-            Route::put('category/{id}' , 'Category@update');
-            Route::post('category' , 'Category@store');
+            Route::get('category'                       , [Category::class , 'index']);
+            Route::get('search_category_by_module_id'   , [Category::class , 'searchByModuleId']);
+            Route::get('search_category'                , [Category::class , 'search']);
+            Route::get('category/{id}/all'              , [Category::class , 'allExcludeSelfAndChildren']);
+            Route::get('category/{id}'                  , [Category::class , 'show']);
+            Route::patch('category/{id}'                , [Category::class , 'localUpdate']);
+            Route::put('category/{id}'                  , [Category::class , 'update']);
+            Route::post('category'                      , [Category::class , 'store']);
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_category' , 'Category@destroyAll');
-            Route::delete('category/{id}' , 'Category@destroy');
+            Route::delete('destroy_all_category'        , [Category::class , 'destroyAll']);
+            Route::delete('category/{id}'               , [Category::class , 'destroy']);
 
             /**
              * ******************
              * 关联主体
              * ******************
              */
-            Route::get('image_subject' , 'ImageSubject@index');
-            Route::get('image_subject/{id}' , 'ImageSubject@show');
-            Route::patch('image_subject/{id}' , 'ImageSubject@localUpdate');
-            Route::put('image_subject/{id}' , 'ImageSubject@update');
-            Route::post('image_subject' , 'ImageSubject@store');
+            Route::get('image_subject'          , [ImageSubject::class , 'index']);
+            Route::get('image_subject/{id}'     , [ImageSubject::class , 'show']);
+            Route::patch('image_subject/{id}'   , [ImageSubject::class , 'localUpdate']);
+            Route::put('image_subject/{id}'     , [ImageSubject::class , 'update']);
+            Route::post('image_subject'         , [ImageSubject::class , 'store']);
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_image_subject' , 'ImageSubject@destroyAll');
-            Route::delete('image_subject/{id}' , 'ImageSubject@destroy');
-
-            Route::get('search_image_subject' , 'ImageSubject@search');
+            Route::delete('destroy_all_image_subject'   , [ImageSubject::class , 'destroyAll']);
+            Route::delete('image_subject/{id}'          , [ImageSubject::class , 'destroy']);
+            Route::get('search_image_subject'           , [ImageSubject::class , 'search']);
 
             /**
              * ******************
              * 图片专题
              * ******************
              */
-            Route::get('image_project' , 'ImageProject@index');
-            Route::get('image_project/{id}' , 'ImageProject@show');
-            Route::patch('image_project/{id}' , 'ImageProject@localUpdate');
-            Route::put('image_project/{id}' , 'ImageProject@update');
-            Route::post('image_project' , 'ImageProject@store');
+            Route::get('image_project'          , [ImageProject::class , 'index']);
+            Route::get('image_project/{id}'     , [ImageProject::class , 'show']);
+            Route::patch('image_project/{id}'   , [ImageProject::class , 'localUpdate']);
+            Route::put('image_project/{id}'     , [ImageProject::class , 'update']);
+            Route::post('image_project'         , [ImageProject::class , 'store']);
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_image_project' , 'ImageProject@destroyAll');
-            Route::delete('image_project/{id}' , 'ImageProject@destroy');
-            Route::delete('destroy_all_image_for_image_project' , 'ImageProject@destroyImages');
-            Route::delete('destroy_image_project_tag' , 'ImageProject@destroyTag');
+            Route::delete('destroy_all_image_project'   , [ImageProject::class , 'destroyAll']);
+            Route::delete('image_project/{id}'          , [ImageProject::class , 'destroy']);
+            Route::delete('destroy_all_image_for_image_project' , [ImageProject::class , 'destroyImages']);
+            Route::delete('destroy_image_project_tag'           , [ImageProject::class , 'destroyTag']);
 
             /**
              * ******************
              * 系统位置
              * ******************
              */
-            Route::get('position' , 'Position@index');
-            Route::get('position/{id}' , 'Position@show');
-            Route::patch('position/{id}' , 'Position@localUpdate');
-            Route::put('position/{id}' , 'Position@update');
-            Route::post('position' , 'Position@store');
+            Route::get('position'           , [Position::class , 'index']);
+            Route::get('position/{id}'      , [Position::class , 'show']);
+            Route::patch('position/{id}'    , [Position::class , 'localUpdate']);
+            Route::put('position/{id}'      , [Position::class , 'update']);
+            Route::post('position'          , [Position::class , 'store']);
 
 
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_position' , 'Position@destroyAll');
-            Route::delete('position/{id}' , 'Position@destroy');
-            Route::get('search_position' , 'Position@search');
-            Route::get('get_all_position' , 'Position@all');
+            Route::delete('destroy_all_position'    , [Position::class , 'destroyAll']);
+            Route::delete('position/{id}'           , [Position::class , 'destroy']);
+            Route::get('search_position'            , [Position::class , 'search']);
+            Route::get('get_all_position'           , [Position::class , 'all']);
 
             /**
              * ******************
              * 定点图片
              * ******************
              */
-            Route::get('image_at_position' , 'ImageAtPosition@index');
-            Route::get('image_at_position/{id}' , 'ImageAtPosition@show');
-            Route::patch('image_at_position/{id}' , 'ImageAtPosition@localUpdate');
-            Route::put('image_at_position/{id}' , 'ImageAtPosition@update');
-            Route::post('image_at_position' , 'ImageAtPosition@store');
+            Route::get('image_at_position'          , [ImageAtPosition::class , 'index']);
+            Route::get('image_at_position/{id}'     , [ImageAtPosition::class , 'show']);
+            Route::patch('image_at_position/{id}'   , [ImageAtPosition::class , 'localUpdate']);
+            Route::put('image_at_position/{id}'     , [ImageAtPosition::class , 'update']);
+            Route::post('image_at_position'         , [ImageAtPosition::class , 'store']);
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_image_at_position' , 'ImageAtPosition@destroyAll');
-            Route::delete('image_at_position/{id}' , 'ImageAtPosition@destroy');
+            Route::delete('destroy_all_image_at_position'   , [ImageAtPosition::class , 'destroyAll']);
+            Route::delete('image_at_position/{id}'          , [ImageAtPosition::class , 'destroy']);
 
             /**
              * 导航菜单
              */
-            Route::get('nav' , 'Nav@index');
-            Route::get('nav/{module_id}/get_by_module_id' , 'Nav@getByModuleId');
-            Route::get('nav/{id}' , 'Nav@show');
-            Route::patch('nav/{id}' , 'Nav@localUpdate');
-            Route::put('nav/{id}' , 'Nav@update');
-            Route::post('nav' , 'Nav@store');
+            Route::get('nav'            , [Nav::class , 'index']);
+            Route::get('search_nav'     , [Nav::class , 'search']);
+            Route::get('nav/{id}'       , [Nav::class , 'show']);
+            Route::patch('nav/{id}'     , [Nav::class , 'localUpdate']);
+            Route::put('nav/{id}'       , [Nav::class , 'update']);
+            Route::post('nav'           , [Nav::class , 'store']);
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_nav' , 'Nav@destroyAll');
-            Route::delete('nav/{id}' , 'Nav@destroy');
+            Route::delete('destroy_all_nav'     , [Nav::class , 'destroyAll']);
+            Route::delete('nav/{id}'            , [Nav::class , 'destroy']);
 
 
             /**
@@ -237,102 +266,102 @@ Route::prefix('admin')
              * 视频
              * ******************
              */
-            Route::get('video' , 'Video@index');
-            Route::get('video/{id}' , 'Video@show');
-            Route::patch('video/{id}' , 'Video@localUpdate');
-            Route::put('video/{id}' , 'Video@update');
-            Route::post('video' , 'Video@store');
-            Route::delete('video/{id}' , 'Video@destroy');
-            Route::delete('destroy_all_video' , 'Video@destroyAll');
-            Route::delete('destroy_videos' , 'Video@destroyVideos');
-            Route::post('retry_process_video' , 'Video@retry');
+            Route::get('video'              , [Video::class , 'index']);
+            Route::get('video/{id}'         , [Video::class , 'show']);
+            Route::patch('video/{id}'       , [Video::class , 'localUpdate']);
+            Route::put('video/{id}'         , [Video::class , 'update']);
+            Route::post('video'             , [Video::class , 'store']);
+            Route::delete('video/{id}'      , [Video::class , 'destroy']);
+            Route::delete('destroy_all_video'   , [Video::class , 'destroyAll']);
+            Route::delete('destroy_videos'      , [Video::class , 'destroyVideos']);
+            Route::post('retry_process_video'   , [Video::class , 'retry']);
 
             /**
              * ******************
              * 视频专题
              * ******************
              */
-            Route::get('video_project' , 'VideoProject@index');
-            Route::get('video_project/{id}' , 'VideoProject@show');
-            Route::patch('video_project/{id}' , 'VideoProject@localUpdate');
-            Route::put('video_project/{id}' , 'VideoProject@update');
-            Route::post('video_project' , 'VideoProject@store');
+            Route::get('video_project'          , [VideoProject::class , 'index']);
+            Route::get('video_project/{id}'     , [VideoProject::class , 'show']);
+            Route::patch('video_project/{id}'   , [VideoProject::class , 'localUpdate']);
+            Route::put('video_project/{id}'     , [VideoProject::class , 'update']);
+            Route::post('video_project'         , [VideoProject::class , 'store']);
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_video_project' , 'VideoProject@destroyAll');
-            Route::delete('video_project/{id}' , 'VideoProject@destroy');
-            Route::get('search_video_project' , 'VideoProject@search');
-            Route::delete('destroy_video_project_tag' , 'VideoProject@destroyTag');
+            Route::delete('destroy_all_video_project'   , [VideoProject::class , 'destroyAll']);
+            Route::delete('video_project/{id}'          , [VideoProject::class , 'destroy']);
+            Route::get('search_video_project'           , [VideoProject::class , 'search']);
+            Route::delete('destroy_video_project_tag'   , [VideoProject::class , 'destroyTag']);
 
             /**
              * ******************
              * 视频系列
              * ******************
              */
-            Route::get('video_series' , 'VideoSeries@index');
-            Route::get('video_series/{id}' , 'VideoSeries@show');
-            Route::patch('video_series/{id}' , 'VideoSeries@localUpdate');
-            Route::put('video_series/{id}' , 'VideoSeries@update');
-            Route::post('video_series' , 'VideoSeries@store');
+            Route::get('video_series'           , [VideoSeries::class , 'index']);
+            Route::get('video_series/{id}'      , [VideoSeries::class , 'show']);
+            Route::patch('video_series/{id}'    , [VideoSeries::class , 'localUpdate']);
+            Route::put('video_series/{id}'      , [VideoSeries::class , 'update']);
+            Route::post('video_series'          , [VideoSeries::class , 'store']);
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_video_series' , 'VideoSeries@destroyAll');
-            Route::delete('video_series/{id}' , 'VideoSeries@destroy');
-            Route::get('search_video_series' , 'VideoSeries@search');
+            Route::delete('destroy_all_video_series'    , [VideoSeries::class , 'destroyAll']);
+            Route::delete('video_series/{id}'           , [VideoSeries::class , 'destroy']);
+            Route::get('search_video_series'            , [VideoSeries::class , 'search']);
 
             /**
              * region 相关接口
              */
-            Route::get('country' , 'Region@country');
-            Route::get('search_region' , 'Region@search');
+            Route::get('country'        , [Region::class , 'country']);
+            Route::get('search_region'  , [Region::class , 'search']);
 
             /**
              * ******************
              * 视频制作公司
              * ******************
              */
-            Route::get('video_company' , 'VideoCompany@index');
-            Route::get('video_company/{id}' , 'VideoCompany@show');
-            Route::patch('video_company/{id}' , 'VideoCompany@localUpdate');
-            Route::put('video_company/{id}' , 'VideoCompany@update');
-            Route::post('video_company' , 'VideoCompany@store');
+            Route::get('video_company'              , [VideoCompany::class , 'index']);
+            Route::get('video_company/{id}'         , [VideoCompany::class , 'show']);
+            Route::patch('video_company/{id}'       , [VideoCompany::class , 'localUpdate']);
+            Route::put('video_company/{id}'         , [VideoCompany::class , 'update']);
+            Route::post('video_company'             , [VideoCompany::class , 'store']);
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_video_company' , 'VideoCompany@destroyAll');
-            Route::delete('video_company/{id}' , 'VideoCompany@destroy');
-            Route::get('search_video_company' , 'VideoCompany@search');
+            Route::delete('destroy_all_video_company'   , [VideoCompany::class , 'destroyAll']);
+            Route::delete('video_company/{id}'          , [VideoCompany::class , 'destroy']);
+            Route::get('search_video_company'           , [VideoCompany::class , 'search']);
 
             /**
              * 控制台
              */
-            Route::get('pannel/info' , 'Pannel@info');
+            Route::get('pannel/info' , [Pannel::class , 'info']);
 
             /**
              * ******************
              * 磁盘管理
              * ******************
              */
-            Route::get('disk' , 'Disk@index');
-            Route::get('disk/{id}' , 'Disk@show');
-            Route::patch('disk/{id}' , 'Disk@localUpdate');
-            Route::put('disk/{id}' , 'Disk@update');
-            Route::post('disk' , 'Disk@store');
+            Route::get('disk'           , [Disk::class , 'index']);
+            Route::get('disk/{id}'      , [Disk::class , 'show']);
+            Route::patch('disk/{id}'    , [Disk::class , 'localUpdate']);
+            Route::put('disk/{id}'      , [Disk::class , 'update']);
+            Route::post('disk'          , [Disk::class , 'store']);
             // 特别注意，这边这个顺序不能更换
             // 如果更换会导致 路由匹配出现不是期望的现象
-            Route::delete('destroy_all_disk' , 'Disk@destroyAll');
-            Route::delete('disk/{id}' , 'Disk@destroy');
-            Route::post('link_disk' , 'Disk@link');
+            Route::delete('destroy_all_disk'    , [Disk::class , 'destroyAll']);
+            Route::delete('disk/{id}'           , [Disk::class , 'destroy']);
+            Route::post('link_disk'             , [Disk::class , 'link']);
 
             /***
              * 队列任务相关
              */
-            Route::post('retry_job' , 'Job@retry');
-            Route::post('flush_job' , 'Job@flush');
+            Route::post('retry_job' , [Job::class , 'retry']);
+            Route::post('flush_job' , [Job::class , 'flush']);
 
             /**
              * 视频字幕相关
              */
-            Route::delete('video_subtitle/{id}' , 'VideoSubtitle@destroy');
-            Route::delete('destroy_all_video_subtitle' , 'VideoSubtitle@destroyAll');
+            Route::delete('video_subtitle/{id}'         , [VideoSubtitle::class , 'destroy']);
+            Route::delete('destroy_all_video_subtitle'  , [VideoSubtitle::class , 'destroyAll']);
         });
     });

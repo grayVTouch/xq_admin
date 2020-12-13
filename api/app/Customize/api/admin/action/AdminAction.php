@@ -102,10 +102,10 @@ class AdminAction extends Action
     {
         $sex_range = my_config_keys('business.sex');
         $validator = Validator::make($param , [
-            'username' => 'required|min:4' ,
-            'password' => 'required' ,
-            'sex' => ['required' , Rule::in($sex_range)] ,
-            'role_id' => 'required|integer' ,
+            'username'  => 'required|min:4' ,
+            'password'  => 'required' ,
+            'sex'       => ['required' , Rule::in($sex_range)] ,
+            'role_id'   => 'required|integer' ,
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));

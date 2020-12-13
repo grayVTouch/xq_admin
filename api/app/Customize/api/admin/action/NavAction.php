@@ -22,7 +22,10 @@ class NavAction extends Action
     public static function index(Base $context , array $param = [])
     {
         $res = NavModel::getAll();
-        $res = NavHandler::handleAll($res);
+        $res = NavHandler::handleAll($res , [
+            'module' ,
+            'parent'
+        ]);
         $res = object_to_array($res);
         $res = Category::childrens(0 , $res , [
             'id'    => 'id' ,
@@ -31,9 +34,9 @@ class NavAction extends Action
         return self::success('' , $res);
     }
 
-    public static function getByModuleId(Base $context , int $module_id , array $param = []): array
+    public static function search(Base $context , array $param = []): array
     {
-        $res = NavModel::getByModuleId($module_id);
+        $res = NavModel::search($param);
         $res = NavHandler::handleAll($res);
         $res = object_to_array($res);
         $res = Category::childrens(0 , $res , [
@@ -45,15 +48,12 @@ class NavAction extends Action
 
     public static function localUpdate(Base $context , $id , array $param = [])
     {
-        $platform_range = my_config_keys('business.platform');
         $bool_range     = my_config_keys('business.bool_for_int');
         $validator = Validator::make($param , [
             'weight'    => 'sometimes|integer',
             'p_id'    => 'sometimes|integer',
             'module_id'    => 'sometimes|integer',
-            'enable'   => ['sometimes', Rule::in($bool_range)] ,
-            'is_menu'   => ['sometimes', Rule::in($bool_range)] ,
-            'platform' => ['sometimes' , Rule::in($platform_range)] ,
+            'is_enabled'   => ['sometimes', Rule::in($bool_range)] ,
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first());
@@ -63,40 +63,34 @@ class NavAction extends Action
             return self::error('分类不存在' , '' , 404);
         }
         $param['name']     = $param['name'] === '' ? $nav->name : $param['name'];
-        $param['enable']   = $param['enable'] === '' ? $nav->enable : $param['enable'];
-        $param['is_menu']   = $param['is_menu'] === '' ? $nav->is_menu : $param['is_menu'];
+        $param['is_enabled']   = $param['is_enabled'] === '' ? $nav->is_enabled : $param['is_enabled'];
         $param['weight']    = $param['weight'] === '' ? $nav->weight : $param['weight'];
         $param['p_id']     = $param['p_id'] === '' ? $nav->p_id : $param['p_id'];
         $param['module_id']     = $param['module_id'] === '' ? $nav->module_id : $param['module_id'];
         $param['value']     = $param['value'] === '' ? $nav->value : $param['value'];
-        $param['platform']     = $param['platform'] === '' ? $nav->platform : $param['platform'];
 
         NavModel::updateById($nav->id , array_unit($param , [
             'name' ,
-            'enable' ,
-            'is_menu' ,
+            'is_enabled' ,
             'weight' ,
             'p_id' ,
             'module_id' ,
             'value' ,
-            'platform' ,
         ]));
         return self::success('操作成功');
     }
 
     public static function update(Base $context , $id , array $param = [])
     {
-        $platform_range = my_config_keys('business.platform');
         $bool_range = my_config_keys('business.bool_for_int');
         $validator = Validator::make($param , [
             'name'    => 'required',
-            'enable'   => ['required', Rule::in($bool_range)],
-            'is_menu'   => ['required', Rule::in($bool_range)],
+            'is_enabled'   => ['required', Rule::in($bool_range)],
             'p_id'    => 'required|integer',
             'weight'    => 'sometimes|integer',
             'module_id'    => 'required|integer',
             'value'    => 'required',
-            'platform' => ['required' , Rule::in($platform_range)] ,
+            'type'    => 'required',
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
@@ -108,30 +102,27 @@ class NavAction extends Action
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         NavModel::updateById($nav->id , array_unit($param , [
             'name' ,
-            'enable' ,
-            'is_menu' ,
+            'is_enabled' ,
             'weight' ,
             'p_id' ,
             'module_id' ,
             'value' ,
-            'platform' ,
+            'type' ,
         ]));
         return self::success('操作成功');
     }
 
     public static function store(Base $context , array $param = [])
     {
-        $platform_range = my_config_keys('business.platform');
         $bool_range = my_config_keys('business.bool_for_int');
         $validator = Validator::make($param , [
             'name'    => 'required',
-            'enable'  => ['required', Rule::in($bool_range)],
-            'is_menu'  => ['required', Rule::in($bool_range)],
+            'is_enabled'  => ['required', Rule::in($bool_range)],
             'p_id'    => 'required|integer',
             'weight'  => 'sometimes|integer',
             'module_id'  => 'required|integer',
             'value'    => 'required',
-            'platform' => ['required' , Rule::in($platform_range)] ,
+            'type'    => 'required',
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
@@ -139,13 +130,12 @@ class NavAction extends Action
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $id = NavModel::insertGetId(array_unit($param , [
             'name' ,
-            'enable' ,
-            'is_menu' ,
+            'is_enabled' ,
             'weight' ,
             'p_id' ,
             'module_id' ,
             'value' ,
-            'platform' ,
+            'type' ,
         ]));
         return self::success('' , $id);
     }
@@ -156,7 +146,10 @@ class NavAction extends Action
         if (empty($nav)) {
             return self::error('分类不存在' , '' , 404);
         }
-        $nav = NavHandler::handle($nav);
+        $nav = NavHandler::handle($nav , [
+            'module' ,
+            'parent' ,
+        ]);
         return self::success('' , $nav);
     }
 

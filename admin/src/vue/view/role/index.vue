@@ -22,7 +22,7 @@
                     <div class="option">
                         <div class="field"></div>
                         <div class="value">
-                            <Button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
+                            <i-button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</i-button>
                         </div>
                     </div>
                 </div>
@@ -39,27 +39,27 @@
                     <div class="option">
                         <div class="field">id：</div>
                         <div class="value">
-                            <RadioGroup v-model="search.order">
-                                <Radio label="id|asc">升序</Radio>
-                                <Radio label="id|desc">降序</Radio>
-                            </RadioGroup>
+                            <i-radio-group v-model="search.order">
+                                <i-radio label="id|asc">升序</i-radio>
+                                <i-radio label="id|desc">降序</i-radio>
+                            </i-radio-group>
                         </div>
                     </div>
 
                     <div class="option">
                         <div class="field">权重：</div>
                         <div class="value">
-                            <RadioGroup v-model="search.order">
-                                <Radio label="weight|asc">升序</Radio>
-                                <Radio label="weight|desc">降序</Radio>
-                            </RadioGroup>
+                            <i-radio-group v-model="search.order">
+                                <i-radio label="weight|asc">升序</i-radio>
+                                <i-radio label="weight|desc">降序</i-radio>
+                            </i-radio-group>
                         </div>
                     </div>
 
                     <div class="option">
                         <div class="field"></div>
                         <div class="value">
-                            <Button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</Button>
+                            <i-button v-ripple type="primary" :loading="val.pending.getData" @click="searchEvent"><my-icon icon="search" mode="right" />搜索</i-button>
                         </div>
                     </div>
 
@@ -70,7 +70,7 @@
                 <div class="run-action-title">
                     <div class="left">
                         <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="val.selectedIds.length > 0">（{{ val.selectedIds.length }}）</span></my-table-button>
+                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
                     </div>
                     <div class="right">
                         <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
@@ -85,22 +85,22 @@
                         数据列表&nbsp;&nbsp;&nbsp;
 
 <!--                        <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>-->
-<!--                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="val.selectedIds.length > 0">（{{ val.selectedIds.length }}）</span></my-table-button>-->
+<!--                        <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>-->
                     </div>
                     <div class="right">
-<!--                        <Page :total="table.total" :page-size="$store.state.context.limit" :current="table.page" :show-total="true" :show-sizer="false" :show-elevator="true"  @on-change="pageEvent" />-->
+<!--                        <Page :total="table.total" :page-size="TopContext.limit" :current="table.page" :show-total="true" :show-sizer="false" :show-elevator="true"  @on-change="pageEvent" />-->
                     </div>
                 </div>
 
                 <div class="table">
 
-                    <Table border :loading="val.pending.getData" :height="$store.state.context.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectionChangeEvent">
+                    <i-table border :loading="val.pending.getData" :height="TopContext.table.height" :columns="table.field" :data="table.data" @on-selection-change="selectionChangeEvent">
                         <template v-slot:action="{row , index}">
                             <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
                             <my-table-button @click="allocateEvent(row)"><my-icon icon="privilege" />权限分配</my-table-button>
                             <my-table-button type="error" :loading="val.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
                         </template>
-                    </Table>
+                    </i-table>
 
                 </div>
 
@@ -108,7 +108,7 @@
 
             <div class="line operation">
                 <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="val.selectedIds.length > 0">（{{ val.selectedIds.length }}）</span></my-table-button>
+                <my-table-button type="error" @click="destroyAllEvent" :loading="val.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
             </div>
 
             <div class="line page">
@@ -148,8 +148,8 @@
                     </form>
                 </template>
                 <template slot="footer">
-                    <Button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent">确认</Button>
-                    <Button v-ripple type="error" @click="closeFormModal">关闭</Button>
+                    <i-button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent">确认</i-button>
+                    <i-button v-ripple type="error" @click="closeFormModal">关闭</i-button>
                 </template>
             </my-form-modal>
 
@@ -158,8 +158,8 @@
                     <div class="run-action-title">
                         <div class="left">权限分配</div>
                         <div class="right">
-                            <Button v-ripple type="primary" :loading="val.pending.allocatePermission" @click="allocatePermission">提交</Button>
-                            <Button v-ripple type="error" @click="closeFormDrawer">关闭</Button>
+                            <i-button v-ripple type="primary" :loading="val.pending.allocatePermission" @click="allocatePermission">提交</i-button>
+                            <i-button v-ripple type="error" @click="closeFormModal">关闭</i-button>
                         </div>
                     </div>
                 </template>

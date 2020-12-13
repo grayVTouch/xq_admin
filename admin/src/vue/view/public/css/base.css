@@ -1,0 +1,7 @@
+.view-item > .line {
+    margin-bottom: 15px;
+}
+
+.view-item > .line:nth-last-of-type(1) {
+    margin-bottom: 0;
+}

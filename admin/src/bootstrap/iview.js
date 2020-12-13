@@ -42,7 +42,7 @@ Vue.component('i-icon' , Icon);
 Vue.component('i-backtop' , BackTop);
 Vue.component('i-poptip' , Poptip);
 Vue.component('i-tab-pane' , TabPane);
-Vue.component('Tabs' , Tabs);
+Vue.component('i-tabs' , Tabs);
 Vue.component('i-date-picker' , DatePicker);
 Vue.component('i-tooltip' , Tooltip);
 Vue.component('i-rate' , Rate);

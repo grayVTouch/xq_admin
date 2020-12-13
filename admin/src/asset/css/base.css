@@ -42,6 +42,8 @@
 .search-modal > .input .input-mask input {
     height: 30px;
     width: 300px;
+    border: 1px solid #ccc;
+    transition: all 0.3s;
 }
 
 .search-modal > .input .input-mask input:focus {

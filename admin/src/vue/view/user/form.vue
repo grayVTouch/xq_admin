@@ -1,0 +1,133 @@
+<template>
+    <my-form-modal
+            v-model="val.show"
+            :title="title"
+            :loading="val.pending.submit"
+            @on-ok="submitEvent"
+            @on-cancel="closeFormModal"
+    >
+        <template slot="default">
+            <form class="form" @submit.prevent="submitEvent">
+                <table class="input-table">
+                    <tbody>
+
+                    <tr :class="{error: val.error.username}">
+                        <td>名称</td>
+                        <td>
+                            <input type="text" v-model="form.username" @input="val.error.username=''" class="form-text">
+                            <span class="need">*</span>
+                            <div class="msg"></div>
+                            <div class="e-msg">{{ val.error.username }}</div>
+                        </td>
+                    </tr>
+
+                    <tr :class="{error: val.error.password}">
+                        <td>密码</td>
+                        <td>
+                            <input type="text" v-model="form.password" @input="val.error.password=''" class="form-text">
+                            <span class="need"></span>
+                            <div class="msg">为空，则使用原密码</div>
+                            <div class="e-msg">{{ val.error.password }}</div>
+                        </td>
+                    </tr>
+
+                    <tr :class="{error: val.error.avatar}">
+                        <td>封面</td>
+                        <td>
+                            <div ref="avatar">
+                                <!-- 上传图片组件 -->
+                                <div class='uploader'>
+                                    <div class="upload">
+                                        <div class="handler">
+
+                                            <div class="line input hide">
+                                                <input type="file" class="file-input">
+                                            </div>
+
+                                            <div class="line icon">
+                                                <div class="ico">
+                                                    <div class="feedback run-action-feedback-round"><i class="iconfont run-iconfont run-iconfont-shangchuan"></i></div>
+                                                    <div class="clear run-action-feedback-round" title="清空"><i class="iconfont run-iconfont run-iconfont-qingkong"></i></div>
+                                                </div>
+                                                <div class="text">请选择要上传的文件</div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="msg"></div>
+                                    </div>
+                                    <div class="preview"></div>
+
+                                </div>
+                            </div>
+
+                            <span class="need"></span>
+                            <div class="msg"></div>
+                            <div class="e-msg">{{ val.error.thumb }}</div>
+                        </td>
+                    </tr>
+
+                    <tr :class="{error: val.error.sex}">
+                        <td>性别</td>
+                        <td>
+                            <i-radio-group v-model="form.sex">
+                                <i-radio v-for="(v,k) in TopContext.business.user.sex" :key="k" :label="k">{{ v }}</i-radio>
+                            </i-radio-group>
+                            <span class="need">*</span>
+                            <div class="msg"></div>
+                            <div class="e-msg">{{ val.error.sex }}</div>
+                        </td>
+                    </tr>
+
+                    <tr :class="{error: val.error.birthday}">
+                        <td>生日</td>
+                        <td>
+                            <i-date-picker v-model="val.birthday" type="date" class="iview-form-input" @on-change="birthdayChangeEvent"></i-date-picker>
+                            <span class="need"></span>
+                            <div class="msg"></div>
+                            <div class="e-msg">{{ val.error.birthday }}</div>
+                        </td>
+                    </tr>
+
+                    <tr :class="{error: val.error.phone}">
+                        <td>手机号码</td>
+                        <td>
+                            <input type="text" v-model="form.phone" @input="val.error.phone=''" class="form-text">
+                            <span class="need"></span>
+                            <div class="msg"></div>
+                            <div class="e-msg">{{ val.error.phone }}</div>
+                        </td>
+                    </tr>
+
+                    <tr :class="{error: val.error.email}">
+                        <td>电子邮件</td>
+                        <td>
+                            <input type="text" v-model="form.email" @input="val.error.email=''" class="form-text">
+                            <span class="need"></span>
+                            <div class="msg"></div>
+                            <div class="e-msg">{{ val.error.email }}</div>
+                        </td>
+                    </tr>
+
+                    <tr v-show="false">
+                        <td colspan="2">
+                            <button type="submit"></button>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </form>
+        </template>
+        <template slot="footer">
+            <i-button v-ripple type="primary" :loading="val.pending.submit" @click="submitEvent">确认</i-button>
+            <i-button v-ripple type="error" @click="closeFormModal">关闭</i-button>
+        </template>
+    </my-form-modal>
+</template>
+
+<script src="./js/form.js"></script>
+
+<style scoped>
+
+</style>

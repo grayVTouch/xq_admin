@@ -79,7 +79,7 @@ return [
         'fix-height' ,
     ] ,
 
-    'video_process_status_for_video' => [
+    'image_process_status' => [
         -1 => '处理失败' ,
         0 => '待处理' ,
         1 => '处理中' ,
@@ -87,7 +87,15 @@ return [
         3 => '处理完成' ,
     ] ,
 
-    'file_process_status_for_video' => [
+    'video_process_status' => [
+        -1 => '处理失败' ,
+        0 => '待处理' ,
+        1 => '处理中' ,
+        2 => '转码中' ,
+        3 => '处理完成' ,
+    ] ,
+
+    'video_file_process_status' => [
         -1 => '处理失败' ,
         0 => '待处理' ,
         1 => '处理中' ,
@@ -142,9 +150,24 @@ return [
         1 => '审核成功' ,
     ] ,
 
+    'category_type' => [
+        'video' => '视频',
+        'video_project' => '视频专题' ,
+        'image_project' => '图片专题' ,
+        'image' => '图片' ,
+    ] ,
+
+
     'status_for_video_project' => [
         -1 => '审核失败',
         0 => '待审核' ,
         1 => '审核成功' ,
     ] ,
+
+    // 图片专题分类类型
+    'type_for_nav' => [
+        'image_project' => '图片专题' ,
+        'video_project' => '视频专题' ,
+    ] ,
+
 ];

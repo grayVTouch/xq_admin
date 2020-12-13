@@ -1,17 +1,16 @@
 
-const destroy = genUrl('video_subtitle/{id}');
-const destroyAll = genUrl('destroy_all_video_subtitle');
+const destroy       = genUrl('video_subtitle/{id}');
+const destroyAll    = genUrl('destroy_all_video_subtitle');
 
 export default {
-    destroy (id , success , error) {
-        const url = destroy.replace('{id}' , id);
-        return request(url , 'delete' , null , success , error)
+    destroy (id) {
+        return Http.delete(destroy.replace('{id}' , id));
     } ,
 
-    destroyAll (ids , success , error) {
-        return request(destroyAll , 'delete' , {
+    destroyAll (ids) {
+        return Http.delete(destroyAll , null , {
             ids: G.jsonEncode(ids)
-        } , success , error)
+        });
     } ,
 
 };

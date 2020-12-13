@@ -30,8 +30,8 @@ class VideoHandler extends Handler
         $model->__duration__          = empty($model->duration) ? 0 : format_time($model->duration , 'HH:II:SS');
         $model->__type__              = get_config_key_mapping_value('business.type_for_video' , $model->type);
         $model->__status__            = get_config_key_mapping_value('business.status_for_video' , $model->status);
-        $model->__video_process_status__    = get_config_key_mapping_value('business.video_process_status_for_video' , $model->video_process_status);
-        $model->__file_process_status__    = get_config_key_mapping_value('business.file_process_status_for_video' , $model->file_process_status);
+        $model->__video_process_status__    = get_config_key_mapping_value('business.video_process_status' , $model->video_process_status);
+        $model->__file_process_status__    = get_config_key_mapping_value('business.video_file_process_status' , $model->file_process_status);
 
         if (in_array('user' , $with)) {
             $user = UserModel::find($model->user_id);

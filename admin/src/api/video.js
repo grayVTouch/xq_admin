@@ -8,49 +8,46 @@ const destroyVideos = genUrl('destroy_videos');
 const retryProcessVideo = genUrl('retry_process_video');
 
 export default {
-    index (data , success , error) {
-        return request(index , 'get' , data , success , error);
+    index (param) {
+        return Http.get(index , param);
     } ,
 
-    localUpdate (id , data , success , error) {
-        const url = localUpdate.replace('{id}' , id);
-        return request(url , 'patch' , data , success , error)
+    localUpdate (id , data) {
+        return Http.patch(localUpdate.replace('{id}' , id) , null , data);
     } ,
 
-    update (id , data , success , error) {
-        const url = update.replace('{id}' , id);
-        return request(url , 'put' , data , success , error)
+    update (id , data) {
+        return Http.put(update.replace('{id}' , id) , null , data);
     } ,
 
-    store (data , success , error) {
-        return request(store , 'post' , data , success , error)
+    store (data) {
+        return Http.post(store , null , data);
     } ,
 
-    show (id , success , error) {
-        return request(show.replace('{id}' , id) , 'get' , null , success , error)
+    show (id) {
+        return Http.get(show.replace('{id}' , id));
     } ,
 
-    destroy (id , success , error) {
-        const url = destroy.replace('{id}' , id);
-        return request(url , 'delete' , null , success , error)
+    destroy (id) {
+        return Http.delete(destroy.replace('{id}' , id));
     } ,
 
-    destroyAll (ids , success , error) {
-        return request(destroyAll , 'delete' , {
+    destroyAll (ids) {
+        return Http.delete(destroyAll , null , {
             ids: G.jsonEncode(ids)
-        } , success , error)
+        });
     } ,
 
-    destroyVideos (videoSrcIds , success , error) {
-        return request(destroyVideos , 'delete' , {
+    destroyVideos (videoSrcIds) {
+        return Http.delete(destroyVideos , null , {
             video_src_ids: G.jsonEncode(videoSrcIds)
-        } , success , error)
+        })
     } ,
 
-    retryProcessVideo (ids , success , error) {
-        return request(retryProcessVideo , 'post' , {
+    retryProcessVideo (ids) {
+        return Http.post(retryProcessVideo , null , {
             ids: G.jsonEncode(ids) ,
-        } , success , error);
+        });
     } ,
 
 

@@ -9,110 +9,23 @@ const form = {
     praise_count: 0 ,
     against_count: 0 ,
     weight: 0 ,
-    status: 0 ,
+    status: 1 ,
     merge_video_subtitle: 0 ,
     index: 1 ,
 };
 
-const users = {
-    data: [],
-    field: [
-        {
-            title: 'id' ,
-            key: 'id' ,
-            minWidth: TopContext.table.id ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '名称' ,
-            key: 'username' ,
-            minWidth: TopContext.table.name ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '头像' ,
-            slot: 'avatar' ,
-            minWidth: TopContext.table.image ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '创建时间' ,
-            key: 'created_at' ,
-            minWidth: TopContext.table.time ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '动作' ,
-            slot: 'action' ,
-            minWidth: TopContext.table.action ,
-            center: TopContext.table.alignCenter ,
-        } ,
-    ] ,
-    current: {
-        id: 0 ,
-        username: 'unknow' ,
-    } ,
-    limit: TopContext.limit ,
-    value: '' ,
-    page: 1 ,
-    total: 0 ,
-};
+// 所属用户
+const owner         = {id: 0 , username: 'unknow'};
+// 所属专题
+const videoProject  = {id: 0 , name: 'unknow'};
 
-const videoProjects = {
-    data: [],
-    field: [
-        {
-            title: 'id' ,
-            key: 'id' ,
-            minWidth: TopContext.table.id ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '名称' ,
-            key: 'name' ,
-            minWidth: TopContext.table.name ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '模块【id】' ,
-            slot: 'module_id' ,
-            minWidth: TopContext.table.name ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '封面' ,
-            slot: 'thumb' ,
-            minWidth: TopContext.table.image ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '创建时间' ,
-            key: 'created_at' ,
-            minWidth: TopContext.table.time ,
-            center: TopContext.table.alignCenter ,
-        } ,
-        {
-            title: '动作' ,
-            slot: 'action' ,
-            minWidth: TopContext.table.action ,
-            center: TopContext.table.alignCenter ,
-        } ,
-    ] ,
-    current: {
-        id: 0 ,
-        name: 'unknow' ,
-    } ,
-    total: 0 ,
-    page: 1 ,
-    value: '' ,
-};
-
-const subtitle = {
-    id: 1 ,
-    name: '' ,
-    src: '' ,
-    delete_1: false ,
-};
+// 字幕
+// const subtitle = {
+//     id: 1 ,
+//     name: '' ,
+//     src: '' ,
+//     delete_1: false ,
+// };
 
 const videos = {
     field: [
@@ -200,19 +113,13 @@ export default {
                 tab: 'base' ,
                 pending: {} ,
                 error: {} ,
-                selectedIdsForVideo: [] ,
-                selectedIdsForSubtitle: [] ,
-                modalForVideoProject: false ,
-                modalForUser: false ,
-                valueForUser: '' ,
-                drawer: false ,
+                show: false ,
             } ,
 
-            // 用户
-            users: G.copy(users , true),
+            owner: G.copy(owner) ,
 
             // 关联主体
-            videoProjects: G.copy(videoProjects , true),
+            videoProject: G.copy(videoProject , true),
 
             // 标签
             tags: [] ,
@@ -238,14 +145,16 @@ export default {
             createTime: '' ,
 
             form: G.copy(form) ,
+
+            videoSelection: [] ,
+
+            videoSubtitleSelection: [] ,
         };
     } ,
     props: {
-        data: {
-            type: Object ,
-            default () {
-                return {};
-            } ,
+        id: {
+            type: Number ,
+            default: 0 ,
         } ,
         mode: {
             type: String ,
@@ -276,54 +185,63 @@ export default {
 
         getCategories (moduleId , callback) {
             this.pending('getCategories' , true);
-            Api.category.search({
-                module_id: this.form.module_id ,
-                type: this.form.type === 'pro' ? 'video_project' : 'video' ,
-            } , (res) => {
-                this.pending('getCategories' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    G.invoke(callback , null , false);
-                    return ;
-                }
-                this.categories = data;
-                this.$nextTick(() => {
-                    G.invoke(callback , null , true);
+            Api.category
+                .search({
+                    module_id: this.form.module_id ,
+                    type: this.form.type === 'pro' ? 'video_project' : 'video' ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        G.invoke(callback , null , false);
+                        return ;
+                    }
+                    this.categories = res.data;
+                    this.$nextTick(() => {
+                        G.invoke(callback , null , true);
+                    });
+                })
+                .finally(() => {
+                    this.pending('getCategories' , false);
                 });
-            });
         } ,
 
         getModules (callback) {
             this.pending('getModules' , true);
-            Api.module.all().then((res) => {
-                this.pending('getModules' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    G.invoke(callback , null , false);
-                    return ;
-                }
-                this.modules = data;
-                this.$nextTick(() => {
-                    G.invoke(callback , null , true);
+            Api.module
+                .all()
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        G.invoke(callback , null , false);
+                        return ;
+                    }
+                    this.modules = res.data;
+                    this.$nextTick(() => {
+                        G.invoke(callback , null , true);
+                    });
+                })
+                .finally(() => {
+                    this.pending('getModules' , false);
                 });
-            });
         } ,
 
 
         moduleChangedEvent (moduleId) {
-
             this.error({module_id: ''} , false);
             this.form.category_id = '';
             this.form.video_project_id = '';
-            this.form.video_project = G.copy(videoProjects.current);
+            this.videoProject = G.copy(videoProject);
             this.getCategories(moduleId);
         } ,
 
         typeChangedEvent (type) {
             if (type === 'misc') {
-                this.videoProjects.current  = G.copy(videoProjects.current);
+                // 杂项
+                this.videoProject  = G.copy(videoProject);
                 this.form.video_project_id  = '';
             } else {
+                // 专题
                 this.form.category_id = 0;
             }
         } ,
@@ -373,139 +291,69 @@ export default {
             });
         } ,
 
-        searchVideoProject () {
-            this.pending('searchImageSubject' , true);
-            Api.video_project.search({
-                module_id: this.form.module_id ,
-                value: this.videoProjects.value ,
-            } , (res) => {
-                this.pending('searchImageSubject' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.error({video_project_id: data});
-                    return ;
-                }
-                this.videoProjects.page = data.current_page;
-                this.videoProjects.total = data.total;
-                this.videoProjects.data = data.data;
-            });
-        } ,
-
-        searchVideoProjectEvent (e) {
-            if (this.form.module_id < 1) {
-                this.error({video_project_id: '请选择模块后操作'});
-                return ;
-            }
-            this.error({video_project_id: ''} , false);
-            this.searchVideoProject();
-            this._val('modalForVideoProject' , true);
-        } ,
-
-        updateVideoProjectEvent (row , index) {
-            this.val.error.video_project_id = '';
-            this.form.video_project_id = row.id;
-            this._val('modalForVideoProject' , false);
-            this.videoProjects.data = [];
-            this.videoProjects.current = row;
-        } ,
-
-        videoProjectPageEvent (page) {
-            this.videoProjects.page = page;
-            this.searchVideoProject();
-        } ,
-
-        searchUser () {
-            this.pending('searchUser' , true);
-            Api.user.search(this.users.value , (res) => {
-                this.pending('searchUser' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.error({user_id: data});
-                    return ;
-                }
-                this.users.total = data.total;
-                this.users.page = data.current_page;
-                this.users.data = data.data;
-            });
-        } ,
-
-
-        searchUserEvent (e) {
-            // 开始搜索
-            this.searchUser();
-            this._val('modalForUser' , true);
-        } ,
-
-        updateUserEvent (row , index) {
-            this.val.error.user_id = '';
-            this.form.user_id = row.id;
-            this._val('modalForUser' , false);
-            this.users.data = [];
-            this.users.current = row;
-        } ,
-
-        userPageEvent (page) {
-            this.users.page = page;
-            this.searchUser();
-        } ,
-
         // 获取当前编辑记录详情
         findById (id) {
-            this._val('findById' , true);
+            this.pending('findById' , true);
             return new Promise((resolve , reject) => {
-                Api.video.show(id , (res) => {
-                    this._val('findById' , false);
-                    if (res.code !== TopContext.code.Success) {
-                        this.errorHandle(res.message);
-                        reject();
-                        return ;
-                    }
-                    this.form = data;
-                    resolve();
-                });
+                Api.video
+                    .show(id)
+                    .then((res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            this.errorHandle(res.message);
+                            reject();
+                            return ;
+                        }
+                        this.form = res.data;
+                        resolve();
+                    })
+                    .finally(() => {
+                        this.pending('findById' , false);
+                    });
             });
         } ,
 
-        openFormDrawer () {
-            this._val('drawer' , true);
+        openFormModal () {
+            this.val.show = true;
             this.getModules();
+            // console.log(this.mode , '编辑模式');
             if (this.mode === 'edit') {
-                this.getCategories(this.form.module_id);
-                this.findById(this.data.id).then((res) => {
+                this.findById(this.id).then((res) => {
                     this.ins.thumb.render(this.form.thumb);
-                    this.users.current = this.form.user ? this.form.user : G.copy(users.current);
-                    this.videoProjects.current = this.form.video_project ? this.form.video_project : G.copy(videoProjects.current);
-                    this.videos.data = this.form.videos;
-                    this.videoSubtitles.data = this.form.video_subtitles;
+
+                    this.owner                  = this.form.user ? this.form.user : G.copy(owner);
+                    this.videoProject           = this.form.video_project ? this.form.video_project : G.copy(videoProject);
+                    this.videos.data            = this.form.videos;
+                    this.videoSubtitles.data    = this.form.video_subtitles;
+
+                    this.getCategories(this.form.module_id);
                 });
             }
         } ,
 
-        closeFormDrawer () {
+        closeFormModal () {
             if (this.pending('submit')) {
                 this.message('warning' , '请求中...请耐心等待');
                 return ;
             }
-            this._val('drawer' , false);
-            this._val('tab' , 'base');
+            this.val.show = false;
+            this.val.tab = 'base';
+
             this.ins.thumb.clearAll();
             this.ins.video.clearAll();
 
             this.images             = [];
             this.tags               = [];
             this.uVideoSubtitles    = [];
-            this.users              = G.copy(users);
-            this.videoProjects      = G.copy(videoProjects);
+            this.owner              = G.copy(owner);
+            this.videoProject       = G.copy(videoProject);
             this.videos             = G.copy(videos);
             this.videoSubtitles     = G.copy(videoSubtitles);
             this.form               = G.copy(form);
         } ,
 
 
-        selectedVideoEvent (data) {
-            const ids = [];
-            data.forEach((v) => {
-                ids.push(v.id);
-            });
-            this.val.selectedIdsForVideo = ids;
+        videoSelectionChangeEvent (selection) {
+            this.videoSelection = selection;
         } ,
 
         destroyVideoEvent (index , record) {
@@ -519,11 +367,11 @@ export default {
 
         destroyVideosEvent () {
             this.pending('destroyVideos' , true);
-            this.destroyVideos(this.val.selectedIdsForVideo , (success) => {
+            const ids = this.videoSelection.map((v) => {
+                return v.id;
+            });
+            this.destroyVideos(ids , (success) => {
                 this.pending('destroyVideos' , false);
-                if (success) {
-                    this.val.selectedIdsForVideo = [];
-                }
             });
         } ,
 
@@ -540,23 +388,28 @@ export default {
             const self = this;
             this.confirmModal('你确定删除吗？'  , (res) => {
                 if (res) {
-                    Api.video.destroyVideos(ids , (res) => {
-                        if (res.code !== TopContext.code.Success) {
-                            G.invoke(callback , this , false);
-                            this.errorHandle(res.message);
-                            return ;
-                        }
-                        G.invoke(callback , this , true);
-                        this.message('success' , '操作成功' , '影响的记录数：' + data);
-                        for (let i = 0; i < this.videos.data.length; ++i)
-                        {
-                            const cur = this.videos.data[i];
-                            if (G.contain(cur.id , ids)) {
-                                this.videos.data.splice(i , 1);
-                                i--;
+                    Api.video
+                        .destroyVideos(ids)
+                        .then((res) => {
+                            if (res.code !== TopContext.code.Success) {
+                                G.invoke(callback , this , false);
+                                this.errorHandle(res.message);
+                                return ;
                             }
-                        }
-                    });
+                            G.invoke(callback , this , true);
+                            this.message('success' , '操作成功');
+                            for (let i = 0; i < this.videos.data.length; ++i)
+                            {
+                                const cur = this.videos.data[i];
+                                if (G.contain(cur.id , ids)) {
+                                    this.videos.data.splice(i , 1);
+                                    i--;
+                                }
+                            }
+                        })
+                        .finally(() => {
+
+                        });
                     return ;
                 }
                 G.invoke(callback , this , false);
@@ -564,12 +417,8 @@ export default {
         } ,
 
 
-        selectedSubtitleEvent (data) {
-            const ids = [];
-            data.forEach((v) => {
-                ids.push(v.id);
-            });
-            this.val.selectedIdsForSubtitle = ids;
+        videoSubtitleSelectionChangeEvent (selection) {
+            this.videoSubtitleSelection = selection;
         } ,
 
         destroyVideoSubtitle (id , callback) {
@@ -585,23 +434,25 @@ export default {
             const self = this;
             this.confirmModal('你确定删除吗？'  , (res) => {
                 if (res) {
-                    Api.video_subtitle.destroyAll(ids , (res) => {
-                        if (res.code !== TopContext.code.Success) {
-                            G.invoke(callback , this , false);
-                            this.errorHandle(res.message);
-                            return ;
-                        }
-                        G.invoke(callback , this , true);
-                        this.message('success' , '操作成功' , '影响的记录数：' + data);
-                        for (let i = 0; i < this.videoSubtitles.data.length; ++i)
-                        {
-                            const cur = this.videoSubtitles.data[i];
-                            if (G.contain(cur.id , ids)) {
-                                this.videoSubtitles.data.splice(i , 1);
-                                i--;
+                    Api.videoSubtitle
+                        .destroyAll(ids)
+                        .then((res) => {
+                            if (res.code !== TopContext.code.Success) {
+                                G.invoke(callback , this , false);
+                                this.errorHandle(res.message);
+                                return ;
                             }
-                        }
-                    });
+                            G.invoke(callback , this , true);
+                            this.message('success' , '操作成功');
+                            for (let i = 0; i < this.videoSubtitles.data.length; ++i)
+                            {
+                                const cur = this.videoSubtitles.data[i];
+                                if (G.contain(cur.id , ids)) {
+                                    this.videoSubtitles.data.splice(i , 1);
+                                    i--;
+                                }
+                            }
+                        });
                     return ;
                 }
                 G.invoke(callback , this , false);
@@ -618,11 +469,11 @@ export default {
 
         destroyVideoSubtitlesEvent () {
             this.pending('destroyVideoSubtitles' , true);
-            this.destroyVideoSubtitles(this.val.selectedIdsForSubtitle , (success) => {
+            const ids = this.videoSubtitleSelection.map((v) => {
+                return v.id;
+            });
+            this.destroyVideoSubtitles(ids , () => {
                 this.pending('destroyVideoSubtitles' , false);
-                if (success) {
-                    this.val.selectedIdsForSubtitle = [];
-                }
             });
         } ,
 
@@ -651,17 +502,22 @@ export default {
             videoSubtitle.uploaded = false;
             videoSubtitle.uploading = true;
             videoSubtitle.error = '';
-            Api.file.uploadSubtitle(videoSubtitle.file , (res) => {
-                if (res.code !== TopContext.code.Success) {
-                    videoSubtitle.error = msg;
-                    videoSubtitle.uploaded = false;
-                    G.invoke(callback , null , false);
-                    return ;
-                }
-                videoSubtitle.uploaded = true;
-                videoSubtitle.src = data;
-                G.invoke(callback , null , true);
-            });
+            Api.file
+                .uploadSubtitle(videoSubtitle.file)
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        videoSubtitle.error = res.message;
+                        videoSubtitle.uploaded = false;
+                        G.invoke(callback , null , false);
+                        return ;
+                    }
+                    videoSubtitle.uploaded = true;
+                    videoSubtitle.src = res.data;
+                    G.invoke(callback , null , true);
+                })
+                .finally(() => {
+
+                });
         } ,
 
         submitEvent () {
@@ -669,40 +525,61 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return ;
             }
-            const callback = (res) => {
-                this.pending('submit' , false);
+            const thenCallback = (res) => {
                 this.error();
                 if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(msg , data , code);
+                    this.errorHandle(res.message);
                     return ;
                 }
                 this.successHandle((keep) => {
                     this.$emit('on-success');
                     if (!keep) {
-                        this.closeFormDrawer();
+                        this.closeFormModal();
                     }
                 });
             };
+            const finalCallback = () => {
+                this.pending('submit' , false);
+            };
             const form = G.copy(this.form);
             // 字幕上传
-            const videoSubtitles = [];
-            this.uVideoSubtitles.forEach((v) => {
-                videoSubtitles.push({
+            form.video_subtitles = this.uVideoSubtitles.map((v) => {
+                return {
                     name: v.name ,
                     src: v.src ,
-                });
+                };
             });
-            form.video_subtitles = G.jsonEncode(videoSubtitles);
+            form.video_subtitles = G.jsonEncode(form.video_subtitles);
             this.pending('submit' , true);
             if (this.mode === 'edit') {
-                Api.video.update(form.id , form , callback);
+                Api.video.update(form.id , form).then(thenCallback).finally(finalCallback);
                 return ;
             }
-            Api.video.store(form , callback);
+            Api.video.store(form).then(thenCallback).finally(finalCallback);
         } ,
 
         changeEventTest (value) {
             console.log('i-select changed' , value , JSON.stringify(this.modules));
+        } ,
+
+        userChangeEvent (res) {
+            this.error({user_id: ''} , false);
+            this.form.user_id   = res.id;
+            this.owner          = res;
+        } ,
+
+        showUserSelector () {
+            this.$refs['user-selector'].show();
+        } ,
+
+        videoProjectChangeEvent (res) {
+            this.error({video_project_id: ''} , false);
+            this.form.video_project_id      = res.id;
+            this.videoProject               = res;
+        } ,
+
+        showVideoProjectSelector () {
+            this.$refs['video-project-selector'].show();
         } ,
     } ,
 

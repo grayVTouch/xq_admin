@@ -1,5 +1,14 @@
 import myForm from '../form.vue';
 
+const current = {id: 0};
+
+const search = {
+    limit: TopContext.limit,
+    video_series_id: '',
+    video_company_id: '',
+    module_id: '',
+};
+
 export default {
     name: "index",
 
@@ -17,15 +26,8 @@ export default {
             val: {
                 pending: {} ,
                 error: {} ,
-                // edit-编辑 add-添加
                 mode: '' ,
-                selectedIds: [] ,
-                // 抽屉
-                drawer: false ,
-
             } ,
-            releaseTime: '' ,
-            endTime: '' ,
             table: {
                 field: [
                     {
@@ -164,28 +166,35 @@ export default {
                         minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
-                    {
-                        title: '操作' ,
-                        slot: 'action' ,
-                        minWidth: TopContext.table.action ,
-                        align: TopContext.table.alignCenter ,
-                        fixed: 'right' ,
-                    } ,
+                    // {
+                    //     title: '操作' ,
+                    //     slot: 'action' ,
+                    //     minWidth: TopContext.table.action ,
+                    //     align: TopContext.table.alignCenter ,
+                    //     fixed: 'right' ,
+                    // } ,
                 ] ,
                 total: 0 ,
                 page: 1 ,
                 data: [] ,
             } ,
+
+            // 视频系列
             videoSeries: [] ,
+
+            // 视频公司
             videoCompany: [] ,
-            search: {
-                limit: TopContext.limit ,
-                video_series_id: '' ,
-                video_company_id: '' ,
-                module_id: '' ,
-            } ,
-            form: {} ,
+
+            // 搜索
+            search: G.copy(search) ,
+
+            // 模块
             modules: [] ,
+
+            // 当前项
+            current: G.copy(current) ,
+
+            selection: [] ,
         };
     } ,
 
@@ -198,7 +207,7 @@ export default {
 
     computed: {
         showBatchBtn () {
-            return this.val.selectedIds.length > 0;
+            return this.selection.length > 0;
         } ,
     } ,
 
@@ -206,14 +215,18 @@ export default {
 
         getModules () {
             this.pending('getModules' , true);
-            Api.module.all().then((res) => {
-                this.pending('getModules' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                this.modules = data;
-            });
+            Api.module
+                .all()
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    this.modules = res.data;
+                })
+                .finally(() => {
+                    this.pending('getModules' , false);
+                });
         } ,
 
 
@@ -226,37 +239,31 @@ export default {
 
         } ,
 
-        resetForm () {
-            this.form = G.copy(form , true);
-        } ,
-
         getData () {
             this.pending('getData' , true);
-            Api.video_project.index(this.search , (res) => {
-                this.pending('getData' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                this.table.total = data.total;
-                this.table.page = data.current_page;
-                this.handleData(data.data);
-                this.table.data = data.data;
-            });
-        } ,
-
-        handleData (data) {
-            data.forEach((v) => {
-                this.pending(`delete_${v.id}` , false);
-            });
+            Api.videoProject
+                .index(this.search)
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    const data = res.data;
+                    this.table.total = data.total;
+                    this.table.page = data.current_page;
+                    this.table.data = data.data;
+                })
+                .finally(() => {
+                    this.pending('getData' , false);
+                });
         } ,
 
         destroy (id , callback) {
             this.destroyAll([id] , callback);
         } ,
 
-        destroyAll (idList , callback) {
-            if (idList.length < 1) {
+        destroyAll (ids , callback) {
+            if (ids.length < 1) {
                 this.message('warning' ,'请选择待删除的项');
                 G.invoke(callback , this , false);
                 return ;
@@ -267,25 +274,22 @@ export default {
                     G.invoke(callback , this , false);
                     return ;
                 }
-                Api.video_project.destroyAll(idList , (res) => {
-                    if (res.code !== TopContext.code.Success) {
-                        G.invoke(callback , this , false);
-                        this.errorHandle(res.message);
-                        return ;
-                    }
-                    G.invoke(callback , this , true);
-                    this.message('success' , '操作成功' , '影响的记录数：' + data);
-                    this.getData();
-                });
-            });
-        } ,
+                Api.videoProject
+                    .destroyAll(ids)
+                    .then((res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            G.invoke(callback , this , false);
+                            this.errorHandle(res.message);
+                            return ;
+                        }
+                        G.invoke(callback , this , true);
+                        this.message('success' , '操作成功');
+                        this.getData();
+                    })
+                    .finally(() => {
 
-        selectionChangeEvent (data) {
-            const ids = [];
-            data.forEach((v) => {
-                ids.push(v.id);
+                    });
             });
-            this.val.selectedIds = ids;
         } ,
 
         destroyEvent (index , record) {
@@ -299,36 +303,25 @@ export default {
 
         destroyAllEvent () {
             this.pending('destroyAll' , true);
-            this.destroyAll(this.val.selectedIds , (success) => {
+            const ids = this.selection.map((v) => {
+                return v.id;
+            });
+            this.destroyAll(ids , (success) => {
                 this.pending('destroyAll' , false);
-                if (success) {
-                    this.val.selectedIds = [];
-                }
             });
         } ,
 
-        editEvent (record) {
-            this._val('mode' , 'edit');
-            this.error();
-            this.form = G.copy(record);
-            this.getModules();
-            this.$nextTick(() => {
-                this.$refs.form.openFormDrawer();
-            });
-        } ,
-
-        addEvent () {
-            this._val('mode' , 'add');
-            this.error();
-            this.getModules();
-            this.form = {};
-            this.$nextTick(() => {
-                this.$refs.form.openFormDrawer();
-            });
+        selectionChangeEvent (selection) {
+            this.selection = selection;
         } ,
 
         searchEvent () {
             this.search.page = 1;
+            this.getData();
+        } ,
+
+        resetEvent () {
+            this.search = G.copy(search);
             this.getData();
         } ,
 
@@ -337,7 +330,77 @@ export default {
             this.getData();
         } ,
 
-        setReleaseTimeEvent () {} ,
-        setEndTimeEvent () {} ,
+        sortChangeEvent (data) {
+            if (data.order === TopContext.sort.none) {
+                this.search.order = '';
+            } else {
+                this.search.order = this.generateOrderString(data.key , data.order);
+            }
+            this.table.page = 1;
+            this.getData();
+        } ,
+
+        isOnlyOneSelection () {
+            return this.selection.length === 1;
+        } ,
+
+        isEmptySelection () {
+            return this.selection.length === 0;
+        } ,
+
+        hasSelection () {
+            return this.selection.length > 0;
+        } ,
+
+        getFirstSelection () {
+            return this.selection[0];
+        } ,
+
+        checkOneSelection () {
+            if (!this.hasSelection()) {
+                this.errorHandle('请选择项');
+                return false;
+            }
+            if (!this.isOnlyOneSelection()) {
+                this.errorHandle('请仅选择一项');
+                return false;
+            }
+            return true;
+        } ,
+
+        edit (record) {
+            this.current = record;
+            this._val('mode' , 'edit');
+            this.$nextTick(() => {
+                this.$refs.form.openFormModal();
+            });
+        } ,
+
+        editEvent (record) {
+            this.edit(record);
+        } ,
+
+        editEventByButton () {
+            if (!this.checkOneSelection()) {
+                return ;
+            }
+            const current = this.getFirstSelection();
+            this.edit(current);
+        } ,
+
+        addEvent () {
+            this._val('mode' , 'add');
+            this.$nextTick(() => {
+                this.$refs.form.openFormModal();
+            });
+        } ,
+
+        rowClickEvent (row , index) {
+            this.$refs.table.toggleSelect(index);
+        } ,
+
+        rowDblclickEvent (row , index) {
+            this.editEvent(row);
+        } ,
     } ,
 }
