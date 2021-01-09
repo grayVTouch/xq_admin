@@ -13,7 +13,6 @@ use Core\Lib\Category;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use function api\admin\get_form_error;
-use function api\admin\my_config;
 use function api\admin\my_config_keys;
 use function core\array_unit;
 use function core\object_to_array;
@@ -58,7 +57,7 @@ class CategoryAction extends Action
             'module_id'    => 'sometimes|integer',
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first());
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $category = CategoryModel::find($id);
         if (empty($category)) {

@@ -18,7 +18,7 @@ export default {
             } ,
             dom: {} ,
             ins: {} ,
-            val: {
+            myValue: {
                 pending: {} ,
                 modal: false ,
                 error: {} ,
@@ -258,7 +258,7 @@ export default {
             data.forEach((v) => {
                 ids.push(v.id);
             });
-            this.value('selectedIds' , ids);
+            this.setValue('selectedIds' , ids);
         } ,
 
         destroyEvent (index , record) {
@@ -272,10 +272,10 @@ export default {
 
         destroyAllEvent () {
             this.pending('destroyAll' , true);
-            this.destroyAll(this.value('selectedIds') , (success) => {
+            this.destroyAll(this.setValue('selectedIds') , (success) => {
                 this.pending('destroyAll' , false);
                 if (success) {
-                    this.value('selectedIds' , []);
+                    this.setValue('selectedIds' , []);
                 }
             });
         } ,
@@ -308,8 +308,8 @@ export default {
         } ,
 
         editEvent (record) {
-            this.value('modal' , true);
-            this.value('mode' , 'edit');
+            this.setValue('modal' , true);
+            this.setValue('mode' , 'edit');
             this.error();
             this.form = G.copy(record);
             this.getModules();
@@ -317,8 +317,8 @@ export default {
         } ,
 
         addEvent () {
-            this.value('modal' , true);
-            this.value('mode' , 'add');
+            this.setValue('modal' , true);
+            this.setValue('mode' , 'add');
             this.error();
             this.form = G.copy(form);
             this.getModules();
@@ -355,7 +355,7 @@ export default {
                 this.message('warning' ,'请求中...请耐心等待');
                 return ;
             }
-            this.value('modal' , false);
+            this.setValue('modal' , false);
         } ,
 
     } ,

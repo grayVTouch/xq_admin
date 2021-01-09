@@ -30,7 +30,7 @@ export default {
         return {
             form: G.copy(form) ,
 
-            val: {
+            myValue: {
                 show: false ,
             } ,
 
@@ -97,7 +97,7 @@ export default {
         } ,
 
         openFormModal () {
-            this.value('show' , true);
+            this.setValue('show' , true);
             this.getModules();
 
             if (this.mode === 'add') {

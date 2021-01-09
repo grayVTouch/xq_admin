@@ -109,7 +109,7 @@ export default {
 
     data () {
         return {
-            val: {
+            myValue: {
                 tab: 'base' ,
                 pending: {} ,
                 error: {} ,

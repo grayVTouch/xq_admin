@@ -13,7 +13,7 @@ export default {
         return {
             dom: {} ,
             ins: {} ,
-            val: {
+            myValue: {
                 pending: {} ,
                 fixedNav: false ,
                 duration: null ,

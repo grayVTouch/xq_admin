@@ -56,7 +56,7 @@ class NavAction extends Action
             'is_enabled'   => ['sometimes', Rule::in($bool_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first());
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $nav = NavModel::find($id);
         if (empty($nav)) {

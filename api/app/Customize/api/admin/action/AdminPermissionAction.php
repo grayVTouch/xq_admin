@@ -47,7 +47,7 @@ class AdminPermissionAction extends Action
             'p_id'    => 'sometimes|integer',
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first());
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $permission = AdminPermissionModel::find($id);
         if (empty($permission)) {

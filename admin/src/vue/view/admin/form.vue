@@ -34,7 +34,7 @@
                     <tr :class="{error: myValue.error.role_id}">
                         <td>角色</td>
                         <td>
-                            <my-select :data="roles" v-model="form.role_id" width="400"></my-select>
+                            <my-select :data="roles" v-model="form.role_id" :width="TopContext.form.itemW" @change="myValue.error.role_id = ''"></my-select>
                             <my-loading v-if="myValue.pending.getRoles"></my-loading>
                             <span class="need">*</span>
                             <div class="msg"></div>

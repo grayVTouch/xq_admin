@@ -13,7 +13,7 @@ export default {
             } ,
             dom: {} ,
             ins: {} ,
-            val: {
+            myValue: {
                 pending: {} ,
                 modal: false ,
                 attr: {
@@ -241,15 +241,15 @@ export default {
         } ,
 
         editEvent (record) {
-            this.value('modal' , true);
-            this.value('mode' , 'edit');
+            this.setValue('modal' , true);
+            this.setValue('mode' , 'edit');
             this.error();
             this.form = G.copy(record);
         } ,
 
         addEvent () {
-            this.value('modal' , true);
-            this.value('mode' , 'add');
+            this.setValue('modal' , true);
+            this.setValue('mode' , 'add');
             this.error();
             this.form = G.copy(form);
         } ,
@@ -299,7 +299,7 @@ export default {
 
         allocateEvent (record) {
             this.role = G.copy(record);
-            this.value('drawer' , true);
+            this.setValue('drawer' , true);
             Api.role.permission(record.id , (res) => {
                 if (res.code !== TopContext.code.Success) {
                     this.errorHandle(res.message);
@@ -330,7 +330,7 @@ export default {
                 this.message('请求中...请耐心等待');
                 return ;
             }
-            this.value('drawer' , false);
+            this.setValue('drawer' , false);
             this.rolePermission = [];
         } ,
 

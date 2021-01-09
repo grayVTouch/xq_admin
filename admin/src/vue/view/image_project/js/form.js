@@ -60,7 +60,7 @@ export default {
 
     data () {
         return {
-            val: {
+            myValue: {
                 show: false ,
                 showImageSubjectSelector: false ,
                 tab: 'base' ,
@@ -315,7 +315,7 @@ export default {
             this.imageSubject  = G.copy(imageSubject);
             this.owner          = G.copy(owner);
             this.table          = G.copy(table);
-            this.value('tab' , 'base');
+            this.setValue('tab' , 'base');
         } ,
 
         destroy (id , callback) {

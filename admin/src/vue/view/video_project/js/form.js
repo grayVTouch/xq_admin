@@ -33,7 +33,7 @@ export default {
         return {
             dom: {} ,
             ins: {} ,
-            val: {
+            myValue: {
                 pending: {} ,
                 error: {} ,
                 show: false ,

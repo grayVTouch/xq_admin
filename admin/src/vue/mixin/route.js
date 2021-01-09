@@ -30,7 +30,10 @@ export default {
 
     initPositions (id , res = []) {
         const permissions = this.permissionsWithoutStruct();
-        const positions = G.tree.parents(id , permissions , this.treeField , true , false);
+        const positions = G.tree.parents(id , permissions , {
+            id: 'id' ,
+            p_id: 'parentId' ,
+        } , true , false);
         this.$store.dispatch('topRoute' , positions[0]);
         this.$store.dispatch('currentRoute' , positions[positions.length - 1]);
         this.$store.dispatch('positions' , positions);

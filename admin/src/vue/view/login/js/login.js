@@ -5,7 +5,7 @@ export default {
             form: {} ,
             dom: {} ,
             ins: {} ,
-            val: {
+            myValue: {
                 // 是否显示密码
                 showPassword: false ,
                 // 表单错误信息
@@ -40,7 +40,7 @@ export default {
     methods: {
 
         topMessage (text = '' , classname = '') {
-            this.value('message' , Object.assign({} , {
+            this.setValue('message' , Object.assign({} , {
                 text ,
                 class: classname
             }));

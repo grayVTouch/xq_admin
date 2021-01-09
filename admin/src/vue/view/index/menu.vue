@@ -17,10 +17,10 @@
             return {
                 ins: {} ,
                 permissions: [] ,
-                treeField: {
-                    id: 'id' ,
-                    p_id: 'parentId' ,
-                } ,
+                // treeField: {
+                //     id: 'id' ,
+                //     p_id: 'parentId' ,
+                // } ,
             };
         } ,
 

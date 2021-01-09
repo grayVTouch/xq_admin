@@ -28,7 +28,7 @@ export default {
         return {
             form: G.copy(form) ,
 
-            val: {
+            myValue: {
                 show: false ,
                 birthday: '' ,
             } ,
@@ -91,7 +91,7 @@ export default {
         } ,
 
         openFormModal () {
-            this.value('show' , true);
+            this.setValue('show' , true);
             this.getRoles();
 
             if (this.mode === 'add') {
@@ -102,7 +102,7 @@ export default {
             this.findById(this.id).then(() => {
                 // 做一些额外处理
                 this.ins.avatar.render(this.form.avatar);
-                this.value('birthday' , this.form.birthday);
+                this.setValue('birthday' , this.form.birthday);
             });
         } ,
 
@@ -111,22 +111,25 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return;
             }
-            this.value('show' , false);
-            this.value('birthday' , '');
+            this.setValue('show' , false);
+            this.setValue('birthday' , '');
             this.form = G.copy(form);
+            this.error();
             this.ins.avatar.clearAll();
         } ,
 
         getRoles () {
             this.pending('getRoles' , true);
-            Api.role.all().then((res) => {
-                this.pending('getRoles' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                this.roles = res.data;
-            });
+            Api.role
+                .all()
+                .then((res) => {
+                    this.pending('getRoles' , false);
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    this.roles = res.data;
+                });
         } ,
 
         birthdayChangeEvent (date) {
@@ -139,10 +142,10 @@ export default {
                 error.username = '请填写用户名';
             }
             if (this.mode === 'add' && G.isEmptyString(this.form.password)) {
-                error.username = '请填写密码';
+                error.password = '请填写密码';
             }
-            if (this.form.role_id > 0) {
-                error.username = '请填写';
+            if (!G.isNumeric(this.form.role_id)) {
+                error.role_id = '请选择角色';
             }
             return {
                 status: G.isEmptyObject(error) ,
@@ -152,7 +155,6 @@ export default {
 
         submitEvent () {
             const self = this;
-            this.pending('submitEvent' , true);
             this.form.birthday = this.myValue.birthday;
             const filterRes = this.filter();
             if (!filterRes.status) {
@@ -160,6 +162,7 @@ export default {
                 this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
                 return ;
             }
+            this.pending('submitEvent' , true);
             const callback = (res) => {
                 this.pending('submitEvent' , false);
                 this.error();

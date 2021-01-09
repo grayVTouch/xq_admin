@@ -31,7 +31,7 @@ export default {
         return {
             form: G.copy(form) ,
 
-            val: {
+            myValue: {
                 show: false ,
             } ,
 

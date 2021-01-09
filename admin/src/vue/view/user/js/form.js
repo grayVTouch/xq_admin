@@ -28,7 +28,7 @@ export default {
         return {
             form: G.copy(form) ,
 
-            val: {
+            myValue: {
                 show: false ,
                 birthday: '' ,
             } ,
@@ -91,7 +91,7 @@ export default {
         } ,
 
         openFormModal () {
-            this.value('show' , true);
+            this.setValue('show' , true);
 
             if (this.mode === 'add') {
                 // 添加
@@ -102,7 +102,7 @@ export default {
                 .then(() => {
                     // 做一些额外处理
                     this.ins.avatar.render(this.form.avatar);
-                    this.value('birthday' , this.form.birthday);
+                    this.setValue('birthday' , this.form.birthday);
                 });
         } ,
 
@@ -111,7 +111,7 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return;
             }
-            this.value('show' , false);
+            this.setValue('show' , false);
             this.form = G.copy(form);
             this.ins.avatar.clearAll();
         } ,

@@ -20,7 +20,7 @@ export default {
 
     data () {
         return {
-            val: {
+            myValue: {
                 drawer: false,
                 error: {},
                 pending: {},
@@ -137,7 +137,7 @@ export default {
         } ,
 
         openFormModal () {
-            this.value('drawer' , true);
+            this.setValue('drawer' , true);
             this.getPermissions(() => {
                 if (this.mode === 'edit') {
                     this.permissions = this.getPermissionExcludeSelfAndChildrenById(this.form.id);
@@ -150,7 +150,7 @@ export default {
                 this.message('warning' ,'请求中...请耐心等待');
                 return ;
             }
-            this.value('drawer' , false);
+            this.setValue('drawer' , false);
             this.permissions = [];
             this.form = G.copy(form);
             this.ins.sIco.clearAll();

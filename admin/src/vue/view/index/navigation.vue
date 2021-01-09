@@ -31,7 +31,7 @@
                 dom: {} ,
                 instance: {} ,
                 fixed: false ,
-                val: {} ,
+                myValue: {} ,
             };
         } ,
 

@@ -17,9 +17,9 @@ export default {
 
     setValue (key , val) {
         if (!G.isValid(val)) {
-            return this.value[key];
+            return this.myValue[key];
         }
-        this.value = {...this.val , ...{[key]: val}};
+        this.myValue = {...this.myValue , ...{[key]: val}};
     } ,
 
     select (key , val) {

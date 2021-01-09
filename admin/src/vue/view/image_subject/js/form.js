@@ -43,7 +43,7 @@ export default {
         return {
             form: G.copy(form) ,
 
-            val: {
+            myValue: {
                 show: false ,
                 showUserSelector: false ,
             } ,
@@ -126,7 +126,7 @@ export default {
         } ,
 
         openFormModal () {
-            this.value('show' , true);
+            this.setValue('show' , true);
             this.getModules();
             if (this.mode === 'add') {
                 // 添加
@@ -146,7 +146,7 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return;
             }
-            this.value('show' , false);
+            this.setValue('show' , false);
             this.form = G.copy(form);
             this.attr = G.copy(attr);
             this.owner = G.copy(owner);

@@ -4,11 +4,11 @@ export default {
     } ,
 
     imageApi (resize = false) {
-        return TopContext.uploadImageApi  + (resize ? '?w=' + TopContext.myValue.imageW : '');
+        return TopContext.uploadImageApi  + (resize ? '?w=' + TopContext.val.imageW : '');
     } ,
 
     thumbApi (resize = true) {
-        return TopContext.uploadImageApi + (resize ? '?w=' + TopContext.myValue.thumbW : '');
+        return TopContext.uploadImageApi + (resize ? '?w=' + TopContext.val.thumbW : '');
     } ,
 
     videoApi () {

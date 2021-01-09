@@ -20,7 +20,7 @@ export default {
             } ,
             dom: {} ,
             ins: {} ,
-            val: {
+            myValue: {
                 pending: {} ,
                 modal: false ,
                 error: {} ,
@@ -268,7 +268,7 @@ export default {
 
         edit (record) {
             this.current = record;
-            this.value('mode' , 'edit');
+            this.setValue('mode' , 'edit');
             this.$nextTick(() => {
                 this.$refs.form.openFormModal();
             });
@@ -287,7 +287,7 @@ export default {
         } ,
 
         addEvent () {
-            this.value('mode' , 'add');
+            this.setValue('mode' , 'add');
             this.$nextTick(() => {
                 this.$refs.form.openFormModal();
             });

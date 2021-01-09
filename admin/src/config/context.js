@@ -40,6 +40,10 @@ window.TopContext = {
     } ,
     business ,
     table ,
+    // 表单信息
+    form: {
+        itemW: 400 ,
+    } ,
     style ,
     // 每页显示记录数
     limit: 8 ,
