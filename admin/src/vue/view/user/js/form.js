@@ -113,16 +113,35 @@ export default {
             }
             this.setValue('show' , false);
             this.form = G.copy(form);
+            this.error();
             this.ins.avatar.clearAll();
+        } ,
+
+        filter (form) {
+            const error = {};
+            if (G.isEmptyString(form.username)) {
+                error.username = '请填写用户名';
+            }
+            if (this.mode === 'add' && G.isEmptyString(form.password)) {
+                error.password = '请填写密码';
+            }
+            return {
+                status: G.isEmptyObject(error) ,
+                error ,
+            };
         } ,
 
         submitEvent () {
             const self = this;
-            this.pending('submitEvent' , true);
-            this.form.birthday = this.myValue.birthday;
-            const callback = (res) => {
-                this.pending('submitEvent' , false);
-                this.error();
+            const form = G.copy(this.form);
+            form.birthday = this.myValue.birthday;
+            const filterRes = this.filter(form);
+            if (!filterRes.status) {
+                this.error(filterRes.error , true);
+                this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
+                return ;
+            }
+            const thenCallback = (res) => {
                 if (res.code !== TopContext.code.Success) {
                     this.errorHandle(res.message);
                     return ;
@@ -135,11 +154,16 @@ export default {
                     self.closeFormModal();
                 });
             };
+            const finalCallback = () => {
+                this.pending('submitEvent' , false);
+            };
+            this.error();
+            this.pending('submitEvent' , true);
             if (this.mode === 'edit') {
-                Api.user.update(this.form.id , this.form).then(callback);
+                Api.user.update(form.id , form).then(thenCallback).finally(finalCallback);
                 return ;
             }
-            Api.user.store(this.form).then(callback);
+            Api.user.store(form).then(thenCallback).finally(finalCallback);
         } ,
 
         birthdayChangeEvent (date) {

@@ -17,7 +17,11 @@ import myCountrySelector from '@vue/view/public/core/selector/my_country_selecto
 import myVideoSeriesSelector from '@vue/view/public/core/selector/my_video_series_selector.vue';
 import myVideoCompanySelector from '@vue/view/public/core/selector/my_video_company_selector.vue';
 import myVideoProjectSelector from '@vue/view/public/core/selector/my_video_project_selector.vue';
+import myBase from '@vue/view/public/common/my_base.vue';
+import mySearchForm from '@vue/view/public/common/my_search_form.vue';
+import mySearchFormItem from '@vue/view/public/common/my_search_form_item.vue';
 
+Vue.component('my-base' , myBase);
 // Vue.component('my-loading' , loading);
 Vue.component('my-avatar' , myAvatar);
 Vue.component('my-switch' , mySwitch);
@@ -37,4 +41,7 @@ Vue.component('my-country-selector' , myCountrySelector);
 Vue.component('my-video-series-selector' , myVideoSeriesSelector);
 Vue.component('my-video-company-selector' , myVideoCompanySelector);
 Vue.component('my-video-project-selector' , myVideoProjectSelector);
+Vue.component('my-video-project-selector' , myVideoProjectSelector);
+Vue.component('my-search-form' , mySearchForm);
+Vue.component('my-search-form-item' , mySearchFormItem);
 

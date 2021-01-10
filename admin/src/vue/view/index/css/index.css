@@ -614,18 +614,18 @@
     background-color: #777d8a;
     min-width: 600px;
     overflow: hidden;
-}
-
-.main > .content > .inner > .view {
     position: relative;
     padding: 0 20px 20px 20px;
     height: 100%;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .main > .content > .inner > .view .dynamic {
     background-color: white;
     padding: 20px;
+    flex: 1 0 auto;
 }
 
 .main > .content > .inner > .info {
@@ -637,8 +637,6 @@
     background-color: #595f6b;
 
 }
-
-/*.main > .content > .inner > .view*/
 
 /**
  * ******************

@@ -120,6 +120,7 @@
                 <div class="line view" ref="view">
                     <!-- 视图导航 -->
                     <div class="navigation">
+                        <div class="nav" v-if="myValue.fixedNavigation"></div>
                         <div ref="btm-nav"
                              class="nav"
                              :class="{fixed: myValue.fixedNavigation , spread: state().slidebar === 'vertical'}"

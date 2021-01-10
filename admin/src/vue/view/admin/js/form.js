@@ -136,15 +136,15 @@ export default {
             this.myValue.birthday = date;
         } ,
 
-        filter () {
+        filter (form) {
             const error = {};
-            if (G.isEmptyString(this.form.username)) {
+            if (G.isEmptyString(form.username)) {
                 error.username = '请填写用户名';
             }
-            if (this.mode === 'add' && G.isEmptyString(this.form.password)) {
+            if (this.mode === 'add' && G.isEmptyString(form.password)) {
                 error.password = '请填写密码';
             }
-            if (!G.isNumeric(this.form.role_id)) {
+            if (!G.isNumeric(form.role_id)) {
                 error.role_id = '请选择角色';
             }
             return {
@@ -155,17 +155,15 @@ export default {
 
         submitEvent () {
             const self = this;
-            this.form.birthday = this.myValue.birthday;
-            const filterRes = this.filter();
+            const form = G.copy(this.form);
+            form.birthday = this.myValue.birthday;
+            const filterRes = this.filter(form);
             if (!filterRes.status) {
                 this.error(filterRes.error , true);
                 this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
                 return ;
             }
-            this.pending('submitEvent' , true);
-            const callback = (res) => {
-                this.pending('submitEvent' , false);
-                this.error();
+            const thenCallback = (res) => {
                 if (res.code !== TopContext.code.Success) {
                     this.errorHandle(res.message);
                     return ;
@@ -178,11 +176,17 @@ export default {
                     self.closeFormModal();
                 });
             };
+            const finalCallback = () => {
+                this.error();
+                this.pending('submitEvent' , false);
+            };
+            this.error();
+            this.pending('submitEvent' , true);
             if (this.mode === 'edit') {
-                Api.admin.update(this.form.id , this.form).then(callback);
+                Api.admin.update(form.id , form).then(thenCallback).finally(finalCallback);
                 return ;
             }
-            Api.admin.store(this.form).then(callback);
+            Api.admin.store(form).then(thenCallback).finally(finalCallback);
         } ,
     } ,
 }

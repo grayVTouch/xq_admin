@@ -26,7 +26,7 @@
                         <td>
                             <input type="text" v-model="form.password" @input="myValue.error.password=''" class="form-text">
                             <span class="need"></span>
-                            <div class="msg">为空，则使用原密码</div>
+                            <div class="msg"><template v-if="mode === 'edit'">为空，则使用原密码</template></div>
                             <div class="e-msg">{{ myValue.error.password }}</div>
                         </td>
                     </tr>

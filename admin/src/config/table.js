@@ -30,8 +30,8 @@ export default {
     alignLeft: 'left' ,
 
     // height: 330 ,
-    // height: 500 ,
-    height: 'auto' ,
+    height: 420 ,
+    // height: 'auto' ,
 
     imageH: 40 ,
     videoH: 150 ,
