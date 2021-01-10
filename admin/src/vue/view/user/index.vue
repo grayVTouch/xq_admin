@@ -1,126 +1,81 @@
 <template>
-    <div class="view-item">
 
-        <div class="line search">
-            <div class="run-title">
-                <div class="left">筛选</div>
-                <div class="right"></div>
-            </div>
+    <my-base>
+        <template slot="search">
 
-            <div class="filter-option">
-                <form @submit.prevent="searchEvent">
-                    <div class="option">
-                        <div class="field">id：</div>
-                        <div class="value"><input type="text" class="form-text" v-model="search.id"></div>
-                    </div>
+            <my-search-form @submit="searchEvent">
+                <my-search-form-item name="id">
+                    <input type="text" class="form-text" v-model="search.id" />
+                </my-search-form-item>
 
-                    <div class="option">
-                        <div class="field">用户名：</div>
-                        <div class="value"><input type="text" class="form-text" v-model="search.username"></div>
-                    </div>
+                <my-search-form-item name="用户名">
+                    <input type="text" class="form-text" v-model="search.username" />
+                </my-search-form-item>
 
-                    <div class="option">
-                        <div class="field">昵称：</div>
-                        <div class="value"><input type="text" class="form-text" v-model="search.nickname"></div>
-                    </div>
+                <my-search-form-item name="性别">
+                    <i-radio-group v-model="search.sex">
+                        <i-radio v-for="(v,k) in TopContext.business.user.sex" :key="k" :label="k">{{ v }}</i-radio>
+                    </i-radio-group>
+                </my-search-form-item>
 
-                    <div class="option">
-                        <div class="field">性别：</div>
-                        <div class="value">
-                            <i-radio-group v-model="search.sex">
-                                <i-radio v-for="(v,k) in TopContext.business.user.sex" :key="k" :label="k">{{ v }}</i-radio>
-                            </i-radio-group>
-                        </div>
-                    </div>
+                <my-search-form-item name="手机">
+                    <input type="text" class="form-text" v-model="search.phone" />
+                </my-search-form-item>
 
-                    <div class="option">
-                        <div class="field">手机：</div>
-                        <div class="value"><input type="text" class="form-text" v-model="search.phone"></div>
-                    </div>
+                <my-search-form-item name="电子邮箱">
+                    <input type="text" class="form-text" v-model="search.email" />
+                </my-search-form-item>
 
-                    <div class="option">
-                        <div class="field">电子邮箱：</div>
-                        <div class="value"><input type="text" class="form-text" v-model="search.email"></div>
-                    </div>
+                <my-search-form-item :show-separator="false">
+                    <my-table-button @click="searchEvent"><my-icon icon="search" mode="right" />搜索</my-table-button>
+                    <my-table-button @click="resetEvent" class="m-l-10"><my-icon icon="reset" mode="right" />重置</my-table-button>
+                </my-search-form-item>
+            </my-search-form>
 
-                    <div class="option">
-                        <div class="field"></div>
-                        <div class="value">
-                            <button type="submit" v-show="false"></button>
-                            <my-table-button @click="searchEvent"><my-icon icon="search" mode="right" />搜索</my-table-button>
-                            <my-table-button @click="resetEvent" class="m-l-10"><my-icon icon="reset" mode="right" />重置</my-table-button>
-                        </div>
-                    </div>
+        </template>
 
-                </form>
-            </div>
-        </div>
+        <template slot="action">
+            <my-table-button class="m-r-10" @click="addEvent"><my-icon icon="add" />添加</my-table-button>
+            <my-table-button class="m-r-10" @click="editEventByButton"><my-icon icon="edit" />编辑</my-table-button>
+            <my-table-button class="m-r-10" type="error" @click="destroyAllEvent" :loading="myValue.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
+        </template>
 
-        <div class="line">
-            <div class="run-action-title">
-                <div class="left">
-                    <my-table-button class="m-r-10" @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-                    <my-table-button class="m-r-10" @click="editEventByButton"><my-icon icon="edit" />编辑</my-table-button>
-                    <my-table-button type="error" @click="destroyAllEvent" :loading="myValue.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
-                </div>
-                <div class="right">
-                    <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
-                </div>
-            </div>
-        </div>
-
-        <div class="line data">
-
-            <div class="run-title">
-                <div class="left">数据列表</div>
-                <div class="right"></div>
-            </div>
-
-            <div class="table">
-
-                <i-table
-                        ref="table"
-                        class="w-r-100"
-                        border
-                        :height="TopContext.table.height"
-                        :columns="table.field" :data="table.data"
-                        @on-selection-change="selectionChangeEvent"
-                        :loading="myValue.pending.getData"
-                        @on-row-click="rowClickEvent"
-                        @on-row-dblclick="rowDblclickEvent"
-                        @on-sort-change="sortChangeEvent"
-                >
-                    <template v-slot:avatar="{row,index}">
-                        <my-table-preview :src="row.avatar"></my-table-preview>
-                    </template>
-
-                    <template v-slot:is_system="{row,index}"><b :class="{'run-green': row.is_system === 1 , 'run-red': row.is_system === 0}">{{ row.__is_system__ }}</b></template>
-
-                    <template v-slot:action="{row , index}">
-                        <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
-                        <my-table-button type="error" :loading="myValue.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
-                    </template>
-                </i-table>
-
-            </div>
-
-        </div>
-
-        <div class="line operation">
-            <my-table-button @click="addEvent"><my-icon icon="add" />添加</my-table-button>
-            <my-table-button type="error" @click="destroyAllEvent" :loading="myValue.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
-        </div>
-
-        <div class="line page">
+        <template slot="page">
             <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
-        </div>
+        </template>
+
+        <template slot="table">
+            <i-table
+                    ref="table"
+                    class="w-r-100"
+                    border
+                    :height="TopContext.table.height"
+                    :columns="table.field" :data="table.data"
+                    @on-selection-change="selectionChangeEvent"
+                    :loading="myValue.pending.getData"
+                    @on-row-click="rowClickEvent"
+                    @on-row-dblclick="rowDblclickEvent"
+                    @on-sort-change="sortChangeEvent"
+            >
+                <template v-slot:avatar="{row,index}">
+                    <my-table-preview :src="row.avatar"></my-table-preview>
+                </template>
+
+                <template v-slot:is_system="{row,index}"><b :class="{'run-green': row.is_system === 1 , 'run-red': row.is_system === 0}">{{ row.__is_system__ }}</b></template>
+
+                <template v-slot:action="{row , index}">
+                    <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
+                    <my-table-button type="error" :loading="myValue.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
+                </template>
+            </i-table>
+        </template>
 
         <my-form ref="form" :id="current.id" :mode="myValue.mode" @on-success="getData"></my-form>
-    </div>
+
+    </my-base>
 </template>
 
 <script src="./js/index.js"></script>
-<style src="../public/css/base.css"></style>
 <style scoped>
 
 </style>

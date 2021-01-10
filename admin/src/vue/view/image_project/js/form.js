@@ -31,7 +31,7 @@ const table = {
             center: TopContext.table.alignCenter ,
         } ,
         {
-            title: 'id fuck' ,
+            title: 'id' ,
             key: 'id' ,
             minWidth: TopContext.table.id ,
             center: TopContext.table.alignCenter ,
@@ -178,14 +178,14 @@ export default {
             this.form.image_subject_id = '';
             this.form.image_subject_id = '';
             this.form.topTags = [];
-            this.form.imageSubjects = G.copy(imageSubjects.current);
+            this.form.imageSubject = G.copy(imageSubject.current);
             this.getCategories(moduleId , this.form.type);
             this.getTopTags(moduleId);
         } ,
 
         typeChangedEvent (type) {
             if (type === 'misc') {
-                this.form.imageSubjects = G.copy(imageSubjects.current);
+                this.form.imageSubject = G.copy(imageSubject.current);
                 this.form.image_subject_id = '';
             }
         } ,

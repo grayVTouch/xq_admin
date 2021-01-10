@@ -112,6 +112,7 @@ export default {
                 return;
             }
             this.setValue('show' , false);
+            this.setValue('birthday' , '');
             this.form = G.copy(form);
             this.error();
             this.ins.avatar.clearAll();

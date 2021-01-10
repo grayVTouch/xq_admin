@@ -40,15 +40,15 @@ export default {
                         sortable: 'custom' ,
                     },
                     {
-                        title: '名称【模块】',
+                        title: '名称',
                         slot: 'name',
                         minWidth: TopContext.table.name ,
                         align: TopContext.table.alignLeft ,
                         fixed: 'left' ,
                     },
                     {
-                        title: '模块id',
-                        key: 'module_id',
+                        title: '模块【ID】',
+                        slot: 'module_id',
                         minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter,
                     },

@@ -33,8 +33,14 @@ class FileAction extends Action
         return self::success('' , $url);
     }
 
-    // 上传图片
-    public static function uploadImage(Base $context , ?UploadedFile $file , array $param = [])
+    /**
+     * @param Base $context
+     * @param UploadedFile|null $file
+     * @param array $param
+     * @return array
+     * @throws \Exception
+     */
+    public static function uploadImage(Base $context , ?UploadedFile $file , array $param = []): array
     {
         $mode_range = my_config('business.mode_for_file');
         $validator = Validator::make($param , [
@@ -67,6 +73,10 @@ class FileAction extends Action
         if (in_array($mode , $mode_range)) {
             $real_path          = FileUtil::generateRealPathByRelativePathWithPrefix($path);
             $image_handle_dir   = FileUtil::dir($dir);
+            if (!file_exists($image_handle_dir)) {
+                // 目录不存在则创建
+                mkdir($image_handle_dir , 0755 , true);
+            }
             $image_processor    = new ImageProcessor($image_handle_dir);
             $real_path = $image_processor->compress($real_path , [
                 'mode'      => $mode ,

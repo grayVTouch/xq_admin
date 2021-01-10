@@ -21,9 +21,13 @@ class File extends Base
         return success($res['message'] , $res['data']);
     }
 
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
     public function uploadImage()
     {
-        $param = $this->request->post();
+        $param = $this->request->query();
         $param['m'] = $param['m'] ?? '';
         $param['w'] = $param['w'] ?? '';
         $param['h'] = $param['h'] ?? '';
