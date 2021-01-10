@@ -96,9 +96,9 @@ export default {
             this.hotImages = data;
         });
 
-        this.newestInVideoSubject();
+        // this.newestInVideoSubject();
         this.hotTagsInImageSubject();
-        this.hotTagsInVideoSubject();
+        // this.hotTagsInVideoSubject();
     } ,
 
     methods: {

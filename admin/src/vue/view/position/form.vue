@@ -32,7 +32,7 @@
                         <tr :class="{error: myValue.error.platform}">
                             <td>所属平台</td>
                             <td>
-                                <i-select v-model="form.platform" :style="`width: ${TopContext.style.inputItemW}px`">
+                                <i-select v-model="form.platform" :style="`width: ${TopContext.style.inputItemW}px`" @on-change="myValue.error.platform = ''">
                                     <i-option v-for="(v,k) in TopContext.business.platform" :key="k" :value="k">{{ v }}</i-option>
                                 </i-select>
                                 <span class="need">*</span>

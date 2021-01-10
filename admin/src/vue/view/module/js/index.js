@@ -71,12 +71,6 @@ export default {
                         align: TopContext.table.alignCenter,
                     },
                     {
-                        title: '失败原因',
-                        key: 'fail_reason',
-                        minWidth: TopContext.table.name,
-                        align: TopContext.table.alignCenter,
-                    },
-                    {
                         title: '描述',
                         key: 'description',
                         minWidth: TopContext.table.desc,
@@ -97,7 +91,7 @@ export default {
                 ],
                 total: 0,
                 page: 1,
-                data: [],
+                data: [] ,
             },
 
 
@@ -151,7 +145,6 @@ export default {
             Api.module
                 .index(this.search)
                 .then((res) => {
-                    this.pending('getData' , false);
                     if (res.code !== TopContext.code.Success) {
                         this.errorHandle(res.message);
                         return ;
@@ -163,6 +156,9 @@ export default {
                     this.table.total = data.total;
                     this.table.page = data.current_page;
                     this.table.data = data.data;
+                })
+                .finally(() => {
+                    this.pending('getData' , false);
                 });
         } ,
 
@@ -339,6 +335,10 @@ export default {
                         return ;
                     }
                     this.message('success' , '操作成功');
+                    console.log(extra , extra.field);
+                    if (extra.field === 'is_default') {
+                        this.getData();
+                    }
                 })
                 .finally(() => {
                     this.pending(pendingKey , false);

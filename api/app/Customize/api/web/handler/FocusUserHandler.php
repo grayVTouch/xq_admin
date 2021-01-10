@@ -9,7 +9,7 @@ use App\Customize\api\web\model\PraiseModel;
 use App\Customize\api\web\model\FocusUserModel;
 use App\Customize\api\web\model\UserModel;
 use App\Customize\api\web\util\FileUtil;
-use App\Model\Model;
+use App\Customize\api\web\model\Model;
 use stdClass;
 use function api\web\get_value;
 use function api\web\user;

@@ -349,6 +349,7 @@ export default {
             this.videos             = G.copy(videos);
             this.videoSubtitles     = G.copy(videoSubtitles);
             this.form               = G.copy(form);
+            this.error();
         } ,
 
 
@@ -520,9 +521,47 @@ export default {
                 });
         } ,
 
+        filter (form) {
+            const error = {};
+            // if (G.isEmptyString(form.name)) {
+            //     error.name = '请填写名称';
+            // }
+            if (!G.isNumeric(form.user_id)) {
+                error.user_id = '请选择用户';
+            }
+            if (!G.isNumeric(form.module_id)) {
+                error.module_id = '请选择模块';
+            }
+            if (form.type === 'pro' && !G.isNumeric(form.video_project_id)) {
+                error.video_project_id = '请选择视频专题';
+            }
+            if (form.type === 'misc' && !G.isNumeric(form.category_id)) {
+                error.category_id = '请选择分类';
+            }
+            return {
+                status: G.isEmptyObject(error) ,
+                error ,
+            };
+        } ,
+
         submitEvent () {
             if (this.pending('submitEvent')) {
                 this.message('warning' , '请求中...请耐心等待');
+                return ;
+            }
+            const form = G.copy(this.form);
+            // 字幕上传
+            form.video_subtitles = this.uVideoSubtitles.map((v) => {
+                return {
+                    name: v.name ,
+                    src: v.src ,
+                };
+            });
+            form.video_subtitles = G.jsonEncode(form.video_subtitles);
+            const filterRes = this.filter(form);
+            if (!filterRes.status) {
+                this.error(filterRes.error , true);
+                this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
                 return ;
             }
             const thenCallback = (res) => {
@@ -541,15 +580,6 @@ export default {
             const finalCallback = () => {
                 this.pending('submitEvent' , false);
             };
-            const form = G.copy(this.form);
-            // 字幕上传
-            form.video_subtitles = this.uVideoSubtitles.map((v) => {
-                return {
-                    name: v.name ,
-                    src: v.src ,
-                };
-            });
-            form.video_subtitles = G.jsonEncode(form.video_subtitles);
             this.pending('submitEvent' , true);
             if (this.mode === 'edit') {
                 Api.video.update(form.id , form).then(thenCallback).finally(finalCallback);

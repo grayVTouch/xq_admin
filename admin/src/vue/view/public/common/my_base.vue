@@ -1,7 +1,7 @@
 <template>
     <div class="view-item">
 
-        <div class="line search">
+        <div class="line search" v-if="showSearch">
             <div class="run-title">
                 <div class="left">筛选</div>
                 <div class="right"></div>
@@ -12,18 +12,18 @@
             </div>
         </div>
 
-        <div class="line">
+        <div class="line" v-if="showAction || showPage">
             <div class="run-action-title">
                 <div class="left">
-                    <slot name="action"></slot>
+                    <slot name="action" v-if="showAction"></slot>
                 </div>
                 <div class="right">
-                    <slot name="page"></slot>
+                    <slot name="page" v-if="showPage"></slot>
                 </div>
             </div>
         </div>
 
-        <div class="line data">
+        <div class="line data" v-if="showData">
 
             <div class="run-title">
                 <div class="left">数据列表</div>
@@ -53,7 +53,26 @@
 
 <script>
     export default {
-        name: "my-base"
+        name: "my-base" ,
+
+        props: {
+            showSearch: {
+                type: Boolean ,
+                default: true ,
+            } ,
+            showAction: {
+                type: Boolean ,
+                default: true ,
+            } ,
+            showPage: {
+                type: Boolean ,
+                default: true ,
+            } ,
+            showData: {
+                type: Boolean ,
+                default: true ,
+            } ,
+        } ,
     }
 </script>
 

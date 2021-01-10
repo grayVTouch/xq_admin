@@ -148,17 +148,45 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return;
             }
-            this.myValue.show   = false;
+            this.setValue('show' , false);
             this.modules    = [];
             this.form       = G.copy(form);
             this.owner      = G.copy(owner);
             this.country    = G.copy(country);
+            this.error();
             this.ins.thumb.clearAll();
         } ,
 
+        filter (form) {
+            const error = {};
+            if (G.isEmptyString(form.name)) {
+                error.name = '请填写名称';
+            }
+            if (!G.isNumeric(form.user_id)) {
+                error.user_id = '请选择用户';
+            }
+            if (!G.isNumeric(form.module_id)) {
+                error.module_id = '请选择模块';
+            }
+            if (!G.isNumeric(form.country_id)) {
+                error.country_id = '请选择所属国家';
+            }
+            return {
+                status: G.isEmptyObject(error) ,
+                error ,
+            };
+        } ,
+
+
         submitEvent () {
             const self = this;
-            this.pending('submitEvent' , true);
+            const form = G.copy(this.form);
+            const filterRes = this.filter(form);
+            if (!filterRes.status) {
+                this.error(filterRes.error , true);
+                this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
+                return ;
+            }
             const thenCallback = (res) => {
                 if (res.code !== TopContext.code.Success) {
                     this.errorHandle(res.message);
@@ -176,6 +204,7 @@ export default {
                 this.pending('submitEvent' , false);
                 this.error();
             };
+            this.pending('submitEvent' , true);
             if (this.mode === 'edit') {
                 Api.videoCompany.update(this.form.id , this.form).then(thenCallback).finally(finalCallback);
                 return ;

@@ -97,11 +97,33 @@ export default {
             this.myValue.show   = false;
             this.modules    = [];
             this.form       = G.copy(form);
+            this.error();
+        } ,
+
+
+        filter (form) {
+            const error = {};
+            if (G.isEmptyString(form.path)) {
+                error.path = '请填写目录真实路径';
+            }
+            if (G.isEmptyString(form.prefix)) {
+                error.prefix = '请填写前缀';
+            }
+            return {
+                status: G.isEmptyObject(error) ,
+                error ,
+            };
         } ,
 
         submitEvent () {
             const self = this;
-            this.pending('submitEvent' , true);
+            const form = G.copy(this.form);
+            const filterRes = this.filter(form);
+            if (!filterRes.status) {
+                this.error(filterRes.error , true);
+                this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
+                return ;
+            }
             const thenCallback = (res) => {
                 if (res.code !== TopContext.code.Success) {
                     this.errorHandle(res.message);
@@ -119,11 +141,12 @@ export default {
                 this.pending('submitEvent' , false);
                 this.error();
             };
+            this.pending('submitEvent' , true);
             if (this.mode === 'edit') {
-                Api.disk.update(this.form.id , this.form).then(thenCallback).finally(finalCallback);
+                Api.disk.update(form.id , form).then(thenCallback).finally(finalCallback);
                 return ;
             }
-            Api.disk.store(this.form).then(thenCallback).finally(finalCallback);
+            Api.disk.store(form).then(thenCallback).finally(finalCallback);
         } ,
 
         userChangeEvent (res) {

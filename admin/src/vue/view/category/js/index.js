@@ -183,12 +183,14 @@ export default {
             Api.category
                 .index()
                 .then((res) => {
-                    this.pending('getData' , false);
                     if (res.code !== TopContext.code.Success) {
                         this.errorHandle(res.message);
                         return ;
                     }
                     this.table.data = res.data;
+                })
+                .finally(() => {
+                    this.pending('getData' , false);
                 });
         } ,
 

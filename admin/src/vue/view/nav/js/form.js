@@ -120,11 +120,41 @@ export default {
             this.modules    = [];
             this.navs = [];
             this.form       = G.copy(form);
+            this.error();
+        } ,
+
+        filter (form) {
+            const error = {};
+            if (G.isEmptyString(form.name)) {
+                error.name = '请填写名称';
+            }
+            if (G.isEmptyString(form.type)) {
+                error.type = '请选择类型';
+            }
+            if (G.isEmptyString(form.value)) {
+                error.value = '请填写值';
+            }
+            if (!G.isNumeric(form.module_id)) {
+                error.module_id = '请选择模块';
+            }
+            if (!G.isNumeric(form.p_id)) {
+                error.p_id = '请选择上级导航';
+            }
+            return {
+                status: G.isEmptyObject(error) ,
+                error ,
+            };
         } ,
 
         submitEvent () {
             const self = this;
-            this.pending('submitEvent' , true);
+            const form = G.copy(this.form);
+            const filterRes = this.filter(form);
+            if (!filterRes.status) {
+                this.error(filterRes.error , true);
+                this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
+                return ;
+            }
             const thenCallback = (res) => {
                 if (res.code !== TopContext.code.Success) {
                     this.errorHandle(res.message);
@@ -142,11 +172,12 @@ export default {
                 this.pending('submitEvent' , false);
                 this.error();
             };
+            this.pending('submitEvent' , true);
             if (this.mode === 'edit') {
-                Api.nav.update(this.form.id , this.form).then(thenCallback).finally(finalCallback);
+                Api.nav.update(form.id , form).then(thenCallback).finally(finalCallback);
                 return ;
             }
-            Api.nav.store(this.form).then(thenCallback).finally(finalCallback);
+            Api.nav.store(form).then(thenCallback).finally(finalCallback);
         } ,
 
         getNavsExcludeSelfAndChildrenByIdAndData (id , data) {

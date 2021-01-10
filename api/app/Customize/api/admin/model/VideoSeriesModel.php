@@ -18,7 +18,7 @@ class VideoSeriesModel extends Model
         $filter['name']         = $filter['name'] ?? '';
         $filter['module_id']    = $filter['module_id'] ?? '';
         $order['field']         = $order['field'] ?? 'id';
-        $order['value']         = $order['value'] ?? 'asc';
+        $order['value']         = $order['value'] ?? 'desc';
 
         $where = [];
 

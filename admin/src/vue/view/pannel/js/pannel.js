@@ -68,15 +68,18 @@ export default {
 
         getData () {
             this.pending('getData' , true);
-            Api.pannel.info().then((res) => {
-                this.pending('getData' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                this.info = res.data;
-
-            });
+            Api.pannel
+                .info()
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    this.info = res.data;
+                })
+                .finally(() => {
+                    this.pending('getData' , false);
+                });
         } ,
 
         reRender () {

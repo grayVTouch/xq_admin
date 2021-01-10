@@ -50,7 +50,7 @@ export default {
                         fixed: 'left',
                         resizable: true,
                         ellipsis: true,
-                        tooltip: true,
+                        // tooltip: true,
                     },
                     {
                         title: '视频索引',
@@ -121,14 +121,14 @@ export default {
                     {
                         title: '视频处理状态',
                         slot: 'video_process_status',
-                        minWidth: TopContext.table.status,
+                        minWidth: TopContext.table.status + 30,
                         align: TopContext.table.alignCenter,
                         fixed: 'right',
                     },
                     {
                         title: '文件处理状态',
                         slot: 'file_process_status',
-                        minWidth: TopContext.table.status ,
+                        minWidth: TopContext.table.status + 30 ,
                         align: TopContext.table.alignCenter,
                         fixed: 'right',
                     },
@@ -269,7 +269,9 @@ export default {
             }
             this.pending('getCategories' , true);
             Api.category
-                .searchByModuleId(moduleId)
+                .search({
+                    module_id: moduleId
+                })
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
                         this.errorHandle(res.message);

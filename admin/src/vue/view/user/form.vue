@@ -82,7 +82,14 @@
                     <tr :class="{error: myValue.error.birthday}">
                         <td>生日</td>
                         <td>
-                            <i-date-picker v-model="myValue.birthday" type="date" class="iview-form-input" @on-change="birthdayChangeEvent"></i-date-picker>
+                            <i-date-picker
+                                    type="date"
+                                    v-model="myValue.birthday"
+                                    format="yyyy-MM-dd"
+                                    @on-change="birthdayChangeEvent"
+                                    class="iview-form-input"
+                                    :transfer="true"
+                            ></i-date-picker>
                             <span class="need"></span>
                             <div class="msg"></div>
                             <div class="e-msg">{{ myValue.error.birthday }}</div>

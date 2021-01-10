@@ -178,14 +178,14 @@ export default {
             this.form.image_subject_id = '';
             this.form.image_subject_id = '';
             this.form.topTags = [];
-            this.form.imageSubject = G.copy(imageSubject.current);
+            this.form.imageSubject = G.copy(imageSubject);
             this.getCategories(moduleId , this.form.type);
             this.getTopTags(moduleId);
         } ,
 
         typeChangedEvent (type) {
             if (type === 'misc') {
-                this.form.imageSubject = G.copy(imageSubject.current);
+                this.form.imageSubject = G.copy(imageSubject);
                 this.form.image_subject_id = '';
             }
         } ,
@@ -302,7 +302,6 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return ;
             }
-            // debugger
             this.myValue.show = false;
             this.ins.thumb.clearAll();
             this.ins.images.clearAll();
@@ -316,6 +315,7 @@ export default {
             this.owner          = G.copy(owner);
             this.table          = G.copy(table);
             this.setValue('tab' , 'base');
+            this.error();
         } ,
 
         destroy (id , callback) {
@@ -491,9 +491,44 @@ export default {
                 });
         } ,
 
+        filter (form) {
+            const error = {};
+            // if (G.isEmptyString(form.name)) {
+            //     error.name = '请填写名称';
+            // }
+            if (!G.isNumeric(form.user_id)) {
+                error.user_id = '请选择用户';
+            }
+            if (!G.isNumeric(form.module_id)) {
+                error.module_id = '请选择模块';
+            }
+            if (!G.isNumeric(form.category_id)) {
+                error.category_id = '请选择分类';
+            }
+            if (form.type === 'pro' && !G.isNumeric(form.image_subject_id)) {
+                error.image_subject_id = '请选择图片主体';
+            }
+            return {
+                status: G.isEmptyObject(error) ,
+                error ,
+            };
+        } ,
+
         submitEvent () {
             if (this.pending('submitEvent')) {
                 this.message('warning' , '请求中...请耐心等待');
+                return ;
+            }
+            const form = G.copy(this.form);
+            form.images = G.jsonEncode(this.images);
+            form.tags = this.tags.map((v) => {
+                return v.id;
+            });
+            form.tags = G.jsonEncode(form.tags);
+            const filterRes = this.filter(form);
+            if (!filterRes.status) {
+                this.error(filterRes.error , true);
+                this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
                 return ;
             }
             const thenCallback = (res) => {
@@ -513,12 +548,6 @@ export default {
             const finalCallback = () => {
                 this.pending('submitEvent' , false);
             };
-            const form = G.copy(this.form);
-            form.images = G.jsonEncode(this.images);
-            form.tags = this.tags.map((v) => {
-                return v.id;
-            });
-            form.tags = G.jsonEncode(form.tags);
             this.pending('submitEvent' , true);
             if (this.mode === 'edit') {
                 Api.imageProject.update(form.id , form).then(thenCallback).finally(finalCallback);

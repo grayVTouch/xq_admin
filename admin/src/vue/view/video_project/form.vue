@@ -64,7 +64,7 @@
                             如需重新搜索，请点击
                             <i-button @click="showVideoSeriesSelector">搜索</i-button>
                             <span class="need"></span>
-                            <div class="msg">请务必在选择模块后操作；输入id、名称可查询</div>
+                            <div class="msg">请务必在选择模块后操作</div>
                             <div class="e-msg">{{ myValue.error.video_series_id }}</div>
                         </td>
                     </tr>
@@ -76,7 +76,7 @@
                             如需重新搜索，请点击
                             <i-button @click="showVideoCompanySelector">搜索</i-button>
                             <span class="need"></span>
-                            <div class="msg">请务必在选择模块后操作；输入id、名称可查询</div>
+                            <div class="msg">请务必在选择模块后操作</div>
                             <div class="e-msg">{{ myValue.error.video_company_id }}</div>
                         </td>
                     </tr>
@@ -162,7 +162,14 @@
                     <tr :class="{error: myValue.error.release_date}">
                         <td>发布日期</td>
                         <td>
-                            <i-date-picker type="date" v-model="releaseDate" format="yyyy-MM-dd" @on-change="setReleaseDateEvent" class="iview-form-input"></i-date-picker>
+                            <i-date-picker
+                                    type="date"
+                                    v-model="releaseDate"
+                                    format="yyyy-MM-dd"
+                                    @on-change="setReleaseDateEvent"
+                                    class="iview-form-input"
+                                    :transfer="true"
+                            ></i-date-picker>
                             <span class="need"></span>
                             <div class="msg"></div>
                             <div class="e-msg">{{ myValue.error.release_date }}</div>
@@ -172,7 +179,14 @@
                     <tr :class="{error: myValue.error.end_date}">
                         <td>完结日期</td>
                         <td>
-                            <i-date-picker type="date" v-model="endDate" format="yyyy-MM-dd" @on-change="setEndDateEvent" class="iview-form-input"></i-date-picker>
+                            <i-date-picker
+                                    type="date"
+                                    v-model="endDate"
+                                    format="yyyy-MM-dd"
+                                    @on-change="setEndDateEvent"
+                                    class="iview-form-input"
+                                    :transfer="true"
+                            ></i-date-picker>
                             <span class="need"></span>
                             <div class="msg"></div>
                             <div class="e-msg">{{ myValue.error.end_date }}</div>

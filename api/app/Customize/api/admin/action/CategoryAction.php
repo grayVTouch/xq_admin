@@ -142,6 +142,7 @@ class CategoryAction extends Action
         if (empty($user)) {
             return self::error('用户不存在');
         }
+
         if ($param['status'] !== '' && $param['status'] == -1 && $param['fail_reason'] === '') {
             return self::error('请提供失败原因');
         }

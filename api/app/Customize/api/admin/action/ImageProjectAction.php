@@ -87,13 +87,11 @@ class ImageProjectAction extends Action
         if (!in_array($image_project->process_status , [-1 , 2])) {
             return self::error('当前状态禁止操作！仅在：处理失败 或 处理完成 状态允许修改' , '' , 403);
         }
-        if ($param['type'] === 'pro') {
-            if ($param['name'] === '') {
-                return self::error('名称尚未提供');
-            }
-            if (ImageProjectModel::findByNameAndExcludeId($param['name'] , $image_project->id)) {
-                return self::error('名称已经被使用');
-            }
+        if ($param['type'] === 'pro' && $param['name'] === '') {
+            return self::error('名称尚未提供');
+        }
+        if ($param['name'] !== '' && ImageProjectModel::findByNameAndExcludeId($param['name'] , $image_project->id)) {
+            return self::error('名称已经被使用');
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
@@ -216,13 +214,11 @@ class ImageProjectAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
-        if ($param['type'] === 'pro') {
-            if ($param['name'] === '') {
-                return self::error('名称尚未提供');
-            }
-            if (ImageProjectModel::findByName($param['name'])) {
-                return self::error('名称已经被使用');
-            }
+        if ($param['type'] === 'pro' && $param['name'] === '') {
+            return self::error('名称尚未提供');
+        }
+        if ($param['name'] !== '' && ImageProjectModel::findByName($param['name'])) {
+            return self::error('名称已经被使用');
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {

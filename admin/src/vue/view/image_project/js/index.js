@@ -44,21 +44,22 @@ export default {
                         minWidth: TopContext.table.id ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
+                        sortable: 'custom' ,
                     } ,
                     {
                         title: '名称' ,
                         key: 'name' ,
-                        width: 250 ,
+                        width: TopContext.table.name ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                         resizable: true ,
                         ellipsis: true ,
-                        tooltip: true ,
+                        // tooltip: true ,
                     } ,
                     {
                         title: '封面' ,
                         slot: 'thumb' ,
-                        minWidth: TopContext.table.name ,
+                        minWidth: TopContext.table.image ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'left' ,
                     } ,
@@ -275,16 +276,21 @@ export default {
             this.destroyAll([id] , callback);
         } ,
 
-        destroyAll (idList , callback) {
-            if (idList.length < 1) {
+        destroyAll (ids , callback) {
+            if (ids.length < 1) {
                 this.message('warning' ,'请选择待删除的项');
                 G.invoke(callback , this , false);
                 return ;
             }
             const self = this;
             this.confirmModal('你确定删除吗？'  , (res) => {
-                if (res) {
-                    Api.imageProject.destroyAll(idList , (res) => {
+                if (!res) {
+                    G.invoke(callback , this , false);
+                    return ;
+                }
+                Api.imageProject
+                    .destroyAll(ids)
+                    .then((res) => {
                         if (res.code !== TopContext.code.Success) {
                             G.invoke(callback , this , false);
                             this.errorHandle(res.message);
@@ -294,9 +300,6 @@ export default {
                         this.message('success' , '操作成功');
                         this.getData();
                     });
-                    return ;
-                }
-                G.invoke(callback , this , false);
             });
         } ,
 
@@ -314,11 +317,13 @@ export default {
         } ,
 
         destroyAllEvent () {
+            console.log('destroyAll');
             this.pending('destroyAll' , true);
             const ids = this.selection.map((v) => {
                 return v.id;
             });
             this.destroyAll(ids , (success) => {
+                console.log('destroyAll 111');
                 this.pending('destroyAll' , false);
                 if (success) {
                     this.selection = [];

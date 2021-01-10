@@ -87,7 +87,7 @@ class TagAction extends Action
             'status'    => ['required' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error('表单错误，请检查' , get_form_error($validator));
+            return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {

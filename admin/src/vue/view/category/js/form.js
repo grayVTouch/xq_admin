@@ -130,11 +130,41 @@ export default {
             this.categories = [];
             this.form       = G.copy(form);
             this.owner      = G.copy(owner);
+            this.error();
+        } ,
+
+        filter (form) {
+            const error = {};
+            if (G.isEmptyString(form.name)) {
+                error.name = '请填写名称';
+            }
+            if (G.isEmptyString(form.type)) {
+                error.type = '请填写类型';
+            }
+            if (!G.isNumeric(form.user_id)) {
+                error.user_id = '请选择用户';
+            }
+            if (!G.isNumeric(form.module_id)) {
+                error.module_id = '请选择模块';
+            }
+            if (!G.isNumeric(form.p_id)) {
+                error.p_id = '请选择上级分类';
+            }
+            return {
+                status: G.isEmptyObject(error) ,
+                error ,
+            };
         } ,
 
         submitEvent () {
             const self = this;
-            this.pending('submitEvent' , true);
+            const form = G.copy(this.form);
+            const filterRes = this.filter(form);
+            if (!filterRes.status) {
+                this.error(filterRes.error , true);
+                this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
+                return ;
+            }
             const thenCallback = (res) => {
                 if (res.code !== TopContext.code.Success) {
                     this.errorHandle(res.message);
@@ -152,11 +182,12 @@ export default {
                 this.pending('submitEvent' , false);
                 this.error();
             };
+            this.pending('submitEvent' , true);
             if (this.mode === 'edit') {
-                Api.category.update(this.form.id , this.form).then(thenCallback).finally(finalCallback);
+                Api.category.update(form.id , form).then(thenCallback).finally(finalCallback);
                 return ;
             }
-            Api.category.store(this.form).then(thenCallback).finally(finalCallback);
+            Api.category.store(form).then(thenCallback).finally(finalCallback);
         } ,
 
         userChangeEvent (res) {

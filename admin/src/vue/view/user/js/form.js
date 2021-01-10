@@ -102,7 +102,7 @@ export default {
                 .then(() => {
                     // 做一些额外处理
                     this.ins.avatar.render(this.form.avatar);
-                    this.setValue('birthday' , this.form.birthday);
+                    this.setValue('birthday' , this.form.birthday ? this.form.birthday : '');
                 });
         } ,
 
@@ -135,7 +135,6 @@ export default {
         submitEvent () {
             const self = this;
             const form = G.copy(this.form);
-            form.birthday = this.myValue.birthday;
             const filterRes = this.filter(form);
             if (!filterRes.status) {
                 this.error(filterRes.error , true);

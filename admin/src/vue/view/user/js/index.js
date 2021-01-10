@@ -154,7 +154,6 @@ export default {
             this.pending('getData' , true);
             Api.user.index(this.search)
                 .then((res) => {
-                    this.pending('getData' , false);
                     if (res.code !== TopContext.code.Success) {
                         this.errorHandle(res.message);
                         return ;
@@ -164,6 +163,9 @@ export default {
                     this.table.page = data.current_page;
                     this.handleData(data.data);
                     this.table.data = data.data;
+                })
+                .finally(() => {
+                    this.pending('getData' , false);
                 });
         } ,
 

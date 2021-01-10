@@ -8,7 +8,7 @@ use App\Customize\api\web\model\ImageProjectModel;
 use App\Customize\api\web\model\ModuleModel;
 use App\Customize\api\web\model\RelationTagModel;
 use App\Customize\api\web\model\VideoSubjectModel;
-use App\Model\Model;
+use App\Customize\api\web\model\Model;
 use stdClass;
 use function core\convert_object;
 

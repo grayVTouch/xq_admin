@@ -98,3 +98,40 @@ function get_value($key , $value)
     }
     return '';
 }
+
+
+/**
+ * 获取配置项 key 列表
+ *
+ * @author running
+ *
+ * @param string $key
+ * @return array
+ * @throws Exception
+ */
+function my_config_keys(string $key)
+{
+    return array_keys(my_config($key));
+}
+
+/**
+ * 获取配置项 key 映射的 value
+ *
+ * @author running
+ *
+ * @param string $key
+ * @param $value
+ * @return mixed|string
+ * @throws Exception
+ */
+function get_config_key_mapping_value(string $key , $value)
+{
+    $range = my_config($key);
+    foreach ($range as $k => $v)
+    {
+        if ($k == $value) {
+            return $v;
+        }
+    }
+    return '';
+}

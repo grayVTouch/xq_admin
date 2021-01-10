@@ -21,7 +21,7 @@ class VideoProjectModel extends Model
         $filter['video_company_id'] = $filter['video_company_id'] ?? '';
 
         $order['field'] = $order['field'] ?? 'id';
-        $order['value'] = $order['value'] ?? 'asc';
+        $order['value'] = $order['value'] ?? 'desc';
 
         $where = [];
 
@@ -63,12 +63,12 @@ class VideoProjectModel extends Model
             ->paginate($limit);
     }
 
-    public static function findByName(string $name): ?VideoCompanyModel
+    public static function findByName(string $name): ?VideoProjectModel
     {
         return self::where('name' , $name)->first();
     }
 
-    public static function findByNameAndExcludeId(string $name , int $exclude_id): ?VideoCompanyModel
+    public static function findByNameAndExcludeId(string $name , int $exclude_id): ?VideoProjectModel
     {
         return self::where([
             ['name' , '=' , $name] ,

@@ -20,7 +20,7 @@ class VideoCompanyModel extends Model
         $filter['country_id']   = $filter['country_id'] ?? '';
 
         $order['field']         = $order['field'] ?? 'id';
-        $order['value']         = $order['value'] ?? 'asc';
+        $order['value']         = $order['value'] ?? 'desc';
 
         $where = [];
 

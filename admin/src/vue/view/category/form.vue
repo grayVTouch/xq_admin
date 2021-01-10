@@ -39,9 +39,9 @@
                                 <i-select v-model="form.type" :style="`width: ${TopContext.style.inputItemW}px`" @on-change="typeChangeEvent">
                                     <i-option v-for="(v,k) in TopContext.business.category.type" :key="k" :value="k">{{ v }}</i-option>
                                 </i-select>
-                                <span class="msg"></span>
                                 <span class="need">*</span>
-                                <span class="e-msg">{{ myValue.error.type }}</span>
+                                <div class="msg"></div>
+                                <div class="e-msg">{{ myValue.error.type }}</div>
                             </td>
                         </tr>
 
@@ -82,9 +82,9 @@
                                 <i-radio-group v-model="form.is_enabled"  @input="myValue.error.is_enabled = ''">
                                     <i-radio v-for="(v,k) in TopContext.business.bool.integer" :key="k" :label="parseInt(k)">{{ v }}</i-radio>
                                 </i-radio-group>
-                                <span class="msg">默认：开启</span>
                                 <span class="need">*</span>
-                                <span class="e-msg">{{ myValue.error.is_enabled }}</span>
+                                <div class="msg">默认：开启</div>
+                                <div class="e-msg">{{ myValue.error.is_enabled }}</div>
                             </td>
                         </tr>
 
@@ -114,9 +114,9 @@
                             <td>权重</td>
                             <td>
                                 <input type="number" class="form-text"  @input="myValue.error.weight = ''" v-model="form.weight">
-                                <span class="msg">请提供整数</span>
                                 <span class="need"></span>
-                                <span class="e-msg">{{ myValue.error.weight }}</span>
+                                <div class="msg">请提供整数</div>
+                                <div class="e-msg">{{ myValue.error.weight }}</div>
                             </td>
                         </tr>
 

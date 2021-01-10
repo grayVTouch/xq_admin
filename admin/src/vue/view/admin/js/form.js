@@ -76,17 +76,19 @@ export default {
 
         findById (id) {
             return new Promise((resolve , reject) => {
-               Api.admin.show(id).then((res) => {
-                   if (res.code !== TopContext.code.Success) {
-                       this.errorHandle(res.message);
-                       reject();
-                       return ;
-                   }
-                   const data = res.data;
-                   delete data.password;
-                   this.form = data;
-                   resolve();
-               });
+               Api.admin
+                   .show(id)
+                   .then((res) => {
+                       if (res.code !== TopContext.code.Success) {
+                           this.errorHandle(res.message);
+                           reject();
+                           return ;
+                       }
+                       const data = res.data;
+                       delete data.password;
+                       this.form = data;
+                       resolve();
+                 });
             });
         } ,
 
@@ -102,7 +104,7 @@ export default {
             this.findById(this.id).then(() => {
                 // 做一些额外处理
                 this.ins.avatar.render(this.form.avatar);
-                this.setValue('birthday' , this.form.birthday);
+                this.setValue('birthday' , this.form.birthday ? this.form.birthday : '');
             });
         } ,
 
@@ -133,7 +135,7 @@ export default {
         } ,
 
         birthdayChangeEvent (date) {
-            this.myValue.birthday = date;
+            this.form.birthday = date;
         } ,
 
         filter (form) {
@@ -156,7 +158,6 @@ export default {
         submitEvent () {
             const self = this;
             const form = G.copy(this.form);
-            form.birthday = this.myValue.birthday;
             const filterRes = this.filter(form);
             if (!filterRes.status) {
                 this.error(filterRes.error , true);

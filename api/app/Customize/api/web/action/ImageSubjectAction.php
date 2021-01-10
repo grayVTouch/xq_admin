@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use function api\web\get_form_error;
 use function api\web\my_config;
+use function api\web\my_config_keys;
 use function api\web\parse_order;
 use function api\web\user;
 use function core\current_datetime;
@@ -43,7 +44,7 @@ class ImageSubjectAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
-
+        return self::success('' , []);
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = ImageProjectModel::getNewestByFilterAndLimit($param , $limit);
         $res = ImageSubjectHandler::handleAll($res);
@@ -63,7 +64,7 @@ class ImageSubjectAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
-
+        return self::success('' , []);
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = ImageProjectModel::getHotByFilterAndLimit($param , $limit);
         $res = ImageSubjectHandler::handleAll($res);
@@ -371,7 +372,7 @@ class ImageSubjectAction extends Action
 
         $param['module_id']     = $image_subject->module_id ?? '';
         $param['category_id']   = $image_subject->category_id ?? '';
-        $param['image_subject_id']    = $image_subject->subject_id ?? '';
+        $param['image_subject_id']    = $image_subject->image_subject_id ?? '';
 
         $limit = $param['limit'] ? $param['limit'] : my_config('app.limit');
 

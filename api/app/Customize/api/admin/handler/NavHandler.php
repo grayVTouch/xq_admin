@@ -6,6 +6,7 @@ namespace App\Customize\api\admin\handler;
 
 use App\Customize\api\admin\model\Model;
 use App\Customize\api\admin\model\ModuleModel;
+use App\Customize\api\admin\model\NavModel;
 use stdClass;
 use function api\admin\get_config_key_mapping_value;
 
@@ -32,7 +33,7 @@ class NavHandler extends Handler
 
         if (in_array('parent' , $with)) {
             if ($deep) {
-                $nav = $model->p_id ? Model::find($model->p_id) : null;
+                $nav = $model->p_id ? NavModel::find($model->p_id) : null;
                 $nav = self::handle($nav , $with , false);
             } else {
                 $nav = null;

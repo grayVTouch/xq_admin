@@ -151,6 +151,7 @@ export default {
             this.attr = G.copy(attr);
             this.owner = G.copy(owner);
             this.ins.thumb.clearAll();
+            this.error();
         } ,
 
         filter (form) {

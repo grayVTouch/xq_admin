@@ -12,7 +12,7 @@ class ModuleModel extends Model
 
     public static function getAll() :Collection
     {
-        return self::where('enable' , 1)
+        return self::where('is_enabled' , 1)
             ->orderBy('weight' , 'desc')
             ->orderBy('id' , 'asc')
             ->get();
@@ -21,8 +21,8 @@ class ModuleModel extends Model
     public static function getDefault(): ?ModuleModel
     {
         return self::where([
-            ['enable' , '=' , 1] ,
-            ['default' , '=' , 1] ,
+            ['is_enabled' , '=' , 1] ,
+            ['is_default' , '=' , 1] ,
         ])->first();
     }
 }

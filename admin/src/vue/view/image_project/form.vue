@@ -295,7 +295,7 @@
                                 </div>
                             </div>
 
-                            <div class="images">
+                            <div class="images" v-if="mode === 'edit'">
                                 <div class="line">
                                     <div class="run-title">
                                         <div class="left">图片列表</div>

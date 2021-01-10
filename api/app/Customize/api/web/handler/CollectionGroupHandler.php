@@ -9,7 +9,7 @@ use App\Customize\api\web\model\CollectionModel;
 use App\Customize\api\web\model\ImageProjectModel;
 use App\Customize\api\web\model\ModuleModel;
 use App\Customize\api\web\model\UserModel;
-use App\Model\Model;
+use App\Customize\api\web\model\Model;
 use stdClass;
 use function api\web\user;
 use function core\convert_object;

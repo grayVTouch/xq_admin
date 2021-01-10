@@ -10,7 +10,7 @@ class DiskModel extends Model
 
     public static function findDefault(): ?DiskModel
     {
-        return self::where('default' , 1)->first();
+        return self::where('is_default' , 1)->first();
     }
 
     public static function findByPrefix(string $prefix = ''): ?DiskModel

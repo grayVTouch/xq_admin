@@ -167,7 +167,6 @@ Route::prefix('admin')
              * 分类管理
              */
             Route::get('category'                       , [Category::class , 'index']);
-            Route::get('search_category_by_module_id'   , [Category::class , 'searchByModuleId']);
             Route::get('search_category'                , [Category::class , 'search']);
             Route::get('category/{id}/all'              , [Category::class , 'allExcludeSelfAndChildren']);
             Route::get('category/{id}'                  , [Category::class , 'show']);

@@ -56,10 +56,10 @@
                         </tr>
 
                         <tr :class="{error: myValue.error.value}">
-                            <td>value</td>
+                            <td>值</td>
                             <td>
                                 <input type="text" v-model="form.value" class="form-text" @input="myValue.error.value = ''">
-                                <span class="need"></span>
+                                <span class="need">*</span>
                                 <div class="msg"></div>
                                 <div class="e-msg">{{ myValue.error.value }}</div>
                             </td>

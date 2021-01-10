@@ -75,7 +75,6 @@ class ModuleAction extends Action
         $validator = Validator::make($param , [
             'is_enabled'        => ['sometimes' , Rule::in($bool_for_int)] ,
             'is_auth'          => ['sometimes' , Rule::in($bool_for_int)] ,
-            'auth_password' => 'sometimes|min:4' ,
         ]);
 
         if ($validator->fails()) {
@@ -92,15 +91,6 @@ class ModuleAction extends Action
         $param['weight'] = $param['weight'] === '' ? $res->weight : $param['weight'];
         $param['is_enabled'] = $param['is_enabled'] === '' ? $res->enable : $param['is_enabled'];
         $param['is_default'] = $param['is_default'] === '' ? $res->default : $param['is_default'];
-        $param['auth_password'] = $param['is_auth'] !== '' ?
-            ($param['is_auth'] ?
-                ($param['auth_password'] === '' ?
-                    $res->auth_password :
-                    Hash::make($param['auth_password'])
-                ) :
-                ''
-            ) :
-            $res->auth_password;
 
         try {
             DB::beginTransaction();
@@ -110,7 +100,6 @@ class ModuleAction extends Action
                 'description' ,
                 'is_enabled' ,
                 'is_auth' ,
-                'auth_password' ,
                 'weight' ,
                 'is_default' ,
             ]));
@@ -133,27 +122,17 @@ class ModuleAction extends Action
     public static function store(Base $context , array $param = [])
     {
         $bool_for_int = my_config_keys('business.bool_for_int');
-
         $validator = Validator::make($param , [
             'name'          => 'required' ,
             'is_enabled'        => ['required' , Rule::in($bool_for_int)] ,
             'is_default'       => ['required' , Rule::in($bool_for_int)] ,
             'is_auth'          => ['required' , Rule::in($bool_for_int)] ,
-            'auth_password' => 'sometimes|min:4' ,
         ]);
 
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
-
-        if ($param['is_auth']) {
-            if (empty($param['auth_password'])) {
-                return self::error('请提供认证密码');
-            }
-        }
-
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
-        $param['auth_password'] = $param['is_auth'] ? Hash::make($param['auth_password']) : '';
         $param['created_at']   = current_datetime();
 
         try {
@@ -164,7 +143,6 @@ class ModuleAction extends Action
                 'description' ,
                 'is_enabled' ,
                 'is_auth' ,
-                'auth_password' ,
                 'weight' ,
                 'is_default' ,
             ]));

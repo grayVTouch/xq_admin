@@ -369,7 +369,7 @@ export default {
                     };
                     switch (v.type)
                     {
-                        case 'image_subject':
+                        case 'image_project':
                             mapping.newParentId = v.p_id === 0 ? imageSubjectNav.id : findInMappingsByOldId(v.p_id).newId;
                             appendImageSubjectNav.push({
                                 id: mapping.newId ,
@@ -380,7 +380,7 @@ export default {
                                 isBuiltIn: false ,
                             });
                             break;
-                        case 'video_subject':
+                        case 'video_project':
                             mapping.newParentId = v.p_id === 0 ? videoSubjectNav.id : findInMappingsByOldId(v.p_id).newId;
                             appendVideoSubjectNav.push({
                                 id: mapping.newId ,

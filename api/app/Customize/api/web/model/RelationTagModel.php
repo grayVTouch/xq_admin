@@ -86,11 +86,12 @@ class RelationTagModel extends Model
             ->select('rt.*' , DB::raw('count(rt.id) as total'))
             ->where($where)
             ->whereExists(function($query) use($filter){
-                if ($filter['type'] !== '') {
-                    $query->from('xq_image_subject')
-                        ->where('type' , $filter['type'])
-                        ->whereRaw('rt.relation_id = id');
+                if ($filter['type'] === '') {
+                    return ;
                 }
+                $query->from('xq_image_project')
+                    ->where('type' , $filter['type'])
+                    ->whereRaw('rt.relation_id = id');
             })
             ->groupBy('rt.tag_id')
             ->orderBy('total' , 'desc')

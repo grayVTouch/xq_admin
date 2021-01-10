@@ -64,11 +64,10 @@ class Module extends Base
         $param = $this->request->post();
         $param['name']          = $param['name'] ?? '';
         $param['description']   = $param['description'] ?? '';
-        $param['enable']        = $param['enable'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
-        $param['auth']        = $param['auth'] ?? '';
-        $param['auth_password']        = $param['auth_password'] ?? '';
-        $param['default']        = $param['default'] ?? '';
+        $param['is_enabled']        = $param['is_enabled'] ?? '';
+        $param['is_auth']        = $param['is_auth'] ?? '';
+        $param['is_default']        = $param['is_default'] ?? '';
         $res = ModuleAction::store($this ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);

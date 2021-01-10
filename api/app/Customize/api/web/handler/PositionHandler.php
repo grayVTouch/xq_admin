@@ -5,9 +5,9 @@ namespace App\Customize\api\web\handler;
 
 
 use App\Customize\api\web\model\PositionModel;
-use App\Model\Model;
+use App\Customize\api\web\model\Model;
 use stdClass;
-use function api\admin\get_config_key_mapping_value;
+use function api\web\get_config_key_mapping_value;
 use function api\web\get_value;
 use function core\convert_object;
 

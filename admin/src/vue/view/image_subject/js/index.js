@@ -163,7 +163,8 @@ export default {
 
         getData () {
             this.pending('getData' , true);
-            Api.imageSubject.index(this.search)
+            Api.imageSubject
+                .index(this.search)
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
                         this.errorHandle(res.message);
@@ -202,7 +203,8 @@ export default {
                     G.invoke(callback , this , false);
                     return ;
                 }
-                Api.imageSubject.destroyAll(ids)
+                Api.imageSubject
+                    .destroyAll(ids)
                     .then((res) => {
                         if (res.code !== TopContext.code.Success) {
                             G.invoke(callback , this , false);

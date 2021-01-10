@@ -14,7 +14,7 @@ class NavModel extends Model
     {
         return self::where([
                 ['module_id' , '=' , $module_id] ,
-                ['enable' , '=' , 1] ,
+                ['is_enabled' , '=' , 1] ,
             ])
             ->orderBy('weight' , 'desc')
             ->orderBy('id' , 'asc')

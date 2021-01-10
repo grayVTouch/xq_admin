@@ -12,11 +12,11 @@ class ImageModel extends Model
 
     public static function delByImageSubjectId(int $image_subject_id): int
     {
-        return self::where('image_subject_id' , $image_subject_id)->delete();
+        return self::where('image_project_id' , $image_subject_id)->delete();
     }
 
     public static function getByImageProjectId(int $image_subject_id): Collection
     {
-        return self::where('image_subject_id' , $image_subject_id)->get();
+        return self::where('image_project_id' , $image_subject_id)->get();
     }
 }

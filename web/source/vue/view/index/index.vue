@@ -3,7 +3,7 @@
 
         <!-- 焦点栏目 -->
         <div class="focus-bar">
-            
+
             <div class="background">
                 <!-- 背景轮播图 -->
                 <div class="bg-image" :style="'background-image: url(\'' + background.image + '\')'"></div>
@@ -16,7 +16,7 @@
 
                     <div class="pic-play-transform">
                         <div class="images">
-                            <a class="link" v-for="v in homeSlideshow" :key="v.id" :href='v.link'><img :src="v.__path__" class="image" alt=""></a>
+                            <a class="link" v-for="v in homeSlideshow" :key="v.id" :href='v.link'><img :src="v.src" class="image" alt=""></a>
                         </div>
                         <div class="index"></div>
                         <div class="action prev"><i class="run-iconfont run-iconfont-prev01"></i></div>

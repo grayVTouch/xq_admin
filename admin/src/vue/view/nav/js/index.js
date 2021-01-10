@@ -52,7 +52,7 @@ export default {
                     } ,
                     {
                         title: '模块id',
-                        key: 'module_id',
+                        slot: 'module_id',
                         minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter,
                     },
@@ -63,7 +63,7 @@ export default {
                         align: TopContext.table.alignCenter ,
                     } ,
                     {
-                        title: 'value' ,
+                        title: '值' ,
                         key: 'value' ,
                         minWidth: TopContext.table.link ,
                         align: TopContext.table.alignLeft ,
@@ -171,12 +171,14 @@ export default {
             Api.nav
                 .index()
                 .then((res) => {
-                    this.pending('getData' , false);
                     if (res.code !== TopContext.code.Success) {
                         this.errorHandle(res.message);
                         return ;
                     }
                     this.table.data = res.data;
+                })
+                .finally(() => {
+                    this.pending('getData' , false);
                 });
         } ,
 

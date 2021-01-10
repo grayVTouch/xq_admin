@@ -346,7 +346,7 @@
                                     <div class="run-title">
                                         <div class="left">视频列表</div>
                                         <div class="right">
-                                            <my-table-button type="error" :loading="myValue.pending['destroyVideos']" v-if="videoSelection.length > 0" @click="destroyVideosEvent">删除选中项 （{{ videoSelection.length }}）</my-table-button>
+                                            <my-table-button type="error" :loading="myValue.pending['destroyVideos']" @click="destroyVideosEvent">删除选中项 <template v-if="videoSelection.length > 0">（{{ videoSelection.length }}）</template></my-table-button>
                                         </div>
                                     </div>
                                     <div>
@@ -369,7 +369,7 @@
                                 </div>
 
                                 <div class="line">
-                                    <my-table-button type="error" :loading="myValue.pending['destroyVideos']" v-if="videoSelection.length > 0" @click="destroyVideosEvent">删除选中项 （{{ videoSelection.length }}）</my-table-button>
+                                    <my-table-button type="error" :loading="myValue.pending['destroyVideos']" @click="destroyVideosEvent">删除选中项 <template v-if="videoSelection.length > 0">（{{ videoSelection.length }}）</template></my-table-button>
                                 </div>
                             </div>
 
@@ -378,7 +378,7 @@
                                     <div class="run-title">
                                         <div class="left">字幕列表</div>
                                         <div class="right">
-                                            <my-table-button type="error" :loading="myValue.pending['destroyVideoSubtitles']" v-if="videoSubtitleSelection.length > 0" @click="destroyVideoSubtitlesEvent">删除选中项 （{{ videoSubtitleSelection.length }}）</my-table-button>
+                                            <my-table-button type="error" :loading="myValue.pending['destroyVideoSubtitles']" @click="destroyVideoSubtitlesEvent">删除选中项 <template v-if="videoSubtitleSelection.length > 0">（{{ videoSubtitleSelection.length }}）</template></my-table-button>
                                         </div>
                                     </div>
                                     <div>
@@ -397,7 +397,7 @@
                                 </div>
 
                                 <div class="line">
-                                    <my-table-button type="error" :loading="myValue.pending['destroyVideoSubtitles']" v-if="videoSubtitleSelection.length > 0" @click="destroyVideoSubtitlesEvent">删除选中项 （{{ videoSubtitleSelection.length }}）</my-table-button>
+                                    <my-table-button type="error" :loading="myValue.pending['destroyVideoSubtitles']" @click="destroyVideoSubtitlesEvent">删除选中项 <template v-if="videoSubtitleSelection.length > 0">（{{ videoSubtitleSelection.length }}）</template></my-table-button>
                                 </div>
                             </div>
 

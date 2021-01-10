@@ -183,8 +183,42 @@ export default {
             });
         } ,
 
+        filter (form) {
+            const error = {};
+            if (G.isEmptyString(form.name)) {
+                error.name = '请填写名称';
+            }
+            if (!G.isNumeric(form.user_id)) {
+                error.user_id = '请选择用户';
+            }
+            if (!G.isNumeric(form.module_id)) {
+                error.module_id = '请选择模块';
+            }
+            if (!G.isNumeric(form.category_id)) {
+                error.category_id = '请选择分类';
+            }
+            if (form.type === 'pro' && !G.isNumeric(form.image_subject_id)) {
+                error.image_subject_id = '请选择图片主体';
+            }
+            return {
+                status: G.isEmptyObject(error) ,
+                error ,
+            };
+        } ,
+
         submitEvent () {
-            this.pending('submitEvent' , true);
+            const form = G.copy(this.form);
+            form.images = G.jsonEncode(this.images);
+            form.tags = this.tags.map((v) => {
+                return v.id;
+            });
+            form.tags = G.jsonEncode(form.tags);
+            const filterRes = this.filter(form);
+            if (!filterRes.status) {
+                this.error(filterRes.error , true);
+                this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
+                return ;
+            }
             const thenCallback = (res) => {
                 this.error();
                 if (res.code !== TopContext.code.Success) {
@@ -202,12 +236,7 @@ export default {
             const finalCallback = () => {
                 this.pending('submitEvent' , false);
             };
-            const form = G.copy(this.form);
-            form.images = G.jsonEncode(this.images);
-            form.tags = this.tags.map((v) => {
-                return v.id;
-            });
-            form.tags = G.jsonEncode(form.tags);
+            this.pending('submitEvent' , true);
             if (this.mode === 'edit') {
                 Api.videoProject.update(form.id , form).then(thenCallback).finally(finalCallback);
                 return ;
@@ -248,8 +277,8 @@ export default {
                         this.videoSeries    = this.form.video_series ? this.form.video_series : G.copy(videoSeries);
                         this.owner          = this.form.user ? this.form.user : G.copy(owner);
                         this.videoCompany   = this.form.video_company ? this.form.video_company : G.copy(videoCompany);
-                        this.releaseDate            = this.form.release_date;
-                        this.endDate                = this.form.end_date;
+                        this.releaseDate            = this.form.release_date ? this.form.release_date : '';
+                        this.endDate                = this.form.end_date ? this.form.end_date : '';
                         this.getTopTags();
                         this.getCategories();
                     });
@@ -412,6 +441,10 @@ export default {
         } ,
 
         showVideoSeriesSelector () {
+            if (!G.isNumeric(this.form.module_id)) {
+                this.errorHandle('请先选择模块');
+                return ;
+            }
             this.$refs['video-series-selector'].show();
         } ,
 
@@ -422,6 +455,10 @@ export default {
         } ,
 
         showVideoCompanySelector () {
+            if (!G.isNumeric(this.form.module_id)) {
+                this.errorHandle('请先选择模块');
+                return ;
+            }
             this.$refs['video-company-selector'].show();
         } ,
 

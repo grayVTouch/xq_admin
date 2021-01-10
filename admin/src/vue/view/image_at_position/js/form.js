@@ -153,11 +153,33 @@ export default {
             this.positions  = [];
             this.form       = G.copy(form);
             this.ins.src.clearAll();
+            this.error();
+        } ,
+
+        filter (form) {
+            const error = {};
+
+            if (!G.isNumeric(form.position_id)) {
+                error.position_id = '请选择位置';
+            }
+            if (!G.isNumeric(form.module_id)) {
+                error.module_id = '请选择模块';
+            }
+            return {
+                status: G.isEmptyObject(error) ,
+                error ,
+            };
         } ,
 
         submitEvent () {
             const self = this;
-            this.pending('submitEvent' , true);
+            const form = G.copy(this.form);
+            const filterRes = this.filter(form);
+            if (!filterRes.status) {
+                this.error(filterRes.error , true);
+                this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
+                return ;
+            }
             const thenCallback = (res) => {
                 if (res.code !== TopContext.code.Success) {
                     this.errorHandle(res.message);
@@ -175,11 +197,12 @@ export default {
                 this.pending('submitEvent' , false);
                 this.error();
             };
+            this.pending('submitEvent' , true);
             if (this.mode === 'edit') {
-                Api.imageAtPosition.update(this.form.id , this.form).then(thenCallback).finally(finalCallback);
+                Api.imageAtPosition.update(form.id , form).then(thenCallback).finally(finalCallback);
                 return ;
             }
-            Api.imageAtPosition.store(this.form).then(thenCallback).finally(finalCallback);
+            Api.imageAtPosition.store(form).then(thenCallback).finally(finalCallback);
         } ,
 
         userChangeEvent (res) {

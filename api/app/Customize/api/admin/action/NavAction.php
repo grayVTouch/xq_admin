@@ -15,6 +15,7 @@ use function api\admin\get_form_error;
 use function api\admin\my_config;
 use function api\admin\my_config_keys;
 use function core\array_unit;
+use function core\current_datetime;
 use function core\object_to_array;
 
 class NavAction extends Action
@@ -100,6 +101,7 @@ class NavAction extends Action
             return self::error('分类不存在' , '' , 404);
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
+        $param['updated_at'] = current_datetime();
         NavModel::updateById($nav->id , array_unit($param , [
             'name' ,
             'is_enabled' ,
@@ -108,6 +110,7 @@ class NavAction extends Action
             'module_id' ,
             'value' ,
             'type' ,
+            'updated_at' ,
         ]));
         return self::success('操作成功');
     }
@@ -128,6 +131,7 @@ class NavAction extends Action
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
+        $param['created_at'] = current_datetime();
         $id = NavModel::insertGetId(array_unit($param , [
             'name' ,
             'is_enabled' ,
@@ -136,6 +140,7 @@ class NavAction extends Action
             'module_id' ,
             'value' ,
             'type' ,
+            'created_at' ,
         ]));
         return self::success('' , $id);
     }

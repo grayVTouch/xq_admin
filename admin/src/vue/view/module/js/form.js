@@ -1,7 +1,7 @@
 const form = {
-    p_id: 0 ,
-    module_id: '' ,
-    enable: 1 ,
+    is_enabled: 1 ,
+    is_default: 0 ,
+    is_auth: 0 ,
     weight: 0 ,
     status: 1 ,
 };
@@ -126,11 +126,29 @@ export default {
             this.modules    = [];
             this.form       = G.copy(form);
             this.owner      = G.copy(owner);
+            this.error();
+        } ,
+
+        filter (form) {
+            const error = {};
+            if (G.isEmptyString(form.name)) {
+                error.name = '请填写名称';
+            }
+            return {
+                status: G.isEmptyObject(error) ,
+                error ,
+            };
         } ,
 
         submitEvent () {
             const self = this;
-            this.pending('submitEvent' , true);
+            const form = G.copy(this.form);
+            const filterRes = this.filter(form);
+            if (!filterRes.status) {
+                this.error(filterRes.error , true);
+                this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
+                return ;
+            }
             const thenCallback = (res) => {
                 if (res.code !== TopContext.code.Success) {
                     this.errorHandle(res.message);
@@ -148,11 +166,12 @@ export default {
                 this.pending('submitEvent' , false);
                 this.error();
             };
+            this.pending('submitEvent' , true);
             if (this.mode === 'edit') {
-                Api.module.update(this.form.id , this.form).then(thenCallback).finally(finalCallback);
+                Api.module.update(form.id , form).then(thenCallback).finally(finalCallback);
                 return ;
             }
-            Api.module.store(this.form).then(thenCallback).finally(finalCallback);
+            Api.module.store(form).then(thenCallback).finally(finalCallback);
         } ,
 
         userChangeEvent (res) {

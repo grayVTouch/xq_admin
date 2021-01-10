@@ -373,7 +373,7 @@ class VideoSubjectAction extends Action
 
         $param['module_id']     = $video_project->module_id ?? '';
         $param['category_id']   = $video_project->category_id ?? '';
-        $param['image_subject_id']    = $video_project->subject_id ?? '';
+        $param['image_subject_id']    = $video_project->image_subject_id ?? '';
 
         $limit = $param['limit'] ? $param['limit'] : my_config('app.limit');
 

@@ -7,7 +7,7 @@ namespace App\Customize\api\web\handler;
 use App\Customize\api\web\model\ModuleModel;
 use App\Customize\api\web\model\PraiseModel;
 use App\Customize\api\web\model\UserModel;
-use App\Model\Model;
+use App\Customize\api\web\model\Model;
 use stdClass;
 use function core\convert_object;
 
