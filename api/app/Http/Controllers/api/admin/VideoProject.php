@@ -47,6 +47,8 @@ class VideoProject extends Base
         $param['module_id']          = $param['module_id'] ?? '';
         $param['weight']          = $param['weight'] ?? '';
         $param['tags']          = $param['tags'] ?? '';
+        $param['min_index']          = $param['min_index'] ?? '';
+        $param['max_index']          = $param['max_index'] ?? '';
 
         $res = VideoProjectAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
@@ -71,6 +73,8 @@ class VideoProject extends Base
         $param['module_id']          = $param['module_id'] ?? '';
         $param['weight']          = $param['weight'] ?? '';
         $param['tags']          = $param['tags'] ?? '';
+        $param['min_index']          = $param['min_index'] ?? '';
+        $param['max_index']          = $param['max_index'] ?? '';
 
 //        var_dump($param['release_date']);
         $res = VideoProjectAction::store($this ,$param);

@@ -13,20 +13,18 @@ const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const TerserJSPlugin = require('terser-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+// const TerserJSPlugin = require('terser-webpack-plugin');
+// const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = {
     entry: {
         // babel-polyfill，在 ie 环境下，vuex 需要用到！
         // 相关文档请看 babel 官方文档: https://www.babeljs.cn/docs/babel-polyfill
-        app: ['@babel/polyfill' , './source/app.js'] ,
-        // app: ['@babel/polyfill' , './source/index.js'] ,
+        app: ['@babel/polyfill' , './src/app.js'] ,
     },
-    optimization: {
-        minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
-    },
+    // optimization: {
+    //     minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
+    // },
     plugins: [
 
         // 这个用法错了
@@ -41,14 +39,16 @@ module.exports = {
             template: 'template.html'
         }) ,
         new VueLoaderPlugin() ,
-        new MiniCssExtractPlugin({
-            filename: '[name].css',
-            chunkFilename: '[id].css',
-        }),
+        // new MiniCssExtractPlugin({
+        //     filename: '[name].css',
+        //     chunkFilename: '[id].css',
+        // }),
     ],
     output: {
-        filename: 'js/[name].js',
-        path: path.resolve(__dirname, 'dist')
+        filename: 'js/[name]-[hash].js',
+        path: path.resolve(__dirname, 'dist') ,
+        chunkFilename: "js/chunk-[name]-[hash].js" ,
+        publicPath: '/' ,
     } ,
     module: {
         rules: [
@@ -77,21 +77,6 @@ module.exports = {
                         }
                     }
                 ]
-            } ,
-            {
-                test: /\.s?[ac]ss$/,
-                // test: /\.css$/ ,
-                use: [
-                    MiniCssExtractPlugin.loader ,
-                    // // 'vue-style-loader' ,
-                    // // 'style-loader' ,
-                    {
-                        loader: 'css-loader' ,
-                        options: {
-                            sourceMap: true ,
-                        }
-                    } ,
-                ],
             } ,
             {
                 test: /\.(png|svg|jpg|gif|jpeg)$/,
@@ -139,9 +124,19 @@ module.exports = {
     // 简化导入
     resolve: {
         alias: {
-            'vue': 'vue/dist/vue.esm.js' ,
-            'vue-router': 'vue-router/dist/vue-router.esm.js' ,
-            'vuex': 'vuex/dist/vuex.esm.js' ,
+            'vue': 'vue/dist/vue.js' ,
+            'vue-router': 'vue-router/dist/vue-router.js' ,
+            'vuex': 'vuex/dist/vuex.js' ,
+
+            // 相关目录
+            '@asset': path.resolve(__dirname , './src/asset') ,
+            '@api': path.resolve(__dirname , './src/api') ,
+            '@plugin': path.resolve(__dirname , './src/plugin') ,
+            '@vue': path.resolve(__dirname , './src/vue') ,
+            '@bootstrap': path.resolve(__dirname , './src/bootstrap') ,
+            '@config': path.resolve(__dirname , './src/config') ,
+            '@util': path.resolve(__dirname , './src/util') ,
+            '@common': path.resolve(__dirname , './src/common') ,
         }
     }
 };

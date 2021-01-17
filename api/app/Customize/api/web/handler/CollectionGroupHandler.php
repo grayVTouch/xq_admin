@@ -45,7 +45,7 @@ class CollectionGroupHandler extends Handler
             {
                 case 'image_project':
                     $relation = ImageProjectModel::find($collection->relation_id);
-                    $relation = ImageSubjectHandler::handle($relation);
+                    $relation = ImageProjectHandler::handle($relation);
                     $thumb = $relation->thumb;
                     break;
             }

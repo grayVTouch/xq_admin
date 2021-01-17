@@ -4,7 +4,7 @@
 namespace App\Customize\api\web\action;
 
 
-use App\Customize\api\web\handler\SubjectHandler;
+use App\Customize\api\web\handler\ImageSubjectHandler;
 use App\Customize\api\web\model\ImageSubjectModel;
 use App\Customize\api\web\model\ModuleModel;
 use App\Http\Controllers\api\web\Base;
@@ -26,7 +26,7 @@ class SubjectAction extends Action
             return self::error('模块不存在' , '' , 404);
         }
         $subject = ImageSubjectModel::find($id);
-        $subject = SubjectHandler::handle($subject);
+        $subject = ImageSubjectHandler::handle($subject);
         return self::success('' , $subject);
     }
 }

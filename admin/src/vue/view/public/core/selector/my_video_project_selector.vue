@@ -108,7 +108,7 @@
         methods: {
             getData () {
                 this.pending('getData' , true);
-                Api.videoCompany
+                Api.videoProject
                     .search({
                         limit: this.table.limit ,
                         page: this.table.page ,

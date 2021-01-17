@@ -10,18 +10,18 @@ use function api\web\success;
 
 class ImageAtPosition extends Base
 {
-    public function homeSlideshow()
+    public function home()
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $res = ImageAtPositionAction::imageAtPosition($this , 'home_slideshow' , $param);
+        $res = ImageAtPositionAction::imageAtPosition($this , 'home' , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
         return success($res['message'] , $res['data']);
     }
 
-    public function imageSubject()
+    public function imageProject()
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';

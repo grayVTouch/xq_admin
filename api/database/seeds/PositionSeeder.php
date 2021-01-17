@@ -16,7 +16,7 @@ class PositionSeeder extends Seeder
         PositionModel::insert([
             [
                 'name' => '首页幻灯片' ,
-                'value' => 'home_slideshow' ,
+                'value' => 'home' ,
                 'platform' => 'web' ,
                 'description' => '' ,
                 'updated_at' =>  $datetime ,

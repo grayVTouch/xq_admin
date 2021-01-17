@@ -193,13 +193,33 @@
                         </td>
                     </tr>
 
-                    <tr :class="{error: myValue.error.count}">
-                        <td>视频数</td>
+<!--                    <tr :class="{error: myValue.error.count}">-->
+<!--                        <td>视频数</td>-->
+<!--                        <td>-->
+<!--                            <input type="number" v-model="form.count" @input="myValue.error.count = ''" class="form-text">-->
+<!--                            <span class="need"></span>-->
+<!--                            <div class="msg">仅允许整数</div>-->
+<!--                            <div class="e-msg"></div>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+
+                    <tr :class="{error: myValue.error.min_index}">
+                        <td>视频开始索引</td>
                         <td>
-                            <input type="number" v-model="form.count" @input="myValue.error.count = ''" class="form-text">
-                            <span class="msg">仅允许整数</span>
+                            <input type="number" v-model="form.min_index" @input="myValue.error.min_index = ''" class="form-text">
                             <span class="need"></span>
-                            <span class="e-msg"></span>
+                            <div class="msg">仅允许整数</div>
+                            <div class="e-msg"></div>
+                        </td>
+                    </tr>
+
+                    <tr :class="{error: myValue.error.max_index}">
+                        <td>视频结束索引</td>
+                        <td>
+                            <input type="number" v-model="form.max_index" @input="myValue.error.max_index = ''" class="form-text">
+                            <span class="need"></span>
+                            <div class="msg">仅允许整数</div>
+                            <div class="e-msg"></div>
                         </td>
                     </tr>
 

@@ -58,6 +58,8 @@ class VideoProjectAction extends Action
             'video_series_id'   => 'sometimes|integer' ,
             'video_company_id'  => 'sometimes|integer' ,
             'user_id'           => 'required|integer' ,
+            'min_index'           => 'required|integer' ,
+            'max_index'           => 'required|integer' ,
             'module_id'         => 'required|integer' ,
             'category_id'       => 'required|integer' ,
         ]);
@@ -125,6 +127,8 @@ class VideoProjectAction extends Action
                 'category_id' ,
                 'module_id' ,
                 'weight' ,
+                'min_index' ,
+                'max_index' ,
                 'updated_at' ,
             ]));
             ResourceUtil::used($param['thumb']);
@@ -187,6 +191,8 @@ class VideoProjectAction extends Action
             'user_id'           => 'required|integer' ,
             'module_id'         => 'required|integer' ,
             'category_id'       => 'required|integer' ,
+            'min_index'           => 'required|integer' ,
+            'max_index'           => 'required|integer' ,
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
@@ -252,6 +258,8 @@ class VideoProjectAction extends Action
                 'category_id',
                 'module_id',
                 'weight',
+                'min_index' ,
+                'max_index' ,
                 'updated_at',
                 'created_at',
             ]));

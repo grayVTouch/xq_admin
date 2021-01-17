@@ -7,7 +7,7 @@ use App\Customize\api\web\handler\CollectionGroupHandler;
 use App\Customize\api\web\handler\CollectionHandler;
 use App\Customize\api\web\handler\FocusUserHandler;
 use App\Customize\api\web\handler\HistoryHandler;
-use App\Customize\api\web\handler\ImageSubjectHandler;
+use App\Customize\api\web\handler\ImageProjectHandler;
 use App\Customize\api\web\handler\UserHandler;
 use App\Customize\api\web\model\CollectionGroupModel;
 use App\Customize\api\web\model\CollectionModel;
@@ -516,7 +516,7 @@ class UserAction extends Action
                 ImageProjectModel::countHandle($relation->id , 'praise_count' , 'decrement');
             }
             $res = ImageProjectModel::find($relation->id);
-            $res = ImageSubjectHandler::handle($res);
+            $res = ImageProjectHandler::handle($res);
         } else {
             // 其他类型，预留
         }

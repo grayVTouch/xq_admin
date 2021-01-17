@@ -33,7 +33,7 @@ class CollectionHandler extends Handler
         {
             case 'image_project':
                 $relation = ImageProjectModel::find($model->relation_id);
-                $relation = ImageSubjectHandler::handle($relation);
+                $relation = ImageProjectHandler::handle($relation);
                 break;
             default:
                 $relation = null;

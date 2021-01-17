@@ -29,6 +29,7 @@ class NavModel extends Model
     {
         $filter = $filter ?? [];
         $filter['module_id'] = $filter['module_id'] ?? '';
+        $filter['type'] = $filter['type'] ?? '';
 
         $field = $field ?? '*';
 
@@ -37,8 +38,12 @@ class NavModel extends Model
 
         $where = [];
 
-        if ($filter['module_id'] === '') {
+        if ($filter['module_id'] !== '') {
             $where[] = ['module_id' , '=' , $filter['module_id']];
+        }
+
+        if ($filter['module_id'] !== '') {
+            $where[] = ['type' , '=' , $filter['type']];
         }
 
         return self::select($field)

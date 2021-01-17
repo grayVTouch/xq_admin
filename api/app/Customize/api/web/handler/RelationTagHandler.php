@@ -7,7 +7,7 @@ namespace App\Customize\api\web\handler;
 use App\Customize\api\web\model\ImageProjectModel;
 use App\Customize\api\web\model\ModuleModel;
 use App\Customize\api\web\model\RelationTagModel;
-use App\Customize\api\web\model\VideoSubjectModel;
+use App\Customize\api\web\model\VideoProjectModel;
 use App\Customize\api\web\model\Model;
 use stdClass;
 use function core\convert_object;
@@ -28,11 +28,11 @@ class RelationTagHandler extends Handler
         {
             case 'image_project':
                 $relation = ImageProjectModel::find($res->relation_id);
-                $relation = ImageSubjectHandler::handle($relation);
+                $relation = ImageProjectHandler::handle($relation);
                 break;
             case 'video_project':
-                $relation = VideoSubjectModel::find($res->relation_id);
-                $relation = VideoSubjectHandler::handle($relation);
+                $relation = VideoProjectModel::find($res->relation_id);
+                $relation = VideoProjectHandler::handle($relation);
                 break;
         }
 

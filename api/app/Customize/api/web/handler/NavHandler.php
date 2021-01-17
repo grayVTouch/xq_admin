@@ -4,15 +4,15 @@
 namespace App\Customize\api\web\handler;
 
 
+use App\Customize\api\web\model\Model;
 use App\Customize\api\web\model\NavModel;
 use stdClass;
 use Traversable;
-use function api\web\get_value;
 use function core\convert_object;
 
 class NavHandler extends Handler
 {
-    public static function handle(?NavModel $model , bool $deep = true): ?stdClass
+    public static function handle(?Model $model , array $with = [] , bool $deep = true): ?stdClass
     {
         if (empty($model)) {
             return null;
@@ -20,7 +20,7 @@ class NavHandler extends Handler
         $res = convert_object($model);
         if ($deep) {
             $nav = $res->p_id ? NavModel::find($res->p_id) : null;
-            $nav = self::handle($nav , false);
+            $nav = self::handle($nav , $with , false);
         } else {
             $nav = null;
         }

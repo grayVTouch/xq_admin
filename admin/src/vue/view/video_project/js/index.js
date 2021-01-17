@@ -101,6 +101,18 @@ export default {
                         align: TopContext.table.alignCenter,
                     },
                     {
+                        title: '视频开始索引',
+                        key: 'min_index',
+                        minWidth: TopContext.table.number ,
+                        align: TopContext.table.alignCenter,
+                    },
+                    {
+                        title: '视频结束索引',
+                        key: 'max_index',
+                        minWidth: TopContext.table.number ,
+                        align: TopContext.table.alignCenter,
+                    },
+                    {
                         title: '播放数',
                         key: 'play_count',
                         minWidth: TopContext.table.number ,

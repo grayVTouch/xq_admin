@@ -33,12 +33,8 @@ class VideoHandler extends Handler
 
 
         $model->__duration__          = empty($model->duration) ? 0 : format_time($model->duration , 'HH:II:SS');
-        $model->__preview__         = empty($model->preview) ? '' : FileUtil::generateUrlByRelativePath($model->preview);
-        $model->__simple_preview__  = empty($model->simple_preview) ? '' : FileUtil::generateUrlByRelativePath($model->simple_preview);
+        $model->__thumb__ = empty($model->thumb) ? $model->thumb_for_program : $model->thumb;
 
-            (empty($model->thumb_for_program) ? '' : FileUtil::generateUrlByRelativePath($model->thumb_for_program)) :
-            FileUtil::generateUrlByRelativePath($model->thumb);
-        $model->__thumb_for_program__ = empty($model->thumb_for_program) ? '' : FileUtil::generateUrlByRelativePath($model->thumb_for_program);
         return $model;
     }
 }

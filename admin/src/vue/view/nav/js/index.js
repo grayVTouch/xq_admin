@@ -51,6 +51,12 @@ export default {
                         fixed: 'left' ,
                     } ,
                     {
+                        title: '类型' ,
+                        key: '__type__' ,
+                        minWidth: TopContext.table.name ,
+                        align: TopContext.table.alignCenter ,
+                    } ,
+                    {
                         title: '模块id',
                         slot: 'module_id',
                         minWidth: TopContext.table.name ,

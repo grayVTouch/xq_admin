@@ -36,6 +36,7 @@ class ImageProjectHandler extends Handler
             $user = UserHandler::handle($user);
             $model->user = $user;
         }
+
         if (in_array('module' , $with)) {
             $module = ModuleModel::find($model->module_id);
             $module = ModuleHandler::handle($module);

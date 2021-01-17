@@ -100,18 +100,18 @@ class ImageProjectModel extends Model
         $filter['type']      = $filter['type'] ?? '';
 
         $where = [
-            ['is.status' , '=' , 1] ,
+            ['ip.status' , '=' , 1] ,
         ];
 
         if ($filter['module_id'] !== '') {
-            $where[] = ['is.module_id' , '=' , $filter['module_id']];
+            $where[] = ['ip.module_id' , '=' , $filter['module_id']];
         }
 
         if ($filter['type'] !== '') {
-            $where[] = ['is.type' , '=' , $filter['type']];
+            $where[] = ['ip.type' , '=' , $filter['type']];
         }
-        return self::from('xq_image_subject as is')
-            ->select('is.*')
+        return self::from('xq_image_project as ip')
+            ->select('ip.*')
             ->where($where)
             ->whereExists(function($query) use($tag_id){
                 $query->select('id')
@@ -120,10 +120,10 @@ class ImageProjectModel extends Model
                         ['tag_id' , '=' , $tag_id] ,
                         ['relation_type' , '=' , 'image_project'] ,
                     ])
-                    ->whereRaw(DB::Raw('is.id = rt.relation_id'));
+                    ->whereRaw(DB::Raw('ip.id = rt.relation_id'));
             })
-            ->orderBy('is.created_at' , 'desc')
-            ->orderBy('is.id' , 'asc')
+            ->orderBy('ip.created_at' , 'desc')
+            ->orderBy('ip.id' , 'asc')
             ->limit($limit)
             ->get();
     }
@@ -135,19 +135,19 @@ class ImageProjectModel extends Model
         $filter['type']      = $filter['type'] ?? '';
 
         $where = [
-            ['is.status' , '=' , 1] ,
+            ['ip.status' , '=' , 1] ,
         ];
 
         if ($filter['module_id'] !== '') {
-            $where[] = ['is.module_id' , '=' , $filter['module_id']];
+            $where[] = ['ip.module_id' , '=' , $filter['module_id']];
         }
 
         if ($filter['type'] !== '') {
-            $where[] = ['is.type' , '=' , $filter['type']];
+            $where[] = ['ip.type' , '=' , $filter['type']];
         }
 
-        return self::from('xq_image_subject as is')
-            ->select('is.*')
+        return self::from('xq_image_project as ip')
+            ->select('ip.*')
             ->where($where)
             ->whereExists(function($query) use($tag_ids){
                 $query->select('id')
@@ -156,10 +156,10 @@ class ImageProjectModel extends Model
                         ['relation_type' , '=' , 'image_project'] ,
                     ])
                     ->whereIn('tag_id' , $tag_ids)
-                    ->whereRaw('is.id = rt.relation_id');
+                    ->whereRaw('ip.id = rt.relation_id');
             })
-            ->orderBy('is.created_at' , 'desc')
-            ->orderBy('is.id' , 'asc')
+            ->orderBy('ip.created_at' , 'desc')
+            ->orderBy('ip.id' , 'asc')
             ->paginate($limit);
     }
 
@@ -170,19 +170,19 @@ class ImageProjectModel extends Model
         $filter['type']      = $filter['type'] ?? '';
 
         $where = [
-            ['is.status' , '=' , 1] ,
+            ['ip.status' , '=' , 1] ,
         ];
 
         if ($filter['module_id'] !== '') {
-            $where[] = ['is.module_id' , '=' , $filter['module_id']];
+            $where[] = ['ip.module_id' , '=' , $filter['module_id']];
         }
 
         if ($filter['type'] !== '') {
-            $where[] = ['is.type' , '=' , $filter['type']];
+            $where[] = ['ip.type' , '=' , $filter['type']];
         }
 
-        return self::from('xq_image_subject as is')
-            ->select('is.*')
+        return self::from('xq_image_project as ip')
+            ->select('ip.*')
             ->where($where)
             ->whereExists(function($query) use($tag_ids){
                 $query->select('id')
@@ -192,12 +192,12 @@ class ImageProjectModel extends Model
                         ['relation_type' , '=' , 'image_project'] ,
                     ])
                     ->whereIn('tag_id' , $tag_ids)
-                    ->whereRaw('is.id = rt.relation_id')
+                    ->whereRaw('ip.id = rt.relation_id')
                     ->groupBy('relation_id')
                     ->having('total' , '=' , count($tag_ids));
             })
-            ->orderBy('is.created_at' , 'desc')
-            ->orderBy('is.id' , 'asc')
+            ->orderBy('ip.created_at' , 'desc')
+            ->orderBy('ip.id' , 'asc')
             ->paginate($limit);
     }
 
@@ -237,18 +237,18 @@ class ImageProjectModel extends Model
         $value = strtolower($filter['value']);
 
         $where = [
-            ['is.status' , '=' , 1] ,
+            ['ip.status' , '=' , 1] ,
         ];
 
         if ($filter['module_id'] !== '') {
-            $where[] = ['is.module_id' , '=' , $filter['module_id']];
+            $where[] = ['ip.module_id' , '=' , $filter['module_id']];
         }
 
         if ($filter['type'] !== '') {
-            $where[] = ['is.type' , '=' , $filter['type']];
+            $where[] = ['ip.type' , '=' , $filter['type']];
         }
 
-        $query = self::from('xq_image_subject as is')
+        $query = self::from('xq_image_project as ip')
             ->where($where);
 
         if (!empty($filter['category_ids'])) {
@@ -256,10 +256,10 @@ class ImageProjectModel extends Model
         }
 
         if (!empty($filter['subject_ids'])) {
-            $query->whereIn('is.subject_id' , $filter['subject_ids']);
+            $query->whereIn('ip.subject_id' , $filter['subject_ids']);
         }
 
-        return $query->whereRaw("lower(is.name) like ?" , "%{$value}%")
+        return $query->whereRaw("lower(ip.name) like ?" , "%{$value}%")
             ->whereExists(function($query) use($filter){
                 $query->select('id' , DB::raw('count(id) as total'))
                     ->from('xq_relation_tag')
@@ -271,10 +271,10 @@ class ImageProjectModel extends Model
                         ->groupBy('relation_id')
                         ->having('total' , '=' , count($filter['tag_ids']));
                 }
-                $query->whereRaw('relation_id = is.id');
+                $query->whereRaw('relation_id = ip.id');
             })
-            ->orderBy("is.{$order['field']}" , $order['value'])
-            ->orderBy('is.id' , 'desc')
+            ->orderBy("ip.{$order['field']}" , $order['value'])
+            ->orderBy('ip.id' , 'desc')
             ->paginate($limit);
     }
 
@@ -291,18 +291,18 @@ class ImageProjectModel extends Model
         $value = strtolower($filter['value']);
 
         $where = [
-            ['is.status' , '=' , 1] ,
+            ['ip.status' , '=' , 1] ,
         ];
 
         if ($filter['module_id'] !== '') {
-            $where[] = ['is.module_id' , '=' , $filter['module_id']];
+            $where[] = ['ip.module_id' , '=' , $filter['module_id']];
         }
 
         if ($filter['type'] !== '') {
-            $where[] = ['is.type' , '=' , $filter['type']];
+            $where[] = ['ip.type' , '=' , $filter['type']];
         }
 
-        $query = self::from('xq_image_subject as is')
+        $query = self::from('xq_image_project as ip')
             ->where($where);
 
         if (!empty($filter['category_ids'])) {
@@ -310,10 +310,10 @@ class ImageProjectModel extends Model
         }
 
         if (!empty($filter['subject_ids'])) {
-            $query->whereIn('is.subject_id' , $filter['subject_ids']);
+            $query->whereIn('ip.subject_id' , $filter['subject_ids']);
         }
 
-        return $query->whereRaw("lower(is.name) like ?" , "%{$value}%")
+        return $query->whereRaw("lower(ip.name) like ?" , "%{$value}%")
             ->whereExists(function($query) use($filter){
                 $query->select('id' , DB::raw('count(id) as total'))
                     ->from('xq_relation_tag')
@@ -325,10 +325,10 @@ class ImageProjectModel extends Model
                     $query->whereIn('tag_id' , $filter['tag_ids']);
                 }
 
-                $query->whereRaw('relation_id = is.id');
+                $query->whereRaw('relation_id = ip.id');
             })
-            ->orderBy("is.{$order['field']}" , $order['value'])
-            ->orderBy('is.id' , 'desc')
+            ->orderBy("ip.{$order['field']}" , $order['value'])
+            ->orderBy('ip.id' , 'desc')
             ->paginate($limit);
     }
 

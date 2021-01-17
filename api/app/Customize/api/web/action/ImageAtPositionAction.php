@@ -29,7 +29,9 @@ class ImageAtPositionAction extends Action
             return self::error('位置不存在' , '' , 404);
         }
         $res = ImageAtPositionModel::getByModuleIdAndPositionId($module->id , $position->id);
-        $res = ImageAtPositionHandler::handleAll($res);
+        $res = ImageAtPositionHandler::handleAll($res , [
+
+        ]);
         return self::success('' , $res);
     }
 }

@@ -32,7 +32,7 @@ class HistoryHandler extends Handler
         {
             case 'image_project':
                 $relation = ImageProjectModel::find($res->relation_id);
-                $relation = ImageSubjectHandler::handle($relation);
+                $relation = ImageProjectHandler::handle($relation);
                 break;
             default:
                 $relation = null;
