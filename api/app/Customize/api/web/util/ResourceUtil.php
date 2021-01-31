@@ -9,17 +9,29 @@ use function core\current_datetime;
 
 class ResourceUtil
 {
-    public static function create(string $path = '' , int $used = 0 , int $is_delete = 0): ?int
+    /**
+     * 穿件资源
+     *
+     * @param string $url
+     * @param string $path
+     * @param string $disk
+     * @param int $is_used
+     * @param int $is_deleted
+     * @return int
+     */
+    public static function create(string $url , string $path , string $disk , int $is_used = 0 , int $is_deleted = 0): int
     {
         if (empty($path)) {
-            return null;
+            return -1;
         }
         $datetime = current_datetime();
-        return ResourceModel::insertGetId([
+        return \App\Customize\api\admin\model\ResourceModel::insertGetId([
+            'url'           => $url ,
             'path'          => $path ,
-            'is_delete'     => $used ,
-            'used'          => $is_delete ,
-            'created_at'   => $datetime ,
+            'disk'          => $disk ,
+            'is_used'       => $is_used ,
+            'is_deleted'    => $is_deleted ,
+            'created_at'    => $datetime ,
         ]);
     }
 
@@ -29,7 +41,7 @@ class ResourceUtil
             return null;
         }
         return ResourceModel::updateByUrl($path , [
-            'is_delete' => 1 ,
+            'is_deleted' => 1 ,
         ]);
     }
 
@@ -39,7 +51,7 @@ class ResourceUtil
             return null;
         }
         return ResourceModel::updateByUrl($path , [
-            'used' => 1 ,
+            'is_used' => 1 ,
         ]);
     }
 }

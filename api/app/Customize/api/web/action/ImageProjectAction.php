@@ -147,19 +147,20 @@ class ImageProjectAction extends Action
     public static function hotWithPager(Base $context , array $param = [])
     {
         $type_range = my_config_keys('business.type_for_image_project');
-
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
             'type'      => ['required' , Rule::in($type_range)] ,
         ]);
-
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
-
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = ImageProjectModel::getHotWithPagerByFilterAndLimit($param , $limit);
-        $res = ImageProjectHandler::handlePaginator($res);
+        $res = ImageProjectHandler::handlePaginator($res , [
+            'user' ,
+            'tags' ,
+            'images' ,
+        ]);
         return self::success('' , $res);
     }
 
@@ -167,35 +168,28 @@ class ImageProjectAction extends Action
     {
         $type_range = my_config_keys('business.type_for_image_project');
         $mode_range = my_config('business.mode_for_image_project');
-
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
             'tag_ids'   => 'required' ,
             'mode'      => ['required' , Rule::in($mode_range)] ,
             'type'      => ['required' , Rule::in($type_range)] ,
         ]);
-
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
-
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
             return self::error('模块不存在' , '' , 404);
         }
-
         $tag_ids = empty($param['tag_ids']) ? [] : json_decode($param['tag_ids'] , true);
         if (empty($tag_ids)) {
             return self::error('请提供过滤的标签');
         }
-
         $tags = TagModel::find($tag_ids);
         if (count($tags) !== count($tag_ids)) {
             return self::error('部分或全部标签未找到');
         }
-
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-
         switch ($param['mode'])
         {
             case 'strict':
@@ -207,8 +201,11 @@ class ImageProjectAction extends Action
             default:
                 return self::error('不支持的 mode ，当前受支持的 mode 有：' . implode(' , ' , $mode_range));
         }
-
-        $res = ImageProjectHandler::handlePaginator($res);
+        $res = ImageProjectHandler::handlePaginator($res , [
+            'user' ,
+            'tags' ,
+            'images' ,
+        ]);
         return self::success('' , $res);
     }
 
@@ -232,7 +229,7 @@ class ImageProjectAction extends Action
         }
 
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = RelationTagModel::hotTagsInImageSubjectByFilterAndLimit($param , $limit);
+        $res = RelationTagModel::hotTagsInImageProjectByFilterAndLimit($param , $limit);
         $res = RelationTagHandler::handleAll($res);
         return self::success('' , $res);
     }
@@ -240,24 +237,23 @@ class ImageProjectAction extends Action
     public static function hotTagsWithPager(Base $context , array $param = [])
     {
         $type_range = my_config_keys('business.type_for_image_project');
-
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
             'type'      => ['required' , Rule::in($type_range)] ,
         ]);
-
         if ($validator->fails()) {
             return self::error($validator->errors()->first());
         }
-
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
             return self::error('模块不存在');
         }
 
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = RelationTagModel::hotTagsWithPagerInImageSubjectByValueAndFilterAndLimit($param['value'] , $param , $limit);
-        $res = RelationTagHandler::handlePaginator($res);
+        $res = RelationTagModel::hotTagsWithPagerInImageProjectByValueAndFilterAndLimit($param['value'] , $param , $limit);
+        $res = RelationTagHandler::handlePaginator($res , [
+
+        ]);
         return self::success('' , $res);
     }
 
@@ -266,19 +262,20 @@ class ImageProjectAction extends Action
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
         ]);
-
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , get_form_error($validator));
         }
-
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
             return self::error('模块不存在' , '' , 404);
         }
-
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = ImageProjectModel::getNewestWithPagerByFilterAndLimit($param , $limit);
-        $res = ImageProjectHandler::handlePaginator($res);
+        $res = ImageProjectHandler::handlePaginator($res , [
+            'user' ,
+            'tags' ,
+            'images' ,
+        ]);
         return self::success('' , $res);
     }
 
@@ -300,7 +297,7 @@ class ImageProjectAction extends Action
         return self::success('' , $categories);
     }
 
-    public static function subject(Base $context , array $param = [])
+    public static function imageSubject(Base $context , array $param = [])
     {
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
@@ -313,7 +310,7 @@ class ImageProjectAction extends Action
             return self::error('模块不存在' , '' , 404);
         }
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = ImageSubjectModel::getWithPagerInImageSubjectByModuleIdAndValueAndLimit($module->id , $param['value'] , $limit);
+        $res = ImageSubjectModel::getWithPagerInImageProjectByModuleIdAndValueAndLimit($module->id , $param['value'] , $limit);
         $res = ImageSubjectHandler::handlePaginator($res);
         return self::success('' , $res);
     }
@@ -322,41 +319,33 @@ class ImageProjectAction extends Action
     {
         $type_range = my_config_keys('business.type_for_image_project');
         $mode_range = my_config('business.mode_for_image_project');
-
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
             'mode'      => ['required' , Rule::in($mode_range)] ,
             'type'      => ['required' , Rule::in($type_range)] ,
         ]);
-
         if ($validator->fails()) {
             return self::error($validator->errors()->first());
         }
-
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
             return self::error('模块不存在' , '' , 404);
         }
-
         $param['category_ids']   = $param['category_ids'] === '' ? [] : json_decode($param['category_ids'] , true);
-        $param['subject_ids']    = $param['subject_ids'] === '' ? [] : json_decode($param['subject_ids'] , true);
+        $param['image_subject_ids']    = $param['image_subject_ids'] === '' ? [] : json_decode($param['image_subject_ids'] , true);
         $param['tag_ids']        = $param['tag_ids'] === '' ? [] : json_decode($param['tag_ids'] , true);
-
         $order                   = $param['order'] === '' ? null : parse_order($param['order']);
         $limit                   = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-
         // 获取所有子类
         $categories         = CategoryModel::getAll();
         $categories         = object_to_array($categories);
         $tmp_category_ids   = [];
-
         foreach ($param['category_ids'] as $v)
         {
             $childrens          = Category::childrens($v , $categories , null , true , false);
             $ids                = array_column($childrens , 'id');
             $tmp_category_ids   = array_merge($tmp_category_ids , $ids);
         }
-
         $param['category_ids'] = array_unique($tmp_category_ids);
         $res = [];
         switch ($param['mode'])
@@ -370,7 +359,11 @@ class ImageProjectAction extends Action
             default:
                 return self::error('不支持的搜索模式，当前支持的模式有：' . implode(' , ' , $mode_range));
         }
-        $res = ImageProjectHandler::handlePaginator($res);
+        $res = ImageProjectHandler::handlePaginator($res , [
+            'user' ,
+            'images' ,
+            'tags' ,
+        ]);
         return self::success('' , $res);
     }
 

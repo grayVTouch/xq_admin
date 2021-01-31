@@ -17,7 +17,7 @@ const tags = {
     type: 'pro' ,
 };
 
-const subjects = {
+const videoSubjects = {
     selected: [] ,
     selectedIds: [] ,
     data: [] ,
@@ -49,14 +49,14 @@ export default {
             categories: G.copy(categories) ,
 
             // 关联主体
-            subjects: G.copy(subjects) ,
+            videoSubjects: G.copy(videoSubjects) ,
 
             // 标签
             tags: G.copy(tags) ,
 
             val: {
                 categories: false ,
-                subjects: true ,
+                videoSubjects: true ,
                 pending: {} ,
             } ,
 
@@ -99,46 +99,10 @@ export default {
     } ,
     methods: {
 
-        // 图片点赞 | 取消点赞
-        praiseHandle (imageSubject) {
-            if (this.pending('praiseHandle')) {
-                return ;
-            }
-            const self = this;
-            const action = imageSubject.praised ? 0 : 1;
-            this.pending('praiseHandle' , true);
-            Api.user.praiseHandle({
-                relation_type: 'image_project' ,
-                relation_id: imageSubject.id ,
-                action ,
-            }.then((res) => {
-                this.pending('praiseHandle' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandleAtHomeChildren(res.message , res.code , () => {
-                        this.praiseHandle(imageSubject);
-                    });
-                    return ;
-                }
-                this.handleImageProject(data);
-                for (let i = 0; i <  this.images.data.length; ++i)
-                {
-                    const cur = this.images.data[i];
-                    if (cur.id === data.id) {
-                        this.images.data.splice(i , 1 ,data);
-                        break;
-                    }
-                }
-            });
-        } ,
-
         initQuery (query) {
             if (query.category_id) {
                 // 选中该分类
                 this.focusCategoryByCategoryId(query.category_id);
-            }
-            if (query.subject_id) {
-                // 选中该主体
-                this.focusSubjectBySubjectId(query.subject_id);
             }
             if (query.tag_id) {
                 // 选中该主体
@@ -148,59 +112,55 @@ export default {
 
         focusCategoryByCategoryId (categoryId) {
             categoryId = parseInt(categoryId);
-            Api.category.show(categoryId.then((res) => {
-                if (res.code !== TopContext.code.Success) {
-                    this.message('error' , msg);
-                    return ;
-                }
-                if (this.categories.selectedIds.indexOf(categoryId) >= 0) {
-                    return ;
-                }
-                this.categories.selected.push(data);
-                this.categories.selectedIds.push(data.id);
-                this.images.page = 1;
-                this.getWithPager();
-            });
-        } ,
-
-        focusSubjectBySubjectId (subjectId) {
-            subjectId = parseInt(subjectId);
-            Api.subject.show(subjectId.then((res) => {
-                if (res.code !== TopContext.code.Success) {
-                    this.message('error' , msg);
-                    return ;
-                }
-                if (this.subjects.selectedIds.indexOf(subjectId) >= 0) {
-                    return ;
-                }
-                this.subjects.selected.push(data);
-                this.subjects.selectedIds.push(data.id);
-                this.images.page = 1;
-                this.getWithPager();
-            });
+            this.pending('focusCategoryByCategoryId' , true);
+            Api.category
+                .show(categoryId)
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message);
+                        return ;
+                    }
+                    if (this.categories.selectedIds.indexOf(categoryId) >= 0) {
+                        return ;
+                    }
+                    const data = res.data;
+                    this.categories.selected.push(data);
+                    this.categories.selectedIds.push(data.id);
+                    this.images.page = 1;
+                    this.getWithPager();
+                })
+                .finally(() => {
+                    this.pending('focusCategoryByCategoryId' , false);
+                });
         } ,
 
         focusTagByTagId (tagId) {
             tagId = parseInt(tagId);
-            Api.tag.show(tagId.then((res) => {
-                if (res.code !== TopContext.code.Success) {
-                    this.message('error' , msg);
-                    return ;
-                }
-                if (this.tags.selectedIds.indexOf(tagId) >= 0) {
-                    return ;
-                }
-                data.tag_id = data.id;
-                this.tags.selected.push(data);
-                this.tags.selectedIds.push(data.id);
-                this.images.page = 1;
-                this.getWithPager();
-            });
+            Api.tag
+                .show(tagId)
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.message('error' , msg);
+                        return ;
+                    }
+                    if (this.tags.selectedIds.indexOf(tagId) >= 0) {
+                        return ;
+                    }
+                    const data = res.data;
+                    data.tag_id = data.id;
+                    this.tags.selected.push(data);
+                    this.tags.selectedIds.push(data.id);
+                    this.images.page = 1;
+                    this.getWithPager();
+                })
+                .finally(() => {
+
+                });
         } ,
 
         resetFilter () {
             this.categories = G.copy(categories);
-            this.subjects = G.copy(subjects);
+            this.videoSubjects = G.copy(videoSubjects);
             this.tags = G.copy(tags);
             this.images.order = '';
             this.images.page = 1;
@@ -221,7 +181,7 @@ export default {
         } ,
 
         toPageInSubject (page) {
-            this.subjects.page = page;
+            this.videoSubjects.page = page;
             this.getSubjects();
         } ,
 
@@ -332,9 +292,9 @@ export default {
 
         // 检查分类是否存在
         findIndexInSubjectsBySubjectId (subjectId) {
-            for (let i = 0; i < this.subjects.selected.length; ++i)
+            for (let i = 0; i < this.videoSubjects.selected.length; ++i)
             {
-                const cur = this.subjects.selected[i];
+                const cur = this.videoSubjects.selected[i];
                 if (cur.id === subjectId) {
                     return i;
                 }
@@ -355,27 +315,27 @@ export default {
 
         addSubject (subject) {
             const index = this.findIndexInCategoriesByCategoryId(subject.id);
-            this.subjects.selected.push(subject);
-            this.subjects.selectedIds.push(subject.id);
+            this.videoSubjects.selected.push(subject);
+            this.videoSubjects.selectedIds.push(subject.id);
             this.images.page = 1;
             this.getWithPager();
         } ,
 
         delSubject (subject) {
             const index = this.findIndexInCategoriesByCategoryId(subject.id);
-            this.subjects.selected.splice(index , 1);
-            this.subjects.selectedIds.splice(index , 1);
+            this.videoSubjects.selected.splice(index , 1);
+            this.videoSubjects.selectedIds.splice(index , 1);
             this.images.page = 1;
             this.getWithPager();
         } ,
 
         searchSubject () {
-            this.subjects.page = 1;
+            this.videoSubjects.page = 1;
             this.getSubjects();
         } ,
 
         resetSubjectFilter () {
-            this.subjects = G.copy(subjects);
+            this.videoSubjects = G.copy(videoSubjects);
             this.getSubjects();
             this.images.page = 1;
             this.getWithPager();
@@ -419,12 +379,12 @@ export default {
         showSubjectSelector () {
             this.dom.subjectSelector.removeClass('hide');
             this.dom.subjectSelector.startTransition('show');
-            this.subjects.page = 1;
+            this.videoSubjects.page = 1;
             this.getSubjects();
         } ,
 
         closeSubjectSelector () {
-            this.subjects.data = [];
+            this.videoSubjects.data = [];
             this.dom.subjectSelector.endTransition('show' , () => {
                 this.dom.subjectSelector.addClass('hide');
             });
@@ -447,93 +407,84 @@ export default {
         // 图片-按标签分类获取的图片
         getTags () {
             this.pending('getTags' , true);
-            Api.imageProject.hotTagsWithPager({
-                limit: this.tags.limit ,
-                page:  this.tags.page ,
-                value: this.tags.value ,
-                type: this.tags.type ,
-            }.then((res) => {
-                this.pending('getTags' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.message('error' , msg);
-                    return ;
-                }
-                this.tags.page = data.current_page;
-                this.tags.total = data.total;
-                this.tags.data = data.data;
-            });
+            Api.videoProject
+                .hotTagsWithPager({
+                    limit: this.tags.limit ,
+                    page:  this.tags.page ,
+                    value: this.tags.value ,
+                    type: this.tags.type ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message);
+                        return ;
+                    }
+                    const data = res.data;
+                    this.tags.page = data.current_page;
+                    this.tags.total = data.total;
+                    this.tags.data = data.data;
+                })
+                .finally(() => {
+                    this.pending('getTags' , false);
+                });
         } ,
 
         // 获取分类数据
         getCategories () {
             this.pending('getCategories' , true);
-            Api.imageProject.categories((msg , data , code) => {
-                this.pending('getCategories' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.message('error' , msg);
-                    return ;
-                }
-                this.categories.data = data;
-            })
-        } ,
-
-        // 获取关联主体
-        getSubjects () {
-            this.pending('getSubjects' , true);
-            Api.imageProject.subjects({
-                page: this.subjects.page ,
-                limit: this.subjects.limit ,
-                value: this.subjects.value ,
-            }.then((res) => {
-                this.pending('getSubjects' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.message('error' , msg);
-                    return ;
-                }
-                this.subjects.total = data.total;
-                this.subjects.page = data.current_page;
-                this.subjects.maxPage = data.last_page;
-                this.subjects.data = data.data;
-            })
+            Api.videoProject
+                .categories()
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message);
+                        return ;
+                    }
+                    this.categories.data = res.data;
+                })
+                .finally(() => {
+                    this.pending('getCategories' , false);
+                });
         } ,
 
         initDom () {
             this.dom.win = G(window);
             this.dom.categorySelector = G(this.$refs['category-selector']);
             this.dom.tagSelector = G(this.$refs['tag-selector']);
-            this.dom.subjectSelector = G(this.$refs['subject-selector']);
+            this.dom.subjectSelector = G(this.$refs['image-subject-selector']);
             this.dom.orderSelector = G(this.$refs['order-selector']);
             this.dom.orderSelectorInHorizontal = G(this.$refs['order-selector-in-horizontal']);
             this.dom.orderSelectorInVertical = G(this.$refs['order-selector-in-vertical']);
             this.dom.filterSelectorInHorizontal = G(this.$refs['filter-selector-in-horizontal']);
             this.dom.filterFixedInSlidebar = G(this.$refs['filter-fiexed-in-slidebar']);
 
-
             this.dom.search = G(this.$parent.$refs['search']);
         } ,
 
         getWithPager () {
             this.pending('getWithPager' , true);
-            Api.imageProject.index({
-                page: this.images.page ,
-                mode: this.tags.mode ,
-                limit: this.images.limit ,
-                category_ids: G.jsonEncode(this.categories.selectedIds) ,
-                subject_ids: G.jsonEncode(this.subjects.selectedIds) ,
-                tag_ids: G.jsonEncode(this.tags.selectedIds) ,
-                value: this.images.value ,
-                order: this.images.order ,
-                type: this.images.type ,
-            }.then((res) => {
-                this.pending('getWithPager' , false);
-                if (res.code !== TopContext.code.Success) {
-                    return this.message('error' , msg);
-                    return ;
-                }
-                this.images.page = data.current_page;
-                this.images.total = data.total;
-                this.images.data = data.data;
-            });
+            Api.videoProject
+                .index({
+                    page: this.images.page ,
+                    mode: this.tags.mode ,
+                    limit: this.images.limit ,
+                    category_ids: G.jsonEncode(this.categories.selectedIds) ,
+                    tag_ids: G.jsonEncode(this.tags.selectedIds) ,
+                    value: this.images.value ,
+                    order: this.images.order ,
+                    type: this.images.type ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message);
+                    }
+                    const data = res.data;
+                    this.images.page = data.current_page;
+                    this.images.total = data.total;
+                    this.images.data = data.data;
+                })
+                .finally(() => {
+                    this.pending('getWithPager' , false);
+                });
         } ,
 
         searchEvent (e) {

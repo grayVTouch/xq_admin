@@ -3,7 +3,7 @@ import index from '@api/index.js';
 import slideshow from '@api/slideshow.js';
 import home from '@api/home.js';
 import imageProject from '@api/image_project.js';
-import imageSubject from '@api/image_project.js';
+import imageSubject from '@api/image_subject.js';
 import category from '@api/category.js';
 import tag from '@api/tag.js';
 import user from '@api/user.js';

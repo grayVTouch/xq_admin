@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use function api\web\get_form_error;
 use function api\web\my_config;
+use function api\web\my_config_keys;
 use function api\web\parse_order;
 use function api\web\user;
 use function core\current_datetime;
@@ -174,23 +175,19 @@ class VideoProjectAction extends Action
     public static function hotTagsWithPager(Base $context , array $param = [])
     {
         $type_range = my_config_keys('business.type_for_video_project');
-
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
             'type'      => ['required' , Rule::in($type_range)] ,
         ]);
-
         if ($validator->fails()) {
             return self::error($validator->errors()->first());
         }
-
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
             return self::error('模块不存在');
         }
-
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = RelationTagModel::hotTagsWithPagerInImageSubjectByValueAndFilterAndLimit($param['value'] , $param , $limit);
+        $res = RelationTagModel::hotTagsWithPagerInVideoProjectByValueAndFilterAndLimit($param['value'] , $param , $limit);
         $res = RelationTagHandler::handlePaginator($res);
         return self::success('' , $res);
     }
@@ -248,24 +245,9 @@ class VideoProjectAction extends Action
         if (empty($module)) {
             return self::error('模块不存在' , '' , 404);
         }
-        $all_categories = CategoryModel::getAllByModuleId($module->id);
-        // 图片分类 id ，请比对数据库中的数据，指定具体的 id
-        $video_project_top_category_id = 0;
-        switch ($module->id)
-        {
-            // 新世界
-            case 1:
-                $video_project_top_category_id = 16;
-                break;
-            // 旧世界
-            case 3:
-                $video_project_top_category_id = 36;
-                break;
-            default:
-                return self::error('不支持的模块，请重新选择');
-        }
-        $all_categories = object_to_array($all_categories);
-        $categories = Category::childrens($video_project_top_category_id , $all_categories , null , true , false);
+        $categories = CategoryModel::getByModuleIdAndType($module->id , 'video_project');
+        $categories = object_to_array($categories);
+        $categories = Category::childrens(0 , $categories , null , false , false);
         return self::success('' , $categories);
     }
 
@@ -282,7 +264,7 @@ class VideoProjectAction extends Action
             return self::error('模块不存在' , '' , 404);
         }
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = ImageSubjectModel::getWithPagerInImageSubjectByModuleIdAndValueAndLimit($module->id , $param['value'] , $limit);
+        $res = ImageSubjectModel::getWithPagerInImageProjectByModuleIdAndValueAndLimit($module->id , $param['value'] , $limit);
         $res = ImageSubjectHandler::handlePaginator($res);
         return self::success('' , $res);
     }

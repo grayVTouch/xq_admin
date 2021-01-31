@@ -23,7 +23,7 @@ use App\Customize\api\admin\model\VideoProjectModel;
 use App\Customize\api\admin\util\PannelUtil;
 use App\Http\Controllers\api\admin\Base;
 use App\Http\Controllers\api\admin\VideoCompany;
-use App\Http\Controllers\api\web\Subject;
+use App\Http\Controllers\api\web\ImageSubject;
 
 class PannelAction extends Action
 {

@@ -149,12 +149,12 @@ class ImageProject extends Base
     }
 
     // 图片专区分类
-    public function subject()
+    public function imageSubject()
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
         $param['value'] = $param['value'] ?? '';
-        $res = ImageProjectAction::subject($this , $param);
+        $res = ImageProjectAction::imageSubject($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }
@@ -167,7 +167,7 @@ class ImageProject extends Base
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
         $param['category_ids'] = $param['category_ids'] ?? '';
-        $param['subject_ids'] = $param['subject_ids'] ?? '';
+        $param['image_subject_ids'] = $param['image_subject_ids'] ?? '';
         $param['tag_ids'] = $param['tag_ids'] ?? '';
         $param['order'] = $param['order'] ?? '';
         $param['value'] = $param['value'] ?? '';

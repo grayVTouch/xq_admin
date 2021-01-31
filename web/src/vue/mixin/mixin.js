@@ -96,7 +96,7 @@ Vue.mixin({
                                 name: '确定' ,
                                 callback () {
                                     this.hide();
-                                    resolve();
+                                    resolve(true);
                                 } ,
                             } ,
                             {
@@ -111,21 +111,27 @@ Vue.mixin({
                     return ;
                 }
                 this.message('error' , message);
-                resolve();
+                resolve(false);
             });
         } ,
 
         // 错误处理
         errorHandleAtUserChildren (message , code , loggedCallback) {
             this.errorHandle(message , code)
-                .then(() => {
+                .then((keep) => {
+                    if (!keep) {
+                        return ;
+                    }
                     this.$parent.$parent.showUserForm('login' , loggedCallback);
                 });
         } ,
 
         errorHandleAtHomeChildren (message , code , loggedCallback) {
             this.errorHandle(message , code)
-                .then(() => {
+                .then((keep) => {
+                    if (!keep) {
+                        return ;
+                    }
                     this.$parent.showUserForm('login' , loggedCallback);
                 });
         } ,

@@ -1,7 +1,4 @@
 const captcha = `${TopContext.api}/captcha`;
-const sendEmailCodeForPassword = `${TopContext.api}/send_email_code_for_password`;
-const sendEmailCodeForRegister = `${TopContext.api}/send_email_code_for_register`;
-const defaultModule = `${TopContext.api}/default_module`;
 
 export default {
     captcha () {
@@ -9,14 +6,11 @@ export default {
     } ,
 
     sendEmailCodeForPassword (query , data) {
-        return Http.post(sendEmailCodeForPassword , null , data);
+        return Http.post(`${TopContext.api}/send_email_code_for_password` , query , data);
     } ,
 
     sendEmailCodeForRegister (query , data) {
-        return Http.post(sendEmailCodeForRegister , query , data);
+        return Http.post(`${TopContext.api}/send_email_code_for_register` , query , data);
     } ,
 
-    defaultModule () {
-        return Http.get(defaultModule);
-    } ,
 };

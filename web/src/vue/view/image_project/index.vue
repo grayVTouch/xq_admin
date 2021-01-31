@@ -8,13 +8,13 @@
 
             <div class="content">
                 <div class="big-image">
-                    <a class="mask" :href="imageSubject.length > 0 ? imageSubject[0].link : 'javascript:;'"><img :src="imageSubject.length > 0 ? imageSubject[0].__path__ : TopContext.res.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
+                    <a class="mask" :href="imageSubject.length > 0 ? imageSubject[0].link : 'javascript:;'"><img :src="imageSubject.length > 0 ? imageSubject[0].src : TopContext.res.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
                 </div>
                 <div class="small-image">
-                    <a class="mask" :href="imageSubject.length > 1 ? imageSubject[1].link : 'javascript:;'"><img :src="imageSubject.length > 1 ? imageSubject[1].__path__ : TopContext.res.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
-                    <a class="mask" :href="imageSubject.length > 2 ? imageSubject[2].link : 'javascript:;'"><img :src="imageSubject.length > 2 ? imageSubject[2].__path__ : TopContext.res.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
-                    <a class="mask" :href="imageSubject.length > 3 ? imageSubject[3].link : 'javascript:;'"><img :src="imageSubject.length > 3 ? imageSubject[3].__path__ : TopContext.res.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
-                    <a class="mask" :href="imageSubject.length > 4 ? imageSubject[4].link : 'javascript:;'"><img :src="imageSubject.length > 4 ? imageSubject[4].__path__ : TopContext.res.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
+                    <a class="mask" :href="imageSubject.length > 1 ? imageSubject[1].link : 'javascript:;'"><img :src="imageSubject.length > 1 ? imageSubject[1].src : TopContext.res.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
+                    <a class="mask" :href="imageSubject.length > 2 ? imageSubject[2].link : 'javascript:;'"><img :src="imageSubject.length > 2 ? imageSubject[2].src : TopContext.res.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
+                    <a class="mask" :href="imageSubject.length > 3 ? imageSubject[3].link : 'javascript:;'"><img :src="imageSubject.length > 3 ? imageSubject[3].src : TopContext.res.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
+                    <a class="mask" :href="imageSubject.length > 4 ? imageSubject[4].link : 'javascript:;'"><img :src="imageSubject.length > 4 ? imageSubject[4].src : TopContext.res.notFound" v-judge-img-size alt="" class="image judge-img-size"></a>
                 </div>
             </div>
         </div>
@@ -50,7 +50,7 @@
                         <!-- 封面 -->
                         <div class="thumb">
                             <a class="link" :href="genUrl(`/image_project/${v.id}/show`)" target="_blank">
-                                <img :src="v.__thumb__" class="image judge-img-size" v-judge-img-size>
+                                <img :src="v.thumb" class="image judge-img-size" v-judge-img-size>
                                 <div class="mask">
                                     <div class="top">
                                         <div class="type" v-if="v.type === 'pro'"><my-icon icon="zhuanyerenzheng" size="35" /></div>

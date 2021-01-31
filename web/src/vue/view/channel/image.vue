@@ -45,20 +45,23 @@
             getData () {
                 this.pending('getData' , true);
                 Api.user.collectionGroupByUserId(this.$parent.id , {
-                    limit: this.data.limit ,
-                    page: this.data.page ,
-                    relation_type: 'image_project' ,
-                }.then((res) => {
-                    this.pending('getData' , false);
-                    if (res.code !== TopContext.code.Success) {
-                        this.errorHandleAtHomeChildren(res.message , res.code);
-                        return ;
-                    }
-                    // this.data.total = data.total;
-                    // this.data.page = data.page;
-                    // this.data.data = data.data;
-                    this.data = data;
-                });
+                        limit: this.data.limit ,
+                        page: this.data.page ,
+                        relation_type: 'image_project' ,
+                    })
+                    .then((res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            this.errorHandleAtHomeChildren(res.message , res.code);
+                            return ;
+                        }
+                        // this.data.total = data.total;
+                        // this.data.page = data.page;
+                        // this.data.data = data.data;
+                        this.data = res.data;
+                    })
+                    .finally(() => {
+                        this.pending('getData' , false);
+                    });
             } ,
 
             toPage (page) {

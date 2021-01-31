@@ -71,35 +71,32 @@ export default {
     methods: {
 
         // 图片点赞
-        praiseHandle (imageSubject) {
+        praiseHandle (row) {
             if (this.pending('praiseHandle')) {
                 return ;
             }
             const self = this;
-            const action = imageSubject.praised ? 0 : 1;
+            const praised = row.praised ? 0 : 1;
             this.pending('praiseHandle' , true);
-            Api.user.praiseHandle({
-                relation_type: 'image_project' ,
-                relation_id: imageSubject.id ,
-                action ,
-            }.then((res) => {
-                this.pending('praiseHandle' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandleAtHomeChildren(res.message , res.code , () => {
-                        this.praiseHandle(imageSubject);
-                    });
-                    return ;
-                }
-                this.handleImageProject(data);
-                for (let i = 0; i <  this.images.data.length; ++i)
-                {
-                    const cur = this.images.data[i];
-                    if (cur.id === data.id) {
-                        this.images.data.splice(i , 1 ,data);
-                        break;
+            Api.user
+                .praiseHandle(null , {
+                    relation_type: 'image_project' ,
+                    relation_id: row.id ,
+                    action: praised ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message , res.code , () => {
+                            this.praiseHandle(row);
+                        });
+                        return ;
                     }
-                }
-            });
+                    row.praised = praised;
+                    praised ? row.praise_count++ : row.praise_count--;
+                })
+                .finally(() => {
+                    this.pending('praiseHandle' , false);
+                });
         } ,
 
         findInSelectedTagsByTagId (tagId) {
@@ -203,13 +200,19 @@ export default {
         } ,
 
         getImageProject () {
-            Api.imageProject.imageSubject((msg , data , code) => {
-                if (res.code !== TopContext.code.Success) {
-                    this.message('error' , msg);
-                    return ;
-                }
-                this.imageSubject = data;
-            });
+            this.pending('getImageProject' , true);
+            Api.slideshow
+                .imageProject()
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message);
+                        return ;
+                    }
+                    this.imageSubject = res.data;
+                })
+                .finally(() => {
+                    this.pending('getImageProject' , false);
+                });
         } ,
 
         // 图片-最新图片
@@ -221,33 +224,36 @@ export default {
             this.pending('images' , true);
             this.curTag = 'newest';
             this.images.end = false;
-            Api.imageProject.newestWithPager({
-                limit: this.images.limit ,
-                page:  this.images.page ,
-                type: this.images.type ,
-            }.then((res) => {
-                this.pending('switchImages' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.pending('images' , false);
-                    this.message('error' , msg);
-                    return ;
-                }
-                this.images.page = data.current_page;
-                this.images.maxPage = data.last_page;
-                this.images.total = data.total;
-                this.images.end = this.images.page === this.images.maxPage;
+            Api.imageProject
+                .newestWithPager({
+                    limit: this.images.limit ,
+                    page:  this.images.page ,
+                    type: this.images.type ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.pending('images' , false);
+                        this.errorHandleAtHomeChildren(res.message);
+                        return ;
+                    }
+                    const data = res.data;
+                    this.images.page = data.current_page;
+                    this.images.maxPage = data.last_page;
+                    this.images.total = data.total;
+                    this.images.end = this.images.page === this.images.maxPage;
 
-                // console.log('获取到的新增数据' , data.data);
-
-                if (override) {
-                    this.images.data = data.data;
-                } else {
-                    this.images.data = this.images.data.concat(data.data);
-                }
-                this.$nextTick(() => {
-                    this.pending('images' , false);
+                    if (override) {
+                        this.images.data = data.data;
+                    } else {
+                        this.images.data = this.images.data.concat(data.data);
+                    }
+                    this.$nextTick(() => {
+                        this.pending('images' , false);
+                    });
+                })
+                .finally(() => {
+                    this.pending('switchImages' , false);
                 });
-            });
         } ,
 
         hotInImageProjects (override = true) {
@@ -258,44 +264,54 @@ export default {
             this.curTag = 'hot';
             this.pending('images' , true);
             this.images.end = false;
-            Api.imageProject.hotWithPager({
-                limit: this.images.limit ,
-                page:  this.images.page ,
-                type: this.images.type ,
-            }.then((res) => {
-                this.pending('switchImages' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.pending('images' , false);
-                    this.message('error' , msg);
-                    return ;
-                }
-                this.images.page = data.current_page;
-                this.images.maxPage = data.last_page;
-                this.images.total = data.total;
-                this.images.end = this.images.page === this.images.maxPage;
-                if (override) {
-                    this.images.data = data.data;
-                } else {
-                    this.images.data = this.images.data.concat(data.data);
-                }
-                this.$nextTick(() => {
-                    this.pending('images' , false);
+            Api.imageProject
+                .hotWithPager({
+                    limit: this.images.limit ,
+                    page:  this.images.page ,
+                    type: this.images.type ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.pending('images' , false);
+                        this.errorHandleAtHomeChildren(res.message);
+                        return ;
+                    }
+                    const data = res.data;
+                    this.images.page = data.current_page;
+                    this.images.maxPage = data.last_page;
+                    this.images.total = data.total;
+                    this.images.end = this.images.page === this.images.maxPage;
+                    if (override) {
+                        this.images.data = data.data;
+                    } else {
+                        this.images.data = this.images.data.concat(data.data);
+                    }
+                    this.$nextTick(() => {
+                        this.pending('images' , false);
+                    });
+                })
+                .finally(() => {
+                    this.pending('switchImages' , false);
                 });
-            });
         } ,
 
         // 图片-热门标签
         hotTags () {
-            Api.imageProject.hotTags({
-                limit: partHotTags.limit ,
-                type: this.partHotTags.type ,
-            }.then((res) => {
-                if (res.code !== TopContext.code.Success) {
-                    this.message('error' , msg);
-                    return ;
-                }
-                this.partHotTags.data = data;
-            });
+            Api.imageProject
+                .hotTags({
+                    limit: partHotTags.limit ,
+                    type: this.partHotTags.type ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message);
+                        return ;
+                    }
+                    this.partHotTags.data = res.data;
+                })
+                .finally(() => {
+
+                });
         } ,
 
         /**
@@ -310,32 +326,37 @@ export default {
             }
             this.pending('images' , true);
             this.images.end = false;
-            Api.imageProject.getWithPagerByTagIds({
-                mode ,
-                tag_ids: G.jsonEncode(tagIds) ,
-                limit: this.images.limit ,
-                page: this.images.page ,
-                type: this.images.type ,
-            }.then((res) => {
-                this.pending('switchImages' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.pending('images' , false);
-                    this.message('error' , msg);
-                    return ;
-                }
-                this.images.page = data.current_page;
-                this.images.maxPage = data.last_page;
-                this.images.total = data.total;
-                this.images.end = this.images.page === this.images.maxPage;
-                if (override) {
-                    this.images.data = data.data;
-                } else {
-                    this.images.data = this.images.data.concat(data.data);
-                }
-                this.$nextTick(() => {
-                    this.pending('images' , false);
+            Api.imageProject
+                .getWithPagerByTagIds({
+                    mode ,
+                    tag_ids: G.jsonEncode(tagIds) ,
+                    limit: this.images.limit ,
+                    page: this.images.page ,
+                    type: this.images.type ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.pending('images' , false);
+                        this.message('error' , msg);
+                        return ;
+                    }
+                    const data = res.data;
+                    this.images.page = data.current_page;
+                    this.images.maxPage = data.last_page;
+                    this.images.total = data.total;
+                    this.images.end = this.images.page === this.images.maxPage;
+                    if (override) {
+                        this.images.data = data.data;
+                    } else {
+                        this.images.data = this.images.data.concat(data.data);
+                    }
+                    this.$nextTick(() => {
+                        this.pending('images' , false);
+                    });
+                })
+                .finally(() => {
+                    this.pending('switchImages' , false);
                 });
-            });
         } ,
 
         /**
@@ -352,21 +373,26 @@ export default {
         // 图片-按标签分类获取的图片
         hotTagsWithPager () {
             this.pending('hotTagsWithPager' , true);
-            Api.imageProject.hotTagsWithPager({
-                limit: this.allHotTags.limit ,
-                page:  this.allHotTags.page ,
-                value: this.allHotTags.value ,
-                type: this.allHotTags.type ,
-            }.then((res) => {
-                this.pending('hotTagsWithPager' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.message('error' , msg);
-                    return ;
-                }
-                this.allHotTags.page = data.current_page;
-                this.allHotTags.total = data.total;
-                this.allHotTags.data = data.data;
-            });
+            Api.imageProject
+                .hotTagsWithPager({
+                    limit: this.allHotTags.limit ,
+                    page:  this.allHotTags.page ,
+                    value: this.allHotTags.value ,
+                    type: this.allHotTags.type ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message);
+                        return ;
+                    }
+                    const data = res.data;
+                    this.allHotTags.page = data.current_page;
+                    this.allHotTags.total = data.total;
+                    this.allHotTags.data = data.data;
+                })
+                .finally(() => {
+                    this.pending('hotTagsWithPager' , false);
+                });
         } ,
 
         initDom () {

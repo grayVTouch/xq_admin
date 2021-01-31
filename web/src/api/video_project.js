@@ -1,5 +1,3 @@
-const index = `${TopContext.api}/video_project`;
-
 
 const getByTagId = `${TopContext.api}/video_project/{tag_id}/get_by_tag_id`;
 const getByTagIds = `${TopContext.api}/video_project/get_by_tag_ids`;
@@ -11,16 +9,20 @@ export default {
         return Http.get(`${TopContext.api}/video_project/${id}`);
     } ,
 
-    index (data) {
-        return request(index , 'get' , data);
+    index (query) {
+        return Http.get(`${TopContext.api}/video_project` , query);
     } ,
 
     newest (query) {
-        return Http.get(`${TopContext.api}/video_project/newest`, query);
+        return Http.get(`${TopContext.api}/video_project/newest` , query);
     } ,
 
     hotTags (query) {
         return Http.get(`${TopContext.api}/video_project/hot_tags` , query);
+    } ,
+
+    hotTagsWithPager (query) {
+        return Http.get(`${TopContext.api}/video_project/hot_tags_with_pager`, query);
     } ,
 
     hot (query) {
@@ -41,6 +43,10 @@ export default {
 
     videoSubjects (id , data) {
         return request(videoSubjects.replace('{id}' , id), 'get' , data);
+    } ,
+
+    categories () {
+        return Http.get(`${TopContext.api}/video_project/category`);
     } ,
 
 };

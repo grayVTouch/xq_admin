@@ -63,53 +63,64 @@ export default {
 
         getHistory () {
             this.pending('getHistory' , true);
-            Api.user.history({
-                limit: this.history.limit ,
-                page: this.history.page ,
-                ...this.search ,
-            }.then((res) => {
-                this.pending('getHistory' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandleAtUserChildren(msg , data , code , () => {
-                        this.getHistory();
+            Api.user
+                .history({
+                    limit: this.history.limit ,
+                    page: this.history.page ,
+                    ...this.search ,
+                })
+                .then((res) => {
+                    this.pending('getHistory' , false);
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtUserChildren(res.message , res.code , () => {
+                            this.getHistory();
+                        });
+                        return ;
+                    }
+                    const data = res.data;
+                    data.data.forEach((group) => {
+                        group.data.forEach((v) => {
+                            v.relation = v.relation ? v.relation : {};
+                            switch (v.relation_type)
+                            {
+                                case 'image_project':
+                                    this.handleImageProject(v.relation);
+                                    break;
+                            }
+                        });
                     });
-                    return ;
-                }
+                    this.history.total = data.total;
+                    this.history.page = data.current_page;
+                    this.history.data = data.data;
+                })
+                .finally(() => {
 
-                //
-                data.data.forEach((group) => {
-                    group.data.forEach((v) => {
-                        v.relation = v.relation ? v.relation : {};
-                        switch (v.relation_type)
-                        {
-                            case 'image_project':
-                                this.handleImageProject(v.relation);
-                                break;
-                        }
-                    });
                 });
-                this.history.total = data.total;
-                this.history.page = data.current_page;
-                this.history.data = data.data;
-            });
         } ,
 
         destroyHistory (history) {
-            const pending = 'destroyHistory_' + history.id;
-            if (this.pending(pending)) {
+            const pendingKey = 'destroyHistory_' + history.id;
+            if (this.pending(pendingKey)) {
                 return ;
             }
-            this.pending(pending , true);
-            Api.user.destroyHistory([history.id].then((res) => {
-                this.pending(pending , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandleAtUserChildren(msg , data , code , () => {
-                        this.destroyHistory(history);
-                    });
-                    return ;
-                }
-                this.getHistory();
-            })
+            this.pending(pendingKey , true);
+            Api.user
+                .destroyHistory(null , {
+                    history_ids: G.jsonEncode([history.id])
+                })
+                .then((res) => {
+                    this.pending(pendingKey , false);
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtUserChildren(res.message , res.code , () => {
+                            this.destroyHistory(history);
+                        });
+                        return ;
+                    }
+                    this.getHistory();
+                })
+                .finally(() => {
+
+                });
 
         } ,
 

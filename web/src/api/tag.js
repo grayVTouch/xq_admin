@@ -1,7 +1,6 @@
-const show = `${TopContext.api}/tag/{id}`;
 
 export default {
     show (id) {
-        return request(show.replace('{id}' , id) , 'get' , null);
+        return Http.get( `${TopContext.api}/tag/${id}`);
     } ,
 };

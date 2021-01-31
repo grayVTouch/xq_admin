@@ -218,12 +218,8 @@ export default {
             });
         } ,
 
-        selectionChangeEvent (data) {
-            const ids = [];
-            data.forEach((v) => {
-                ids.push(v.id);
-            });
-            this.selection = ids;
+        selectionChangeEvent (selection) {
+            this.selection = selection;
         } ,
 
         destroyEvent (index , record) {

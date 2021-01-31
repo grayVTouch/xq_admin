@@ -230,7 +230,7 @@ class ImageProjectModel extends Model
         $filter['module_id']    = $filter['module_id'] ?? '';
         $filter['type']         = $filter['type'] ?? '';
         $filter['category_ids'] = $filter['category_ids'] ?? [];
-        $filter['subject_ids']  = $filter['subject_ids'] ?? [];
+        $filter['image_subject_ids']  = $filter['image_subject_ids'] ?? [];
         $filter['tag_ids']      = $filter['tag_ids'] ?? [];
 
         $order = $order ?? ['field' => 'created_at' , 'value' => 'desc'];
@@ -238,6 +238,7 @@ class ImageProjectModel extends Model
 
         $where = [
             ['ip.status' , '=' , 1] ,
+            ['ip.name' , 'like' , "%{$value}%"] ,
         ];
 
         if ($filter['module_id'] !== '') {
@@ -255,23 +256,23 @@ class ImageProjectModel extends Model
             $query->whereIn('category_id' , $filter['category_ids']);
         }
 
-        if (!empty($filter['subject_ids'])) {
-            $query->whereIn('ip.subject_id' , $filter['subject_ids']);
+        if (!empty($filter['image_subject_ids'])) {
+            $query->whereIn('ip.image_subject_id' , $filter['image_subject_ids']);
         }
 
-        return $query->whereRaw("lower(ip.name) like ?" , "%{$value}%")
-            ->whereExists(function($query) use($filter){
-                $query->select('id' , DB::raw('count(id) as total'))
+        return $query->whereExists(function($query) use($filter){
+                if (empty($filter['tag_ids'])) {
+                    return ;
+                }
+                $query->select('*' , DB::raw('count(id) as total'))
                     ->from('xq_relation_tag')
                     ->where([
                         ['relation_type' , '=' , 'image_project'] ,
-                    ]);
-                if (!empty($filter['tag_ids'])) {
-                    $query->whereIn('tag_id' , $filter['tag_ids'])
-                        ->groupBy('relation_id')
-                        ->having('total' , '=' , count($filter['tag_ids']));
-                }
-                $query->whereRaw('relation_id = ip.id');
+                    ])
+                    ->whereIn('tag_id' , $filter['tag_ids'])
+                    ->groupBy('relation_id')
+                    ->having('total' , '=' , count($filter['tag_ids']))
+                    ->whereRaw('relation_id = ip.id');
             })
             ->orderBy("ip.{$order['field']}" , $order['value'])
             ->orderBy('ip.id' , 'desc')
@@ -284,7 +285,7 @@ class ImageProjectModel extends Model
         $filter['module_id']    = $filter['module_id'] ?? '';
         $filter['type']         = $filter['type'] ?? '';
         $filter['category_ids'] = $filter['category_ids'] ?? [];
-        $filter['subject_ids']  = $filter['subject_ids'] ?? [];
+        $filter['image_subject_ids']  = $filter['image_subject_ids'] ?? [];
         $filter['tag_ids']      = $filter['tag_ids'] ?? [];
 
         $order = $order ?? ['field' => 'created_at' , 'value' => 'desc'];
@@ -292,6 +293,7 @@ class ImageProjectModel extends Model
 
         $where = [
             ['ip.status' , '=' , 1] ,
+            ['ip.name' , 'like' , "%{$value}%"] ,
         ];
 
         if ($filter['module_id'] !== '') {
@@ -309,23 +311,20 @@ class ImageProjectModel extends Model
             $query->whereIn('category_id' , $filter['category_ids']);
         }
 
-        if (!empty($filter['subject_ids'])) {
-            $query->whereIn('ip.subject_id' , $filter['subject_ids']);
+        if (!empty($filter['image_subject_ids'])) {
+            $query->whereIn('ip.image_subject_id' , $filter['image_subject_ids']);
         }
 
-        return $query->whereRaw("lower(ip.name) like ?" , "%{$value}%")
-            ->whereExists(function($query) use($filter){
-                $query->select('id' , DB::raw('count(id) as total'))
-                    ->from('xq_relation_tag')
+        return $query->whereExists(function($query) use($filter){
+                if (empty($filter['tag_ids'])) {
+                    return ;
+                }
+                $query->from('xq_relation_tag')
                     ->where([
                         ['relation_type' , '=' , 'image_project'] ,
-                    ]);
-
-                if (!empty($filter['tag_ids'])) {
-                    $query->whereIn('tag_id' , $filter['tag_ids']);
-                }
-
-                $query->whereRaw('relation_id = ip.id');
+                    ])
+                    ->whereIn('tag_id' , $filter['tag_ids'])
+                    ->whereRaw('relation_id = ip.id');
             })
             ->orderBy("ip.{$order['field']}" , $order['value'])
             ->orderBy('ip.id' , 'desc')
@@ -341,7 +340,7 @@ class ImageProjectModel extends Model
     {
         $filter['module_id']    = $filter['module_id'] ?? '';
         $filter['category_id']  = $filter['category_id'] ?? '';
-        $filter['image_subject_id']   = $filter['image_subject_id'] ?? '';
+        $filter['image_image_subject_id']   = $filter['image_image_subject_id'] ?? '';
         $filter['type']         = $filter['type'] ?? '';
 
         $where = [
@@ -356,8 +355,8 @@ class ImageProjectModel extends Model
             $where[] = ['category_id' , '=' , $filter['category_id']];
         }
 
-        if ($filter['image_subject_id'] !== '') {
-            $where[] = ['image_subject_id' , '=' , $filter['image_subject_id']];
+        if ($filter['image_image_subject_id'] !== '') {
+            $where[] = ['image_image_subject_id' , '=' , $filter['image_image_subject_id']];
         }
 
         if ($filter['type'] !== '') {

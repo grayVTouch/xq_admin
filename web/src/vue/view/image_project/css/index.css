@@ -59,6 +59,7 @@
 .view .focus-bar > .content {
     width: 1280px;
     padding: 50px 0;
+    margin: 0 auto;
 }
 
 .view .focus-bar > .content:after {
@@ -182,6 +183,7 @@
  */
 .view > .content {
     width: 1280px;
+    margin: 0 auto;
 }
 
 .view > .content > .run-tags {

@@ -52,7 +52,7 @@
                                                     <div class="list">
                                                         <template v-for="v1 in v.data">
                                                             <a class="item image" v-if="v1.relation_type === 'image_project'" target="_blank" :href="`#/image_project/${v1.relation_id}/show`">
-                                                                <div class="thumb"><img :src="v1.relation.thumb ? v1.relation.__thumb__ : TopContext.res.notFound" v-judge-img-size class="image judge-img-size" alt=""></div>
+                                                                <div class="thumb"><img :src="v1.relation.thumb ? v1.relation.thumb : TopContext.res.notFound" v-judge-img-size class="image judge-img-size" alt=""></div>
                                                                 <div class="info">
                                                                     <div class="name f-14">{{ v1.relation.name ?  v1.relation.name : '' }}</div>
                                                                     <div class="time f-12">
@@ -84,7 +84,7 @@
                                             <div class="list">
                                                 <template v-for="v in favorites.collection_group.collections">
                                                     <a class="item image" target="_blank" :href="`#/image_project/${v.relation_id}/show`">
-                                                        <div class="thumb"><img :src="v.relation.thumb ? v.relation.__thumb__ : TopContext.res.notFound" v-judge-img-size class="image judge-img-size" alt=""></div>
+                                                        <div class="thumb"><img :src="v.relation.thumb ? v.relation.thumb : TopContext.res.notFound" v-judge-img-size class="image judge-img-size" alt=""></div>
                                                         <div class="info">
                                                             <div class="name f-14">{{ v.relation.name }}</div>
                                                             <div class="time f-12">
@@ -109,14 +109,14 @@
 
                                     <div class="item user" @click.stop>
                                         <div class="action" @click="showUserCtrl">
-                                            <a class="link" v-ripple><img :src="$store.state.user.avatar ? $store.state.user.__avatar__ : TopContext.res.avatar" v-judge-img-size class="image judge-img-size"></a>
+                                            <a class="link" v-ripple><img :src="$store.state.user.avatar ? $store.state.user.avatar : TopContext.res.avatar" v-judge-img-size class="image judge-img-size"></a>
                                         </div>
                                         <div class="info hide" ref="info-for-user">
                                             <div class="user m-b-10">
                                                 <a href="#/user/info" v-ripple target="_self" class="link" @click="hideUserCtrl">
                                                     <div class="avatar">
                                                         <div class="mask">
-                                                            <img :src="$store.state.user.avatar ? $store.state.user.__avatar__ : TopContext.res.avatar" v-judge-img-size class="image judge-img-size">
+                                                            <img :src="$store.state.user.avatar ? $store.state.user.avatar : TopContext.res.avatar" v-judge-img-size class="image judge-img-size">
                                                         </div>
                                                     </div>
                                                     <div class="info">

@@ -71,13 +71,13 @@ export default {
                 return ;
             }
             const self = this;
-            const action = this.data.praised ? 0 : 1;
+            const praised = this.data.praised ? 0 : 1;
             this.pending('praiseHandle' , true);
             Api.user
                 .praiseHandle(null , {
                     relation_type: 'image_project' ,
                     relation_id: this.data.id ,
-                    action ,
+                    action: praised ,
                 })
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
@@ -86,7 +86,8 @@ export default {
                         });
                         return ;
                     }
-                    this.data = {...data};
+                    this.data.praised = praised;
+                    praised ? this.data.praise_count++ : this.data.praise_count--;
                 })
                 .finally(() => {
                     this.pending('praiseHandle' , false);
@@ -114,14 +115,13 @@ export default {
                     relation_id: this.id ,
                 })
                 .then((res) => {
-
                     if (res.code !== TopContext.code.Success) {
                         this.errorHandleAtHomeChildren(res.message , res.code , () => {
                             this.getFavorites();
                         });
                         return ;
                     }
-                    this.favorites = data;
+                    this.favorites = res.data;
                 })
                 .finally(() => {
                     this.pending('getFavorites' , false);
@@ -135,7 +135,7 @@ export default {
             }
             this.pending('createAndJoinCollectionGroup' , true);
             Api.user
-                .createAndJoinCollectionGroup(this.collectionGroup)
+                .createAndJoinCollectionGroup(null , this.collectionGroup)
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
                         this.errorHandleAtHomeChildren(res.message , res.code , () => {
@@ -152,40 +152,33 @@ export default {
                 });
         } ,
 
-        collectionHandle (collectionGroup) {
-            const pending = 'collectionHandle_' + collectionGroup.id;
-            if (this.pending(pending)) {
+        collectionHandle (row) {
+            const pendingKey = 'collectionHandle_' + row.id;
+            if (this.pending(pendingKey)) {
                 return ;
             }
-            this.pending(pending , true);
-            const action = collectionGroup.inside ? 0 : 1;
+            this.pending(pendingKey , true);
+            const action = row.inside ? 0 : 1;
             Api.user
-                .collectionHandle({
+                .collectionHandle(null , {
                     relation_type: 'image_project' ,
                     relation_id: this.id ,
                     action ,
-                    collection_group_id: collectionGroup.id ,
+                    collection_group_id: row.id ,
                 })
                 .then((res) => {
-                    this.pending(pending , false);
                     if (res.code !== TopContext.code.Success) {
                         this.errorHandleAtHomeChildren(res.message , res.code , () => {
-                            this.collectionHandle(collectionGroup);
+                            this.collectionHandle(row);
                         });
                         return ;
                     }
-                    for (let i = 0; i < this.favorites.length; ++i)
-                    {
-                        const cur = this.favorites[i];
-                        if (cur.id === data.id) {
-                            this.favorites.splice(i , 1 , data);
-                            break;
-                        }
-                    }
+                    row.inside = action;
+                    action ? row.count++ : row.count--;
                     this.getData();
                 })
                 .finally(() => {
-
+                    this.pending(pendingKey , false);
                 });
         } ,
 
@@ -232,7 +225,7 @@ export default {
         record () {
             this.pending('record' , true);
             Api.user
-                .record({
+                .record(null , {
                     relation_type: 'image_project' ,
                     relation_id: this.id ,
                 })
@@ -306,17 +299,21 @@ export default {
         // 获取推荐数据
         getNewestData (){
             this.pending('getNewestData' , true);
-            Api.imageProject.newest({
-                limit: this.newest.limit ,
-                type: this.newest.type ,
-            } ,  (msg , data , code) => {
-                this.pending('getNewestData' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.message('error' , msg);
-                    return ;
-                }
-                this.newest.data = data;
-            });
+            Api.imageProject
+                .newest({
+                    limit: this.newest.limit ,
+                    type: this.newest.type ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message);
+                        return ;
+                    }
+                    this.newest.data = res.data;
+                })
+                .finally(() => {
+                    this.pending('getNewestData' , false);
+                });
         } ,
 
         // 获取推荐数据
@@ -350,10 +347,11 @@ export default {
                 return ;
             }
             this.pending('focusHandle' , true);
+            const action = this.data.user.focused ? 0 : 1;
             Api.user
                 .focusHandle(null , {
                     user_id: this.data.user_id ,
-                    action: this.data.user.focused ? 0 : 1 ,
+                    action ,
                 })
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
@@ -362,7 +360,14 @@ export default {
                         });
                         return ;
                     }
-                    this.getData();
+                    // this.getData();
+
+                    this.data.user.focused = action;
+                    if (action) {
+                        this.data.user.focus_me_user_count++;
+                    } else {
+                        this.data.user.focus_me_user_count--;
+                    }
                 })
                 .finally(() => {
                     this.pending('focusHandle' , false);

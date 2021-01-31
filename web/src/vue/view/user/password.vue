@@ -1,7 +1,7 @@
 <template>
     <user-base>
         <template slot="title">修改密码</template>
-        <form @submit.prevent="submit" slot="content">
+        <form @submit.prevent="submitEvent" slot="content">
             <table class="input-table">
                 <tbody>
                 <tr :class="{error: val.error.old_password}">
@@ -37,7 +37,7 @@
                 <tr>
                     <td colspan="2">
                         <button type="submit" class="button submit-button" v-ripple>
-                            <my-loading size="16" class="m-r-5" v-if="val.pending.submit"></my-loading>提交
+                            <my-loading size="16" class="m-r-5" v-if="val.pending.submitEvent"></my-loading>提交
                         </button>
                     </td>
                 </tr>

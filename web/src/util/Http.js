@@ -29,7 +29,7 @@ window.Http = {
             }
         }
         return new Promise((resolve , reject) => {
-            const token = G.cookie.get('token');
+            const token = G.s.get('token');
             return G.ajax({
                 url ,
                 method ,

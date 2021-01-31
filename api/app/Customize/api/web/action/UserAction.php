@@ -29,6 +29,7 @@ use Illuminate\Validation\Rule;
 use Mews\Captcha\Facades\Captcha;
 use function api\web\get_form_error;
 use function api\web\my_config;
+use function api\web\my_config_keys;
 use function api\web\user;
 use function core\array_unit;
 use function core\current_datetime;
@@ -125,7 +126,7 @@ class UserAction extends Action
         }
         $timestamp = time();
         $code_duration = my_config('app.code_duration');
-        $expired_timestamp = strtotime($email_code->send_time) + $code_duration;
+        $expired_timestamp = strtotime($email_code->send_at) + $code_duration;
         if ($email_code->used || $timestamp > $expired_timestamp) {
             return self::error('邮箱验证码已经失效，请重新发送');
         }
@@ -149,7 +150,7 @@ class UserAction extends Action
                 'expired' => $datetime
             ]);
             EmailCodeModel::updateById($email_code->id , [
-               'used' => 1 ,
+               'is_used' => 1 ,
             ]);
             DB::commit();
             return self::success('' , $token);
@@ -230,7 +231,7 @@ class UserAction extends Action
         }
         $timestamp = time();
         $code_duration = my_config('app.code_duration');
-        $expired_timestamp = strtotime($email_code->send_time) + $code_duration;
+        $expired_timestamp = strtotime($email_code->send_at) + $code_duration;
         if ($email_code->used || $timestamp > $expired_timestamp) {
             return self::error('邮箱验证码已经失效，请重新发送');
         }
@@ -243,7 +244,7 @@ class UserAction extends Action
                 'password' => Hash::make($param['password'])
             ]);
             EmailCodeModel::updateById($email_code->id , [
-                'used' => 1 ,
+                'is_used' => 1 ,
             ]);
             DB::commit();
             return self::success('操作成功');
@@ -470,16 +471,14 @@ class UserAction extends Action
         } else {
             // 其他类型，预留
         }
-        $collection_group = CollectionGroupHandler::handle($collection_group);
-        CollectionGroupUtil::handle($collection_group , $param['relation_type'] , $relation->id);
-        return self::success('' , $collection_group);
+        return self::success('操作成功');
     }
 
     //
     public static function praiseHandle(Base $context , array $param = [])
     {
-        $relation_type_range = my_config_keys('business.relation_type_for_praise');
-        $action_range = my_config_keys('business.bool_for_int');
+        $relation_type_range    = my_config_keys('business.relation_type_for_praise');
+        $action_range           = my_config_keys('business.bool_for_int');
         $validator = Validator::make($param , [
             'module_id'             => 'required|integer' ,
             'action'                => ['required' , Rule::in($action_range)] ,
@@ -515,12 +514,10 @@ class UserAction extends Action
                 PraiseModel::delByModuleIdAndUserIdAndRelationTypeAndRelationId($module->id , $user->id , 'image_project' , $relation->id);
                 ImageProjectModel::countHandle($relation->id , 'praise_count' , 'decrement');
             }
-            $res = ImageProjectModel::find($relation->id);
-            $res = ImageProjectHandler::handle($res);
         } else {
             // 其他类型，预留
         }
-        return self::success('' , $res);
+        return self::success('操作成功');
     }
 
     public static function record(Base $context , array $param = [])

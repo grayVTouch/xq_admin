@@ -390,7 +390,7 @@ create table if not exists `xq_email_code` (
     code varchar(30) default '' comment '邮箱验证码' ,
     type varchar(50) default '' comment '类型，比如：login-登录验证码 register-注册验证码 password-修改密码验证码 等' ,
     used tinyint default 0 comment '是否被使用过: 0-否 1-是' ,
-    send_time datetime default null comment '发送时间' ,
+    send_at datetime default null comment '发送时间' ,
     updated_at datetime default null comment '更新时间' ,
     created_at datetime default null ,
     primary key (id) ,

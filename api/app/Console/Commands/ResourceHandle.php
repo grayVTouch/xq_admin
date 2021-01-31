@@ -58,7 +58,7 @@ class ResourceHandle extends Command
             foreach ($res as $v)
             {
                 $last = $v;
-                if ($v->is_delete == 0) {
+                if ($v->is_deleted == 0) {
                     // 未删除 未使用
                     $created_at = strtotime($v->created_at);
                     // 未被删除

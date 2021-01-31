@@ -20,8 +20,8 @@
                         <div class="action item" @click.stop="showSubjectSelector" v-ripple>
                             <div class="inner">
                                 <my-icon icon="guanlian" /> 关联主体
-                                <span class="number" v-if="subjects.selected.length > 0">
-                                <template v-if="subjects.selected.length < 10">{{ subjects.selected.length }}</template>
+                                <span class="number" v-if="videoSubjects.selected.length > 0">
+                                <template v-if="videoSubjects.selected.length < 10">{{ videoSubjects.selected.length }}</template>
                                 <template v-else>9+</template>
                             </span>
                             </div>
@@ -30,8 +30,8 @@
                         <div class="action item" @click.stop="showSubjectSelector" v-ripple>
                             <div class="inner">
                                 <my-icon icon="gongsi" /> 制作公司
-                                <span class="number" v-if="subjects.selected.length > 0">
-                                <template v-if="subjects.selected.length < 10">{{ subjects.selected.length }}</template>
+                                <span class="number" v-if="videoSubjects.selected.length > 0">
+                                <template v-if="videoSubjects.selected.length < 10">{{ videoSubjects.selected.length }}</template>
                                 <template v-else>9+</template>
                             </span>
                             </div>
@@ -165,8 +165,8 @@
                 <div class="action item" @click.stop="showSubjectSelector" v-ripple>
                     <div class="inner">
                         <my-icon icon="guanlian" /> 关联主体
-                        <span class="number" v-if="subjects.selected.length > 0">
-                                <template v-if="subjects.selected.length < 10">{{ subjects.selected.length }}</template>
+                        <span class="number" v-if="videoSubjects.selected.length > 0">
+                                <template v-if="videoSubjects.selected.length < 10">{{ videoSubjects.selected.length }}</template>
                                 <template v-else>9+</template>
                             </span>
                     </div>
@@ -232,7 +232,7 @@
         </div>
 
         <!-- 关联主体选择器 -->
-        <div class="subject-selector hide" ref="subject-selector" @click.stop>
+        <div class="image-subject-selector hide" ref="image-subject-selector" @click.stop>
             <div class="background" ref="subject-background" @click="closeSubjectSelector"></div>
             <div class="content">
                 <div class="title">
@@ -245,31 +245,31 @@
                 <div class="selected">
                     <div class="title">当前选中项</div>
                     <div class="list">
-                        <div class="item"  v-for="v in subjects.selected" @click="delSubject(v)">
+                        <div class="item"  v-for="v in videoSubjects.selected" @click="delSubject(v)">
                             <div class="thumb"><img :src="v.thumb ? v.thumb : TopContext.res.notFound" class="image" alt=""></div>
                             <div class="name">{{ v.name }}</div>
                         </div>
                     </div>
                 </div>
-                <div class="subjects">
+                <div class="videoSubjects">
                     <div class="title">专题列表</div>
                     <div class="search">
                         <div class="inner">
                             <div class="ico"><my-icon icon="search" /></div>
-                            <div class="input"><input type="text" class="form-text" v-model="subjects.value" @keyup.enter="searchSubject" placeholder="请搜索关联主体"></div>
+                            <div class="input"><input type="text" class="form-text" v-model="videoSubjects.value" @keyup.enter="searchSubject" placeholder="请搜索关联主体"></div>
                         </div>
                     </div>
 
                     <div class="list">
                         <div class="loading" v-if="val.pending.getSubjects"><my-loading size="30"></my-loading></div>
-                        <div class="empty" v-if="!val.pending.getSubjects && subjects.data.length === 0">暂无相关数据</div>
-                        <div class="item" v-ripple v-for="v in subjects.data" :class="{cur: subjects.selectedIds.indexOf(v.id) >= 0}" @click="filterBySubject(v)">
+                        <div class="empty" v-if="!val.pending.getSubjects && videoSubjects.data.length === 0">暂无相关数据</div>
+                        <div class="item" v-ripple v-for="v in videoSubjects.data" :class="{cur: videoSubjects.selectedIds.indexOf(v.id) >= 0}" @click="filterBySubject(v)">
                             <div class="thumb"><img :src="v.thumb ? v.thumb : TopContext.res.notFound" class="image" alt=""></div>
                             <div class="name">{{ v.name }}</div>
                         </div>
                     </div>
                     <div class="pager">
-                        <my-page :total="subjects.total" :limit="subjects.limit" :page="subjects.page" @on-change="toPageInSubject"></my-page>
+                        <my-page :total="videoSubjects.total" :limit="videoSubjects.limit" :page="videoSubjects.page" @on-change="toPageInSubject"></my-page>
                     </div>
                 </div>
             </div>

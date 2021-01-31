@@ -11,7 +11,7 @@ use App\Http\Controllers\api\web\ImageProject;
 use App\Http\Controllers\api\web\Misc;
 use App\Http\Controllers\api\web\Module;
 use App\Http\Controllers\api\web\Nav;
-use App\Http\Controllers\api\web\Subject;
+use App\Http\Controllers\api\web\ImageSubject;
 use App\Http\Controllers\api\web\Tag;
 use App\Http\Controllers\api\web\User;
 use App\Http\Controllers\api\web\VideoProject;
@@ -70,22 +70,22 @@ Route::prefix('web')
             Route::get('image_project/hot_with_pager'           , [ImageProject::class , 'hotWithPager']);
             Route::get('image_project/{tag_id}/get_by_tag_id'   , [ImageProject::class , 'getByTagId']);
             Route::get('image_project/get_with_pager_by_tag_ids' , [ImageProject::class , 'getWithPagerByTagIds']);
-            Route::get('image_project/hot_tags' , [ImageProject::class , 'hotTags']);
-            Route::get('image_project/hot_tags_with_pager' , [ImageProject::class , 'hotTagsWithPager']);
-            Route::get('image_project/category' , [ImageProject::class , 'category']);
+            Route::get('image_project/hot_tags'             , [ImageProject::class , 'hotTags']);
+            Route::get('image_project/hot_tags_with_pager'  , [ImageProject::class , 'hotTagsWithPager']);
+            Route::get('image_project/category'             , [ImageProject::class , 'category']);
             Route::get('image_project/{image_project_id}/recommend' , [ImageProject::class , 'recommend']);
 
             // 特别注意，下面这个路由仅允许放置到最后一个，否则，符合条件的路由都会被导向到这个路由里面去
             // 这种情况下，就会出现定义的具体路由不生效的情况
-            Route::get('image_project/subject'  , [ImageProject::class , 'subject']);
+            Route::get('image_project/image_subject'  , [ImageProject::class , 'imageSubject']);
 
             // 图片详情
             Route::get('image_project/{id}'     , [ImageProject::class , 'show']);
+            // 图片专题
+            Route::get('image_project'          , [ImageProject::class , 'index']);
 
-            Route::get('image_project' , [ImageProject::class , 'index']);
 
-
-            Route::get('image_subject/{id}' , [Subject::class , 'show']);
+            Route::get('image_subject/{id}' , [ImageSubject::class , 'show']);
             Route::get('category/{id}' , [Category::class , 'show']);
             Route::get('tag/{id}' , [Tag::class , 'show']);
             Route::get('captcha' , [Misc::class , 'captcha']);
@@ -111,19 +111,23 @@ Route::prefix('web')
              * 视频专题
              * ************************************
              */
-            Route::get('/video_project/newest' , [VideoProject::class , 'newest']);
-            Route::get('/video_project/hot_tags' , [VideoProject::class , 'hotTags']);
-            Route::get('/video_project/hot' , [VideoProject::class , 'hot']);
-            Route::get('/video_project/{tag_id}/get_by_tag_id' , [VideoProject::class , 'getByTagId']);
-            Route::get('/video_project/get_by_tag_ids' , [VideoProject::class , 'getByTagIds']);
+            Route::get('video_project/newest' , [VideoProject::class , 'newest']);
+            Route::get('video_project/hot_tags' , [VideoProject::class , 'hotTags']);
+            Route::get('video_project/hot' , [VideoProject::class , 'hot']);
+            Route::get('video_project/{tag_id}/get_by_tag_id' , [VideoProject::class , 'getByTagId']);
+            Route::get('video_project/get_by_tag_ids' , [VideoProject::class , 'getByTagIds']);
+
+            Route::get('video_project/hot_tags_with_pager'  , [VideoProject::class , 'hotTagsWithPager']);
+            // 视频专题-分类
+            Route::get('video_project/category'             , [VideoProject::class , 'category']);
             // 视频专题详情
-            Route::get('/video_project/{id}'        , [VideoProject::class , 'show']);
-            Route::get('/video_project/{id}/videos_in_range' , [VideoProject::class , 'videosInRange']);
+            Route::get('video_project/{id}'        , [VideoProject::class , 'show']);
+            Route::get('video_project/{id}/videos_in_range' , [VideoProject::class , 'videosInRange']);
 
             /**
              * 视频系列
              */
-            Route::get('/video_project/{id}/video_projects' , [VideoProject::class , 'videoSubjectsInSeries']);
+            Route::get('video_project/{id}/video_projects' , [VideoProject::class , 'videoSubjectsInSeries']);
 
         });
 
@@ -131,9 +135,9 @@ Route::prefix('web')
             UserAuthMiddleware::class
         ])->group(function(){
             // 要求登录的相关接口
-            Route::post('user/collection_handle' , [User::class , 'collectionHandle']);
-            Route::post('user/praise_handle' , [User::class , 'praiseHandle']);
-            Route::post('user/record' , [User::class , 'record']);
+            Route::post('user/collection_handle'    , [User::class , 'collectionHandle']);
+            Route::post('user/praise_handle'        , [User::class , 'praiseHandle']);
+            Route::post('user/record'               , [User::class , 'record']);
             Route::post('user/create_and_join_collection_group' , [User::class , 'createAndJoinCollectionGroup']);
             Route::post('user/create_collection_group' , [User::class , 'createCollectionGroup']);
             Route::post('user/join_collection_group' , [User::class , 'joinCollectionGroup']);

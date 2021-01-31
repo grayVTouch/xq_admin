@@ -67,7 +67,7 @@
                         <div class="inner" :class="{fixed: val.fixed}">
                             <div class="avatar">
                                 <div class="mask">
-                                    <img :src="data.user ? data.user.__avatar__ : TopContext.res.notFound" v-judge-img-size class="image judge-img-size" alt="">
+                                    <img :src="data.user ? data.user.avatar : TopContext.res.notFound" v-judge-img-size class="image judge-img-size" alt="">
                                 </div>
                             </div>
                             <div class="name">{{ data.user ? data.user.username : '' }}</div>
@@ -88,7 +88,7 @@
                     </a>
 
                     <!-- 关联主题 -->
-                    <a class="subject m-b-20" v-if="data.type === 'pro'" target="_blank" :href="genUrl(`/image_project/search?subject_id=${data.image_subject_id}`)">
+                    <a class="subject m-b-20" v-if="data.type === 'pro'" target="_blank" :href="genUrl(`/image_project/search?image_subject_id=${data.image_subject_id}`)">
                         <div class="info">
                             <div class="thumb">
                                 <div class="mask">

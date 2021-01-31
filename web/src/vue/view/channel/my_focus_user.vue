@@ -5,7 +5,7 @@
 
             <a class="item" v-for="v in data.data" target="_blank" :href="genUrl(`/channel/${v.focus_user_id}/image`)">
                 <div class="avatar">
-                    <div class="image-mask"><img :src="v.focus_user.avatar ? v.focus_user.__avatar__ : TopContext.res.notFound" class="image judge-img-size" v-judge-img-size></div>
+                    <div class="image-mask"><img :src="v.focus_user.avatar ? v.focus_user.avatar : TopContext.res.notFound" class="image judge-img-size" v-judge-img-size></div>
                     <div class="info">
                         <div class="name">{{ getUsername(v.focus_user.username , v.focus_user.nickname) }}</div>
                         <div class="desc">{{ v.focus_user.description }}</div>
@@ -57,19 +57,24 @@
         methods: {
             getData () {
                 this.pending('getData' , true);
-                Api.user.myFocusUser(this.$parent.id , {
-                    limit: this.data.limit ,
-                    page: this.data.page ,
-                }.then((res) => {
-                    this.pending('getData' , false);
-                    if (res.code !== TopContext.code.Success) {
-                        this.errorHandleAtHomeChildren(res.message , res.code);
-                        return ;
-                    }
-                    this.data.total = data.total;
-                    this.data.page = data.page;
-                    this.data.data = data.data;
-                });
+                Api.user
+                    .myFocusUser(this.$parent.id , {
+                        limit: this.data.limit ,
+                        page: this.data.page ,
+                    })
+                    .then((res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            this.errorHandleAtHomeChildren(res.message , res.code);
+                            return ;
+                        }
+                        const data = res.data;
+                        this.data.total = data.total;
+                        this.data.page = data.page;
+                        this.data.data = data.data;
+                    })
+                    .finally(() => {
+                        this.pending('getData' , false);
+                    });
             } ,
 
             toPage (page) {
@@ -82,19 +87,23 @@
                     return ;
                 }
                 this.pending('focusHandle' , true);
-                Api.user.focusHandle({
-                    user_id: user.id ,
-                    action: user.focused ? 0 : 1 ,
-                }.then((res) => {
-                    this.pending('focusHandle' , false);
-                    if (res.code !== TopContext.code.Success) {
-                        this.errorHandleAtHomeChildren(res.message , res.code , () => {
-                            this.focusHandle();
-                        });
-                        return ;
-                    }
-                    this.getData();
-                });
+                Api.user
+                    .focusHandle(null , {
+                        user_id: user.id ,
+                        action: user.focused ? 0 : 1 ,
+                    })
+                    .then((res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            this.errorHandleAtHomeChildren(res.message , res.code , () => {
+                                this.focusHandle();
+                            });
+                            return ;
+                        }
+                        this.getData();
+                    })
+                    .finally(() => {
+                        this.pending('focusHandle' , false);
+                    });
 
             } ,
 

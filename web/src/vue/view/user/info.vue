@@ -2,7 +2,7 @@
     <user-base>
         <template slot="title">我的信息 <my-loading v-if="val.pending.user" size="16"></my-loading></template>
         <template slot="action"></template>
-        <form @submit.prevent="submit" slot="content">
+        <form @submit.prevent="submitEvent" slot="content">
             <table class="input-table">
                 <tbody>
                 <tr :class="{error: val.error.username}">
@@ -115,7 +115,7 @@
                 <tr>
                     <td colspan="2">
                         <button type="submit" class="button submit-button" v-ripple>
-                            <my-loading size="16" class="m-r-5" v-if="val.pending.submit"></my-loading>提交
+                            <my-loading size="16" class="m-r-5" v-if="val.pending.submitEvent"></my-loading>提交
                         </button>
                     </td>
                 </tr>

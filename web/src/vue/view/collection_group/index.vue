@@ -25,7 +25,7 @@
                         <!-- 封面 -->
                         <div class="thumb">
                             <a class="link" target="_blank" :href="`#/image_project/${v.relation.id}/show`">
-                                <img :src="v.relation.thumb ? v.relation.__thumb__ : TopContext.res.notFound" v-judge-img-size class="image judge-img-size">
+                                <img :src="v.relation.thumb ? v.relation.thumb : TopContext.res.notFound" v-judge-img-size class="image judge-img-size">
                                 <div class="mask">
                                     <div class="top">
                                         <div class="type" v-if="v.relation.type === 'pro'"><my-icon icon="zhuanyerenzheng" size="35" /></div>
@@ -53,7 +53,7 @@
                             <!-- 发布者 -->
                             <div class="user">
                                 <a class="sender" target="_blank" :href="genUrl(`/channel/${v.relation.user.id}`)">
-                                    <span class="avatar-outer"><img :src="v.relation.user.avatar ? v.relation.user.__avatar__ : TopContext.res.avatar" alt="" class="image avatar"></span>
+                                    <span class="avatar-outer"><img :src="v.relation.user.avatar ? v.relation.user.avatar : TopContext.res.avatar" alt="" class="image avatar"></span>
                                     <span class="name">{{ v.relation.user.nickname }}</span>
                                 </a>
                                 <div class="action"></div>
@@ -130,66 +130,79 @@
                 if (this.pending('praiseHandle')) {
                     return ;
                 }
-                const self = this;
                 const action = collection.relation.praised ? 0 : 1;
                 this.pending('praiseHandle' , true);
-                Api.user.praiseHandle({
-                    relation_type: 'image_project' ,
-                    relation_id: collection.relation.id ,
-                    action ,
-                }.then((res) => {
-                    this.pending('praiseHandle' , false);
-                    if (res.code !== TopContext.code.Success) {
-                        this.errorHandleAtHomeChildren(res.message , res.code , () => {
-                            this.praiseHandle(collection);
-                        });
-                        return ;
-                    }
-                    this.handleImageProject(data);
-                    for (let i = 0; i <  this.collections.data.length; ++i)
-                    {
-                        const cur = this.collections.data[i];
-                        if (cur.relation.id === data.id) {
-                            cur.relation = {...data};
-                            break;
+                Api.user
+                    .praiseHandle({
+                        relation_type: 'image_project' ,
+                        relation_id: collection.relation.id ,
+                        action ,
+                    })
+                    .then((res) => {
+                        this.pending('praiseHandle' , false);
+                        if (res.code !== TopContext.code.Success) {
+                            this.errorHandleAtHomeChildren(res.message , res.code , () => {
+                                this.praiseHandle(collection);
+                            });
+                            return ;
                         }
-                    }
-                });
+                        console.log('点赞成功' , collection);
+                        // this.handleImageProject(data);
+                        // for (let i = 0; i <  this.collections.data.length; ++i)
+                        // {
+                        //     const cur = this.collections.data[i];
+                        //     if (cur.relation.id === data.id) {
+                        //         cur.relation = {...data};
+                        //         break;
+                        //     }
+                        // }
+                    })
+                    .finally(() => {
+                    });
             } ,
 
 
             initData () {
                 this.pending('initData' , true);
-                Api.user.collectionGroupInfo(this.id.then((res) => {
-                    this.pending('initData' , false);
-                    if (res.code !== TopContext.code.Success) {
-                        this.errorHandleAtHomeChildren(res.message , res.code);
-                        return ;
-                    }
-                    this.data = {...data};
-                })
+                Api.user
+                    .collectionGroupInfo(this.id)
+                    .then((res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            this.errorHandleAtHomeChildren(res.message , res.code);
+                            return ;
+                        }
+                        this.data = res.data;
+                    })
+                    .finally(() => {
+                        this.pending('initData' , false);
+                    });
             } ,
 
             getCollection () {
                 this.pending('getCollection' , true);
-                Api.user.collections({
-                    relation_type: this.collections.relation_type ,
-                    collection_group_id: this.id ,
-                    limit: this.collections.limit
-                }, (msg , data , code) => {
-                    this.pending('getCollection' , false);
-                    if (res.code !== TopContext.code.Success) {
-                        this.errorHandleAtHomeChildren(res.message , res.code);
-                        return ;
-                    }
-                    data.data.forEach((v) => {
-                        v.relation = v.relation ? v.relation : {};
-                        this.handleImageProject(v.relation);
+                Api.user
+                    .collections({
+                        relation_type: this.collections.relation_type ,
+                        collection_group_id: this.id ,
+                        limit: this.collections.limit
+                    })
+                    .then((res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            this.errorHandleAtHomeChildren(res.message , res.code);
+                            return ;
+                        }
+                        const data = res.data;
+                        data.data.forEach((v) => {
+                            v.relation = v.relation ? v.relation : {};
+                            this.handleImageProject(v.relation);
+                        });
+                        this.collections.page = data.current_page;
+                        this.collections.total = data.total;
+                        this.collections.data = data.data;
+                    })
+                    .finally(() => {
+                        this.pending('getCollection' , false);
                     });
-                    this.collections.page = data.current_page;
-                    this.collections.total = data.total;
-                    this.collections.data = data.data;
-                })
             } ,
 
             toPage (page) {

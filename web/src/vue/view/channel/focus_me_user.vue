@@ -88,20 +88,22 @@
                 }
                 this.pending('focusHandle' , true);
                 Api.user
-                    .focusHandle({
+                    .focusHandle(null , {
                         user_id: user.id ,
                         action: user.focused ? 0 : 1 ,
                     })
                     .then((res) => {
-                    this.pending('focusHandle' , false);
-                    if (res.code !== TopContext.code.Success) {
-                        this.errorHandleAtHomeChildren(res.message , res.code , () => {
-                            this.focusHandle();
-                        });
-                        return ;
-                    }
-                    this.getData();
-                });
+                        if (res.code !== TopContext.code.Success) {
+                            this.errorHandleAtHomeChildren(res.message , res.code , () => {
+                                this.focusHandle();
+                            });
+                            return ;
+                        }
+                        this.getData();
+                    })
+                    .finally(() => {
+                        this.pending('focusHandle' , false);
+                    });
 
             } ,
         } ,

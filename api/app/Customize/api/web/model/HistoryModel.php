@@ -33,14 +33,14 @@ class HistoryModel extends Model
             $where[] = ['h.relation_type' , '=' , $relation_type];
         }
         if (!empty($value)) {
-            $where[] = ['is.name' , 'like' , "%{$value}%"];
+            $where[] = ['ip.name' , 'like' , "%{$value}%"];
         }
         return self::select('h.*')
             ->from('xq_history as h')
-            ->leftJoin('xq_image_subject as is' , function($join){
+            ->leftJoin('xq_image_project as ip' , function($join){
                 // $join->on 会把内容当成是字段
                 // $join->where 仅把值当成是值
-                $join->on('h.relation_id' , '=' , 'is.id')
+                $join->on('h.relation_id' , '=' , 'ip.id')
                     ->where('h.relation_type' , '=' , 'image_project');
             })
             ->where($where)

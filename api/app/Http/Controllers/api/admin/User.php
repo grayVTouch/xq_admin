@@ -54,6 +54,7 @@ class User extends Base
         $param['phone']     = $param['phone'] ?? '';
         $param['email']     = $param['email'] ?? '';
         $param['user_group_id'] = $param['user_group_id'] ?? '';
+        $param['description'] = $param['description'] ?? '';
         $res = UserAction::update($this , $id ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -72,6 +73,7 @@ class User extends Base
         $param['phone']     = $param['phone'] ?? '';
         $param['email']     = $param['email'] ?? '';
         $param['user_group_id'] = $param['user_group_id'] ?? '';
+        $param['description'] = $param['description'] ?? '';
         $res = UserAction::store($this ,$param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);

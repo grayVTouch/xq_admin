@@ -33,17 +33,21 @@ export default {
 
         user () {
             this.pending('user' , true);
-            Api.user.info((msg , data , code) => {
-                this.pending('user' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandleAtUserChildren(msg , data , code , () => {
-                        this.user();
-                    });
-                    return ;
-                }
+            Api.user
+                .info()
+                .then((res) => {
+                    this.pending('user' , false);
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtUserChildren(res.message , res.code , () => {
+                            this.user();
+                        });
+                        return ;
+                    }
+                    this.form = res.data;
+                })
+                .finally(() => {
 
-                this.form = {...data};
-            });
+                });
         } ,
 
         initDom () {
@@ -63,7 +67,7 @@ export default {
                 multiple: false ,
                 // 单个文件上传完成调用
                 uploaded (file , data , code) {
-                    if (res.code !== TopContext.code.Success) {
+                    if (code !== TopContext.code.Success) {
                         this.status(file.id , false);
                         return ;
                     }
@@ -87,27 +91,33 @@ export default {
         } ,
         initEvent () {} ,
 
-        submit () {
-            if (this.pending('submit')) {
+        submitEvent () {
+            if (this.pending('submitEvent')) {
                 return ;
             }
-            const self = this;
-            this.pending('submit' , true);
-            Api.user.update(this.form.then((res) => {
-                this.pending('submit' , false);
-                this.error();
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandleAtUserChildren(msg , data , code);
-                    return ;
-                }
-                this.message('success' , '操作成功');
-            });
+            this.error();
+            this.pending('submitEvent' , true);
+            Api.user
+                .update(null , this.form)
+                .then((res) => {
+                    this.pending('submitEvent' , false);
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtUserChildren(res.message , res.code , () => {
+                            this.submitEvent();
+                        });
+                        return ;
+                    }
+                    this.message('success' , '操作成功');
+                })
+                .finally(() => {
+
+                });
         } ,
     } ,
 
     watch: {
         form (newVal , oldVal) {
-            this.ins.avatar.render(newVal.__avatar__);
+            this.ins.avatar.render(newVal.avatar);
         } ,
     } ,
 

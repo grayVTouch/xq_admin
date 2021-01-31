@@ -105,35 +105,32 @@ export default {
     methods: {
 
         // 图片点赞
-        praiseImageProjectByImageProject (imageProject) {
-            if (this.pending('praiseImageProjectByImageProject')) {
+        praiseImageProject (row) {
+            if (this.pending('praiseImageProject')) {
                 return ;
             }
             const self = this;
-            const action = imageProject.praised ? 0 : 1;
-            this.pending('praiseImageProjectByImageProject' , true);
-            Api.user.praiseHandle({
-                relation_type: 'image_project' ,
-                relation_id: imageProject.id ,
-                action ,
-            }.then((res) => {
-                this.pending('praiseImageProjectByImageProject' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandleAtHomeChildrenAtHomeChildren(res.message , res.code , () => {
-                        this.praiseImageProjectByImageProject(imageProject)
-                    });
-                    return ;
-                }
-                this.handleImageProject(data);
-                for (let i = 0; i <  this.imageProjects.data.length; ++i)
-                {
-                    const cur = this.imageProjects.data[i];
-                    if (cur.id === data.id) {
-                        this.imageProjects.data.splice(i , 1 ,data);
-                        break;
+            const praised = row.praised ? 0 : 1;
+            this.pending('praiseImageProject' , true);
+            Api.user
+                .praiseHandle(null , {
+                    relation_type: 'image_project' ,
+                    relation_id: row.id ,
+                    action: praised ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message , res.code , () => {
+                            this.praiseImageProject(row)
+                        });
+                        return ;
                     }
-                }
-            }));
+                    row.praised = praised;
+                    praised ? row.praise_count++ : row.praise_count--;
+                })
+                .finally(() => {
+                    this.pending('praiseImageProject' , false);
+                });
         } ,
 
         findImageProjectByImageProjectId (imageProjectId , callback) {

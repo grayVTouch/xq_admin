@@ -37,20 +37,19 @@ class ImageSubjectModel extends Model
             ->get();
     }
 
-    public static function getWithPagerInImageSubjectByModuleIdAndValueAndLimit(int $module_id , string $value = '' , int $limit = 20)
+    public static function getWithPagerInImageProjectByModuleIdAndValueAndLimit(int $module_id , string $value = '' , int $limit = 20)
     {
-        $value = strtolower($value);
-        return self::from('xq_subject as s')
-            ->whereRaw("lower(s.name) like concat('%' , '{$value}' , '%')")
+        return self::from('xq_image_subject as is')
+            ->where('name' , 'like' , "%{$value}%")
             ->whereExists(function($query) use($module_id){
                 $query->select('id')
-                    ->from('xq_image_subject')
+                    ->from('xq_image_project')
                     ->where([
                         ['module_id' , '=' , $module_id] ,
                         ['type' , '=' , 'pro'] ,
                         ['status' , '=' , 1] ,
                     ])
-                    ->whereRaw('s.id = subject_id');
+                    ->whereRaw('is.id = image_subject_id');
             })
             ->paginate($limit);
     }

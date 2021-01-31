@@ -21,80 +21,80 @@ export default [
                 path: 'index' ,
                 component: () => import('@vue/view/index/index.vue')
             } ,
-            // {
-            //     path: 'image_project' ,
-            //     component: () => import('@vue/view/image_project/index.vue') ,
-            // } ,
+            {
+                path: 'image_project' ,
+                component: () => import('@vue/view/image_project/index.vue') ,
+            } ,
             {
                 path: 'image_project/:id/show' ,
                 component: () => import('@vue/view/image_project/show.vue') ,
                 props: true ,
             } ,
-            // {
-            //     path: 'image_project/search' ,
-            //     component: () => import('@vue/view/image_project/search.vue') ,
-            //     props: true ,
-            // } ,
-            // {
-            //     path: 'collection_group/:id' ,
-            //     component: () => import('@vue/view/collection_group/index.vue') ,
-            //     props: true ,
-            //     children: [
-            //         {
-            //             path: 'image' ,
-            //             component: () => import('@vue/view/collection_group/image.vue')
-            //         }
-            //     ] ,
-            // } ,
-            // {
-            //     name: 'channel' ,
-            //     path: 'channel/:id' ,
-            //     redirect: 'channel/:id/image' ,
-            //     component: () => import('@vue/view/channel/index.vue') ,
-            //     props: true ,
-            //     children: [
-            //         {
-            //             path: 'image' ,
-            //             component:  () => import('@vue/view/channel/image.vue') ,
-            //         } ,
-            //         {
-            //             path: 'my_focus_user' ,
-            //             component: () => import('@vue/view/channel/my_focus_user.vue')
-            //         } ,
-            //         {
-            //             path: 'focus_me_user' ,
-            //             component: () => import('@vue/view/channel/focus_me_user.vue') ,
-            //         } ,
-            //     ] ,
-            // } ,
-            // {
-            //     path: 'user' ,
-            //     component: () => import('@vue/view/user/index.vue') ,
-            //     redirect: '/user/info' ,
-            //     children: [
-            //         {
-            //             path: 'info' ,
-            //             component: () => import('@vue/view/user/info.vue')
-            //         } ,
-            //         {
-            //             path: 'password' ,
-            //             component: () => import('@vue/view/user/password.vue')
-            //         } ,
-            //         {
-            //             path: 'history' ,
-            //             component: () => import('@vue/view/user/history.vue')
-            //         } ,
-            //         {
-            //             path: 'favorites' ,
-            //             component: () => import('@vue/view/user/favorites.vue')
-            //         } ,
-            //     ] ,
-            // } ,
-            // {
-            //     path: 'video_project' ,
-            //     alias: 'video_project/search' ,
-            //     component: () => import('@vue/view/video_project/search.vue')
-            // } ,
+            {
+                path: 'image_project/search' ,
+                component: () => import('@vue/view/image_project/search.vue') ,
+                props: true ,
+            } ,
+            {
+                path: 'collection_group/:id' ,
+                component: () => import('@vue/view/collection_group/index.vue') ,
+                props: true ,
+                children: [
+                    {
+                        path: 'image' ,
+                        component: () => import('@vue/view/collection_group/image.vue')
+                    }
+                ] ,
+            } ,
+            {
+                name: 'channel' ,
+                path: 'channel/:id' ,
+                redirect: 'channel/:id/image' ,
+                component: () => import('@vue/view/channel/index.vue') ,
+                props: true ,
+                children: [
+                    {
+                        path: 'image' ,
+                        component:  () => import('@vue/view/channel/image.vue') ,
+                    } ,
+                    {
+                        path: 'my_focus_user' ,
+                        component: () => import('@vue/view/channel/my_focus_user.vue')
+                    } ,
+                    {
+                        path: 'focus_me_user' ,
+                        component: () => import('@vue/view/channel/focus_me_user.vue') ,
+                    } ,
+                ] ,
+            } ,
+            {
+                path: 'user' ,
+                component: () => import('@vue/view/user/index.vue') ,
+                redirect: '/user/info' ,
+                children: [
+                    {
+                        path: 'info' ,
+                        component: () => import('@vue/view/user/info.vue')
+                    } ,
+                    {
+                        path: 'password' ,
+                        component: () => import('@vue/view/user/password.vue')
+                    } ,
+                    {
+                        path: 'history' ,
+                        component: () => import('@vue/view/user/history.vue')
+                    } ,
+                    {
+                        path: 'favorites' ,
+                        component: () => import('@vue/view/user/favorites.vue')
+                    } ,
+                ] ,
+            } ,
+            {
+                path: 'video_project' ,
+                alias: 'video_project/search' ,
+                component: () => import('@vue/view/video_project/search.vue')
+            } ,
             {
                 path: 'video_project/:id/show' ,
                 component: () => import('@vue/view/video_project/show.vue') ,

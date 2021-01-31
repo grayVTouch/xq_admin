@@ -69,7 +69,7 @@ class RelationTagModel extends Model
     }
 
     // 热门标签-返回给定数量
-    public static function hotTagsInImageSubjectByFilterAndLimit(array $filter = [] , int $limit = 20): Collection
+    public static function hotTagsInImageProjectByFilterAndLimit(array $filter = [] , int $limit = 20): Collection
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -145,8 +145,8 @@ class RelationTagModel extends Model
             ->paginate($limit);
     }
 
-    // 热门标签-分页
-    public static function hotTagsWithPagerInImageSubjectByValueAndFilterAndLimit(string $value , array $filter = [] , int $limit = 20): Paginator
+    // 热门标签-图片专题-分页
+    public static function hotTagsWithPagerInImageProjectByValueAndFilterAndLimit(string $value , array $filter = [] , int $limit = 20): Paginator
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -159,17 +159,55 @@ class RelationTagModel extends Model
             $where[] = ['rt.module_id' , '=' , $filter['module_id']];
         }
 
-        $value = strtolower($value);
+        if ($filter['value'] !== '') {
+            $where[] = ['rt.name' , 'like' , "%{$value}%"];
+        }
+
         return self::from('xq_relation_tag as rt')
-            ->select('*' , DB::raw('count(rt.id) as total'))
+            ->select('rt.*' , DB::raw('count(rt.id) as total'))
             ->where($where)
-            ->whereRaw("lower(rt.name) like ?" , ["%{$value}%"])
             ->whereExists(function($query) use($filter){
-                if ($filter['type'] !== '') {
-                    $query->from('xq_image_subject')
-                        ->where('type' , $filter['type'])
-                        ->whereRaw('rt.relation_id = id');
+                if ($filter['type'] === '') {
+                    return ;
                 }
+                $query->from('xq_image_project')
+                    ->where('type' , $filter['type'])
+                    ->whereRaw('rt.relation_id = id');
+            })
+            ->groupBy('rt.tag_id')
+            ->orderBy('total' , 'desc')
+            ->orderBy('rt.id' , 'asc')
+            ->paginate($limit);
+    }
+
+    // 热门标签-视频专题-分页
+    public static function hotTagsWithPagerInVideoProjectByValueAndFilterAndLimit(string $value , array $filter = [] , int $limit = 20): Paginator
+    {
+        $filter['module_id'] = $filter['module_id'] ?? '';
+        $filter['type']      = $filter['type'] ?? '';
+
+        $where = [
+            ['rt.relation_type' , '=' , 'video_project'] ,
+        ];
+
+        if ($filter['module_id'] !== '') {
+            $where[] = ['rt.module_id' , '=' , $filter['module_id']];
+        }
+
+        if ($filter['value'] !== '') {
+            $where[] = ['rt.name' , 'like' , "%{$value}%"];
+        }
+
+        return self::from('xq_relation_tag as rt')
+            ->select('rt.*' , DB::raw('count(rt.id) as total'))
+            ->where($where)
+            ->whereExists(function($query) use($filter){
+                if ($filter['type'] === '') {
+                    return ;
+                }
+                $query->from('xq_video_project')
+                    ->where('type' , $filter['type'])
+                    ->whereRaw('rt.relation_id = id');
             })
             ->groupBy('rt.tag_id')
             ->orderBy('total' , 'desc')

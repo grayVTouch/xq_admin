@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Validator;
 use Mews\Captcha\Facades\Captcha;
 use function api\web\get_form_error;
 use function api\web\my_config;
+use function api\web\my_config_keys;
 use function core\current_datetime;
 use function core\random;
 
@@ -36,7 +37,7 @@ class MiscAction extends Action
         }
         $type_range = my_config_keys('business.email_code_type');
         if (!in_array($type , $type_range)) {
-            return self::error('不支持的验证码类型，当前支持的类型有：' . implode(',' , '' , $type_range));
+            return self::error('不支持的验证码类型，当前支持的类型有：' . implode(',' , $type_range));
         }
         $timestamp = current_datetime();
         $code = random(4 , 'number' , true);
@@ -60,9 +61,9 @@ class MiscAction extends Action
             EmailCodeModel::insertOrIgnore([
                 'email' => $param['email'] ,
                 'type' => $type ,
-                'used' => 0 ,
+                'is_used' => 0 ,
                 'code' => $code ,
-                'send_time' => $timestamp ,
+                'send_at' => $timestamp ,
                 'updated_at' => $timestamp ,
                 'created_at' => $timestamp ,
             ]);
@@ -71,9 +72,9 @@ class MiscAction extends Action
             EmailCodeModel::updateById($email_code->id , [
                 'email' => $param['email'] ,
                 'type' => $type ,
-                'used' => 0 ,
+                'is_used' => 0 ,
                 'code' => $code ,
-                'send_time' => $timestamp ,
+                'send_at' => $timestamp ,
                 'updated_at' => $timestamp ,
             ]);
         }

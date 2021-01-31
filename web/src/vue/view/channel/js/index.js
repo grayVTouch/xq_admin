@@ -43,17 +43,22 @@ export default {
 
         getUserById (userId) {
             this.pending('getData' , true);
-            Api.user.show(userId.then((res) => {
-                this.pending('getData' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandleAtHomeChildren(res.message , res.code);
-                    return ;
-                }
-                this.user = {...data};
+            Api.user
+                .show(userId)
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message , res.code);
+                        return ;
+                    }
+                    const data = res.data;
+                    this.user = data;
 
-                this.form.nickname = this.getUsername(data.username , data.nickname);
-                this.form.description = data.description;
-            });
+                    this.form.nickname = this.getUsername(data.username , data.nickname);
+                    this.form.description = data.description;
+                })
+                .finally(() => {
+                    this.pending('getData' , false);
+                });
         } ,
 
         initDom () {
@@ -94,58 +99,74 @@ export default {
 
         changeThumb (channelThumb) {
             this.pending('changeThumb' , true);
-            Api.user.localUpdate({
-                channel_thumb: channelThumb
-            }.then((res) => {
-                this.pending('changeThumb' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.message('error' , msg);
-                    return ;
-                }
-                this.user = {...data};
-            });
+            Api.user
+                .localUpdate({
+                    channel_thumb: channelThumb
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message);
+                        return ;
+                    }
+                    this.user = res.data;
+                })
+                .finally(() => {
+                    this.pending('changeThumb' , false);
+                });
         } ,
 
         changeAvatar (avatar) {
             this.pending('changeAvatar' , true);
-            Api.user.localUpdate({
-                avatar: avatar
-            }.then((res) => {
-                this.pending('changeAvatar' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.message('error' , msg);
-                    return ;
-                }
-                this.user = {...data};
-            });
+            Api.user
+                .localUpdate(null , {
+                    avatar: avatar
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message);
+                        return ;
+                    }
+                    this.user = res.data;
+                })
+                .finally(() => {
+                    this.pending('changeAvatar' , false);
+                });
         } ,
 
         changeNickname () {
             this.pending('changeNickname' , true);
-            Api.user.localUpdate({
-                nickname: this.form.nickname
-            }.then((res) => {
-                this.pending('changeNickname' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.message('error' , msg);
-                    return ;
-                }
-                this.user = {...data};
-            });
+            Api.user
+                .localUpdate({
+                    nickname: this.form.nickname
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message);
+                        return ;
+                    }
+                    this.user = res.data;
+                })
+                .finally(() => {
+                    this.pending('changeNickname' , false);
+                });
         } ,
 
         changeDescription () {
             this.pending('changeDescription' , true);
-            Api.user.localUpdate({
-                description: this.form.description
-            }.then((res) => {
-                this.pending('changeDescription' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.message('error' , msg);
-                    return ;
-                }
-                this.user = {...data};
-            });
+            Api.user
+                .localUpdate({
+                    description: this.form.description
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message);
+                        return ;
+                    }
+                    this.user = res.data;
+                })
+                .finally(() => {
+                    this.pending('changeDescription' , false);
+                });
         } ,
     } ,
 }

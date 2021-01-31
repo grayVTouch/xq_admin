@@ -247,26 +247,30 @@ export default {
             window.history.go(0);
         } ,
 
-        userInfo (callback) {
-            this.pending('userInfo' , true);
-            Api.user
-                .info()
-                .then((res) => {
-                    if (res.code !== TopContext.code.Success) {
-                        G.invoke(callback , null , false);
-                        if (res.code === TopContext.code.AuthFailed) {
+        userInfo () {
+            return new Promise((resolve) => {
+                this.pending('userInfo' , true);
+                Api.user
+                    .info()
+                    .then((res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            resolve(false);
+                            if (res.code === TopContext.code.AuthFailed) {
+                                return ;
+                            }
+                            this.errorHandle(res.message , res.code);
                             return ;
                         }
-                        this.errorHandle(res.message , res.code);
-                        return ;
-                    }
-                    G.s.json('user' , res.data);
-                    this.initUser();
-                    G.invoke(callback , null , true);
-                })
-                .finally(() => {
-                    this.pending('userInfo' , false);
-                });
+                        const user = res.data;
+                        G.s.json('user' , user);
+                        this.dispatch('user' , user);
+                        resolve(true);
+                    })
+                    .finally(() => {
+                        this.pending('userInfo' , false);
+                    });
+            });
+
         } ,
 
         /**
@@ -622,12 +626,6 @@ export default {
             window.history.go(0);
         } ,
 
-        // 初始化用户信息
-        initUser () {
-            const user = G.s.json('user');
-            this.dispatch('user' , user);
-        } ,
-
         showUserForm (type , callback) {
             this._val('userFormType' ,type);
             switch (type)
@@ -674,6 +672,15 @@ export default {
                 this.dom.userForm.addClass('hide');
             });
             this.userFormCallback = {...userFormCallback};
+            this.val.step.password = 'email';
+            this.resetForgetMessage();
+            this.resetForgetForm();
+            this.resetRegisterForm();
+            this.resetRegisterMessage();
+            this.resetRegisterError();
+            this.resetLoginForm();
+            this.resetLoginError();
+            this.resetLoginMessage();
         } ,
 
         loginMessage (text = '' , classname = '') {
@@ -752,15 +759,112 @@ export default {
             this.val.forgetMessage = {...forgetMessage};
         } ,
 
+        userLoginFilter () {
+            const error = {};
+            if (G.isEmptyString(this.loginForm.username)) {
+                error.username = '请填写用户名';
+            } else {
+                if (this.loginForm.username.length < 6) {
+                    error.username = '用户名的最小长度为 6 字符';
+                }
+            }
+            if (G.isEmptyString(this.loginForm.password)) {
+                error.password = '请填写密码';
+            } else {
+                if (this.loginForm.password.length < 6) {
+                    error.password = '密码的最小长度为 6 字符';
+                }
+            }
+            return {
+                status: G.isEmptyObject(error) ,
+                error ,
+            };
+        } ,
+
+        forgetFilter () {
+            const error = {};
+            if (G.isEmptyString(this.forgetForm.email)) {
+                error.email = '请填写邮箱';
+            }
+            return {
+                status: G.isEmptyObject(error) ,
+                error ,
+            };
+        } ,
+
+        userRegisterFilter () {
+            const error = {};
+            if (G.isEmptyString(this.registerForm.email)) {
+                error.email = '请填写邮箱';
+            }
+            if (G.isEmptyString(this.registerForm.password)) {
+                error.password = '请填写密码';
+            } else {
+                if (this.registerForm.password.length < 6) {
+                    error.password = '密码的最小长度为 6 字符';
+                }
+            }
+            if (G.isEmptyString(this.registerForm.confirm_password)) {
+                error.confirm_password = '请填写确认密码';
+            } else {
+                if (this.registerForm.confirm_password.length < 6) {
+                    error.confirm_password = '密码的最小长度为 6 字符';
+                }
+            }
+            if (G.isEmptyString(this.registerForm.email_code)) {
+                error.email_code = '请填写验证码';
+            }
+            return {
+                status: G.isEmptyObject(error) ,
+                error ,
+            };
+        } ,
+
+        userPasswordFilter () {
+            const error = {};
+            if (G.isEmptyString(this.forgetForm.email)) {
+                error.email = '请填写邮箱';
+            }
+            if (G.isEmptyString(this.forgetForm.password)) {
+                error.password = '请填写密码';
+            } else {
+                if (this.forgetForm.password.length < 6) {
+                    error.password = '密码的最小长度为 6 字符';
+                }
+            }
+            if (G.isEmptyString(this.forgetForm.confirm_password)) {
+                error.confirm_password = '请填写确认密码';
+            } else {
+                if (this.forgetForm.confirm_password.length < 6) {
+                    error.confirm_password = '密码的最小长度为 6 字符';
+                }
+            }
+            if (G.isEmptyString(this.forgetForm.email_code)) {
+                error.email_code = '请填写验证码';
+            }
+            return {
+                status: G.isEmptyObject(error) ,
+                error ,
+            };
+        } ,
+
+        // 用户登录
         userLogin () {
             if (this.pending('userLogin')) {
                 this.message('info' , '请求中...请耐心等待');
                 return ;
             }
+            const filterRes = this.userLoginFilter();
+            if (!filterRes.status) {
+                this.val.loginError = filterRes.error;
+                return ;
+            }
+            this.resetLoginError();
             this.pending('userLogin' , true);
             Api.user
                 .login(null , this.loginForm)
                 .then((res) => {
+                    this.resetLoginMessage();
                     if (res.code !== TopContext.code.Success) {
                         this.pending('userLogin' , false);
                         this.errorHandle(res.message);
@@ -776,25 +880,27 @@ export default {
                     }
                     this.loginMessage('登录成功，获取用户信息中...' , 'run-green');
                     // 获取用户信息
-                    this.userInfo((keep) => {
-                        this.pending('userLogin' , false);
-                        this.resetLoginForm();
-                        this.resetLoginMessage();
-                        if (!keep) {
-                            this.loginMessage('获取用户信息失败，请稍后重试' , 'run-red');
-                            return ;
-                        }
-                        while (this.userFormCallback.login.length > 0)
-                        {
-                            const callback = this.userFormCallback.login.pop();
-                            G.invoke(callback);
-                        }
-                        this.hideUserForm();
-                    });
+                    this.userInfo()
+                        .then((keep) => {
+                            this.pending('userLogin' , false);
+                            if (!keep) {
+                                this.loginMessage('获取用户信息失败，请稍后重试' , 'run-red');
+                                return ;
+                            }
+                            while (this.userFormCallback.login.length > 0)
+                            {
+                                const callback = this.userFormCallback.login.pop();
+                                G.invoke(callback);
+                            }
+                            this.hideUserForm();
+                        })
+                        .finally(() => {
+                            this.resetLoginForm();
+                            this.resetLoginMessage();
+                        });
                 })
                 .finally(() => {
-                    this.resetLoginError();
-                    this.resetLoginMessage();
+
                 });
         } ,
 
@@ -803,10 +909,17 @@ export default {
                 this.message('info' , '请求中...请耐心等待');
                 return ;
             }
+            const filterRes = this.userRegisterFilter();
+            if (!filterRes.status) {
+                this.val.registerError = filterRes.error;
+                return ;
+            }
+            this.resetRegisterError();
             this.pending('userRegister' , true);
             Api.user
                 .register(null , this.registerForm)
                 .then((res) => {
+                    this.resetRegisterMessage();
                     if (res.code !== TopContext.code.Success) {
                         this.pending('userRegister' , false);
                         this.captchaForRegister();
@@ -817,21 +930,22 @@ export default {
                     this.registerMessage('注册成功，获取用户信息中...' , 'run-green');
                     G.s.set('token' , data);
                     // 获取用户信息
-                    this.userInfo((keep) => {
-                        this.pending('userRegister' , false);
-                        this.resetRegisterForm();
-                        this.resetRegisterMessage();
-                        if (!keep) {
-                            this.registerMessage('获取用户信息失败，请稍后重试' , 'run-red');
-                            return ;
-                        }
-
-                        this.hideUserForm();
-                    });
+                    this.userInfo()
+                        .then((keep) => {
+                            this.pending('userRegister' , false);
+                            if (!keep) {
+                                this.registerMessage('获取用户信息失败，请稍后重试' , 'run-red');
+                                return ;
+                            }
+                            this.hideUserForm();
+                        })
+                        .finally(() => {
+                            this.resetRegisterForm();
+                            this.resetRegisterMessage();
+                        });
                 })
                 .finally(() => {
-                    this.resetRegisterError();
-                    this.resetRegisterMessage();
+
                 });
         } ,
 
@@ -839,10 +953,15 @@ export default {
             if (this.val.timer.password > 0) {
                 return ;
             }
+            const filterRes = this.forgetFilter();
+            if (!filterRes.status) {
+                this.val.forgetError = filterRes.error;
+                return ;
+            }
             // 发送验证码
             this.pending('sendEmailCodeForPassword' , true);
             Api.misc
-                .sendEmailCodeForPassword(null , this.forgetForm.email)
+                .sendEmailCodeForPassword(null , this.forgetForm)
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
                         this.errorHandle(res.message);
@@ -870,7 +989,7 @@ export default {
             // 发送验证码
             this.pending('sendEmailCodeForRegister' , true);
             Api.misc
-                .sendEmailCodeForRegister(null , this.registerForm.email)
+                .sendEmailCodeForRegister(null , this.registerForm)
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
                         this.errorHandle(res.message);
@@ -895,17 +1014,20 @@ export default {
                 this.message('info' , '请求中...请耐心等待');
                 return ;
             }
+            const filterRes = this.userPasswordFilter();
+            if (!filterRes.status) {
+                this.val.forgetError = filterRes.error;
+                return ;
+            }
+            this.resetForgetError();
             this.pending('updateUserPassword' , true);
             Api.user
                 .updatePassword(null , this.forgetForm)
                 .then((res) => {
+                    this.resetForgetMessage();
                     if (res.code !== TopContext.code.Success) {
                         this.pending('updateUserPassword' , false);
-                        if (G.isString(data)) {
-                            this.message('error' , msg);
-                            return ;
-                        }
-                        this.val.forgetError = {...data};
+                        this.errorHandle(res.message);
                         return ;
                     }
                     G.s.del('token');
@@ -921,8 +1043,7 @@ export default {
                     } , 1000);
                 })
                 .finally(() => {
-                    this.resetForgetError();
-                    this.resetForgetMessage();
+
                 });
         } ,
     } ,

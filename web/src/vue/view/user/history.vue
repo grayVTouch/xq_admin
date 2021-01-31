@@ -14,7 +14,7 @@
                                     <!-- 图片专题 -->
                                     <a class="item" target="_blank" :href="`#/image_project/${v.relation_id}/show`">
                                         <div class="thumb">
-                                            <div class="mask"><img :src="v.relation.thumb ? v.relation.__thumb__ : TopContext.res.notFound" v-judge-img-size class="image judge-img-size"></div>
+                                            <div class="mask"><img :src="v.relation.thumb ? v.relation.thumb : TopContext.res.notFound" v-judge-img-size class="image judge-img-size"></div>
                                         </div>
                                         <div class="info">
                                             <div class="title">

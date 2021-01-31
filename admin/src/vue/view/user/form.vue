@@ -116,6 +116,16 @@
                         </td>
                     </tr>
 
+                    <tr :class="{error: myValue.error.description}">
+                        <td>描述</td>
+                        <td>
+                            <textarea v-model="form.description" @input="myValue.error.description=''" class="form-textarea"></textarea>
+                            <span class="need"></span>
+                            <div class="msg"></div>
+                            <div class="e-msg">{{ myValue.error.description }}</div>
+                        </td>
+                    </tr>
+
                     <tr v-show="false">
                         <td colspan="2">
                             <button type="submit"></button>

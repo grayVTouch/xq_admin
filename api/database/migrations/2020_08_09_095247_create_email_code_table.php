@@ -21,7 +21,7 @@ class CreateEmailCodeTable extends Migration
             $table->string('code' , 30)->default('')->comment('验证码');
             $table->string('type' , 30)->default('')->comment('类型，比如：login-登录验证码 register-注册验证码 password-修改密码验证码 等');
             $table->tinyInteger('is_used')->default(0)->comment('是否被使用过？0-否 1-是');
-            $table->datetime('send_time')->nullable(true)->comment('发送时间');
+            $table->datetime('send_at')->nullable(true)->comment('发送时间');
 
             $table->timestamps();
 

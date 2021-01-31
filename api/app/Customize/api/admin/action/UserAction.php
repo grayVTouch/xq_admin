@@ -80,6 +80,7 @@ class UserAction extends Action
                 'email' ,
                 'sex' ,
                 'user_group_id' ,
+                'description' ,
             ]));
             ResourceUtil::used($param['avatar']);
             if ($res->avatar !== $param['avatar']) {
@@ -129,6 +130,7 @@ class UserAction extends Action
                 'email' ,
                 'sex' ,
                 'user_group_id' ,
+                'description' ,
             ]));
             ResourceUtil::used($param['avatar']);
             DB::commit();

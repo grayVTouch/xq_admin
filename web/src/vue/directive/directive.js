@@ -36,11 +36,10 @@ const judgeImgSize = (img) => {
         img.data('width' , w);
         img.data('height' , h);
 
-        // console.log(pW , pH , w , h);
-
         const pRatio = pW / pH;
         const squareRatio = 1;
         const ratio = w / h;
+        const eScaleH = pW / w * h;
         if (pRatio > squareRatio) {
             // 水平-矩形
             if (pRatio > 1.5) {
@@ -55,11 +54,14 @@ const judgeImgSize = (img) => {
                     img.addClass('vertical-for-img');
                 }
             }
-
         } else if (pRatio < squareRatio) {
             // 垂直-矩形
             if (h > pH) {
-                img.addClass('horizontal-for-img');
+                if (eScaleH < pH) {
+                    img.addClass('vertical-for-img');
+                } else {
+                    img.addClass('horizontal-for-img');
+                }
             } else if (h < pH) {
                 img.addClass('vertical-for-img');
             } else {

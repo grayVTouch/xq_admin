@@ -14,7 +14,7 @@ class ResourceModel extends Model
     {
         return self::where(function($query){
                 $query->where('used' , 0)
-                    ->orWhere('is_delete' , 1);
+                    ->orWhere('is_deleted' , 1);
             })
             ->where('id' , '>' , $limit_id)
             ->limit($limit)

@@ -1,15 +1,3 @@
-const index = `${TopContext.api}/image_project`;
-
-const imageSubject = `${TopContext.api}/image_at_position/image_project`;
-const newestWithPager = `${TopContext.api}/image_project/newest_with_pager`;
-const hotWithPager = `${TopContext.api}/image_project/hot_with_pager`;
-const hotTagsWithPager = `${TopContext.api}/image_project/hot_tags_with_pager`;
-const getWithPagerByTagIds = `${TopContext.api}/image_project/get_with_pager_by_tag_ids`;
-const categories = `${TopContext.api}/image_project/category`;
-const subjects = `${TopContext.api}/image_project/subject`;
-const hot = `${TopContext.api}/image_project/hot`;
-const getByTagId = `${TopContext.api}/image_project/{tag_id}/get_by_tag_id`;
-const getByTagIds = `${TopContext.api}/image_project/get_by_tag_ids`;
 
 export default {
 
@@ -17,40 +5,36 @@ export default {
         return Http.get(`${TopContext.api}/image_project/${id}`);
     } ,
 
-    index (data) {
-        return request(index , 'get' , data);
+    index (query) {
+        return Http.get(`${TopContext.api}/image_project` , query);
     } ,
 
-    imageSubject () {
-        return request(imageSubject , 'get' , null);
+    newestWithPager (query) {
+        return Http.get(`${TopContext.api}/image_project/newest_with_pager`, query);
     } ,
 
-    newestWithPager (data) {
-        return request(newestWithPager, 'get' , data);
-    } ,
-
-    hotWithPager (data) {
-        return request(hotWithPager, 'get' , data);
+    hotWithPager (query) {
+        return Http.get(`${TopContext.api}/image_project/hot_with_pager` , query);
     } ,
 
     hotTags (query) {
         return Http.get(`${TopContext.api}/image_project/hot_tags` , query);
     } ,
 
-    hotTagsWithPager (data) {
-        return request(hotTagsWithPager, 'get' , data);
+    hotTagsWithPager (query) {
+        return Http.get(`${TopContext.api}/image_project/hot_tags_with_pager`, query);
     } ,
 
-    getWithPagerByTagIds (data) {
-        return request(getWithPagerByTagIds , 'get' , data);
+    getWithPagerByTagIds (query) {
+        return Http.get(`${TopContext.api}/image_project/get_with_pager_by_tag_ids` , query);
     } ,
 
     categories () {
-        return request(categories , 'get' , null);
+        return Http.get(`${TopContext.api}/image_project/category`);
     } ,
 
-    subjects (data) {
-        return request(subjects , 'get' , data);
+    imageSubjects (query) {
+        return Http.get( `${TopContext.api}/image_project/image_subject` , query);
     } ,
 
     incrementViewCount (id) {
@@ -68,7 +52,7 @@ export default {
 
     // 最热的图片专题
     hot (query) {
-        return Http.get(hot , query);
+        return Http.get(`${TopContext.api}/image_project/hot` , query);
     } ,
 
     // 图片专题：根据标签返回
@@ -76,8 +60,8 @@ export default {
         return Http.get(`${TopContext.api}/image_project/${tagId}/get_by_tag_id` , query);
     } ,
 
-    getByTagIds (data) {
-        return request(getByTagIds , 'get' , data);
+    getByTagIds (query) {
+        return Http.get(`${TopContext.api}/image_project/get_by_tag_ids` , query);
     } ,
 
 };

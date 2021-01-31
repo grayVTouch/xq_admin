@@ -8,6 +8,7 @@
     justify-content: flex-start;
     align-items: flex-start;
     padding-bottom: 20px;
+    margin-top: 15px;
 }
 
 .content-mask > * {
@@ -332,6 +333,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 12px;
 }
 
 .content-mask .favorites .collections .list .loading {

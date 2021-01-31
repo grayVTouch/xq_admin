@@ -388,6 +388,9 @@
     text-align: center;
     font-size: 12px;
     color: #ccc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .misc > .inner .user > .inner .action {
