@@ -1,7 +1,6 @@
 // import base from '@vue/view/public/base.vue';
 
 import route from '@vue/router/index.js';
-import routes from '@vue/router/routes.js';
 
 import menu from '../menu.vue';
 import navigation from '../navigation.vue';
@@ -191,6 +190,8 @@ export default {
                 // time: 150 ,
                 time: 0 ,
                 ico: TopContext.res.logo ,
+                // 保留首个标签
+                saveFirst: true ,
                 created (tabId) {
                     // const tab = self.findTabByTabId(tabId);
                     // self.createTabItem(this , tab.tabId , tab.param);
