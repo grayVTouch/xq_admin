@@ -68,11 +68,13 @@ class VideoResourceHandleJob extends FileBaseJob implements ShouldQueue
                 // 处理中
                 'file_process_status' => 1 ,
             ]);
-            $video = VideoHandler::handle($video , [
-                'video_project' ,
-                'videos' ,
-                'video_subtitles' ,
-            ]);
+            $video = VideoHandler::handle($video);
+            // 附加：视频专题
+            VideoHandler::videoProject($video);
+            // 附加：视频
+            VideoHandler::videos($video);
+            // 附加：字幕
+            VideoHandler::videoSubtitles($video);
             $dir_prefix = '';
             $dirname    = '';
             if ($video->type === 'pro') {
