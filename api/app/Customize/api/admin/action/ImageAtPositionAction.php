@@ -60,6 +60,7 @@ class ImageAtPositionAction extends Action
         }
         $param['module_id'] = $module->id;
         $param['platform'] = $position->platform;
+
         try {
             DB::beginTransaction();
             ImageAtPositionModel::updateById($res->id , array_unit($param , [
