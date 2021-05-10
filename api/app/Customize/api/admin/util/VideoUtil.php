@@ -18,11 +18,12 @@ class VideoUtil
         if (empty($res)) {
             return false;
         }
-        $res = VideoHandler::handle($res , [
-            'videos' ,
-            'video_subtitles' ,
-            'video_project' ,
-        ]);
+        $res = VideoHandler::handle($res);
+
+        VideoHandler::videos($res);
+        VideoHandler::videoSubtitles($res);
+        VideoHandler::videoProject($res);
+
         ResourceUtil::delete($res->thumb);
         ResourceUtil::delete($res->thumb_for_program);
         ResourceUtil::delete($res->simple_preview);

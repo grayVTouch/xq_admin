@@ -160,10 +160,9 @@ class TagAction extends Action
             'created_at' ,
         ]));
         $tag = TagModel::find($id);
-        TagHandler::handle($tag , [
-            'module' ,
-            'user' ,
-        ]);
+        TagHandler::handle($tag);
+        TagHandler::module($tag);
+        TagHandler::user($tag);
         return self::success('' , $tag);
     }
 

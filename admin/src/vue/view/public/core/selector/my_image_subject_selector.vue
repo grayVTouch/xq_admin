@@ -1,8 +1,10 @@
 <template>
     <my-form-modal
             v-model="visible"
-            title="请选择用户"
-            :width="1000"
+            title="请选择图片主体"
+            width="75%"
+            :mask-closable="true"
+            :closable="true"
     >
         <template slot="footer">
             <i-button v-ripple type="error" @click="hide">取消</i-button>
@@ -18,7 +20,7 @@
                             ref="table"
                             class="w-r-100"
                             border
-                            :loading="myValue.pending.searchUser"
+                            :loading="myValue.pending.getData"
                             :data="table.data"
                             :columns="table.field"
                             @on-row-click="rowClickEvent"

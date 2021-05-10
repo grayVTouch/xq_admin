@@ -98,9 +98,8 @@ class VideoAction extends Action
         if (!in_array($video->file_process_status , [-1 , 0 , 2])) {
             return self::error('当前状态禁止操作，文件处理状态仅支持【待处理|处理失败|处理完成】允许更改状态' , '' , 403);
         }
-        $video = VideoHandler::handle($video , [
-            'video_project' ,
-        ]);
+        $video = VideoHandler::handle($video);
+        VideoHandler::videoProject($video);
         if ($video->type === 'pro' && empty($video->video_project)) {
             return self::error('源视频所属的视频专题不存在' , '' , 404);
         }

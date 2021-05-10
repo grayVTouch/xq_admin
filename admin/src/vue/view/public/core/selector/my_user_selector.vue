@@ -2,7 +2,9 @@
     <my-form-modal
             v-model="visible"
             title="请选择用户"
-            :width="1000"
+            width="75%"
+            :mask-closable="true"
+            :closable="true"
     >
         <template slot="footer">
             <i-button v-ripple type="error" @click="hide">取消</i-button>

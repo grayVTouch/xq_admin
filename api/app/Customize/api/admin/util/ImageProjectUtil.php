@@ -19,9 +19,8 @@ class ImageProjectUtil
         if (empty($res)) {
             return false;
         }
-        $res = ImageProjectHandler::handle($res , [
-            'images'
-        ]);
+        $res = ImageProjectHandler::handle($res);
+        ImageProjectHandler::images($res);
         ResourceUtil::delete($res->thumb);
         foreach ($res->images as $v)
         {
