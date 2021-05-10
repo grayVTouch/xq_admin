@@ -31,42 +31,70 @@ class ImageProjectHandler extends Handler
         $model->__status__  = get_config_key_mapping_value('business.status_for_image_project' , $model->status);
         $model->__process_status__  = get_config_key_mapping_value('business.image_process_status' , $model->process_status);
 
-        if (in_array('user' , $with)) {
-            $user = UserModel::find($model->user_id);
-            $user = UserHandler::handle($user);
-            $model->user = $user;
-        }
-
-        if (in_array('module' , $with)) {
-            $module = ModuleModel::find($model->module_id);
-            $module = ModuleHandler::handle($module);
-            $model->module = $module;
-        }
-        if (in_array('category' , $with)) {
-            $category = CategoryModel::find($model->category_id);
-            $category = CategoryHandler::handle($category);
-            $model->category = $category;
-        }
-        if (in_array('image_subject' , $with)) {
-            if ($model->type === 'pro') {
-                $image_subject = ImageSubjectModel::find($model->image_subject_id);
-                $image_subject = ImageSubjectHandler::handle($image_subject);
-            } else {
-                $image_subject = null;
-            }
-            $model->image_subject = $image_subject;
-        }
-        if (in_array('images' , $with)) {
-            $images = ImageModel::getByImageProjectId($model->id);
-            $images = ImageHandler::handleAll($images);
-            $model->images = $images;
-        }
-        if (in_array('tags' , $with)) {
-            $tags = RelationTagModel::getByRelationTypeAndRelationId('image_project' , $model->id);
-            $model->tags = $tags;
-        }
-
         return $model;
+    }
+
+    public static function user($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $user = UserModel::find($model->user_id);
+        $user = UserHandler::handle($user);
+        $model->user = $user;
+    }
+
+    public static function module($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $module = ModuleModel::find($model->module_id);
+        $module = ModuleHandler::handle($module);
+        $model->module = $module;
+    }
+
+    public static function category($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $category = CategoryModel::find($model->category_id);
+        $category = CategoryHandler::handle($category);
+        $model->category = $category;
+    }
+
+    public static function imageSubject($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        if ($model->type === 'pro') {
+            $image_subject = ImageSubjectModel::find($model->image_subject_id);
+            $image_subject = ImageSubjectHandler::handle($image_subject);
+        } else {
+            $image_subject = null;
+        }
+        $model->image_subject = $image_subject;
+    }
+
+    public static function images($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $images = ImageModel::getByImageProjectId($model->id);
+        $images = ImageHandler::handleAll($images);
+        $model->images = $images;
+    }
+
+    public static function tags($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $tags = RelationTagModel::getByRelationTypeAndRelationId('image_project' , $model->id);
+        $model->tags = $tags;
     }
 
 }

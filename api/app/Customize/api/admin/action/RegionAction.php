@@ -28,7 +28,7 @@ class RegionAction extends Action
             'type' => ['sometimes' , Rule::in($type_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = RegionModel::index($param , $limit);

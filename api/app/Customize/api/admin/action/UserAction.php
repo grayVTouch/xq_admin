@@ -51,7 +51,7 @@ class UserAction extends Action
         ]);
 
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
 
         // 检查用户名是否已经存在
@@ -106,7 +106,7 @@ class UserAction extends Action
         ]);
 
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
 
         $res = UserModel::findByUsername($param['username']);

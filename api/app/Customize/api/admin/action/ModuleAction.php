@@ -40,7 +40,7 @@ class ModuleAction extends Action
             'is_auth'       => ['required' , Rule::in($bool_for_int)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $res = ModuleModel::find($id);
         if (empty($res)) {
@@ -78,7 +78,7 @@ class ModuleAction extends Action
         ]);
 
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
 
         $res = ModuleModel::find($id);
@@ -130,7 +130,7 @@ class ModuleAction extends Action
         ]);
 
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
         $param['created_at']   = current_datetime();

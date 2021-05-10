@@ -33,7 +33,7 @@ class MiscAction extends Action
             'email' => 'required|email'
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $type_range = my_config_keys('business.email_code_type');
         if (!in_array($type , $type_range)) {

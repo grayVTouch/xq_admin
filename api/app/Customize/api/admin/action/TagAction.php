@@ -24,10 +24,14 @@ class TagAction extends Action
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
         $res = TagModel::index($param , $order , $limit);
-        $res = TagHandler::handlePaginator($res , [
-            'module' ,
-            'user' ,
-        ]);
+        $res = TagHandler::handlePaginator($res);
+        foreach ($res->data as $v)
+        {
+            // 附加：模块
+            TagHandler::module($v);
+            // 附加：用户
+            TagHandler::user($v);
+        }
         return self::success('' , $res);
     }
 
@@ -41,7 +45,7 @@ class TagAction extends Action
             'status'    => ['required' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $res = TagModel::find($id);
         if (empty($res)) {
@@ -87,7 +91,7 @@ class TagAction extends Action
             'status'    => ['required' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
@@ -129,7 +133,7 @@ class TagAction extends Action
             'user_id'   => 'required|integer' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
@@ -170,10 +174,13 @@ class TagAction extends Action
         if (empty($res)) {
             return self::error('标签不存在' , '' , 404);
         }
-        $res = TagHandler::handle($res , [
-            'module' ,
-            'user' ,
-        ]);
+        $res = TagHandler::handle($res);
+
+        // 附加：模块
+        TagHandler::module($res);
+        // 附加：用户
+        TagHandler::user($res);
+
         return self::success('' , $res);
     }
 

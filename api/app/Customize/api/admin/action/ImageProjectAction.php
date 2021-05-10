@@ -46,19 +46,25 @@ class ImageProjectAction extends Action
             'image_subject_id'  => 'sometimes|integer' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
         $res = ImageProjectModel::index($param , $order , $limit);
-        $res = ImageProjectHandler::handlePaginator($res , [
-            'module' ,
-            'user' ,
-            'category' ,
-            'image_subject' ,
-            'images' ,
-            'tags' ,
-        ]);
+        $res = ImageProjectHandler::handlePaginator($res);
+        foreach ($res->data as $v)
+        {
+            // 附加：模块
+            ImageProjectHandler::module($v);
+            // 附加：用户
+            ImageProjectHandler::user($v);
+            // 附加：主体
+            ImageProjectHandler::imageSubject($v);
+            // 附加：图片
+            ImageProjectHandler::images($v);
+            // 附加：标签
+            ImageProjectHandler::tags($v);
+        }
         return self::success('' , $res);
     }
 
@@ -78,7 +84,7 @@ class ImageProjectAction extends Action
             'status'        => ['required' , 'integer' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $image_project = ImageProjectModel::find($id);
         if (empty($image_project)) {
@@ -212,7 +218,7 @@ class ImageProjectAction extends Action
             'status'        => ['required' , 'integer' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         if ($param['type'] === 'pro' && $param['name'] === '') {
             return self::error('名称尚未提供');
@@ -317,14 +323,19 @@ class ImageProjectAction extends Action
         if (empty($res)) {
             return self::error('记录不存在' , '' , 404);
         }
-        $res = ImageProjectHandler::handle($res , [
-            'module' ,
-            'user' ,
-            'category' ,
-            'image_subject' ,
-            'images' ,
-            'tags' ,
-        ]);
+        $res = ImageProjectHandler::handle($res);
+
+        // 附加：模块
+        ImageProjectHandler::module($res);
+        // 附加：用户
+        ImageProjectHandler::user($res);
+        // 附加：图片主体
+        ImageProjectHandler::imageSubject($res);
+        // 附加：图片
+        ImageProjectHandler::images($res);
+        // 附加：标签
+        ImageProjectHandler::tags($res);
+
         return self::success('' , $res);
     }
 
@@ -388,7 +399,7 @@ class ImageProjectAction extends Action
             'tag_id'           => 'required|integer' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $count = RelationTagModel::delByRelationTypeAndRelationIdAndTagId('image_project' , $param['image_project_id'] , $param['tag_id']);
         return self::success('操作成功' , $count);

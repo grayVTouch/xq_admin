@@ -37,14 +37,23 @@ class VideoAction extends Action
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
         $res = VideoModel::index($param , $order , $limit);
-        $res = VideoHandler::handlePaginator($res , [
-            'user' ,
-            'module' ,
-            'category' ,
-            'video_project' ,
-            'videos' ,
-            'video_subtitles' ,
-        ]);
+        $res = VideoHandler::handlePaginator($res);
+        foreach ($res->data as $v)
+        {
+            // 附加：模块
+            VideoHandler::module($v);
+            // 附加：用户
+            VideoHandler::user($v);
+            // 附加：分类
+            VideoHandler::category($v);
+            // 附加：视频专题
+            VideoHandler::videoProject($v);
+            // 附加：视频
+            VideoHandler::videos($v);
+            // 附加：视频字幕
+            VideoHandler::videoSubtitles($v);
+        }
+
         return self::success('' , $res);
     }
 
@@ -69,7 +78,7 @@ class VideoAction extends Action
             'status'        => ['required' , 'integer' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $video = VideoModel::find($id);
         if (empty($video)) {
@@ -229,7 +238,7 @@ class VideoAction extends Action
             'merge_video_subtitle'  => ['required' , 'integer' , Rule::in($bool_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
@@ -327,14 +336,21 @@ class VideoAction extends Action
         if (empty($res)) {
             return self::error('视频不存在' , '' , 404);
         }
-        $res = VideoHandler::handle($res , [
-            'user' ,
-            'module' ,
-            'category' ,
-            'video_project' ,
-            'videos' ,
-            'video_subtitles' ,
-        ]);
+        $res = VideoHandler::handle($res);
+
+        // 附加：模块
+        VideoHandler::module($res);
+        // 附加：用户
+        VideoHandler::user($res);
+        // 附加：分类
+        VideoHandler::category($res);
+        // 附加：视频专题
+        VideoHandler::videoProject($res);
+        // 附加：视频
+        VideoHandler::videos($res);
+        // 附加：视频字幕
+        VideoHandler::videoSubtitles($res);
+
         return self::success('' , $res);
     }
 

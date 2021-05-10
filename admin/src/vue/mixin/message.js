@@ -27,7 +27,7 @@ export default {
     } ,
 
     errorHandle (message) {
-        return this.modal('error' ,'错误信息' ,  message);
+        return this.message('error' ,  message);
     } ,
 
     successHandle (callback) {

@@ -29,6 +29,13 @@ class VideoSeriesAction extends Action
             'module' ,
             'user' ,
         ]);
+        foreach ($res->data as $v)
+        {
+            // 附加：模块
+            VideoSeriesHandler::module($v);
+            // 附加：用户
+            VideoSeriesHandler::user($v);
+        }
         return self::success('' , $res);
     }
 
@@ -43,7 +50,7 @@ class VideoSeriesAction extends Action
             'status'    => ['required' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $res = VideoSeriesModel::find($id);
         if (empty($res)) {
@@ -88,7 +95,7 @@ class VideoSeriesAction extends Action
             'status'    => ['required' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         if (VideoSeriesModel::findByName($param['name'])) {
             return self::error('名称已经被使用');
@@ -127,10 +134,12 @@ class VideoSeriesAction extends Action
         if (empty($res)) {
             return self::error('记录不存在' , '' , 404);
         }
-        $res = VideoSeriesHandler::handle($res , [
-            'module' ,
-            'user' ,
-        ]);
+        $res = VideoSeriesHandler::handle($res);
+        // 附加：模块
+        VideoSeriesHandler::module($res);
+        // 附加：用户
+        VideoSeriesHandler::user($res);
+
         return self::success('' , $res);
     }
 

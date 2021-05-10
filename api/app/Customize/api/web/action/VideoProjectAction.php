@@ -41,7 +41,7 @@ class VideoProjectAction extends Action
         ]);
 
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
 
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
@@ -57,7 +57,7 @@ class VideoProjectAction extends Action
         ]);
 
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
 
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
@@ -73,7 +73,7 @@ class VideoProjectAction extends Action
         ]);
 
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
 
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
@@ -89,7 +89,7 @@ class VideoProjectAction extends Action
         ]);
 
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
 
         $tag = TagModel::find($tag_id);
@@ -114,7 +114,7 @@ class VideoProjectAction extends Action
         ]);
 
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
 
         $module = ModuleModel::find($param['module_id']);
@@ -158,7 +158,7 @@ class VideoProjectAction extends Action
         ]);
 
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
 
         $module = ModuleModel::find($param['module_id']);
@@ -199,7 +199,7 @@ class VideoProjectAction extends Action
         ]);
 
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
 
         $module = ModuleModel::find($param['module_id']);
@@ -372,7 +372,7 @@ class VideoProjectAction extends Action
         ]);
 
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
 
         $video_project = VideoProjectModel::find($video_project_id);
@@ -391,7 +391,7 @@ class VideoProjectAction extends Action
             'video_project_id' => 'required|integer' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $video_series = VideoSeriesModel::find($video_series_id);
         if (empty($video_series_id)) {

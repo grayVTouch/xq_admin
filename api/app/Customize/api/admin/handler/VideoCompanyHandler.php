@@ -25,25 +25,36 @@ class VideoCompanyHandler extends Handler
 
         $model->__status__  = get_config_key_mapping_value('business.status_for_video_company' , $model->status);
 
-        if (in_array('module' , $with)) {
-            $module = ModuleModel::find($model->module_id);
-            $module = ModuleHandler::handle($module);
-            $model->module = $module;
-        }
-
-        if (in_array('user' , $with)) {
-            $user = UserModel::find($model->user_id);
-            $user = UserHandler::handle($user);
-            $model->user = $user;
-        }
-
-        if (in_array('region' , $with)) {
-            $region = RegionModel::find($model->country_id);
-            $region = RegionHandler::handle($region);
-            $model->region = $region;
-        }
-
         return $model;
     }
 
+    public static function user($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $user = UserModel::find($model->user_id);
+        $user = UserHandler::handle($user);
+        $model->user = $user;
+    }
+
+    public static function module($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $module = ModuleModel::find($model->module_id);
+        $module = ModuleHandler::handle($module);
+        $model->module = $module;
+    }
+
+    public static function region($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $region = RegionModel::find($model->country_id);
+        $region = RegionHandler::handle($region);
+        $model->region = $region;
+    }
 }

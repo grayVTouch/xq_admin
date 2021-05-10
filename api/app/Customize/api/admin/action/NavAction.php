@@ -57,7 +57,7 @@ class NavAction extends Action
             'is_enabled'   => ['sometimes', Rule::in($bool_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $nav = NavModel::find($id);
         if (empty($nav)) {
@@ -94,7 +94,7 @@ class NavAction extends Action
             'type'    => 'required',
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $nav = NavModel::find($id);
         if (empty($nav)) {
@@ -128,7 +128,7 @@ class NavAction extends Action
             'type'    => 'required',
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $param['created_at'] = current_datetime();

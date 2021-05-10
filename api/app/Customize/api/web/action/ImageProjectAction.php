@@ -45,7 +45,7 @@ class ImageProjectAction extends Action
             'type'      => ['required' , Rule::in($type_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = ImageProjectModel::getNewestByFilterAndLimit($param , $limit);
@@ -74,7 +74,7 @@ class ImageProjectAction extends Action
         ]);
 
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = ImageProjectModel::getHotByFilterAndLimit($param , $limit);
@@ -101,7 +101,7 @@ class ImageProjectAction extends Action
             'type'      => ['required' , Rule::in($type_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $tag = TagModel::find($tag_id);
         if (empty($tag)) {
@@ -152,7 +152,7 @@ class ImageProjectAction extends Action
             'type'      => ['required' , Rule::in($type_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = ImageProjectModel::getHotWithPagerByFilterAndLimit($param , $limit);
@@ -175,7 +175,7 @@ class ImageProjectAction extends Action
             'type'      => ['required' , Rule::in($type_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
@@ -220,7 +220,7 @@ class ImageProjectAction extends Action
         ]);
 
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
 
         $module = ModuleModel::find($param['module_id']);
@@ -263,7 +263,7 @@ class ImageProjectAction extends Action
             'module_id' => 'required|integer' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {

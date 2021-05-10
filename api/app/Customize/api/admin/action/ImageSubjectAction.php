@@ -14,7 +14,6 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use function api\admin\get_form_error;
 use function api\admin\my_config;
 use function api\admin\my_config_keys;
 use function api\admin\parse_order;
@@ -32,6 +31,13 @@ class ImageSubjectAction extends Action
             'module' ,
             'user' ,
         ]);
+        foreach ($res->data as $v)
+        {
+            // 附加：模块
+            ImageSubjectHandler::module($v);
+            // 附加：用户
+            ImageSubjectHandler::user($v);
+        }
         return self::success('' , $res);
     }
 
@@ -45,7 +51,7 @@ class ImageSubjectAction extends Action
             'status'    => ['required' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $res = ImageSubjectModel::find($id);
         if (empty($res)) {
@@ -106,7 +112,7 @@ class ImageSubjectAction extends Action
             'status'    => ['required' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
@@ -157,10 +163,13 @@ class ImageSubjectAction extends Action
         if (empty($res)) {
             return self::error('关联主体不存在' , '' , 404);
         }
-        $res = ImageSubjectHandler::handle($res , [
-            'module' ,
-            'user' ,
-        ]);
+        $res = ImageSubjectHandler::handle($res);
+
+        // 附加：模块
+        ImageSubjectHandler::module($res);
+        // 附加：用户
+        ImageSubjectHandler::user($res);
+
         return self::success('' , $res);
     }
 

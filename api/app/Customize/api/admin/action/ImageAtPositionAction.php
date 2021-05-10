@@ -36,7 +36,7 @@ class ImageAtPositionAction extends Action
             'src'          => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $res = ImageAtPositionModel::find($id);
         if (empty($res)) {
@@ -82,7 +82,7 @@ class ImageAtPositionAction extends Action
             'src'          => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {

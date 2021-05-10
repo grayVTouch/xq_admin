@@ -7,7 +7,6 @@ namespace App\Customize\api\admin\action;
 
 use App\Customize\api\admin\handler\AdminHandler;
 use App\Customize\api\admin\model\AdminModel;
-use App\Customize\api\admin\model\ResourceModel;
 use App\Customize\api\admin\util\ResourceUtil;
 use App\Http\Controllers\api\admin\Base;
 use Exception;
@@ -36,6 +35,13 @@ class AdminAction extends Action
         }
         $res = AdminModel::search($value);
         $res = AdminHandler::handleAll($res);
+        foreach ($res as $v)
+        {
+            // 附加：权限
+            AdminHandler::permissions($v);
+            // 附加：角色
+            AdminHandler::role($v);
+        }
         return self::success('' , $res);
     }
 
@@ -45,6 +51,13 @@ class AdminAction extends Action
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
         $res = AdminModel::index($param , $order , $limit);
         $res = AdminHandler::handlePaginator($res);
+        foreach ($res->data as $v)
+        {
+            // 附加：权限
+            AdminHandler::permissions($v);
+            // 附加：角色
+            AdminHandler::role($v);
+        }
         return self::success('' , $res);
     }
 
@@ -52,12 +65,12 @@ class AdminAction extends Action
     {
         $sex_range = my_config_keys('business.sex');
         $validator = Validator::make($param , [
-            'username' => 'required|min:4' ,
-            'sex' => ['required' , Rule::in($sex_range)] ,
-            'role_id' => 'required|integer' ,
+            'username'  => 'required|min:4' ,
+            'sex'       => ['required' , Rule::in($sex_range)] ,
+            'role_id'   => 'required|integer' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         // 检查用户名是否已经存在
         $res = AdminModel::find($id);
@@ -108,7 +121,7 @@ class AdminAction extends Action
             'role_id'   => 'required|integer' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $res = AdminModel::findByUsername($param['username']);
         if (!empty($res)) {
@@ -143,6 +156,11 @@ class AdminAction extends Action
             return self::error('用户不存在' , '' , 404);
         }
         $res = AdminHandler::handle($res);
+        // 附加：角色
+        AdminHandler::role($res);
+        // 附加：权限
+        AdminHandler::permissions($res);
+
         return self::success('' , $res);
     }
 

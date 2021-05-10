@@ -32,14 +32,21 @@ class VideoProjectAction extends Action
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
         $res = VideoProjectModel::index($param , $order , $limit);
-        $res = VideoProjectHandler::handlePaginator($res , [
-            'module' ,
-            'user' ,
-            'video_series' ,
-            'video_company' ,
-            'category' ,
-            'tags' ,
-        ]);
+        $res = VideoProjectHandler::handlePaginator($res);
+        foreach ($res->data as $v)
+        {
+            // 附加：模块
+            VideoProjectHandler::module($v);
+            // 附加：用户
+            VideoProjectHandler::user($v);
+            // 附加：系列
+            VideoProjectHandler::videoSeries($v);
+            // 附加：公司
+            VideoProjectHandler::videoCompany($v);
+            // 附加：标签
+            VideoProjectHandler::tags($v);
+        }
+
         return self::success('' , $res);
     }
 
@@ -64,7 +71,7 @@ class VideoProjectAction extends Action
             'category_id'       => 'required|integer' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $video_project = VideoProjectModel::find($id);
         if (empty($video_project)) {
@@ -195,7 +202,7 @@ class VideoProjectAction extends Action
             'max_index'           => 'required|integer' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         if (VideoProjectModel::findByName($param['name'])) {
             return self::error('名称已经被使用');
@@ -299,14 +306,19 @@ class VideoProjectAction extends Action
         if (empty($res)) {
             return self::error('关联主体不存在' , '' , 404);
         }
-        $res = VideoProjectHandler::handle($res , [
-            'module' ,
-            'user' ,
-            'video_series' ,
-            'video_company' ,
-            'category' ,
-            'tags' ,
-        ]);
+        $res = VideoProjectHandler::handle($res);
+
+        // 附加：模块
+        VideoProjectHandler::module($res);
+        // 附加：用户
+        VideoProjectHandler::user($res);
+        // 附加：系列
+        VideoProjectHandler::videoSeries($res);
+        // 附加：公司
+        VideoProjectHandler::videoCompany($res);
+        // 附加：标签
+        VideoProjectHandler::tags($res);
+
         return self::success('' , $res);
     }
 
@@ -356,7 +368,7 @@ class VideoProjectAction extends Action
             'tag_id'           => 'required|integer' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $count = RelationTagModel::delByRelationTypeAndRelationIdAndTagId('video_project' , $param['video_project_id'] , $param['tag_id']);
         return self::success('操作成功' , $count);

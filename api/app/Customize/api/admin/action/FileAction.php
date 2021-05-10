@@ -23,7 +23,7 @@ class FileAction extends Action
             'file' => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $dir        = date('Ymd');
         $path       = FileUtil::upload($file , $dir);
@@ -50,7 +50,7 @@ class FileAction extends Action
             'file' => 'required|mimes:jpg,jpeg,png,gif' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $dir        = date('Ymd');
         $path       = FileUtil::upload($file , $dir);
@@ -100,7 +100,7 @@ class FileAction extends Action
             'file' => 'required|mimes:mp4,mov,mkv,avi,flv,rm,rmvb,ts' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $dir        = date('Ymd');
         $path       = FileUtil::upload($file , $dir);
@@ -117,7 +117,7 @@ class FileAction extends Action
             'file' => 'required|mimes:ass,idx,sub,srt,vtt,ssa' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
 //        $extension = $file->getClientOriginalExtension();
 //        $ext_range = ['ass' , 'idx' , 'sub' , 'srt' , 'vtt' , 'ssa'];
@@ -139,7 +139,7 @@ class FileAction extends Action
             'file' => 'required|mimes:doc,docx,xls,xlsx' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $dir        = date('Ymd');
         $path       = FileUtil::upload($file , $dir);

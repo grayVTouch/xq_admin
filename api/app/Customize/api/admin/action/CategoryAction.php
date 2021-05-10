@@ -27,6 +27,15 @@ class CategoryAction extends Action
             'parent' ,
             'user' ,
         ]);
+        foreach ($res as $v)
+        {
+            // 附加：模块
+            CategoryHandler::module($v);
+            // 附加：用户
+            CategoryHandler::user($v);
+            // 附加：主体
+            CategoryHandler::parent($v , false);
+        }
         $res = object_to_array($res);
         $res = Category::childrens(0 , $res , [
             'id'    => 'id' ,
@@ -57,7 +66,7 @@ class CategoryAction extends Action
             'module_id'    => 'sometimes|integer',
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $category = CategoryModel::find($id);
         if (empty($category)) {
@@ -94,7 +103,7 @@ class CategoryAction extends Action
             'type'          => 'required',
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $category = CategoryModel::find($id);
         if (empty($category)) {
@@ -136,7 +145,7 @@ class CategoryAction extends Action
             'type'          => 'required',
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
@@ -169,11 +178,15 @@ class CategoryAction extends Action
         if (empty($category)) {
             return self::error('分类不存在' , '' , 404);
         }
-        $category = CategoryHandler::handle($category , [
-            'module' ,
-            'parent' ,
-            'user' ,
-        ]);
+        $category = CategoryHandler::handle($category);
+
+        // 附加：模块
+        CategoryHandler::module($category);
+        // 附加：用户
+        CategoryHandler::user($category);
+        // 附加：主体
+        CategoryHandler::parent($category , false);
+
         return self::success('' , $category);
     }
 

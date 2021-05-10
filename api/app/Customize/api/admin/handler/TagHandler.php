@@ -23,18 +23,28 @@ class TagHandler extends Handler
 
         $model->__status__ = get_config_key_mapping_value('business.status_for_tag' , $model->status);
 
-        if (in_array('user' , $with)) {
-            $user = UserModel::find($model->user_id);
-            $user = UserHandler::handle($user);
-            $model->user = $user;
-        }
-        if (in_array('module' , $with)) {
-            $module = ModuleModel::find($model->module_id);
-            $module = ModuleHandler::handle($module);
-            $model->module = $module;
-        }
-
         return $model;
+    }
+
+
+    public static function user($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $user = UserModel::find($model->user_id);
+        $user = UserHandler::handle($user);
+        $model->user = $user;
+    }
+
+    public static function module($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $module = ModuleModel::find($model->module_id);
+        $module = ModuleHandler::handle($module);
+        $model->module = $module;
     }
 
 }

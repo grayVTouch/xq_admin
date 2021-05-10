@@ -33,47 +33,71 @@ class VideoHandler extends Handler
         $model->__video_process_status__    = get_config_key_mapping_value('business.video_process_status' , $model->video_process_status);
         $model->__file_process_status__    = get_config_key_mapping_value('business.video_file_process_status' , $model->file_process_status);
 
-        if (in_array('user' , $with)) {
-            $user = UserModel::find($model->user_id);
-            $user = UserHandler::handle($user);
-            $model->user = $user;
-        }
-        if (in_array('module' , $with)) {
-            $module = ModuleModel::find($model->module_id);
-            $module = ModuleHandler::handle($module);
-            $model->module = $module;
-        }
-        if (in_array('category' , $with)) {
-            $category = CategoryModel::find($model->category_id);
-            $category = CategoryHandler::handle($category);
-            $model->category = $category;
-        }
-        if (in_array('video_project' , $with)) {
-            if ($model->type === 'pro') {
-                $video_project = VideoProjectModel::find($model->video_project_id);
-                $video_project = VideoProjectHandler::handle($video_project , [
-                    'video_series' ,
-                    'video_company' ,
-                    'category' ,
-                    'tags' ,
-                ]);
-            } else {
-                $video_project = null;
-            }
-            $model->video_project = $video_project;
-        }
-        if (in_array('videos' , $with)) {
-            $videos = VideoSrcModel::getByVideoId($model->id);
-            $videos = VideoSrcHandler::handleAll($videos);
-            $model->videos = $videos;
-        }
-        if (in_array('video_subtitles' , $with)) {
-            $video_subtitles = VideoSubtitleModel::getByVideoId($model->id);
-            $video_subtitles = VideoSubtitleHandler::handleAll($video_subtitles);
-            $model->video_subtitles = $video_subtitles;
-        }
-
         return $model;
+    }
+
+    public static function user($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $user = UserModel::find($model->user_id);
+        $user = UserHandler::handle($user);
+        $model->user = $user;
+    }
+
+    public static function module($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $module = ModuleModel::find($model->module_id);
+        $module = ModuleHandler::handle($module);
+        $model->module = $module;
+    }
+
+    public static function category($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $category = CategoryModel::find($model->category_id);
+        $category = CategoryHandler::handle($category);
+        $model->category = $category;
+    }
+
+    public static function videoProject($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        if ($model->type === 'pro') {
+            $video_project = VideoProjectModel::find($model->video_project_id);
+            $video_project = VideoProjectHandler::handle($video_project);
+        } else {
+            $video_project = null;
+        }
+        $model->video_project = $video_project;
+    }
+
+    public static function videos($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $videos = VideoSrcModel::getByVideoId($model->id);
+        $videos = VideoSrcHandler::handleAll($videos);
+        $model->videos = $videos;
+    }
+
+    public static function videoSubtitles($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $video_subtitles = VideoSubtitleModel::getByVideoId($model->id);
+        $video_subtitles = VideoSubtitleHandler::handleAll($video_subtitles);
+        $model->video_subtitles = $video_subtitles;
     }
 
 }

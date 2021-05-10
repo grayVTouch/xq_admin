@@ -28,11 +28,16 @@ class VideoCompanyAction extends Action
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
         $res = VideoCompanyModel::index($param , $order , $limit);
-        $res = VideoCompanyHandler::handlePaginator($res , [
-            'module' ,
-            'user' ,
-            'region' ,
-        ]);
+        $res = VideoCompanyHandler::handlePaginator($res);
+        foreach ($res->data as $v)
+        {
+            // 附加：模块
+            VideoCompanyHandler::module($v);
+            // 附加：用户
+            VideoCompanyHandler::user($v);
+            // 附加：主体
+            VideoCompanyHandler::region($v);
+        }
         return self::success('' , $res);
     }
 
@@ -48,7 +53,7 @@ class VideoCompanyAction extends Action
             'status'        => ['required' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $res = VideoCompanyModel::find($id);
         if (empty($res)) {
@@ -114,7 +119,7 @@ class VideoCompanyAction extends Action
             'status'        => ['required' , Rule::in($status_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         if (VideoCompanyModel::findByName($param['name'])) {
             return self::error('名称已经被使用');
@@ -171,11 +176,15 @@ class VideoCompanyAction extends Action
         if (empty($res)) {
             return self::error('记录不存在' , '' , 404);
         }
-        $res = VideoCompanyHandler::handle($res , [
-            'module' ,
-            'user' ,
-            'region' ,
-        ]);
+        $res = VideoCompanyHandler::handle($res);
+
+        // 附加：模块
+        VideoCompanyHandler::module($res);
+        // 附加：用户
+        VideoCompanyHandler::user($res);
+        // 附加：地区
+        VideoCompanyHandler::region($res);
+
         return self::success('' , $res);
     }
 

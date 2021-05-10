@@ -47,7 +47,7 @@ class AdminPermissionAction extends Action
             'p_id'    => 'sometimes|integer',
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $permission = AdminPermissionModel::find($id);
         if (empty($permission)) {
@@ -97,7 +97,7 @@ class AdminPermissionAction extends Action
             'weight'    => 'sometimes|integer',
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $permission = AdminPermissionModel::find($id);
         if (empty($permission)) {
@@ -135,7 +135,7 @@ class AdminPermissionAction extends Action
             'p_id'    => 'required|integer',
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $id = AdminPermissionModel::insertGetId(array_unit($param , [

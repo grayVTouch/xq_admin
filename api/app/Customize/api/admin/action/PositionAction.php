@@ -35,7 +35,7 @@ class PositionAction extends Action
             'platform' => ['required' , Rule::in($platform_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $res = PositionModel::find($id);
         if (empty($res)) {
@@ -59,7 +59,7 @@ class PositionAction extends Action
             'platform' => ['required' , Rule::in($platform_range)] ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $res = PositionModel::getByPlatformAndValue($param['platform'] , $param['value']);
         if (!empty($tag)) {

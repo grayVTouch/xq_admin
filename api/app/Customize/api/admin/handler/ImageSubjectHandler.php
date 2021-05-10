@@ -23,21 +23,30 @@ class ImageSubjectHandler extends Handler
         $model = convert_object($model);
 
         $model->__status__  = get_config_key_mapping_value('business.status_for_image_subject' , $model->status);
+
         $model->__attr__    = empty($model->attr) ? [] : json_decode($model->attr , true);
 
-        if (in_array('module' , $with)) {
-            $module = ModuleModel::find($model->module_id);
-            $module = ModuleHandler::handle($module);
-            $model->module = $module;
-        }
-
-        if (in_array('user' , $with)) {
-            $user = UserModel::find($model->user_id);
-            $user = UserHandler::handle($user);
-            $model->user = $user;
-        }
-
         return $model;
+    }
+
+    public static function user($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $user = UserModel::find($model->user_id);
+        $user = UserHandler::handle($user);
+        $model->user = $user;
+    }
+
+    public static function module($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $module = ModuleModel::find($model->module_id);
+        $module = ModuleHandler::handle($module);
+        $model->module = $module;
     }
 
 }

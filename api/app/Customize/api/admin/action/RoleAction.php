@@ -40,7 +40,7 @@ class RoleAction extends Action
             'name' => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $role = RoleModel::find($id);
         if (empty($role)) {
@@ -60,7 +60,7 @@ class RoleAction extends Action
             'name' => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $param['weight'] = $param['weight'] === '' ? 0 : $param['weight'];
         $id = RoleModel::insertGetId(array_unit($param , [
@@ -114,7 +114,7 @@ class RoleAction extends Action
             'permission' => 'required' ,
         ]);
         if ($validator->fails()) {
-            return self::error($validator->errors()->first() , get_form_error($validator));
+            return self::error($validator->errors()->first() , $validator->errors());
         }
         $role = RoleModel::find($id);
         if (empty($role)) {
