@@ -25,7 +25,7 @@
                             :columns="table.field"
                             @on-row-click="rowClickEvent">
                         <template v-slot:avatar="{row,index}">
-                            <my-table-preview :src="row.avatar"></my-table-preview>
+                            <my-table-image-preview :src="row.avatar"></my-table-image-preview>
                         </template>
                         <template v-slot:action="{row,index}"><my-table-button>选择</my-table-button></template>
                     </i-table>

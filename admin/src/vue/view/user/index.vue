@@ -58,7 +58,7 @@
                     @on-sort-change="sortChangeEvent"
             >
                 <template v-slot:avatar="{row,index}">
-                    <my-table-preview :src="row.avatar"></my-table-preview>
+                    <my-table-image-preview :src="row.avatar"></my-table-image-preview>
                 </template>
 
                 <template v-slot:is_system="{row,index}"><b :class="{'run-green': row.is_system === 1 , 'run-red': row.is_system === 0}">{{ row.__is_system__ }}</b></template>

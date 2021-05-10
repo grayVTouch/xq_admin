@@ -75,7 +75,7 @@
                     @on-sort-change="sortChangeEvent"
             >
                 <template v-slot:thumb="{row,index}">
-                    <my-table-preview :src="row.thumb"></my-table-preview>
+                    <my-table-image-preview :src="row.thumb"></my-table-image-preview>
                 </template>
                 <template v-slot:user_id="{row,index}">
                     {{ row.user ? `${row.user.username}【${row.user.id}】` : `unknow【${row.user_id}】` }}

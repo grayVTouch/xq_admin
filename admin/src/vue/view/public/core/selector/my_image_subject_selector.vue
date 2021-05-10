@@ -26,7 +26,7 @@
                             @on-row-click="rowClickEvent"
                     >
                         <template v-slot:thumb="{row,index}">
-                            <my-table-preview :src="row.thumb"></my-table-preview>
+                            <my-table-image-preview :src="row.thumb"></my-table-image-preview>
                         </template>
                         <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
                         <template v-slot:action="{row,index}"><my-table-button>选择</my-table-button></template>

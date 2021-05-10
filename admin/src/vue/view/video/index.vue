@@ -75,14 +75,19 @@
                     @on-row-dblclick="rowDblclickEvent"
                     @on-sort-change="sortChangeEvent"
             >
-                <template v-slot:thumb="{row,index}"><my-table-preview :src="row.thumb"></my-table-preview></template>
-                <template v-slot:thumb_for_program="{row,index}"><my-table-preview :src="row.thumb_for_program"></my-table-preview></template>
+                <template v-slot:thumb="{row,index}"><my-table-image-preview :src="row.thumb"></my-table-image-preview></template>
+                <template v-slot:thumb_for_program="{row,index}"><my-table-image-preview :src="row.thumb_for_program"></my-table-image-preview></template>
                 <template v-slot:simple_preview="{row,index}">
-                    <Tooltip content="点击播放" placement="right" :transfer="true">
-                        <video :src="row.simple_preview" @click="restartPlayVideo" :height="TopContext.table.imageH"></video>
-                    </Tooltip>
+                    <my-table-video-preview :src="row.simple_preview"></my-table-video-preview>
                 </template>
-                <template v-slot:preview="{row,index}"><my-table-preview :src="row.preview"></my-table-preview></template>
+                <template v-slot:preview="{row,index}">
+                    <i-poptip trigger="hover" placement="right" :transfer="true">
+                        <i-button @click.stop="openWindow(row.src)">悬浮预览</i-button>
+                        <div slot="content" class="my-table-image-preview">
+                            <img :src="src ? src : TopContext.res.notFound" class="image" @click.stop="openWindow(src)" alt="" />
+                        </div>
+                    </i-poptip>
+                </template>
                 <template v-slot:user_id="{row,index}">
                     {{ row.user ? `${row.user.username}【${row.user.id}】` : `unknow【${row.user_id}】` }}
                 </template>
@@ -113,7 +118,6 @@
         </template>
 
         <my-form ref="form" :id="current.id" :mode="myValue.mode" @on-success="getData"></my-form>
-
     </my-base>
 </template>
 

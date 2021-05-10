@@ -55,7 +55,7 @@
                     {{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}
                 </template>
                 <template v-slot:src="{row , index}">
-                    <my-table-preview :src="row.src"></my-table-preview>
+                    <my-table-image-preview :src="row.src"></my-table-image-preview>
                 </template>
             </i-table>
         </template>

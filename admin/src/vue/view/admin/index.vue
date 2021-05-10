@@ -69,7 +69,7 @@
             >
                 <template v-slot:role_id="{row,index}">{{ row.role ? `${row.role.name}【${row.role.id}】` : `unknow【${row.role_id}】` }}</template>
                 <template v-slot:avatar="{row,index}">
-                    <my-table-preview :src="row.avatar"></my-table-preview>
+                    <my-table-image-preview :src="row.avatar"></my-table-image-preview>
                 </template>
                 <template v-slot:is_root="{row,index}">
                     <b :class="{green: row.is_root === 1 , red: row.is_root === 0}">{{ row.__is_root__ }}</b>

@@ -313,7 +313,7 @@
                                                 @on-row-click="rowClickEvent"
                                         >
                                             <template v-slot:path="{row,index}">
-                                                <my-table-preview :src="row.src"></my-table-preview>
+                                                <my-table-image-preview :src="row.src"></my-table-image-preview>
                                             </template>
                                             <template v-slot:action="{row,index}">
                                                 <my-table-button :loading="myValue.pending['delete_' + row.id]" @click="destroyEvent(index , row)">删除</my-table-button>

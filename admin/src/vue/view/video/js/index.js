@@ -26,6 +26,7 @@ export default {
                 pending: {},
                 error: {},
                 mode: '',
+                simpleVideoPreview: '' ,
             },
             table: {
                 field: [
@@ -354,10 +355,15 @@ export default {
         } ,
 
         // 重新播放视频
-        restartPlayVideo: function(e){
-            const tar = e.currentTarget;
-            tar.currentTime = 0;
-            tar.play();
+        restartPlayVideo: function(row){
+            // const tar = e.currentTarget;
+            // tar.currentTime = 0;
+            // tar.play();
+
+            // 视频简略预览
+            this.myValue.simpleVideoPreview = row.simple_preview;
+            // 视频播放
+            this.$refs['video-preview'].show();
         } ,
 
         // 批量：事件：重新处理视频

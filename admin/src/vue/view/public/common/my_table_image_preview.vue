@@ -1,7 +1,7 @@
 <template>
     <i-poptip trigger="hover" placement="right" :transfer="true">
         <img :src="src ? src : TopContext.res.notFound" :height="TopContext.table.imageH" class="image" @click.stop="openWindow(src)" alt="" />
-        <div slot="content" class="table-preview-image-style">
+        <div slot="content" class="my-table-image-preview">
             <img :src="src ? src : TopContext.res.notFound" class="image" @click.stop="openWindow(src)" alt="" />
         </div>
     </i-poptip>
@@ -9,7 +9,7 @@
 
 <script>
     export default {
-        name: "my-table-preview" ,
+        name: "my-table-image-preview" ,
 
         props: {
             src: {
@@ -25,11 +25,11 @@
      * 表格大图预览样式
      * ***************
      */
-    .table-preview-image-style {
+    .my-table-image-preview {
 
     }
 
-    .table-preview-image-style .image {
+    .my-table-image-preview .image {
         max-width: 400px;
     }
 

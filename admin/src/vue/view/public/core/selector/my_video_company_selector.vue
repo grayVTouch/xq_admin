@@ -1,8 +1,10 @@
 <template>
     <my-form-modal
             v-model="visible"
-            title="请选择"
-            :width="1000"
+            title="请选择视频制作公司"
+            width="75%"
+            :mask-closable="true"
+            :closable="true"
     >
         <template slot="footer">
             <i-button v-ripple type="error" @click="hide">取消</i-button>
@@ -23,7 +25,7 @@
                             :columns="table.field"
                             @on-row-click="rowClickEvent">
                         <template v-slot:avatar="{row,index}">
-                            <my-table-preview :src="row.avatar"></my-table-preview>
+                            <my-table-image-preview :src="row.avatar"></my-table-image-preview>
                         </template>
                         <template v-slot:action="{row,index}"><my-table-button>选择</my-table-button></template>
                     </i-table>
