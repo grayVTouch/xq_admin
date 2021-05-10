@@ -1,6 +1,6 @@
 export default {
-    uploadImage (param , file) {
-        return Http.post(TopContext.uploadImageApi , param , G.formData('file' , file));
+    uploadImage (query , file) {
+        return Http.post(TopContext.uploadImageApi , query , G.formData('file' , file));
     } ,
 
     uploadVideo (file) {

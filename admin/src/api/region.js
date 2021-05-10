@@ -7,8 +7,8 @@ export default {
         return Http.get(country);
     } ,
 
-    search (param) {
-        return Http.get(search , param);
+    search (query) {
+        return Http.get(search , query);
     } ,
 
 };

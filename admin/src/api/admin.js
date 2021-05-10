@@ -10,8 +10,8 @@ const destroyAll = genUrl('destroy_all_admin');
 
 export default {
 
-    index (param) {
-        return Http.get(index , param);
+    index (query) {
+        return Http.get(index , query);
     } ,
 
     localUpdate (id , data) {

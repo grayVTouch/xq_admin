@@ -9,12 +9,12 @@ const topByModuleId = genUrl('top_by_module_id');
 const findOrCreateTag = genUrl('find_or_create_tag');
 
 export default {
-    index (param) {
-        return Http.get(index , param);
+    index (query) {
+        return Http.get(index , query);
     } ,
 
-    localUpdate (id , param) {
-        return Http.patch(localUpdate.replace('{id}' , id) , param);
+    localUpdate (id , query) {
+        return Http.patch(localUpdate.replace('{id}' , id) , query);
     } ,
 
     update (id , data) {

@@ -8,8 +8,8 @@ const destroyAll = genUrl('destroy_all_disk');
 const linkDisk = genUrl('link_disk');
 
 export default {
-    index (param) {
-        return Http.get(index , param);
+    index (query) {
+        return Http.get(index , query);
     } ,
 
     localUpdate (id , data) {

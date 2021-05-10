@@ -3,7 +3,6 @@ export default {
         if (!G.isValid(val)) {
             return this.myValue.pending[key];
         }
-        this.myValue.pending[key] = val;
         this.myValue.pending = {...this.myValue.pending , ...{[key]: val}};
     } ,
 
@@ -26,7 +25,6 @@ export default {
         if (!G.isValid(val)) {
             return this.myValue.select[key];
         }
-        this.myValue.select[key] = val;
         this.myValue.select = {...this.myValue.select , ...{[key]: val}};
     } ,
 

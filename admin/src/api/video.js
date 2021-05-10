@@ -8,8 +8,8 @@ const destroyVideos = genUrl('destroy_videos');
 const retryProcessVideo = genUrl('retry_process_video');
 
 export default {
-    index (param) {
-        return Http.get(index , param);
+    index (query) {
+        return Http.get(index , query);
     } ,
 
     localUpdate (id , data) {

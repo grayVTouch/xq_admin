@@ -27,10 +27,7 @@ class ImageSubjectAction extends Action
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
         $res = ImageSubjectModel::index($param , $order , $limit);
-        $res = ImageSubjectHandler::handlePaginator($res , [
-            'module' ,
-            'user' ,
-        ]);
+        $res = ImageSubjectHandler::handlePaginator($res);
         foreach ($res->data as $v)
         {
             // 附加：模块
@@ -216,10 +213,14 @@ class ImageSubjectAction extends Action
         }
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = ImageSubjectModel::search($param['module_id'] , $param['value'] , $limit);
-        $res = ImageSubjectHandler::handlePaginator($res , [
-            'module' ,
-            'user' ,
-        ]);
+        $res = ImageSubjectHandler::handlePaginator($res);
+        foreach ($res->data as $v)
+        {
+            // 附加：用户
+            ImageSubjectHandler::user($v);
+            // 附加：模块
+            ImageSubjectHandler::module($v);
+        }
         return self::success('' , $res);
     }
 }

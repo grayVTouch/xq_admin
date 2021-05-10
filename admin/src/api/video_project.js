@@ -8,8 +8,8 @@ const search = genUrl('search_video_project');
 const destroyTag = genUrl('destroy_video_project_tag');
 
 export default {
-    index (param) {
-        return Http.get(index , param);
+    index (query) {
+        return Http.get(index , query);
     } ,
 
     localUpdate (id , data) {
@@ -38,8 +38,8 @@ export default {
         })
     } ,
 
-    search (param) {
-        return Http.get(search , param);
+    search (query) {
+        return Http.get(search , query);
     } ,
 
     destroyTag (data) {

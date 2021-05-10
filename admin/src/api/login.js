@@ -6,7 +6,7 @@ export default {
         return Http.post(login , null , data);
     } ,
 
-    avatar (param) {
-        return Http.get(avatar , param);
+    avatar (query) {
+        return Http.get(avatar , query);
     } ,
 };

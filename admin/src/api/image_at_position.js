@@ -6,8 +6,8 @@ const destroy = genUrl('image_at_position/{id}');
 const destroyAll = genUrl('destroy_all_image_at_position');
 export default {
 
-    index (param) {
-        return Http.get(index , param);
+    index (query) {
+        return Http.get(index , query);
     } ,
 
     localUpdate (id , data) {

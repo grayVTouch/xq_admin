@@ -21,7 +21,7 @@ G.ajax.responded = function(data , code){
 
 window.Http = {
     // 请求
-    ajax (url , method , param , data) {
+    ajax (url , method , query , data) {
         return new Promise((resolve , reject) => {
             const token = G.cookie.get('token');
             return G.ajax({
@@ -33,7 +33,7 @@ window.Http = {
                     // 接收的服务端响应的数据类型
                     Accept: 'application/json' ,
                 } ,
-                param ,
+                query ,
                 data ,
                 success (data , code) {
                     data.code = code;
@@ -49,27 +49,27 @@ window.Http = {
         });
     } ,
 
-    get (url , param) {
-        return this.ajax(url , 'get' , param);
+    get (url , query) {
+        return this.ajax(url , 'get' , query);
     } ,
 
-    post (url , param , data) {
-        return this.ajax(url , 'post' , param , data);
+    post (url , query , data) {
+        return this.ajax(url , 'post' , query , data);
     } ,
 
-    patch (url , param , data) {
-        return this.ajax(url , 'patch' , param , data);
+    patch (url , query , data) {
+        return this.ajax(url , 'patch' , query , data);
     } ,
 
-    put (url , param , data) {
-        return this.ajax(url , 'put' , param , data);
+    put (url , query , data) {
+        return this.ajax(url , 'put' , query , data);
     } ,
 
-    delete (url , param , data) {
-        return this.ajax(url , 'delete' , param , data);
+    delete (url , query , data) {
+        return this.ajax(url , 'delete' , query , data);
     } ,
 
-    options (url , param , data) {
-        return this.ajax(url , 'options' , param , data);
+    options (url , query , data) {
+        return this.ajax(url , 'options' , query , data);
     } ,
 };

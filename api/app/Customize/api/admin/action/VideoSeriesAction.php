@@ -25,10 +25,7 @@ class VideoSeriesAction extends Action
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
         $res = VideoSeriesModel::index($param , $order , $limit);
-        $res = VideoSeriesHandler::handlePaginator($res , [
-            'module' ,
-            'user' ,
-        ]);
+        $res = VideoSeriesHandler::handlePaginator($res);
         foreach ($res->data as $v)
         {
             // 附加：模块

@@ -6,12 +6,12 @@ const destroy = genUrl('position/{id}');
 const destroyAll = genUrl('destroy_all_position');
 const all = genUrl('get_all_position');
 export default {
-    index (param) {
-        return Http.get(index , param);
+    index (query) {
+        return Http.get(index , query);
     } ,
 
-    localUpdate (id , param) {
-        return Http.patch(localUpdate.replace('{id}' , id) , param);
+    localUpdate (id , query) {
+        return Http.patch(localUpdate.replace('{id}' , id) , query);
     } ,
 
     update (id , data) {

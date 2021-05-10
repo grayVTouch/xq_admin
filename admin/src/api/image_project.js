@@ -8,8 +8,8 @@ const destroyAllImageForImageSubject = genUrl('destroy_all_image_for_image_proje
 const destroyTag = genUrl('destroy_image_project_tag');
 
 export default {
-    index (param) {
-        return Http.get(index , param);
+    index (query) {
+        return Http.get(index , query);
     } ,
 
     localUpdate (id , data) {

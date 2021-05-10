@@ -39,6 +39,8 @@ class VideoProjectAction extends Action
             VideoProjectHandler::module($v);
             // 附加：用户
             VideoProjectHandler::user($v);
+            // 附加：分类
+            VideoProjectHandler::category($v);
             // 附加：系列
             VideoProjectHandler::videoSeries($v);
             // 附加：公司
@@ -312,6 +314,8 @@ class VideoProjectAction extends Action
         VideoProjectHandler::module($res);
         // 附加：用户
         VideoProjectHandler::user($res);
+        // 附加：分类
+        VideoProjectHandler::category($res);
         // 附加：系列
         VideoProjectHandler::videoSeries($res);
         // 附加：公司
@@ -381,14 +385,22 @@ class VideoProjectAction extends Action
         }
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = VideoProjectModel::search($param['module_id'] , $param['value'] , $limit);
-        $res = VideoProjectHandler::handlePaginator($res , [
-            'module' ,
-            'user' ,
-            'video_series' ,
-            'video_company' ,
-            'category' ,
-            'tags' ,
-        ]);
+        $res = VideoProjectHandler::handlePaginator($res);
+        foreach ($res->data as $v)
+        {
+            // 附加：模块
+            VideoProjectHandler::module($v);
+            // 附加：用户
+            VideoProjectHandler::user($v);
+            // 附加：分类
+            VideoProjectHandler::category($v);
+            // 附加：系列
+            VideoProjectHandler::videoSeries($v);
+            // 附加：公司
+            VideoProjectHandler::videoCompany($v);
+            // 附加：标签
+            VideoProjectHandler::tags($v);
+        }
         return self::success('' , $res);
     }
 }
