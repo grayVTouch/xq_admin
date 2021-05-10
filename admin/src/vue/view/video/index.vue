@@ -81,12 +81,7 @@
                     <my-table-video-preview :src="row.simple_preview"></my-table-video-preview>
                 </template>
                 <template v-slot:preview="{row,index}">
-                    <i-poptip trigger="hover" placement="right" :transfer="true">
-                        <i-button @click.stop="openWindow(row.src)">悬浮预览</i-button>
-                        <div slot="content" class="my-table-image-preview">
-                            <img :src="src ? src : TopContext.res.notFound" class="image" @click.stop="openWindow(src)" alt="" />
-                        </div>
-                    </i-poptip>
+                    <my-table-image-preview-by-button :src="row.preview"></my-table-image-preview-by-button>
                 </template>
                 <template v-slot:user_id="{row,index}">
                     {{ row.user ? `${row.user.username}【${row.user.id}】` : `unknow【${row.user_id}】` }}

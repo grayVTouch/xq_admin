@@ -58,6 +58,8 @@ class ImageProjectAction extends Action
             ImageProjectHandler::module($v);
             // 附加：用户
             ImageProjectHandler::user($v);
+            // 附加：分类
+            ImageProjectHandler::category($v);
             // 附加：主体
             ImageProjectHandler::imageSubject($v);
             // 附加：图片
@@ -329,6 +331,8 @@ class ImageProjectAction extends Action
         ImageProjectHandler::module($res);
         // 附加：用户
         ImageProjectHandler::user($res);
+        // 附加：分类
+        ImageProjectHandler::category($res);
         // 附加：图片主体
         ImageProjectHandler::imageSubject($res);
         // 附加：图片

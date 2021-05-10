@@ -36,6 +36,9 @@ export default new Vuex.Store({
 
         // 当前位置
         positions: [] ,
+
+        // 视图状态
+        showView: true ,
     } ,
     mutations: {
         user (state , payload) {

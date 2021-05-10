@@ -60,7 +60,7 @@
                         <div class="left">
                             <!-- 测试范例：翻译 -->
                             <Tooltip content="刷新当前标签页">
-                                <div v-ripple @click>
+                                <div v-ripple @click="reloadLocalView()">
                                     <my-icon icon="reset"></my-icon>
                                 </div>
                             </Tooltip>
@@ -145,7 +145,7 @@
 
                     <!-- 动态视图 -->
                     <div class="dynamic" ref="dynamic">
-                        <keep-alive>
+                        <keep-alive v-if="myValue.showView">
 <!--                            <transition name="fade-in-out">-->
                                 <router-view class="fade-in-out"></router-view>
 <!--                            </transition>-->

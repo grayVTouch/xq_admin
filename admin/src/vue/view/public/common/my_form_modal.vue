@@ -46,7 +46,7 @@
                 default: 'primary' ,
             } ,
             width: {
-                type: Number ,
+                type: [Number , String] ,
                 default: 600 ,
             } ,
             maskClosable: {

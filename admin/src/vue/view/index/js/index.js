@@ -27,6 +27,8 @@ export default {
                 // 文档标题
                 title: '' ,
                 once: true ,
+                // 显示视图
+                showView: true ,
             } ,
 
             // 已经产生的标签
@@ -376,6 +378,15 @@ export default {
                     return ;
                 }
                 this.message('success' , '操作成功');
+            });
+        } ,
+
+        // 刷新当前局部视图
+        reloadLocalView () {
+            console.log('我很好');
+            this.myValue.showView = false;
+            this.$nextTick(() => {
+                this.myValue.showView = true;
             });
         } ,
     } ,

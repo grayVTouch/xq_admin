@@ -42,6 +42,7 @@ export default {
                         minWidth: TopContext.table.id,
                         align: TopContext.table.alignCenter,
                         fixed: 'left',
+                        sortable: 'custom' ,
                     },
                     {
                         title: '名称',
@@ -58,6 +59,7 @@ export default {
                         key: 'index',
                         minWidth: TopContext.table.number,
                         align: TopContext.table.alignCenter,
+                        sortable: 'custom' ,
                     },
                     {
                         title: '封面',
@@ -88,6 +90,7 @@ export default {
                         key: '__duration__',
                         minWidth: TopContext.table.number,
                         align: TopContext.table.alignCenter,
+                        sortable: 'custom' ,
                     },
                     {
                         title: '用户【id】',
