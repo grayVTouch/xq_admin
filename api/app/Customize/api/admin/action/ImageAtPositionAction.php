@@ -53,7 +53,6 @@ class ImageAtPositionAction extends Action
         if (empty($module)) {
             return self::error('模块不存在' , '' , 404);
         }
-
         $position = PositionModel::find($param['position_id']);
         if (empty($position)) {
             return self::error('位置不存在' , '' , 404);
