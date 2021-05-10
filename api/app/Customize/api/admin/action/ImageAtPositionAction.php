@@ -80,6 +80,8 @@ class ImageAtPositionAction extends Action
             throw $e;
         }
 
+        // test
+
     }
 
     public static function store(Base $context , array $param = [])
