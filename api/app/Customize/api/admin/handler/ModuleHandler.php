@@ -24,13 +24,6 @@ class ModuleHandler extends Handler
         $model->__is_auth__ = get_config_key_mapping_value('business.bool_for_int' , $model->is_auth);
         $model->__is_default__ = get_config_key_mapping_value('business.bool_for_int' , $model->is_default);
 
-        if (in_array('user' , $with)) {
-            $user = UserModel::find($model->user_id);
-            $user = UserHandler::handle($user);
-            $model->user = $user;
-        }
-
-
         return $model;
     }
 

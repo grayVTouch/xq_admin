@@ -54,11 +54,9 @@ class CategoryHandler extends Handler
         if (empty($model)) {
             return ;
         }
+        $category = $model->p_id ? CategoryModel::find($model->p_id) : null;
         if ($deep) {
-            $category = $model->p_id ? CategoryModel::find($model->p_id) : null;
-            self::parent($category , true);
-        } else {
-            $category = null;
+            self::parent($category , $deep);
         }
         $model->parent = $category;
     }

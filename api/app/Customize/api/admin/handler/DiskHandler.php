@@ -21,6 +21,7 @@ class DiskHandler extends Handler
             return null;
         }
         $model = convert_object($model);
+
         $total_size = format_capacity(disk_total_space($model->path) , 2);
         $free_size = format_capacity(disk_free_space($model->path) , 2);
 

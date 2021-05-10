@@ -27,6 +27,13 @@ class NavAction extends Action
             'module' ,
             'parent'
         ]);
+        foreach ($res as $v)
+        {
+            // 附加：模块
+            NavHandler::module($v);
+            // 附加：上级项
+            NavHandler::parent($v , false);
+        }
         $res = object_to_array($res);
         $res = Category::childrens(0 , $res , [
             'id'    => 'id' ,
@@ -147,15 +154,18 @@ class NavAction extends Action
 
     public static function show(Base $context , $id , array $param = [])
     {
-        $nav = NavModel::find($id);
+        $res = NavModel::find($id);
         if (empty($nav)) {
             return self::error('分类不存在' , '' , 404);
         }
-        $nav = NavHandler::handle($nav , [
-            'module' ,
-            'parent' ,
-        ]);
-        return self::success('' , $nav);
+        $res = NavHandler::handle($res);
+
+        // 附加：模块
+        NavHandler::module($res);
+        // 附加：上级
+        NavHandler::parent($res , false);
+
+        return self::success('' , $res);
     }
 
     public static function destroy(Base $context , $id , array $param = [])
