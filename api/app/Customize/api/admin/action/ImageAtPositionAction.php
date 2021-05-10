@@ -42,7 +42,6 @@ class ImageAtPositionAction extends Action
             'position_id'   => 'required' ,
             'src'          => 'required' ,
         ]);
-
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
