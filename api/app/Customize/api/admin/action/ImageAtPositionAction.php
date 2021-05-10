@@ -79,7 +79,6 @@ class ImageAtPositionAction extends Action
             DB::rollBack();
             throw $e;
         }
-
     }
 
     public static function store(Base $context , array $param = [])
