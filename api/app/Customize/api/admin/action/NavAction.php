@@ -155,7 +155,7 @@ class NavAction extends Action
     public static function show(Base $context , $id , array $param = [])
     {
         $res = NavModel::find($id);
-        if (empty($nav)) {
+        if (empty($res)) {
             return self::error('分类不存在' , '' , 404);
         }
         $res = NavHandler::handle($res);

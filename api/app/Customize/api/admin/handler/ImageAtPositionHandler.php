@@ -23,20 +23,29 @@ class ImageAtPositionHandler extends Handler
         }
         $res = convert_object($model);
 
-        $module = ModuleModel::find($res->module_id);
-        $module = ModuleHandler::handle($module);
-
-
-        $position = PositionModel::find($res->position_id);
-        $position = PositionHandler::handle($position);
-
-        $res->position = $position;
-        $res->module = $module;
         $res->__platform = get_config_key_mapping_value('business.platform' , $res->platform);
-
-
 
         return $res;
     }
 
+    public static function module($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $module = ModuleModel::find($model->module_id);
+        $module = ModuleHandler::handle($module);
+        $model->module = $module;
+    }
+
+    public static function position($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $position = PositionModel::find($model->position_id);
+        $position = PositionHandler::handle($position);
+
+        $model->position = $position;
+    }
 }

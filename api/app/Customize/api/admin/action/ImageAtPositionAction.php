@@ -119,6 +119,12 @@ class ImageAtPositionAction extends Action
             return self::error('id 对应记录不存在' , '' , 404);
         }
         $res = ImageAtPositionHandler::handle($res);
+
+        // 附加：模块
+        ImageAtPositionHandler::module($res);
+        // 附加：位置
+        ImageAtPositionHandler::position($res);
+
         return self::success('' , $res);
     }
 
