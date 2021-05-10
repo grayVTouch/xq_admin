@@ -45,7 +45,6 @@ class ImageAtPositionAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-
         $res = ImageAtPositionModel::find($id);
         if (empty($res)) {
             return self::error('id对应记录不存在' , '' , 404);
