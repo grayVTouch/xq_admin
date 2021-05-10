@@ -25,6 +25,13 @@ class ImageAtPositionAction extends Action
         $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
         $res = ImageAtPositionModel::index($param , $order , $limit);
         $res = ImageAtPositionHandler::handlePaginator($res);
+        foreach ($res->data as $v)
+        {
+            // 附加：模块
+            ImageAtPositionHandler::module($v);
+            // 附加：用户
+            ImageAtPositionHandler::position($v);
+        }
         return self::success('' , $res);
     }
 
@@ -109,7 +116,7 @@ class ImageAtPositionAction extends Action
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
-        };
+        }
     }
 
     public static function show(Base $context , $id , array $param = [])
