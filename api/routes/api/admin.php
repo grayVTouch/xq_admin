@@ -32,7 +32,6 @@ use App\Http\Controllers\api\admin\Admin;
 use App\Http\Controllers\api\admin\Test;
 
 Route::prefix('admin')
-    ->namespace('api\admin\\')
     ->middleware([
         CustomizeMiddleware::class
     ])
@@ -350,6 +349,11 @@ Route::prefix('admin')
             Route::delete('destroy_all_disk'    , [Disk::class , 'destroyAll']);
             Route::delete('disk/{id}'           , [Disk::class , 'destroy']);
             Route::post('link_disk'             , [Disk::class , 'link']);
+
+            /**
+             * 磁盘选择
+             */
+            Route::get('system_disk' , [SystemDisk::class , 'all']);
 
             /***
              * 队列任务相关
