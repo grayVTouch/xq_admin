@@ -18,6 +18,7 @@ use App\Http\Controllers\api\admin\Pannel;
 use App\Http\Controllers\api\admin\Position;
 use App\Http\Controllers\api\admin\Region;
 use App\Http\Controllers\api\admin\Role;
+use App\Http\Controllers\api\admin\SystemDisk;
 use App\Http\Controllers\api\admin\Tag;
 use App\Http\Controllers\api\admin\User;
 use App\Http\Controllers\api\admin\video;
@@ -350,10 +351,11 @@ Route::prefix('admin')
             Route::delete('disk/{id}'           , [Disk::class , 'destroy']);
             Route::post('link_disk'             , [Disk::class , 'link']);
 
+
             /**
              * 磁盘选择
              */
-            Route::get('system_disk' , [SystemDisk::class , 'all']);
+            Route::get('system_disk' , [SystemDisk::class , 'index']);
 
             /***
              * 队列任务相关

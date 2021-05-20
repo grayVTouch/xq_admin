@@ -21,6 +21,7 @@
                 //     id: 'id' ,
                 //     p_id: 'parentId' ,
                 // } ,
+                once: true ,
             };
         } ,
 
@@ -96,9 +97,15 @@
                     spreadFirst: false ,
                     // 子级项点击后回调
                     child (id) {
+                        console.log('频繁调用' , self.once);
+                        if (self.once) {
+                            self.once = false;
+                            return ;
+                        }
                         self.$emit('on-focus' , id);
-                    }
+                    } ,
                 });
+
             } ,
 
         } ,

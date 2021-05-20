@@ -23,6 +23,7 @@ import myBase from '@vue/view/public/common/my_base.vue';
 import mySearchForm from '@vue/view/public/common/my_search_form.vue';
 import mySearchFormItem from '@vue/view/public/common/my_search_form_item.vue';
 import myVideoPreview from '@vue/view/public/common/my_video_preview.vue';
+import myResourceSelector from '@vue/view/public/core/selector/my_resource_selector.vue';
 
 Vue.component('my-base' , myBase);
 // Vue.component('my-loading' , loading);
@@ -40,6 +41,7 @@ Vue.component('my-table-image-preview' , myTableImagePreview);
 Vue.component('my-table-image-preview-by-button' , myTableImagePreviewByButton);
 Vue.component('my-table-video-preview' , myTableVideoPreview);
 Vue.component('my-table-button' , myTableButton);
+
 Vue.component('my-user-selector' , myUserSelector);
 Vue.component('my-image-subject-selector' , myImageSubjectSelector);
 Vue.component('my-country-selector' , myCountrySelector);
@@ -47,7 +49,10 @@ Vue.component('my-video-series-selector' , myVideoSeriesSelector);
 Vue.component('my-video-company-selector' , myVideoCompanySelector);
 Vue.component('my-video-project-selector' , myVideoProjectSelector);
 Vue.component('my-video-project-selector' , myVideoProjectSelector);
+Vue.component('my-resource-selector' , myResourceSelector);
+
 Vue.component('my-search-form' , mySearchForm);
 Vue.component('my-search-form-item' , mySearchFormItem);
 Vue.component('my-video-preview' , myVideoPreview);
+
 

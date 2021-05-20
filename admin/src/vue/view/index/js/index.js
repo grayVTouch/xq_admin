@@ -216,9 +216,14 @@ export default {
                     const tab = self.findTabByTabId(tabId);
                     self.initPositions(tab.routeId);
                     self.pushByRouteId(tab.routeId);
-                    self.$refs['my-menu'].ins.ic.focus(tab.routeId);
-                    // self.$refs['my-menu'].ins.ic.spreadSpecified(tab.routeId);
-                    // self.$refs['my-menu'].ins.ic.spreadSpecified(tab.routeId);
+                    // 选中
+                    if (self.myValue.once) {
+                        // 仅在首次加载时使用这种方式（否则会导致死循环！特别注意）
+                        self.myValue.once = false;
+                        self.$refs['my-menu'].ins.ic.spreadSpecified(tab.routeId)
+                    } else {
+                        self.$refs['my-menu'].ins.ic.focus(tab.routeId);
+                    }
                 } ,
             });
         } ,

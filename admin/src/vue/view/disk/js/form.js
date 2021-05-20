@@ -129,7 +129,7 @@ export default {
                     this.errorHandle(res.message);
                     return ;
                 }
-                this.successHandle((keep) => {
+                this.successModal((keep) => {
                     this.$emit('on-success');
                     if (keep) {
                         return ;
@@ -157,6 +157,14 @@ export default {
 
         showUserSelector () {
             this.$refs['user-selector'].show();
+        } ,
+
+        showResourceSelector () {
+            this.$refs['resource-selector'].show();
+        } ,
+
+        resourceChangedEvent (path) {
+            this.form.path = path;
         } ,
     } ,
 }

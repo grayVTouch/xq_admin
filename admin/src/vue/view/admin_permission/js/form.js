@@ -120,7 +120,7 @@ export default {
                     this.errorHandle(res.message);
                     return ;
                 }
-                this.successHandle((keep) => {
+                this.successModal((keep) => {
                     self.$emit('on-success');
                     if (keep) {
                         return ;

@@ -14,6 +14,7 @@ import pannel from '@api/pannel.js';
 import disk from '@api/disk.js';
 import file from '@api/file.js';
 import job from '@api/job.js';
+import systemDisk from '@api/system_disk.js';
 
 /**
  * 图片
@@ -36,6 +37,7 @@ window.Api = {
     login ,
     misc ,
     user ,
+    systemDisk ,
     adminPermission ,
     role ,
     module ,

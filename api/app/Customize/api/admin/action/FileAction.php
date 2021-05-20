@@ -8,6 +8,7 @@ use App\Customize\api\admin\util\FileUtil;
 use App\Customize\api\admin\util\ResourceUtil;
 use App\Http\Controllers\api\admin\Base;
 use Core\Lib\ImageProcessor;
+use Exception;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -25,12 +26,16 @@ class FileAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-        $dir        = date('Ymd');
-        $path       = FileUtil::upload($file , $dir);
-        $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
-        $url        = FileUtil::generateUrlByRelativePath($path);
-        ResourceUtil::create($url , $real_path , 'local');
-        return self::success('' , $url);
+        try {
+            $dir        = date('Ymd');
+            $path       = FileUtil::upload($file , $dir);
+            $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
+            $url        = FileUtil::generateUrlByRelativePath($path);
+            ResourceUtil::create($url , $real_path , 'local');
+            return self::success('' , $url);
+        } catch(Exception $e) {
+            return self::error($e->getMessage() , $e->getTraceAsString());
+        }
     }
 
     /**
@@ -52,45 +57,50 @@ class FileAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-        $dir        = date('Ymd');
-        $path       = FileUtil::upload($file , $dir);
-        $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
-        $url        = FileUtil::generateUrlByRelativePath($path);
-        if (empty($param['m'])) {
-            if (!empty($param['w'])) {
-                $mode = 'fix-width';
-                if (!empty($param['h'])) {
-                    $mode = 'fix';
+        try {
+
+            $dir        = date('Ymd');
+            $path       = FileUtil::upload($file , $dir);
+            $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
+            $url        = FileUtil::generateUrlByRelativePath($path);
+            if (empty($param['m'])) {
+                if (!empty($param['w'])) {
+                    $mode = 'fix-width';
+                    if (!empty($param['h'])) {
+                        $mode = 'fix';
+                    }
+                } else if (!empty($param['h'])) {
+                    $mode = 'fix-height';
+                } else {
+                    $mode = '';
                 }
-            } else if (!empty($param['h'])) {
-                $mode = 'fix-height';
             } else {
-                $mode = '';
+                $mode = $param['m'];
             }
-        } else {
-            $mode = $param['m'];
-        }
-        if (in_array($mode , $mode_range)) {
-            $real_path          = FileUtil::generateRealPathByRelativePathWithPrefix($path);
-            $image_handle_dir   = FileUtil::dir($dir);
-            if (!file_exists($image_handle_dir)) {
-                // 目录不存在则创建
-                mkdir($image_handle_dir , 0755 , true);
+            if (in_array($mode , $mode_range)) {
+                $real_path          = FileUtil::generateRealPathByRelativePathWithPrefix($path);
+                $image_handle_dir   = FileUtil::dir($dir);
+                if (!file_exists($image_handle_dir)) {
+                    // 目录不存在则创建
+                    mkdir($image_handle_dir , 0755 , true);
+                }
+                $image_processor    = new ImageProcessor($image_handle_dir);
+                $real_path = $image_processor->compress($real_path , [
+                    'mode'      => $mode ,
+                    'ratio'     => $param['r'] ,
+                    'width'     => $param['w'] ,
+                    'height'    => $param['h'] ,
+                ] , false);
+                // 删除源文件
+                FileUtil::delete($path);
+                $relative_path  = FileUtil::prefix() . '/' . str_replace(FileUtil::dir() . '/' , '' , $real_path);
+                $url            = FileUtil::generateUrlByRelativePath($relative_path);
             }
-            $image_processor    = new ImageProcessor($image_handle_dir);
-            $real_path = $image_processor->compress($real_path , [
-                'mode'      => $mode ,
-                'ratio'     => $param['r'] ,
-                'width'     => $param['w'] ,
-                'height'    => $param['h'] ,
-            ] , false);
-            // 删除源文件
-            FileUtil::delete($path);
-            $relative_path  = FileUtil::prefix() . '/' . str_replace(FileUtil::dir() . '/' , '' , $real_path);
-            $url            = FileUtil::generateUrlByRelativePath($relative_path);
+            ResourceUtil::create($url , $real_path , 'local');
+            return self::success('' , $url);
+        } catch(Exception $e) {
+            return self::error($e->getMessage() , $e->getTraceAsString());
         }
-        ResourceUtil::create($url , $real_path , 'local');
-        return self::success('' , $url);
     }
 
     // 上传视频
@@ -102,12 +112,16 @@ class FileAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-        $dir        = date('Ymd');
-        $path       = FileUtil::upload($file , $dir);
-        $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
-        $url        = FileUtil::generateUrlByRelativePath($path);
-        ResourceUtil::create($url , $real_path , 'local');
-        return self::success('' , $url);
+        try {
+            $dir        = date('Ymd');
+            $path       = FileUtil::upload($file , $dir);
+            $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
+            $url        = FileUtil::generateUrlByRelativePath($path);
+            ResourceUtil::create($url , $real_path , 'local');
+            return self::success('' , $url);
+        } catch(Exception $e) {
+            return self::error($e->getMessage() , $e->getTraceAsString());
+        }
     }
 
     // 上传视频字幕
@@ -124,12 +138,16 @@ class FileAction extends Action
 //        if (!in_array($extension , $ext_range)) {
 //            return self::error('不支持的文件类型');
 //        }
-        $dir        = date('Ymd');
-        $path       = FileUtil::upload($file , $dir);
-        $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
-        $url        = FileUtil::generateUrlByRelativePath($path);
-        ResourceUtil::create($url , $real_path , 'local');
-        return self::success('' , $url);
+        try {
+            $dir        = date('Ymd');
+            $path       = FileUtil::upload($file , $dir);
+            $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
+            $url        = FileUtil::generateUrlByRelativePath($path);
+            ResourceUtil::create($url , $real_path , 'local');
+            return self::success('' , $url);
+        } catch(Exception $e) {
+            return self::error($e->getMessage() , $e->getTraceAsString());
+        }
     }
 
     // 上传文档|电子表格之类
@@ -141,12 +159,16 @@ class FileAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-        $dir        = date('Ymd');
-        $path       = FileUtil::upload($file , $dir);
-        $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
-        $url        = FileUtil::generateUrlByRelativePath($path);
-        ResourceUtil::create($url , $real_path , 'local');
-        return self::success('' , $url);
+        try {
+            $dir        = date('Ymd');
+            $path       = FileUtil::upload($file , $dir);
+            $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
+            $url        = FileUtil::generateUrlByRelativePath($path);
+            ResourceUtil::create($url , $real_path , 'local');
+            return self::success('' , $url);
+        } catch(Exception $e) {
+            return self::error($e->getMessage() , $e->getTraceAsString());
+        }
     }
 
 }

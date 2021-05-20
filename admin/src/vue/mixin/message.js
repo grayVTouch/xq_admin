@@ -30,7 +30,11 @@ export default {
         return this.message('error' ,  message);
     } ,
 
-    successHandle (callback) {
+    successHandle (message = '操作成功') {
+        return this.message('success' ,  message);
+    } ,
+
+    successModal (callback) {
         return this.modal('confirm' , '操作成功' , '' , null , {
             okText: '继续' ,
             cancelText: '取消' ,

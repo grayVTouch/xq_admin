@@ -570,7 +570,7 @@ export default {
                     this.errorHandle(res.message);
                     return ;
                 }
-                this.successHandle((keep) => {
+                this.successModal((keep) => {
                     this.$emit('on-success');
                     if (!keep) {
                         this.closeFormModal();

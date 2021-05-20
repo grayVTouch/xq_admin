@@ -193,16 +193,18 @@ export default {
                     G.invoke(callback , this , false);
                     return ;
                 }
-                Api.user.destroyAll(idList , (res) => {
-                    if (res.code !== TopContext.code.Success) {
-                        G.invoke(callback , this , false);
-                        this.errorHandle(res.message);
-                        return ;
-                    }
-                    G.invoke(callback , this , true);
-                    this.message('success' , '操作成功' , '影响的记录数：' + data);
-                    this.getData();
-                });
+                Api.user
+                    .destroyAll(idList)
+                    .then((res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            G.invoke(callback , this , false);
+                            this.errorHandle(res.message);
+                            return ;
+                        }
+                        G.invoke(callback , this , true);
+                        this.message('success' , '操作成功');
+                        this.getData();
+                    });
             });
         } ,
 

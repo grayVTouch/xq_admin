@@ -310,8 +310,8 @@ export default {
             this.destroyAll([id] , callback);
         } ,
 
-        destroyAll (idList , callback) {
-            if (idList.length < 1) {
+        destroyAll (ids , callback) {
+            if (ids.length < 1) {
                 this.message('warning' ,'请选择待删除的项');
                 G.invoke(callback , this , false);
                 return ;
@@ -319,16 +319,21 @@ export default {
             const self = this;
             this.confirmModal('你确定删除吗？'  , (res) => {
                 if (res) {
-                    Api.video.destroyAll(idList , (res) => {
-                        if (res.code !== TopContext.code.Success) {
-                            G.invoke(callback , this , false);
-                            this.errorHandle(res.message);
-                            return ;
-                        }
-                        G.invoke(callback , this , true);
-                        this.message('success' , '操作成功' , '影响的记录数：' + data);
-                        this.getData();
-                    });
+                    Api.video
+                        .destroyAll(ids)
+                        .then((res) => {
+                            if (res.code !== TopContext.code.Success) {
+                                G.invoke(callback , this , false);
+                                this.errorHandle(res.message);
+                                return ;
+                            }
+                            G.invoke(callback , this , true);
+                            this.successHandle();
+                            this.getData();
+                        })
+                        .finally(() => {
+
+                        });
                     return ;
                 }
                 G.invoke(callback , this , false);

@@ -208,7 +208,8 @@ export default {
                     G.invoke(callback , this , false);
                     return ;
                 }
-                Api.admin.destroyAll(ids)
+                Api.admin
+                    .destroyAll(ids)
                     .then((res) => {
                             if (res.code !== TopContext.code.Success) {
                                 G.invoke(callback , this , false);

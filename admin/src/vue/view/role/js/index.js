@@ -260,7 +260,7 @@ export default {
                     this.errorHandle(res.message);
                     return ;
                 }
-                this.successHandle((keep) => {
+                this.successModal((keep) => {
                     self.getData();
                     if (keep) {
                         return ;
@@ -344,7 +344,7 @@ export default {
                     this.errorHandle(res.message);
                     return ;
                 }
-                this.successHandle((keep) => {
+                this.successModal((keep) => {
                     this.getData();
                     if (keep) {
                         return ;

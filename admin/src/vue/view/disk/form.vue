@@ -16,6 +16,7 @@
                             <td>
                                 <input type="text" v-model="form.path" @input="myValue.error.path = ''" class="form-text">
                                 <span class="need">*</span>
+                                <div class="m-t-5"><i-button v-ripple @click="showResourceSelector">资源管理器</i-button></div>
                                 <div class="msg">例如：windows: d:/test ；linux: /myself/resource</div>
                                 <div class="e-msg">{{ myValue.error.path }}</div>
                             </td>
@@ -81,6 +82,8 @@
                 <i-button v-ripple type="error" @click="closeFormModal">关闭</i-button>
             </template>
         </my-form-modal>
+
+        <my-resource-selector ref="resource-selector" @on-change="resourceChangedEvent"></my-resource-selector>
     </div>
 </template>
 
