@@ -322,13 +322,13 @@
                                     <div class="title"><my-icon icon="yuetongji" class="f-24 run-gray m-r-10"></my-icon>月统计资料</div>
                                     <div class="year">
                                         年份：
-                                        <i-select v-model="yearForMonth" style="width: 80px;">
+                                        <i-select v-model="yearForMonth" style="width: 80px;" size="small">
                                             <i-option v-for="v in year" :key="v" :value="v">{{ v }}</i-option>
                                         </i-select>
                                     </div>
                                     <div class="month single">
                                         月份：
-                                        <i-select v-model="monthForMonth" style="width: 80px;">
+                                        <i-select v-model="monthForMonth" style="width: 80px;" size="small">
                                             <i-option v-for="(v,k) in month" :key="k" :value="parseInt(k)">{{ v }}
                                             </i-option>
                                         </i-select>
@@ -350,13 +350,13 @@
                                     <div class="title"><my-icon icon="jidu" class="f-24 run-gray m-r-10"></my-icon>季度统计资料</div>
                                     <div class="year">
                                         年份：
-                                        <i-select v-model="yearForQuarter" style="width: 80px;">
+                                        <i-select v-model="yearForQuarter" style="width: 80px;" size="small">
                                             <i-option v-for="v in year" :key="v" :value="v">{{ v }}</i-option>
                                         </i-select>
                                     </div>
                                     <div class="month single">
                                         季度：
-                                        <i-select v-model="quarterForQuarter" style="width: 100px;">
+                                        <i-select v-model="quarterForQuarter" style="width: 100px;" size="small">
                                             <i-option v-for="(v,k) in quarter" :key="k" :value="parseInt(k)">{{ v }}
                                             </i-option>
                                         </i-select>
@@ -381,7 +381,9 @@
                                 <div class="title"><my-icon icon="niandu" class="f-24 run-gray m-r-10"></my-icon>年度统计资料</div>
                                 <div class="year">
                                     年份：
-                                    <i-date-picker type="year" placement="bottom-end" placeholder="请选择年份" style="width: 200px" @on-change="setDate"></i-date-picker>
+                                    <i-select v-model="yearForYear" style="width: 80px;" size="small">
+                                        <i-option v-for="v in year" :key="v" :value="v">{{ v }}</i-option>
+                                    </i-select>
                                 </div>
                                 <div class="btns">
                                     <i-button type="primary" size="small" :loading="myValue.pending.yearChart" @click="yearChart">确定</i-button>
