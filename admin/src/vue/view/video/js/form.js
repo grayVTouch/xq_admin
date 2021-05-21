@@ -114,6 +114,12 @@ export default {
                 pending: {} ,
                 error: {} ,
                 show: false ,
+                showModuleSelector: false ,
+                /**
+                 * module - 选择模块
+                 * form - 输入表单
+                 */
+                step: 'module' ,
             } ,
 
             owner: G.copy(owner) ,
@@ -313,21 +319,51 @@ export default {
         } ,
 
         openFormModal () {
-            this.myValue.show = true;
             this.getModules();
-            // console.log(this.mode , '编辑模式');
-            if (this.mode === 'edit') {
-                this.findById(this.id).then((res) => {
-                    this.ins.thumb.render(this.form.thumb);
-
-                    this.owner                  = this.form.user ? this.form.user : G.copy(owner);
-                    this.videoProject           = this.form.video_project ? this.form.video_project : G.copy(videoProject);
-                    this.videos.data            = this.form.videos;
-                    this.videoSubtitles.data    = this.form.video_subtitles;
-
-                    this.getCategories(this.form.module_id);
-                });
+            if (this.mode === 'add') {
+                // 添加
+                this.handleModuleStep();
+            } else {
+                this.handleFormStep();
             }
+        } ,
+
+        // 模块处理
+        handleModuleStep () {
+            this.myValue.step = 'module';
+            this.myValue.showModuleSelector = true;
+        } ,
+
+        // 表单处理
+        handleFormStep () {
+            this.myValue.step = 'form';
+            this.myValue.show = true;
+            if (this.mode === 'edit') {
+                this.findById(this.id)
+                    .then(() => {
+                        // 做一些额外处理
+                        this.ins.thumb.render(this.form.thumb);
+
+                        this.owner                  = this.form.user ? this.form.user : G.copy(owner);
+                        this.videoProject           = this.form.video_project ? this.form.video_project : G.copy(videoProject);
+                        this.videos.data            = this.form.videos;
+                        this.videoSubtitles.data    = this.form.video_subtitles;
+
+                        this.getCategories(this.form.module_id);
+                    });
+            }
+        } ,
+
+        // 下一步
+        nextStepAtForm () {
+            if (this.form.module_id  < 1) {
+                this.errorHandle('请选择模块');
+                return ;
+            }
+            this.myValue.showModuleSelector = false;
+            // 获取分类
+            this.getCategories(this.form.module_id);
+            this.handleFormStep();
         } ,
 
         closeFormModal () {
@@ -335,6 +371,9 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return ;
             }
+            this.myValue.step = 'module';
+            this.myValue.showModuleSelector = false;
+
             this.myValue.show = false;
             this.myValue.tab = 'base';
 
