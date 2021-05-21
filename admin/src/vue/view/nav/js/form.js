@@ -32,6 +32,13 @@ export default {
 
             myValue: {
                 show: false ,
+                showModuleSelector: false ,
+                showTypeSelector: false ,
+                /**
+                 * module - 选择模块
+                 * form - 输入表单
+                 */
+                step: 'module' ,
             } ,
 
             dom: {} ,
@@ -97,18 +104,61 @@ export default {
         } ,
 
         openFormModal () {
-            this.setValue('show' , true);
             this.getModules();
-
             if (this.mode === 'add') {
                 // 添加
+                this.handleModuleStep();
+            } else {
+                this.handleFormStep();
+            }
+        } ,
+
+        // 模块处理
+        handleModuleStep () {
+            // 清空
+            this.form.module_id = '';
+            this.myValue.step = 'module';
+            this.myValue.showModuleSelector = true;
+        } ,
+
+        // 表单处理
+        handleFormStep () {
+            this.myValue.step = 'form';
+            this.myValue.show = true;
+            if (this.mode === 'edit') {
+                this.findById(this.id)
+                    .then(() => {
+                        this.getNavs();
+                    });
+            }
+        } ,
+
+        nextStepAtType () {
+            if (this.form.module_id  < 1) {
+                this.errorHandle('请选择模块');
                 return ;
             }
-            // 编辑
-            this.findById(this.id)
-                .then(() => {
-                    this.getNavs(this.form.module_id);
-                });
+            this.form.type = '';
+            this.myValue.step = 'type';
+            this.myValue.showModuleSelector = false;
+            this.myValue.showTypeSelector = true;
+        } ,
+
+        nextStepAtForm () {
+            if (this.form.module_id  < 1) {
+                this.errorHandle('请选择模块');
+                return ;
+            }
+            if (G.isEmptyString(this.form.type)) {
+                this.errorHandle('请选择类型');
+                return ;
+            }
+            this.myValue.showModuleSelector = false;
+            this.myValue.showTypeSelector = false;
+            // 获取导航菜单
+            this.getNavs();
+            // 表单处理
+            this.handleFormStep();
         } ,
 
         closeFormModal () {
@@ -116,6 +166,8 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return;
             }
+            this.myValue.step = 'module';
+            this.myValue.showModuleSelector = false;
             this.myValue.show   = false;
             this.modules    = [];
             this.navs = [];
@@ -196,7 +248,7 @@ export default {
             return res;
         } ,
 
-        getNavs (moduleId) {
+        getNavs () {
             this.pending('getNavs' , true);
             Api.nav
                 .search({
@@ -221,12 +273,13 @@ export default {
                 return ;
             }
             this.form.p_id = '';
-            this.getNavs(moduleId);
+            this.form.module_id = moduleId;
+            this.getNavs();
         } ,
 
         typeChangeEvent () {
             this.myValue.error.type = '';
-            this.getNavs(this.form.module_id);
+            this.getNavs();
         } ,
 
 

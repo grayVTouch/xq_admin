@@ -13,9 +13,9 @@
                         <tbody>
 
                         <tr :class="{error: myValue.error.module_id}">
-                            <td>模块</td>
+                            <td>所属模块</td>
                             <td>
-                                <my-select :data="modules" v-model="form.module_id" @change="myValue.error.module_id = ''" :width="TopContext.style.inputItemW"></my-select>
+                                <my-select :data="modules" :disabled="mode === 'add'" v-model="form.module_id" @change="myValue.error.module_id = ''" :width="TopContext.style.inputItemW"></my-select>
                                 <my-loading v-if="myValue.pending.getModules"></my-loading>
                                 <span class="need">*</span>
                                 <div class="msg"></div>
@@ -99,6 +99,24 @@
         </my-form-modal>
 
         <my-user-selector ref="user-selector" @on-change="userChangeEvent"></my-user-selector>
+
+        <!-- 第一步：模块选择器 -->
+        <my-form-modal
+                v-model="myValue.showModuleSelector"
+                title="请选择"
+                width="auto"
+                :mask-closable="true"
+                :closable="true"
+        >
+            <span class="f-12">所属模块：</span>
+            <my-select :width="TopContext.style.inputItemW" :data="modules" v-model="form.module_id" @change="myValue.error.module_id = ''"></my-select>
+            <span class="need run-red">*</span>
+
+            <template slot="footer">
+                <i-button type="primary" @click="nextStepAtForm">确认</i-button>
+            </template>
+        </my-form-modal>
+    </div>
     </div>
 </template>
 

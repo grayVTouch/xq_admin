@@ -24,7 +24,7 @@
                         <tr :class="{error: myValue.error.type}">
                             <td>类型：</td>
                             <td>
-                                <i-select v-model="form.type" :style="`width: ${TopContext.style.inputItemW}px`" @on-change="typeChangeEvent">
+                                <i-select v-model="form.type" :disabled="mode === 'add'" :style="`width: ${TopContext.style.inputItemW}px`" @on-change="typeChangeEvent">
                                     <i-option v-for="(v,k) in TopContext.business.nav.type" :key="k" :value="k">{{ v }}</i-option>
                                 </i-select>
                                 <span class="msg"></span>
@@ -36,7 +36,7 @@
                         <tr :class="{error: myValue.error.module_id}">
                             <td>所属模块</td>
                             <td>
-                                <my-select :data="modules" v-model="form.module_id" @change="moduleChangedEvent" :width="TopContext.style.inputItemW"></my-select>
+                                <my-select :data="modules" :disabled="mode === 'add'" v-model="form.module_id" @change="moduleChangedEvent" :width="TopContext.style.inputItemW"></my-select>
                                 <my-loading v-if="myValue.pending.getModules"></my-loading>
                                 <span class="need">*</span>
                                 <div class="msg"></div>
@@ -50,7 +50,7 @@
                                 <my-deep-select :data="navs" v-model="form.p_id" :has="true" :attr="myValue.attr"  @change="myValue.error.p_id = ''" :width="TopContext.style.inputItemW"></my-deep-select>
                                 <my-loading v-if="myValue.pending.getNavs"></my-loading>
                                 <span class="need">*</span>
-                                <div class="msg">请务必选择模块后操作</div>
+                                <div class="msg">请务必选择类型、模块后操作</div>
                                 <div class="e-msg">{{ myValue.error.p_id }}</div>
                             </td>
                         </tr>
@@ -112,6 +112,42 @@
             <template slot="footer">
                 <i-button v-ripple type="primary" :loading="myValue.pending.submitEvent" @click="submitEvent">确认</i-button>
                 <i-button v-ripple type="error" @click="closeFormModal">关闭</i-button>
+            </template>
+        </my-form-modal>
+
+        <!-- 第一步：模块选择器 -->
+        <my-form-modal
+                v-model="myValue.showModuleSelector"
+                title="请选择"
+                width="auto"
+                :mask-closable="true"
+                :closable="true"
+        >
+            <span class="f-12">所属模块：</span>
+            <my-select :width="TopContext.style.inputItemW" :data="modules" v-model="form.module_id" @change="myValue.error.module_id = ''"></my-select>
+            <span class="need run-red">*</span>
+
+            <template slot="footer">
+                <i-button type="primary" @click="nextStepAtType">确认</i-button>
+            </template>
+        </my-form-modal>
+
+        <!-- 第二步：选择类型 -->
+        <my-form-modal
+                v-model="myValue.showTypeSelector"
+                title="请选择"
+                width="auto"
+                :mask-closable="true"
+                :closable="true"
+        >
+            <span class="f-12">选择类型：</span>
+            <i-select v-model="form.type" :style="`width: ${TopContext.style.inputItemW}px`">
+                <i-option v-for="(v,k) in TopContext.business.nav.type" :key="k" :value="k">{{ v }}</i-option>
+            </i-select>
+            <span class="need run-red">*</span>
+
+            <template slot="footer">
+                <i-button type="primary" @click="nextStepAtForm">确认</i-button>
             </template>
         </my-form-modal>
 

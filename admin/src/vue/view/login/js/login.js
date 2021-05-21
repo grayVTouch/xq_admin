@@ -111,7 +111,7 @@ export default {
                 this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
                 return ;
             }
-            const form = G.copy(form);
+            const form = G.copy(this.form);
             this.pending('submitEvent' , true);
             Api.login
                 .login(form)
