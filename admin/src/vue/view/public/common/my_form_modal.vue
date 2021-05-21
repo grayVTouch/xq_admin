@@ -111,5 +111,6 @@
     .my-modal-body {
         max-height: 650px;
         overflow: auto;
+        padding: 10px 0;
     }
 </style>

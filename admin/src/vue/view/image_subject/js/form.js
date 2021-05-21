@@ -46,6 +46,7 @@ export default {
             myValue: {
                 show: false ,
                 showUserSelector: false ,
+                showModuleSelector: false ,
             } ,
 
             dom: {} ,
@@ -59,6 +60,12 @@ export default {
             owner:  G.copy(owner) ,
 
             attr ,
+
+            /**
+             * module - 选择模块
+             * form - 输入表单
+             */
+            step: 'module' ,
         };
     } ,
 
@@ -126,19 +133,34 @@ export default {
         } ,
 
         openFormModal () {
-            this.setValue('show' , true);
             this.getModules();
             if (this.mode === 'add') {
                 // 添加
-                return ;
+                this.handleModuleStep();
+            } else {
+                this.handleFormStep();
             }
-            // 编辑
-            this.findById(this.id).then(() => {
-                // 做一些额外处理
-                this.ins.thumb.render(this.form.thumb);
-                this.owner = this.form.user ? this.form.user : G.copy(owner);
-                this.attr = G.jsonDecode(this.form.attr);
-            });
+        } ,
+
+        // 模块处理
+        handleModuleStep () {
+            this.step = 'module';
+            this.myValue.showModuleSelector = true;
+        } ,
+
+        // 表单处理
+        handleFormStep () {
+            this.step = 'form';
+            this.setValue('show' , true);
+            if (this.mode === 'edit') {
+                this.findById(this.id)
+                    .then(() => {
+                        // 做一些额外处理
+                        this.ins.thumb.render(this.form.thumb);
+                        this.owner = this.form.user ? this.form.user : G.copy(owner);
+                        this.attr = G.jsonDecode(this.form.attr);
+                    });
+            }
         } ,
 
         closeFormModal () {
@@ -146,12 +168,24 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return;
             }
-            this.setValue('show' , false);
+            this.step = 'module';
+            this.myValue.showModuleSelector = false;
+            this.myValue.show = false;
             this.form = G.copy(form);
             this.attr = G.copy(attr);
             this.owner = G.copy(owner);
             this.ins.thumb.clearAll();
             this.error();
+        } ,
+
+        // 下一步
+        nextStepAtForm () {
+            if (this.form.module_id  < 1) {
+                this.errorHandle('请选择模块');
+                return ;
+            }
+            this.myValue.showModuleSelector = false;
+            this.handleFormStep();
         } ,
 
         filter (form) {
@@ -170,6 +204,8 @@ export default {
                 error ,
             };
         } ,
+
+
 
         submitEvent () {
             const self = this;

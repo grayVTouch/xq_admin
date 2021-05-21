@@ -165,33 +165,28 @@ class DiskAction extends Action
     {
         $bool_range = my_config_keys('business.bool_for_int');
         $os_range   = my_config_keys('business.os_for_disk');
-
         $validator = Validator::make($param , [
             'path'      => 'required' ,
             'prefix'    => 'required' ,
             'is_default'   => ['required' , 'integer' , Rule::in($bool_range)] ,
+            'is_linked'   => ['sometimes' , 'integer' , Rule::in($bool_range)] ,
             'os'        => ['required' , Rule::in($os_range)] ,
         ]);
-
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-
         if (!File::isDir($param['path'])) {
             return self::error('请提供真实有效的磁盘目录绝对路径');
         }
-
         $repeat = DiskModel::findByPrefix($param['prefix']);
         if (!empty($repeat)) {
             return self::error('表单错误' , [
                 'prefix' => '前缀已经存在，请重新输入' ,
             ]);
         }
-
         $param['created_at'] = current_datetime();
         try {
             DB::beginTransaction();
-
             $id = DiskModel::insertGetId(array_unit($param , [
                 'path' ,
                 'os' ,
@@ -199,13 +194,27 @@ class DiskAction extends Action
                 'is_default' ,
                 'created_at' ,
             ]));
-
-            if ($param['is_default']) {
+            if ($param['is_default'] == 1) {
                 DiskModel::setNotDefaultByExcludeId($id);
             }
-
             DB::commit();
-
+            if ($param['is_linked'] == 1) {
+                $res_dir    = my_config('app.res_dir');
+                $res_dir    = rtrim($res_dir , '/');
+                // 创建软连接
+                $link   = $res_dir . '/' . $param['prefix'];
+                $status = 0;
+                $res    = [];
+                if (in_array($param['os'] , ['windows'])) {
+                    exec("mklink /J \"{$link}\" \"{$param['path']}\"" , $res , $status);
+                } else {
+                    // linux | mac os
+                    exec("ln -s \"{$param['path']}\" \"{$link}\"" , $res , $status);
+                }
+                if ($status > 0) {
+                    return self::success('操作成功【仅软连接创建失败】' , $res);
+                }
+            }
             return self::success('操作成功');
         } catch(Exception $e) {
 

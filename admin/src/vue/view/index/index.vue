@@ -161,6 +161,13 @@
                 <div class="line info hide" ref="info">{{ TopContext.os.name }}</div>
             </div>
         </div>
+
+        <!-- 磁盘选择器 -->
+        <my-disk
+
+        >
+
+        </my-disk>
     </div>
 </template>
 

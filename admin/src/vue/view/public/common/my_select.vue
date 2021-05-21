@@ -4,7 +4,7 @@
 <!--        <option v-for="v in data" :value="v[attr.id]" :key="v[attr.id]">{{ v[attr.name] }}</option>-->
 <!--    </select>-->
 
-    <i-select v-model="valueCopy" filterable @on-change="changeEvent" :style="`width: ${width}px`">
+    <i-select v-model="valueCopy" filterable @on-change="changeEvent" :style="`width: ${width}px`" :disabled="disabled">
         <i-option v-for="v in data" :value="v[attr.id]" :key="v[attr.id]">{{ v[attr.name] }}</i-option>
     </i-select>
 </template>
@@ -48,6 +48,11 @@
             width: {
                 type: [String , Number] ,
                 default: 200 ,
+            } ,
+
+            disabled: {
+                type: [Boolean] ,
+                default: false ,
             } ,
         } ,
 

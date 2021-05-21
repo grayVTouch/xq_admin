@@ -4,6 +4,7 @@ import route from '@vue/router/index.js';
 
 import menu from '../menu.vue';
 import navigation from '../navigation.vue';
+import disk from '../disk.vue';
 
 export default {
     name: 'index' ,
@@ -49,6 +50,7 @@ export default {
     components: {
         'my-menu': menu ,
         'my-navigation': navigation ,
+        'my-disk': disk ,
     } ,
 
     mixins: [

@@ -275,14 +275,6 @@ export default {
             Api.role.store(this.form).then(callback);
         } ,
 
-        closeFormModal () {
-            if (this.pending('submitEvent')) {
-                this.message('warning' , '请求中...请耐心等待');
-                return;
-            }
-            this.myValue.modal = false;
-        } ,
-
         searchEvent () {
             this.search.page = 1;
             this.getData();
