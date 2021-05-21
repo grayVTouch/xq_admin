@@ -64,6 +64,8 @@ export default {
                 show: false ,
                 showImageSubjectSelector: false ,
                 tab: 'base' ,
+                showModuleSelector: false ,
+                step: 'module' ,
             } ,
 
             // 用户
@@ -184,6 +186,7 @@ export default {
         } ,
 
         typeChangedEvent (type) {
+            this.getCategories(this.form.module_id , type);
             if (type === 'misc') {
                 this.form.imageSubject = G.copy(imageSubject);
                 this.form.image_subject_id = '';
@@ -283,25 +286,61 @@ export default {
 
         openFormModal () {
             this.getModules();
-            if (this.mode === 'edit') {
-                this.findById(this.id).then((res) => {
-                    this.getTopTags(this.form.module_id);
-                    this.getCategories(this.form.module_id , this.form.type);
-
-                    this.ins.thumb.render(this.form.thumb);
-                    this.table.data             = this.form.images;
-                    this.owner          = this.form.user ? this.form.user : G.copy(owner);
-                    this.imageSubject   = this.form.image_subject ? this.form.image_subject: G.copy(imageSubject);
-                });
+            if (this.mode === 'add') {
+                // 添加
+                this.handleModuleStep();
+            } else {
+                this.handleFormStep();
             }
-            this.myValue.show = true;
         } ,
+
+        // 模块处理
+        handleModuleStep () {
+            this.step = 'module';
+            this.myValue.showModuleSelector = true;
+        } ,
+
+        // 表单处理
+        handleFormStep () {
+            this.step = 'form';
+            this.myValue.show = true;
+            if (this.mode === 'edit') {
+                this.findById(this.id)
+                    .then((res) => {
+                        this.getTopTags(this.form.module_id);
+                        this.getCategories(this.form.module_id , this.form.type);
+
+                        this.ins.thumb.render(this.form.thumb);
+                        this.table.data             = this.form.images;
+                        this.owner          = this.form.user ? this.form.user : G.copy(owner);
+                        this.imageSubject   = this.form.image_subject ? this.form.image_subject: G.copy(imageSubject);
+                    });
+            }
+        } ,
+
+        // 下一步
+        nextStepAtForm () {
+            if (this.form.module_id  < 1) {
+                this.errorHandle('请选择模块');
+                return ;
+            }
+            // 获取分类
+            this.getCategories(this.form.module_id , this.form.type);
+            // 获取标签
+            this.getTopTags(this.form.module_id);
+            this.myValue.showModuleSelector = false;
+            this.handleFormStep();
+        } ,
+
 
         closeFormModal () {
             if (this.pending('submitEvent')) {
                 this.message('warning' , '请求中...请耐心等待');
                 return ;
             }
+            this.myValue.step = 'module';
+            this.myValue.showUserSelector = false;
+            this.myValue.showModuleSelector = false;
             this.myValue.show = false;
             this.ins.thumb.clearAll();
             this.ins.images.clearAll();

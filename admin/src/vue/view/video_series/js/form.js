@@ -39,6 +39,12 @@ export default {
             myValue: {
                 show: false ,
                 showUserSelector: false ,
+                showModuleSelector: false ,
+                /**
+                 * module - 选择模块
+                 * form - 输入表单
+                 */
+                step: 'module' ,
             } ,
 
             dom: {} ,
@@ -103,18 +109,41 @@ export default {
         } ,
 
         openFormModal () {
-            this.setValue('show' , true);
             this.getModules();
-
             if (this.mode === 'add') {
                 // 添加
+                this.handleModuleStep();
+            } else {
+                this.handleFormStep();
+            }
+        } ,
+
+        // 模块处理
+        handleModuleStep () {
+            this.myValue.step = 'module';
+            this.myValue.showModuleSelector = true;
+        } ,
+
+        // 表单处理
+        handleFormStep () {
+            this.myValue.step = 'form';
+            this.myValue.show = true;
+            if (this.mode === 'edit') {
+                this.findById(this.id)
+                    .then(() => {
+                        this.owner = this.form.user ? this.form.user : G.copy(owner);
+                    });
+            }
+        } ,
+
+        // 下一步
+        nextStepAtForm () {
+            if (this.form.module_id  < 1) {
+                this.errorHandle('请选择模块');
                 return ;
             }
-            // 编辑
-            this.findById(this.id)
-                .then(() => {
-                    this.owner = this.form.user ? this.form.user : G.copy(owner);
-                });
+            this.myValue.showModuleSelector = false;
+            this.handleFormStep();
         } ,
 
         closeFormModal () {
@@ -122,6 +151,8 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return;
             }
+            this.myValue.step = 'module';
+            this.myValue.showModuleSelector = false;
             this.myValue.show   = false;
             this.modules    = [];
             this.form       = G.copy(form);

@@ -47,6 +47,11 @@ export default {
                 show: false ,
                 showUserSelector: false ,
                 showModuleSelector: false ,
+                /**
+                 * module - 选择模块
+                 * form - 输入表单
+                 */
+                step: 'module' ,
             } ,
 
             dom: {} ,
@@ -61,11 +66,6 @@ export default {
 
             attr ,
 
-            /**
-             * module - 选择模块
-             * form - 输入表单
-             */
-            step: 'module' ,
         };
     } ,
 
@@ -144,14 +144,14 @@ export default {
 
         // 模块处理
         handleModuleStep () {
-            this.step = 'module';
+            this.myValue.step = 'module';
             this.myValue.showModuleSelector = true;
         } ,
 
         // 表单处理
         handleFormStep () {
-            this.step = 'form';
-            this.setValue('show' , true);
+            this.myValue.step = 'form';
+            this.myValue.show = true;
             if (this.mode === 'edit') {
                 this.findById(this.id)
                     .then(() => {
@@ -163,21 +163,6 @@ export default {
             }
         } ,
 
-        closeFormModal () {
-            if (this.pending('submitEvent')) {
-                this.message('warning' , '请求中...请耐心等待');
-                return;
-            }
-            this.step = 'module';
-            this.myValue.showModuleSelector = false;
-            this.myValue.show = false;
-            this.form = G.copy(form);
-            this.attr = G.copy(attr);
-            this.owner = G.copy(owner);
-            this.ins.thumb.clearAll();
-            this.error();
-        } ,
-
         // 下一步
         nextStepAtForm () {
             if (this.form.module_id  < 1) {
@@ -186,6 +171,21 @@ export default {
             }
             this.myValue.showModuleSelector = false;
             this.handleFormStep();
+        } ,
+
+        closeFormModal () {
+            if (this.pending('submitEvent')) {
+                this.message('warning' , '请求中...请耐心等待');
+                return;
+            }
+            this.myValue.step = 'module';
+            this.myValue.showModuleSelector = false;
+            this.myValue.show = false;
+            this.form = G.copy(form);
+            this.attr = G.copy(attr);
+            this.owner = G.copy(owner);
+            this.ins.thumb.clearAll();
+            this.error();
         } ,
 
         filter (form) {
