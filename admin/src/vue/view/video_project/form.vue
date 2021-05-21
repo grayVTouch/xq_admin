@@ -38,7 +38,7 @@
                     <tr :class="{error: myValue.error.module_id}">
                         <td>所属模块</td>
                         <td>
-                            <my-select :width="TopContext.style.inputItemW" :data="modules" v-model="form.module_id" @change="moduleChanged"></my-select>
+                            <my-select :width="TopContext.style.inputItemW" :disabled="mode === 'add'" :data="modules" v-model="form.module_id" @change="moduleChanged"></my-select>
                             <span class="need">*</span>
                             <div class="msg"></div>
                             <div class="e-msg">{{ myValue.error.module_id }}</div>
@@ -314,6 +314,23 @@
         <my-user-selector ref="user-selector" @on-change="userChangeEvent"></my-user-selector>
         <my-video-series-selector ref="video-series-selector" :moduleId="form.module_id" @on-change="videoSeriesChangeEvent"></my-video-series-selector>
         <my-video-company-selector ref="video-company-selector" :moduleId="form.module_id" @on-change="videoCompanyChangeEvent"></my-video-company-selector>
+
+        <!-- 第一步：模块选择器 -->
+        <my-form-modal
+                v-model="myValue.showModuleSelector"
+                title="请选择"
+                width="auto"
+                :mask-closable="true"
+                :closable="true"
+        >
+            <span class="f-12">所属模块：</span>
+            <my-select :width="TopContext.style.inputItemW" :data="modules" v-model="form.module_id" @change="myValue.error.module_id = ''"></my-select>
+            <span class="need run-red">*</span>
+
+            <template slot="footer">
+                <i-button type="primary" @click="nextStepAtForm">确认</i-button>
+            </template>
+        </my-form-modal>
     </my-form-drawer>
 </template>
 

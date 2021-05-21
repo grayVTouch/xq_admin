@@ -37,6 +37,8 @@ export default {
                 pending: {} ,
                 error: {} ,
                 show: false ,
+                showModuleSelector: false ,
+                step: 'module' ,
             } ,
 
             // 发布时间
@@ -268,8 +270,25 @@ export default {
         } ,
 
         openFormModal () {
-            this.myValue.show = true;
             this.getModules();
+            if (this.mode === 'add') {
+                // 添加
+                this.handleModuleStep();
+            } else {
+                this.handleFormStep();
+            }
+        } ,
+
+        // 模块处理
+        handleModuleStep () {
+            this.step = 'module';
+            this.myValue.showModuleSelector = true;
+        } ,
+
+        // 表单处理
+        handleFormStep () {
+            this.step = 'form';
+            this.myValue.show = true;
             if (this.mode === 'edit') {
                 this.findById(this.id)
                     .then((res) => {
@@ -285,11 +304,31 @@ export default {
             }
         } ,
 
+        // 下一步
+        nextStepAtForm () {
+            if (this.form.module_id  < 1) {
+                this.errorHandle('请选择模块');
+                return ;
+            }
+            this.myValue.showModuleSelector = false;
+            // 获取分类
+            this.getCategories();
+            // 获取标签
+            this.getTopTags();
+            // 表单处理
+            this.handleFormStep();
+        } ,
+
         closeFormModal () {
             if (this.pending('submitEvent')) {
                 this.message('warning' , '请求中...请耐心等待');
                 return;
             }
+
+            this.myValue.step = 'module';
+            this.myValue.showUserSelector = false;
+            this.myValue.showModuleSelector = false;
+
             this.myValue.show = false;
             // 清除所有错误信息
             this.error();
