@@ -75,7 +75,6 @@ class LoginAction extends Action
         if (empty($user)) {
             return self::error('用户不存在' , '' , 404);
         }
-        $user = AdminHandler::handle($user);
-        return self::success('' , $user->__avatar__);
+        return self::success('' , $user->avatar);
     }
 }

@@ -80,7 +80,7 @@ export default {
                     if (res.code !== TopContext.code.Success) {
                         return ;
                     }
-                    this.myValue.avatar = data;
+                    this.myValue.avatar = res.data;
                 });
         } ,
 

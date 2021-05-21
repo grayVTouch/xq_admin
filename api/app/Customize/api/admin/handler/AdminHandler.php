@@ -25,7 +25,6 @@ class AdminHandler extends Handler
         $model->__sex__     = get_config_key_mapping_value('business.sex' , $model->sex);
         $model->__is_root__ = get_config_key_mapping_value('business.bool_for_int' , $model->is_root);
 
-
         return $model;
     }
 

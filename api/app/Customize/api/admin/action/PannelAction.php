@@ -24,6 +24,10 @@ use App\Customize\api\admin\util\PannelUtil;
 use App\Http\Controllers\api\admin\Base;
 use App\Http\Controllers\api\admin\VideoCompany;
 use App\Http\Controllers\api\web\ImageSubject;
+use Illuminate\Support\Facades\Validator;
+use function core\get_month_days;
+use function core\get_month_for_quarter;
+use function core\get_quarter;
 
 class PannelAction extends Action
 {
@@ -230,6 +234,261 @@ class PannelAction extends Action
                 'total'     => $process_failed_video_count ,
             ] ,
         ]);
+    }
 
+
+    private static function util_isNowMonth($year , $month)
+    {
+        $time = time();
+        $cur_year = date('Y' , $time);
+        $cur_month = date('m' , $time);
+        return $cur_year == $year && $cur_month == $month;
+    }
+
+    private static function util_isGTMonth($year , $month)
+    {
+        $time = time();
+        $cur_year = date('Y' , $time);
+        $cur_month = date('m' , $time);
+        return $year > $cur_year ||  $month > $cur_month;
+    }
+
+    private static function util_isGTQuarter($year , $quarter)
+    {
+        $time = time();
+        $cur_year = date('Y' , $time);
+        $cur_month = date('m' , $time);
+        $cur_quarter = get_quarter($cur_month);
+        return $year > $cur_year ||  $quarter > $cur_quarter;
+    }
+
+    private static function util_isNowQuarter($year , $quarter)
+    {
+        $time = time();
+        $cur_year = date('Y' , $time);
+        $cur_month = date('m' , $time);
+        $cur_quarter = get_quarter($cur_month);
+        return $year == $cur_year &&  $cur_quarter == $quarter;
+    }
+
+    private static function util_isNowYear($year)
+    {
+        $time = time();
+        $cur_year = date('Y' , $time);
+        return $cur_year == $year;
+    }
+
+    private static function util_isGTYear($year)
+    {
+        $time = time();
+        $cur_year = date('Y' , $time);
+        return $year > $cur_year;
+    }
+
+    // 月份统计
+    public static function monthData(Base $context , array $param = []): array
+    {
+        $validator = Validator::make($param , [
+            'year'  => 'required' ,
+            'month'  => 'required' ,
+        ]);
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first() , $validator->errors());
+        }
+        // 检查是否大于当前月份
+        if (self::util_isGTMonth($param['year'] , $param['month'])) {
+            return self::error('超过当前时间，请重现选择');
+        }
+        $start  = 1;
+        $end    = self::util_isNowMonth($param['year'] , $param['month']) ? intval(date('d')) : get_month_days($param['year'] , $param['month']);
+        $res = [
+            'user' => [
+                'name' => '用户' ,
+                'data' => []
+            ] ,
+            'admin_user' => [
+                'name' => '后台用户' ,
+                'data' => []
+            ] ,
+            'image_project' => [
+                'name' => '图片专题' ,
+                'data' => []
+            ] ,
+            'image_subject' => [
+                'name' => '图片主体' ,
+                'data' => []
+            ] ,
+            'video_series' => [
+                'name' => '视频系列' ,
+                'data' => []
+            ] ,
+            'video_company' => [
+                'name' => '视频公司' ,
+                'data' => []
+            ] ,
+            'video_project' => [
+                'name' => '视频专题' ,
+                'data' => []
+            ] ,
+            'video' => [
+                'name' => '视频' ,
+                'data' => []
+            ] ,
+        ];
+        for ($i = $start; $i <= $end; ++$i)
+        {
+            $year = $param['year'];
+            $month = intval($param['month']) < 10 ? '0' . $param['month']: $param['month'];
+            $day = $i < 10 ? '0' . $i : $i;
+            $date = sprintf('%s-%s-%s' , $year ,  $month , $day);
+
+            $res['user']['data'][$date]             = UserModel::countByDate($date);
+            $res['admin_user']['data'][$date]       = AdminModel::countByDate($date);
+            $res['image_project']['data'][$date]    = ImageProjectModel::countByDate($date);
+            $res['image_subject']['data'][$date]    = ImageSubjectModel::countByDate($date);
+            $res['video_series']['data'][$date]    = VideoSeriesModel::countByDate($date);
+            $res['video_company']['data'][$date]    = VideoCompanyModel::countByDate($date);
+            $res['video_project']['data'][$date]    = VideoProjectModel::countByDate($date);
+            $res['video']['data'][$date]            = VideoModel::countByDate($date);
+        }
+        return self::success('' , $res);
+    }
+
+    // 季度统计资料
+    public static function quarterData(Base $context , array $param = []): array
+    {
+        $validator = Validator::make($param , [
+            'year'  => 'required' ,
+            'quarter'  => 'required' ,
+        ]);
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first() , $validator->errors());
+        }
+        // 检查是否大于当前月份
+        if (self::util_isGTQuarter($param['year'] , $param['quarter'])) {
+            return self::error('超过当前时间，请重现选择');
+        }
+        $range = get_month_for_quarter($param['quarter']);
+        $start  = $range[0];
+        $end    = self::util_isNowQuarter($param['year'] , $param['quarter']) ?
+            intval(date('m')) :
+            $range[2];
+        $res = [
+            'user' => [
+                'name' => '用户' ,
+                'data' => []
+            ] ,
+            'admin_user' => [
+                'name' => '后台用户' ,
+                'data' => []
+            ] ,
+            'image_project' => [
+                'name' => '图片专题' ,
+                'data' => []
+            ] ,
+            'image_subject' => [
+                'name' => '图片主体' ,
+                'data' => []
+            ] ,
+            'video_series' => [
+                'name' => '视频系列' ,
+                'data' => []
+            ] ,
+            'video_company' => [
+                'name' => '视频公司' ,
+                'data' => []
+            ] ,
+            'video_project' => [
+                'name' => '视频专题' ,
+                'data' => []
+            ] ,
+            'video' => [
+                'name' => '视频' ,
+                'data' => []
+            ] ,
+        ];
+        for ($i = $start; $i <= $end; ++$i)
+        {
+            $year = $param['year'];
+            $month = $i < 10 ? '0' . $i : $i;
+            $month = sprintf('%s-%s' , $year ,  $month);
+
+            $res['user']['data'][$month]             = UserModel::countByMonth($month);
+            $res['admin_user']['data'][$month]       = AdminModel::countByMonth($month);
+            $res['image_project']['data'][$month]    = ImageProjectModel::countByMonth($month);
+            $res['image_subject']['data'][$month]    = ImageSubjectModel::countByMonth($month);
+            $res['video_series']['data'][$month]    = VideoSeriesModel::countByMonth($month);
+            $res['video_company']['data'][$month]    = VideoCompanyModel::countByMonth($month);
+            $res['video_project']['data'][$month]    = VideoProjectModel::countByMonth($month);
+            $res['video']['data'][$month]            = VideoModel::countByMonth($month);
+        }
+        return self::success('' , $res);
+    }
+
+    // 季度统计资料
+    public static function yearData(Base $context , array $param = []): array
+    {
+        $validator = Validator::make($param , [
+            'year'  => 'required' ,
+        ]);
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first() , $validator->errors());
+        }
+        // 检查是否大于当前月份
+        if (self::util_isGTYear($param['year'])) {
+            return self::error('超过当前时间，请重现选择');
+        }
+        $start = 1;
+        $end = self::util_isNowYear($param['year']) ? intval(date('m')) : 12;
+        $res = [
+            'user' => [
+                'name' => '用户' ,
+                'data' => []
+            ] ,
+            'admin_user' => [
+                'name' => '后台用户' ,
+                'data' => []
+            ] ,
+            'image_project' => [
+                'name' => '图片专题' ,
+                'data' => []
+            ] ,
+            'image_subject' => [
+                'name' => '图片主体' ,
+                'data' => []
+            ] ,
+            'video_series' => [
+                'name' => '视频系列' ,
+                'data' => []
+            ] ,
+            'video_company' => [
+                'name' => '视频公司' ,
+                'data' => []
+            ] ,
+            'video_project' => [
+                'name' => '视频专题' ,
+                'data' => []
+            ] ,
+            'video' => [
+                'name' => '视频' ,
+                'data' => []
+            ] ,
+        ];
+        for ($i = $start; $i <= $end; ++$i)
+        {
+            $year = $param['year'];
+            $month = $i < 10 ? '0' . $i : $i;
+            $month = sprintf('%s-%s' , $year ,  $month);
+
+            $res['user']['data'][$month]             = UserModel::countByMonth($month);
+            $res['admin_user']['data'][$month]       = AdminModel::countByMonth($month);
+            $res['image_project']['data'][$month]    = ImageProjectModel::countByMonth($month);
+            $res['image_subject']['data'][$month]    = ImageSubjectModel::countByMonth($month);
+            $res['video_series']['data'][$month]    = VideoSeriesModel::countByMonth($month);
+            $res['video_company']['data'][$month]    = VideoCompanyModel::countByMonth($month);
+            $res['video_project']['data'][$month]    = VideoProjectModel::countByMonth($month);
+            $res['video']['data'][$month]            = VideoModel::countByMonth($month);
+        }
+        return self::success('' , $res);
     }
 }

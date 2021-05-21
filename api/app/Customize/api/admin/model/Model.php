@@ -35,6 +35,18 @@ class Model extends BaseModel
             ->count();
     }
 
+    public static function countByMonth(string $month): int
+    {
+        return self::whereRaw('date_format(created_at , "%Y-%m") = ?' , $month)
+            ->count();
+    }
+
+    public static function countByYear(string $year): int
+    {
+        return self::whereRaw('date_format(created_at , "%Y") = ?' , $year)
+            ->count();
+    }
+
     public static function getByIds(array $ids): Collection
     {
         return self::whereIn('id' , $ids)->get();

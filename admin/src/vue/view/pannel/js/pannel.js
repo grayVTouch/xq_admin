@@ -1,3 +1,5 @@
+import Highcharts from 'highcharts/highstock';
+
 export default {
     name: "pannel" ,
     data () {
@@ -50,7 +52,6 @@ export default {
     } ,
 
     mounted () {
-        // alert('nice');
         this.initIns();
         this.init();
         this.getData();
@@ -58,12 +59,36 @@ export default {
     } ,
 
     methods: {
+
         initIns () {
 
         } ,
 
         init () {
-
+            const yearStart = 1990;
+            const d = new Date();
+            const curYear = d.getFullYear();
+            const curMonth = d.getMonth() + 1;
+            const yearEnd = curYear;
+            const monthStart = 1;
+            const monthEnd = 12;
+            let year = [];
+            let month = {};
+            for (let i = yearStart; i <= yearEnd; ++i)
+            {
+                year.push(i);
+            }
+            for (let i = monthStart; i <= monthEnd; ++i)
+            {
+                month[i] = i + '月份';
+            }
+            this.year = year;
+            this.month = month;
+            this.yearForMonth = curYear;
+            this.yearForQuarter = curYear;
+            this.yearForYear = curYear;
+            this.monthForMonth = curMonth;
+            this.quarterForQuarter = this.getQuarter(curMonth);
         } ,
 
         getData () {
@@ -84,10 +109,243 @@ export default {
 
         reRender () {
             this.$nextTick(() => {
-                // this.monthChart();
-                // this.quarterChart();
-                // this.chartForStatisUserActivityLog();
+                this.monthChart();
+                this.quarterChart();
+                this.yearChart();
             });
+        } ,
+
+        // 月份统计资料
+        monthChart () {
+            if (this.myValue.pending.monthChart) {
+                this.$info('请求中...请耐心等待');
+                return ;
+            }
+            this.pending('monthChart' , true);
+            Api.pannel
+                .month({
+                    year: this.yearForMonth ,
+                    month: this.monthForMonth ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    // 系列
+                    let series = res.data;
+                        series = Object.values(series);
+                    series.forEach((v) => {
+                        return v.data = Object.values(v.data);
+                    });
+
+                    // 图标绘制
+                    const start = 1;
+                    const end = this.isNowMonth(this.yearForMonth , this.monthForMonth) ?
+                        new Date().getDate() :
+                        G.getMonthDays(this.yearForYear , this.yearForMonth);
+                    let categories = [];
+                    for (let i = start; i <= end; ++i)
+                    {
+                        categories.push(i);
+                    }
+                    this.pain({
+                        dom: this.$refs.month ,
+                        chartType: 'spline' ,
+                        title: this.yearForMonth + '年' + this.monthForMonth + '月统计资料' ,
+                        // 日期
+                        categories ,
+                        xTitle: '日期' ,
+                        yTitle: '数量' ,
+                        plotLine: 100 ,
+                        series ,
+                    });
+                })
+                .finally(() => {
+                    this.pending('monthChart' , false);
+                })
+        } ,
+
+        // 月份统计资料
+        quarterChart () {
+            if (this.myValue.pending.quarterChart) {
+                this.$info('请求中...请耐心等待');
+                return ;
+            }
+            this.pending('quarterChart' , true);
+            Api.pannel
+                .quarter({
+                    year: this.yearForQuarter ,
+                    quarter: this.quarterForQuarter ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    // 系列
+                    let series = res.data;
+                    series = Object.values(series);
+                    series.forEach((v) => {
+                        return v.data = Object.values(v.data);
+                    });
+
+                    // 图标绘制
+                    const start = 1;
+                    const end = this.isNowQuarter(this.yearForQuarter , this.quarterForQuarter) ?
+                        new Date().getMonth() + 1 :
+                        this.getQuarterEnd(this.quarterForQuarter);
+                    let categories = [];
+                    for (let i = start; i <= end; ++i)
+                    {
+                        categories.push(i);
+                    }
+                    this.pain({
+                        dom: this.$refs.quarter ,
+                        chartType: 'column' ,
+                        title:  this.yearForQuarter + ' 第' + this.quarterForQuarter + '季度 统计资料' ,
+                        // 日期
+                        categories ,
+                        xTitle: '日期' ,
+                        yTitle: '数量' ,
+                        plotLine: 100 ,
+                        series ,
+                    });
+                })
+                .finally(() => {
+                    this.pending('quarterChart' , false);
+                });
+        } ,
+
+        // 年统计资料
+        yearChart () {
+            if (this.myValue.pending.yearChart) {
+                this.$info('请求中...请耐心等待');
+                return ;
+            }
+            this.pending('yearChart' , true);
+            Api.pannel
+                .year({
+                    year: this.yearForYear ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    // 系列
+                    let series = res.data;
+                    series = Object.values(series);
+                    series.forEach((v) => {
+                        return v.data = Object.values(v.data);
+                    });
+
+                    // 图标绘制
+                    const start = 1;
+                    const end = this.isNowYear(this.yearForYear) ?
+                        new Date().getMonth() + 1 :
+                        12;
+                    let categories = [];
+                    for (let i = start; i <= end; ++i)
+                    {
+                        categories.push(i);
+                    }
+                    console.log({
+                        dom: this.$refs.year ,
+                        chartType: 'column' ,
+                        title: this.yearForYear + '年统计资料' ,
+                        // 日期
+                        categories ,
+                        xTitle: '日期' ,
+                        yTitle: '数量' ,
+                        plotLine: 100 ,
+                        series ,
+                    });
+                    // return ;
+                    this.pain({
+                        dom: this.$refs.year ,
+                        chartType: 'area' ,
+                        title: this.yearForYear + '年统计资料' ,
+                        // 日期
+                        categories ,
+                        xTitle: '日期' ,
+                        yTitle: '数量' ,
+                        plotLine: 100 ,
+                        series ,
+                    });
+                })
+                .finally(() => {
+                    this.pending('yearChart' , false);
+                });
+        } ,
+
+        // 获取季度
+        getQuarter (month) {
+            if ([1,2,3].indexOf(month) != -1) {
+                return 1;
+            }
+            if ([4,5,6].indexOf(month) != -1) {
+                return 2;
+            }
+            if ([7,8,9].indexOf(month) != -1) {
+                return 3;
+            }
+            if ([10,11,12].indexOf(month) != -1) {
+                return 4;
+            }
+            throw new Error('参数 1 类型错误');
+        } ,
+
+        getQuarterStart (quarter) {
+            switch (quarter) {
+                case 1:
+                    return 1;
+                case 2:
+                    return 4;
+                case 3:
+                    return 7;
+                case 4:
+                    return 10;
+                default:
+                    throw new Error('参数 1 错误');
+            }
+        } ,
+
+        getQuarterEnd (quarter) {
+            switch (quarter) {
+                case 1:
+                    return 3;
+                case 2:
+                    return 6;
+                case 3:
+                    return 9;
+                case 4:
+                    return 12;
+                default:
+                    throw new Error('参数 1 错误');
+            }
+        },
+
+
+        // 判断是否同月
+        isNowMonth (year , month) {
+            const d = new Date();
+            const y = d.getFullYear();
+            const m = d.getMonth() + 1;
+            return y == year && month == month;
+        } ,
+
+        isNowQuarter (year , quarter) {
+            const d = new Date();
+            const y = d.getFullYear();
+            const m = d.getMonth() + 1;
+            return y == year && this.getQuarter(m) == quarter;
+        } ,
+
+        isNowYear (year) {
+            const d = new Date();
+            const y = d.getFullYear();
+            return y == year;
         } ,
 
         pain (option) {
@@ -163,47 +421,5 @@ export default {
         setDate (v) {
             this.date = v;
         } ,
-
-        // 用户活跃度统计
-        chartForStatisUserActivityLog () {
-            this.ins.loadingForStatisticsUserActivityLog.show();
-            Api.pannel.statisticsUserActivityLog({
-                date: this.date,
-            }, (res, code) => {
-                this.ins.loadingForStatisticsUserActivityLog.hide();
-                if (code != topContext.successCode) {
-                    this.alert(res);
-                    return;
-                }
-                let categories = [];
-                let series = [
-                    {
-                        name: '在线用户数',
-                        data: [],
-                    },
-                    {
-                        name: '在线客户端数',
-                        data: []
-                    }
-                ];
-                // console.log(res);
-                res.forEach((v) => {
-                    categories.push(v.time_point);
-                    series[0].data.push(parseInt(v.user_count));
-                    series[1].data.push(parseInt(v.client_count));
-                });
-                // console.log(categories , series);
-                this.pain({
-                    dom: this.$refs['statistics-user-activity-log'],
-                    // chartType: '',
-                    title: this.date + ' 统计资料',
-                    categories,
-                    xTitle: '时间',
-                    yTitle: '数量',
-                    plotLine: 100,
-                    series,
-                })
-            });
-        }
     }
 };

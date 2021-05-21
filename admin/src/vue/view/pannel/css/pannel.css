@@ -325,10 +325,8 @@
 }
 
 
-.chart-box .run-title .left .title .image {
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
+.chart-box .run-title .left .title .run-iconfont {
+    vertical-align: middle;
 }
 
 .chart-box .run-title .left .month {
@@ -341,6 +339,7 @@
 }
 
 .chart-box .con .chart-container {
+    width: 100%;
     height: 200px;
 }
 

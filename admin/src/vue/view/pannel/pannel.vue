@@ -56,7 +56,7 @@
                         <div class="card">
                             <div class="left"><my-icon icon="guanlian1"></my-icon></div>
                             <div class="right">
-                                <div class="top">新增关联主体</div>
+                                <div class="top">新增图片主体</div>
                                 <div class="btm">
                                     <div class="line">今日：<b>{{ info.image_subject.today }}</b></div>
                                     <div class="line">昨日：<b>{{ info.image_subject.yesterday }}</b></div>
@@ -65,29 +65,29 @@
                             </div>
                         </div>
 
-                        <div class="card">
-                            <div class="left"><my-icon icon="biaoqian"></my-icon></div>
-                            <div class="right">
-                                <div class="top">新增标签</div>
-                                <div class="btm">
-                                    <div class="line">今日：<b>{{ info.tag.today }}</b></div>
-                                    <div class="line">昨日：<b>{{ info.tag.yesterday }}</b></div>
-                                    <div class="line ratio" :class="{up: info.tag.flag == 'up' , down: info.tag.flag == 'down'}">相较昨天：<b>{{ info.tag.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
-                                </div>
-                            </div>
-                        </div>
+<!--                        <div class="card">-->
+<!--                            <div class="left"><my-icon icon="biaoqian"></my-icon></div>-->
+<!--                            <div class="right">-->
+<!--                                <div class="top">新增标签</div>-->
+<!--                                <div class="btm">-->
+<!--                                    <div class="line">今日：<b>{{ info.tag.today }}</b></div>-->
+<!--                                    <div class="line">昨日：<b>{{ info.tag.yesterday }}</b></div>-->
+<!--                                    <div class="line ratio" :class="{up: info.tag.flag == 'up' , down: info.tag.flag == 'down'}">相较昨天：<b>{{ info.tag.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
 
-                        <div class="card">
-                            <div class="left"><my-icon icon="gonggongmokuai"></my-icon></div>
-                            <div class="right">
-                                <div class="top">新增模块</div>
-                                <div class="btm">
-                                    <div class="line">今日：<b>{{ info.module.today }}</b></div>
-                                    <div class="line">昨日：<b>{{ info.module.yesterday }}</b></div>
-                                    <div class="line ratio" :class="{up: info.module.flag == 'up' , down: info.module.flag == 'down'}">相较昨天：<b>{{ info.module.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
-                                </div>
-                            </div>
-                        </div>
+<!--                        <div class="card">-->
+<!--                            <div class="left"><my-icon icon="gonggongmokuai"></my-icon></div>-->
+<!--                            <div class="right">-->
+<!--                                <div class="top">新增模块</div>-->
+<!--                                <div class="btm">-->
+<!--                                    <div class="line">今日：<b>{{ info.module.today }}</b></div>-->
+<!--                                    <div class="line">昨日：<b>{{ info.module.yesterday }}</b></div>-->
+<!--                                    <div class="line ratio" :class="{up: info.module.flag == 'up' , down: info.module.flag == 'down'}">相较昨天：<b>{{ info.module.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
 
                         <div class="card">
                             <div class="left"><my-icon icon="shipin"></my-icon></div>
@@ -137,17 +137,17 @@
                             </div>
                         </div>
 
-                        <div class="card">
-                            <div class="left"><my-icon icon="leimupinleifenleileibie"></my-icon></div>
-                            <div class="right">
-                                <div class="top">新增内容分类</div>
-                                <div class="btm">
-                                    <div class="line">今日：<b>{{ info.category.today }}</b></div>
-                                    <div class="line">昨日：<b>{{ info.category.yesterday }}</b></div>
-                                    <div class="line ratio" :class="{up: info.category.flag == 'up' , down: info.user.flag == 'down'}">相较昨天：<b>{{ info.category.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>
-                                </div>
-                            </div>
-                        </div>
+<!--                        <div class="card">-->
+<!--                            <div class="left"><my-icon icon="leimupinleifenleileibie"></my-icon></div>-->
+<!--                            <div class="right">-->
+<!--                                <div class="top">新增内容分类</div>-->
+<!--                                <div class="btm">-->
+<!--                                    <div class="line">今日：<b>{{ info.category.today }}</b></div>-->
+<!--                                    <div class="line">昨日：<b>{{ info.category.yesterday }}</b></div>-->
+<!--                                    <div class="line ratio" :class="{up: info.category.flag == 'up' , down: info.user.flag == 'down'}">相较昨天：<b>{{ info.category.ratio }}</b><my-icon icon="web-icon-"></my-icon></div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
 
                         <div class="card">
                             <div class="left"><my-icon icon="guanlian"></my-icon></div>
@@ -224,26 +224,26 @@
                         <div class="card-for-total">
                             <div class="left"><my-icon icon="guanlian1"></my-icon></div>
                             <div class="right">
-                                <div class="top">关联主体数</div>
+                                <div class="top">图片主体</div>
                                 <div class="btm">{{ info.image_subject.total }}</div>
                             </div>
                         </div>
 
-                        <div class="card-for-total">
-                            <div class="left"><my-icon icon="biaoqian"></my-icon></div>
-                            <div class="right">
-                                <div class="top">标签数</div>
-                                <div class="btm">{{ info.tag.total }}</div>
-                            </div>
-                        </div>
+<!--                        <div class="card-for-total">-->
+<!--                            <div class="left"><my-icon icon="biaoqian"></my-icon></div>-->
+<!--                            <div class="right">-->
+<!--                                <div class="top">标签数</div>-->
+<!--                                <div class="btm">{{ info.tag.total }}</div>-->
+<!--                            </div>-->
+<!--                        </div>-->
 
-                        <div class="card-for-total">
-                            <div class="left"><my-icon icon="gonggongmokuai"></my-icon></div>
-                            <div class="right">
-                                <div class="top">模块数</div>
-                                <div class="btm">{{ info.module.total }}</div>
-                            </div>
-                        </div>
+<!--                        <div class="card-for-total">-->
+<!--                            <div class="left"><my-icon icon="gonggongmokuai"></my-icon></div>-->
+<!--                            <div class="right">-->
+<!--                                <div class="top">模块数</div>-->
+<!--                                <div class="btm">{{ info.module.total }}</div>-->
+<!--                            </div>-->
+<!--                        </div>-->
 
                         <div class="card-for-total">
                             <div class="left"><my-icon icon="shipin"></my-icon></div>
@@ -277,13 +277,13 @@
                             </div>
                         </div>
 
-                        <div class="card-for-total">
-                            <div class="left"><my-icon icon="leimupinleifenleileibie"></my-icon></div>
-                            <div class="right">
-                                <div class="top">内容分类数</div>
-                                <div class="btm">{{ info.category.total }}</div>
-                            </div>
-                        </div>
+<!--                        <div class="card-for-total">-->
+<!--                            <div class="left"><my-icon icon="leimupinleifenleileibie"></my-icon></div>-->
+<!--                            <div class="right">-->
+<!--                                <div class="top">内容分类数</div>-->
+<!--                                <div class="btm">{{ info.category.total }}</div>-->
+<!--                            </div>-->
+<!--                        </div>-->
 
                         <div class="card-for-total">
                             <div class="left"><my-icon icon="guanlian"></my-icon></div>
@@ -309,95 +309,93 @@
                             </div>
                         </div>
 
-
-
-
-
                     </div>
                 </div>
 
-                <!--                    <div class="chart">-->
+                <div class="chart">
 
-                <!--                        &lt;!&ndash;<div class="top hide">&ndash;&gt;-->
+                    <div class="top">
 
-                <!--                        &lt;!&ndash;<div class="month chart-box">&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<div class="run-title">&ndash;&gt;-->
+                        <div class="month chart-box">
+                            <div class="run-title">
+                                <div class="left">
+                                    <div class="title"><my-icon icon="yuetongji" class="f-24 run-gray m-r-10"></my-icon>月统计资料</div>
+                                    <div class="year">
+                                        年份：
+                                        <i-select v-model="yearForMonth" style="width: 80px;">
+                                            <i-option v-for="v in year" :key="v" :value="v">{{ v }}</i-option>
+                                        </i-select>
+                                    </div>
+                                    <div class="month single">
+                                        月份：
+                                        <i-select v-model="monthForMonth" style="width: 80px;">
+                                            <i-option v-for="(v,k) in month" :key="k" :value="parseInt(k)">{{ v }}
+                                            </i-option>
+                                        </i-select>
+                                    </div>
+                                    <div class="btns">
+                                        <i-button type="primary" size="small" :loading="myValue.pending.monthChart" @click="monthChart">确定</i-button>
+                                    </div>
+                                </div>
+                                <div class="right"></div>
+                            </div>
+                            <div class="con">
+                                <div class="chart-container" ref="month"></div>
+                            </div>
+                        </div>
 
-                <!--                        &lt;!&ndash;<div class="left">&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<div class="title"><img src="./image/month.png" class="image">月统计资料</div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<div class="year">&ndash;&gt;-->
-                <!--                        &lt;!&ndash;年份：&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<i-select v-model="yearForMonth" style="width: 80px;">&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<i-option v-for="v in year" :key="v" :value="v">{{ v }}</i-option>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</i-select>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<div class="month single">&ndash;&gt;-->
-                <!--                        &lt;!&ndash;月份：&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<i-select v-model="monthForMonth" style="width: 80px;">&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<i-option v-for="(v,k) in month" :key="k" :value="parseInt(k)">{{ v }}</i-option>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</i-select>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<div class="btns">&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<v-button color="blue" @click="monthChart">确定</v-button>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<div class="right"></div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<div class="con">&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<div class="chart-container" ref="month"></div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<v-loading ref="month-loading"></v-loading>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</div>&ndash;&gt;-->
+                        <div class="quarter chart-box">
+                            <div class="run-title">
+                                <div class="left">
+                                    <div class="title"><my-icon icon="jidu" class="f-24 run-gray m-r-10"></my-icon>季度统计资料</div>
+                                    <div class="year">
+                                        年份：
+                                        <i-select v-model="yearForQuarter" style="width: 80px;">
+                                            <i-option v-for="v in year" :key="v" :value="v">{{ v }}</i-option>
+                                        </i-select>
+                                    </div>
+                                    <div class="month single">
+                                        季度：
+                                        <i-select v-model="quarterForQuarter" style="width: 100px;">
+                                            <i-option v-for="(v,k) in quarter" :key="k" :value="parseInt(k)">{{ v }}
+                                            </i-option>
+                                        </i-select>
+                                    </div>
+                                    <div class="btns">
+                                        <i-button type="primary" size="small" :loading="myValue.pending.quarterChart" @click="quarterChart">确定</i-button>
+                                    </div>
+                                </div>
+                                <div class="right"></div>
+                            </div>
+                            <div class="con">
+                                <div class="chart-container" ref="quarter"></div>
+<!--                                <v-loading ref="quarter-loading"></v-loading>-->
+                            </div>
+                        </div>
 
-                <!--                        &lt;!&ndash;<div class="quarter chart-box">&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<div class="run-title">&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<div class="left">&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<div class="title"><img src="./image/quarter.png" class="image">季度统计资料</div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<div class="year">&ndash;&gt;-->
-                <!--                        &lt;!&ndash;年份：&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<i-select v-model="yearForQuarter" style="width: 80px;">&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<i-option v-for="v in year" :key="v" :value="v">{{ v }}</i-option>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</i-select>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<div class="month single">&ndash;&gt;-->
-                <!--                        &lt;!&ndash;季度：&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<i-select v-model="quarterForQuarter" style="width: 100px;">&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<i-option v-for="(v,k) in quarter" :key="k" :value="parseInt(k)">{{ v }}</i-option>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</i-select>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<div class="btns">&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<v-button color="blue" @click="quarterChart">确定</v-button>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<div class="right"></div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<div class="con">&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<div class="chart-container" ref="quarter"></div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;<v-loading ref="quarter-loading"></v-loading>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</div>&ndash;&gt;-->
-                <!--                        &lt;!&ndash;</div>&ndash;&gt;-->
+                    </div>
 
-                <!--                        <div class="btm chart-box">-->
-                <!--                            <div class="run-title">-->
-                <!--                                <div class="left">-->
-                <!--                                    <div class="title"><img src="./image/year.png" class="image">用户活跃度</div>-->
-                <!--                                    <div class="year">-->
-                <!--                                        日期：-->
-                <!--                                        <i-date-picker type="date" placement="bottom-end" placeholder="请选择日期" style="width: 200px" @on-change="setDate"></i-date-picker>-->
-                <!--                                    </div>-->
-                <!--                                    <div class="btns">-->
-                <!--                                        <v-button color="blue" @click="chartForStatisUserActivityLog">确定</v-button>-->
-                <!--                                    </div>-->
-                <!--                                </div>-->
-                <!--                                <div class="right"></div>-->
-                <!--                            </div>-->
-                <!--                            <div class="con">-->
-                <!--                                <div class="chart-container" ref="statistics-user-activity-log"></div>-->
-                <!--                                <v-loading ref="statistics-user-activity-log-loading"></v-loading>-->
-                <!--                            </div>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
+                    <div class="btm chart-box">
+                        <div class="run-title">
+                            <div class="left">
+                                <div class="title"><my-icon icon="niandu" class="f-24 run-gray m-r-10"></my-icon>年度统计资料</div>
+                                <div class="year">
+                                    年份：
+                                    <i-date-picker type="year" placement="bottom-end" placeholder="请选择年份" style="width: 200px" @on-change="setDate"></i-date-picker>
+                                </div>
+                                <div class="btns">
+                                    <i-button type="primary" size="small" :loading="myValue.pending.yearChart" @click="yearChart">确定</i-button>
+                                </div>
+                            </div>
+                            <div class="right"></div>
+                        </div>
+                        <div class="con">
+                            <div class="chart-container" ref="year"></div>
+<!--                            <v-loading ref="statistics-user-activity-log-loading"></v-loading>-->
+                        </div>
+                    </div>
+                </div>
+
                 <div class="system">
                     <div class="run-title">
                         <div class="left">系统信息</div>

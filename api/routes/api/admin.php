@@ -333,7 +333,11 @@ Route::prefix('admin')
             /**
              * 控制台
              */
-            Route::get('pannel/info' , [Pannel::class , 'info']);
+            Route::get('pannel_info' , [Pannel::class , 'info']);
+            // 月统计资料
+            Route::get('month_data' , [Pannel::class , 'monthData']);
+            Route::get('quarter_data' , [Pannel::class , 'quarterData']);
+            Route::get('year_data' , [Pannel::class , 'yearData']);
 
             /**
              * ******************
