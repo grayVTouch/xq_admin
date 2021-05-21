@@ -20,6 +20,11 @@ class DiskModel extends Model
         return self::where('prefix' , $prefix)->first();
     }
 
+    public static function countByIsDefault(int $is_default = 1): int
+    {
+        return self::where('is_default' , $is_default)->count();
+    }
+
     public static function findByExcludeIdAndPrefix(int $exclude_id , string $prefix): ?DiskModel
     {
         return self::where([

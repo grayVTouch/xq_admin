@@ -163,11 +163,7 @@
         </div>
 
         <!-- 磁盘选择器 -->
-        <my-disk
-
-        >
-
-        </my-disk>
+        <my-disk ref="disk"></my-disk>
     </div>
 </template>
 

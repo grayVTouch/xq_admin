@@ -83,13 +83,15 @@ export default {
         } ,
 
         initData () {
-            Api.admin.info()
+            Api.admin
+                .info()
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
                         this.errorHandle(res.message);
                         return ;
                     }
-                    const user = res.data ? res.data : {
+                    const data = res.data;
+                    const user = data.user ? data.user : {
                         permission: []
                     };
                     // 无结构权限列表
@@ -99,9 +101,23 @@ export default {
                     this.$store.dispatch('user' , user);
                     this.$store.dispatch('myPermission' , permission);
                     this.$store.dispatch('myPermissionWithStructure' , permissionWithStructure);
+
                     this.$nextTick(() => {
+                        // 菜单渲染
                         this.initAfterLoadedData();
                     });
+
+                    // 磁盘选择器处理
+                    if (data.is_init_disk !== 1) {
+                        this.$Modal.warning({
+                            title: '请添加磁盘' ,
+                            content: '你尚未添加存储磁盘，这会导致图片、文件等上传失败！请尽快处理，点击确认添加磁盘！' ,
+                            onOk: () => {
+                                this.$refs.disk.openFormModal();
+                            } ,
+                        });
+
+                    }
                 });
         } ,
 

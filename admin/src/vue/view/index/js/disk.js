@@ -1,6 +1,10 @@
 const form = {
     os: 'windows' ,
+    // 是否默认 0-否 1-是
     is_default: 1 ,
+    // 是否创建软连接 0-否 1-是
+    is_linked: 1 ,
+    path: '' ,
 };
 
 export default {
@@ -53,10 +57,6 @@ export default {
         } ,
 
         closeFormModal () {
-            if (this.pending('submitEvent')) {
-                this.message('warning' , '请求中...请耐心等待');
-                return;
-            }
             this.myValue.show   = false;
             this.modules    = [];
             this.form       = G.copy(form);
@@ -95,13 +95,8 @@ export default {
                         this.errorHandle(res.message);
                         return ;
                     }
-                    this.successModal((keep) => {
-                        this.$emit('on-success');
-                        if (keep) {
-                            return ;
-                        }
-                        self.closeFormModal();
-                    });
+                    this.successHandle();
+                    this.closeFormModal();
                 })
                 .finally(() => {
                     this.pending('submitEvent' , false);

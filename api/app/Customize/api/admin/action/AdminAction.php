@@ -7,6 +7,7 @@ namespace App\Customize\api\admin\action;
 
 use App\Customize\api\admin\handler\AdminHandler;
 use App\Customize\api\admin\model\AdminModel;
+use App\Customize\api\admin\model\DiskModel;
 use App\Customize\api\admin\util\ResourceUtil;
 use App\Http\Controllers\api\admin\Base;
 use Exception;
@@ -25,7 +26,11 @@ class AdminAction extends Action
 {
     public static function info(Base $context , array $param)
     {
-        return self::success('' , user());
+        $disk_count = DiskModel::countByIsDefault();
+        return self::success('' , [
+            'user' => user() ,
+            'is_init_disk' => $disk_count > 0 ? 1 : 0 ,
+        ]);
     }
 
     public static function search(Base $context , $value , array $param = [])

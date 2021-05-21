@@ -191,6 +191,7 @@ class DiskAction extends Action
                 'path' ,
                 'os' ,
                 'prefix' ,
+                'is_linked' ,
                 'is_default' ,
                 'created_at' ,
             ]));

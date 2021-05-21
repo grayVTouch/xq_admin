@@ -71,13 +71,17 @@ export default {
 
         usernameInputEvent () {
             this.error({username: ''} , false);
-            Api.login.avatar({username: this.form.username} , (res) => {
-                this.myValue.avatar = '';
-                if (res.code !== TopContext.code.Success) {
-                    return ;
-                }
-                this.myValue.avatar = data;
-            });
+            Api.login
+                .avatar({
+                    username: this.form.username
+                })
+                .then((res) => {
+                    this.myValue.avatar = '';
+                    if (res.code !== TopContext.code.Success) {
+                        return ;
+                    }
+                    this.myValue.avatar = data;
+                });
         } ,
 
         filter () {
@@ -104,11 +108,14 @@ export default {
             const filterRes = this.filter();
             if (!filterRes.status) {
                 this.error(filterRes.error);
-                // this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
+                this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
                 return ;
             }
+            const form = G.copy(form);
             this.pending('submitEvent' , true);
-            Api.login.login(this.form).then((res) => {
+            Api.login
+                .login(form)
+                .then((res) => {
                     this.pending('submitEvent' , false);
                     this.error();
                     this.topMessage();

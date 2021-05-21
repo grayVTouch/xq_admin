@@ -45,10 +45,10 @@
                         </tr>
 
                         <tr :class="{error: myValue.error.is_default}">
-                            <td>默认？</td>
+                            <td>默认存储？</td>
                             <td>
-                                <i-radio-group v-model="form.is_default"  @input="myValue.error.is_default = ''" disabled>
-                                    <i-radio v-for="(v,k) in TopContext.business.bool.integer" :key="k" :label="parseInt(k)">{{ v }}</i-radio>
+                                <i-radio-group v-model="form.is_default"  @input="myValue.error.is_default = ''">
+                                    <i-radio v-for="(v,k) in TopContext.business.bool.integer" :key="k" :label="parseInt(k)" disabled>{{ v }}</i-radio>
                                 </i-radio-group>
                                 <span class="need">*</span>
                                 <div class="msg">默认：是</div>
@@ -56,14 +56,14 @@
                             </td>
                         </tr>
 
-                        <tr :class="{error: myValue.error.is_linked}" v-if="myValue.mode === 'edit'">
-                            <td>已创建链接？</td>
+                        <tr :class="{error: myValue.error.is_linked}">
+                            <td>创建链接？</td>
                             <td>
                                 <i-radio-group v-model="form.is_linked"  @input="myValue.error.is_linked = ''">
-                                    <i-radio v-for="(v,k) in TopContext.business.bool.integer" :key="k" :label="parseInt(k)">{{ v }}</i-radio>
+                                    <i-radio v-for="(v,k) in TopContext.business.bool.integer" :key="k" :label="parseInt(k)" disabled>{{ v }}</i-radio>
                                 </i-radio-group>
                                 <span class="need">*</span>
-                                <div class="msg"></div>
+                                <div class="msg">默认：是</div>
                                 <div class="e-msg">{{ myValue.error.is_linked }}</div>
                             </td>
                         </tr>
