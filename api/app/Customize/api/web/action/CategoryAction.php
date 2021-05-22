@@ -38,7 +38,12 @@ class CategoryAction extends Action
             return self::error('模块不存在' , '' , 404);
         }
         $category = CategoryModel::find($id);
+        if (empty($category)) {
+            return self::error('分类不存在' , '' , 404);
+        }
         $category = CategoryHandler::handle($category);
+        // 附加：上级分类
+        CategoryHandler::parent($category);
         return self::success('' , $category);
     }
 }

@@ -33,4 +33,27 @@ class ImageAtPositionHandler extends Handler
         return $res;
     }
 
+    // 模块
+    public static function module($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $module = ModuleModel::find($model->module_id);
+        $module = ModuleHandler::handle($module);
+
+        $model->module = $module;
+    }
+
+    public static function position($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $position = PositionModel::find($res->position_id);
+        $position = PositionHandler::handle($position);
+
+        $res->position = $position;
+    }
+
 }
