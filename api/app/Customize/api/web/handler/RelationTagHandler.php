@@ -21,26 +21,37 @@ class RelationTagHandler extends Handler
         }
         $res = convert_object($model);
 
-        $module = ModuleModel::find($res->module_id);
-        ModuleHandler::handle($module);
-
-        switch ($res->relation_type)
-        {
-            case 'image_project':
-                $relation = ImageProjectModel::find($res->relation_id);
-                $relation = ImageProjectHandler::handle($relation);
-                break;
-            case 'video_project':
-                $relation = VideoProjectModel::find($res->relation_id);
-                $relation = VideoProjectHandler::handle($relation);
-                break;
-        }
-
-
-        $res->module = $module;
-        $res->relation = $relation;
-
         return $res;
     }
 
+    public static function relation($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        switch ($model->relation_type)
+        {
+            case 'image_project':
+                $relation = ImageProjectModel::find($model->relation_id);
+                $relation = ImageProjectHandler::handle($relation);
+                break;
+            case 'video_project':
+                $relation = VideoProjectModel::find($model->relation_id);
+                $relation = VideoProjectHandler::handle($relation);
+                break;
+        }
+        $model->relation = $relation;
+    }
+
+    // 模块
+    public static function module($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $module = ModuleModel::find($model->module_id);
+        $module = ModuleHandler::handle($module);
+
+        $model->module = $module;
+    }
 }

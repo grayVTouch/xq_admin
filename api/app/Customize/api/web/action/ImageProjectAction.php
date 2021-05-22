@@ -3,6 +3,7 @@
 
 namespace App\Customize\api\web\action;
 
+use App\Customize\api\web\handler\CategoryHandler;
 use App\Customize\api\web\handler\CollectionGroupHandler;
 use App\Customize\api\web\handler\ImageProjectHandler;
 use App\Customize\api\web\handler\RelationTagHandler;
@@ -49,11 +50,16 @@ class ImageProjectAction extends Action
         }
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = ImageProjectModel::getNewestByFilterAndLimit($param , $limit);
-        $res = ImageProjectHandler::handleAll($res , [
-            'user' ,
-            'images' ,
-            'tags' ,
-        ]);
+        $res = ImageProjectHandler::handleAll($res);
+        foreach ($res as $v)
+        {
+            // 附加：用户
+            ImageProjectHandler::user($v);
+            // 附加：图片
+            ImageProjectHandler::images($v);
+            // 附加：标签
+            ImageProjectHandler::tags($v);
+        }
         return self::success('' , $res);
     }
 
@@ -78,11 +84,16 @@ class ImageProjectAction extends Action
         }
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = ImageProjectModel::getHotByFilterAndLimit($param , $limit);
-        $res = ImageProjectHandler::handleAll($res , [
-            'user' ,
-            'images' ,
-            'tags' ,
-        ]);
+        $res = ImageProjectHandler::handleAll($res);
+        foreach ($res as $v)
+        {
+            // 附加：用户
+            ImageProjectHandler::user($v);
+            // 附加：图片
+            ImageProjectHandler::images($v);
+            // 附加：标签
+            ImageProjectHandler::tags($v);
+        }
         return self::success('' , $res);
     }
 
@@ -109,11 +120,16 @@ class ImageProjectAction extends Action
         }
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = ImageProjectModel::getByTagIdAndFilterAndLimit($tag->id , $param , $limit);
-        $res = ImageProjectHandler::handleAll($res , [
-            'user' ,
-            'images' ,
-            'tags' ,
-        ]);
+        $res = ImageProjectHandler::handleAll($res);
+        foreach ($res as $v)
+        {
+            // 附加：用户
+            ImageProjectHandler::user($v);
+            // 附加：图片
+            ImageProjectHandler::images($v);
+            // 附加：标签
+            ImageProjectHandler::tags($v);
+        }
         return self::success('' , $res);
     }
 
@@ -133,13 +149,17 @@ class ImageProjectAction extends Action
         if (empty($image_project)) {
             return self::error('图片专题不存在' , '' , 404);
         }
-        $image_project = ImageProjectHandler::handle($image_project , [
-            'user' ,
-            'image_subject' ,
-            'images' ,
-            'tags' ,
-            'category' ,
-        ]);
+        $image_project = ImageProjectHandler::handle($image_project);
+        // 附加：用户
+        ImageProjectHandler::user($image_project);
+        // 附加：图片
+        ImageProjectHandler::images($image_project);
+        // 附加：标签
+        ImageProjectHandler::tags($image_project);
+        // 附加：图片主体
+        ImageProjectHandler::imageSubject($image_project);
+        // 附加：分类
+        ImageProjectHandler::category($image_project);
         return self::success('' , $image_project);
     }
 
@@ -156,11 +176,16 @@ class ImageProjectAction extends Action
         }
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = ImageProjectModel::getHotWithPagerByFilterAndLimit($param , $limit);
-        $res = ImageProjectHandler::handlePaginator($res , [
-            'user' ,
-            'tags' ,
-            'images' ,
-        ]);
+        $res = ImageProjectHandler::handlePaginator($res);
+        foreach ($res->data as $v)
+        {
+            // 附加：用户
+            ImageProjectHandler::user($v);
+            // 附加：图片
+            ImageProjectHandler::images($v);
+            // 附加：标签
+            ImageProjectHandler::tags($v);
+        }
         return self::success('' , $res);
     }
 
@@ -201,11 +226,16 @@ class ImageProjectAction extends Action
             default:
                 return self::error('不支持的 mode ，当前受支持的 mode 有：' . implode(' , ' , $mode_range));
         }
-        $res = ImageProjectHandler::handlePaginator($res , [
-            'user' ,
-            'tags' ,
-            'images' ,
-        ]);
+        $res = ImageProjectHandler::handlePaginator($res);
+        foreach ($res->data as $v)
+        {
+            // 附加：用户
+            ImageProjectHandler::user($v);
+            // 附加：图片
+            ImageProjectHandler::images($v);
+            // 附加：标签
+            ImageProjectHandler::tags($v);
+        }
         return self::success('' , $res);
     }
 
@@ -227,10 +257,16 @@ class ImageProjectAction extends Action
         if (empty($module)) {
             return self::error('模块不存在' , '' , 404);
         }
-
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = RelationTagModel::hotTagsInImageProjectByFilterAndLimit($param , $limit);
         $res = RelationTagHandler::handleAll($res);
+        foreach ($res as $v)
+        {
+            // 附加：关联数据
+            RelationTagHandler::relation($v);
+            // 附加：模块
+            RelationTagHandler::module($v);
+        }
         return self::success('' , $res);
     }
 
@@ -248,12 +284,9 @@ class ImageProjectAction extends Action
         if (empty($module)) {
             return self::error('模块不存在');
         }
-
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = RelationTagModel::hotTagsWithPagerInImageProjectByValueAndFilterAndLimit($param['value'] , $param , $limit);
-        $res = RelationTagHandler::handlePaginator($res , [
-
-        ]);
+        $res = RelationTagHandler::handlePaginator($res);
         return self::success('' , $res);
     }
 
@@ -271,11 +304,16 @@ class ImageProjectAction extends Action
         }
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = ImageProjectModel::getNewestWithPagerByFilterAndLimit($param , $limit);
-        $res = ImageProjectHandler::handlePaginator($res , [
-            'user' ,
-            'tags' ,
-            'images' ,
-        ]);
+        $res = ImageProjectHandler::handlePaginator($res);
+        foreach ($res->data as $v)
+        {
+            // 附加：用户
+            ImageProjectHandler::user($v);
+            // 附加：标签
+            ImageProjectHandler::tags($v);
+            // 附加：图片
+            ImageProjectHandler::images($v);
+        }
         return self::success('' , $res);
     }
 
@@ -292,6 +330,7 @@ class ImageProjectAction extends Action
             return self::error('模块不存在' , '' , 404);
         }
         $categories = CategoryModel::getByModuleIdAndType($module->id , 'image_project');
+        $categories = CategoryHandler::handleAll($categories);
         $categories = object_to_array($categories);
         $categories = Category::childrens(0 , $categories , null , false , false);
         return self::success('' , $categories);

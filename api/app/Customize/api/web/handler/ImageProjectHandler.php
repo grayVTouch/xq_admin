@@ -55,49 +55,107 @@ class ImageProjectHandler extends Handler
 
         $res->format_time = date('Y-m-d H:i' , strtotime($res->created_at));
 
-        if (in_array('user' , $with)) {
-            $user = UserModel::find($res->user_id);
-            $user = UserHandler::handle($user);
-            $res->user = $user;
-        }
-
-        if (in_array('module' , $with)) {
-            $module = ModuleModel::find($res->module_id);
-            $module = ModuleHandler::handle($module);
-
-            $res->module = $module;
-        }
-
-        if (in_array('category' , $with)) {
-            $category = CategoryModel::find($res->category_id);
-            $category = CategoryHandler::handle($category);
-            $res->category = $category;
-        }
-
-        if (in_array('image_subject' , $with)) {
-            if ($res->type === 'pro') {
-                $image_subject = ImageSubjectModel::find($res->image_subject_id);
-                $image_subject = ImageSubjectHandler::handle($image_subject);
-            } else {
-                $image_subject = null;
-            }
-            $res->image_subject = $image_subject;
-        }
-
-        if (in_array('images' , $with)) {
-            $images = ImageModel::getByImageProjectId($res->id);
-            $images = ImageHandler::handleAll($images);
-
-            $res->images = $images;
-        }
-
-        if (in_array('tags' , $with)) {
-            $tags = RelationTagModel::getByRelationTypeAndRelationId('image_project' , $res->id);
-            $res->images = $images;
-            $res->tags = $tags;
-        }
-
         return $res;
     }
+
+    public static function isCollected($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        if (empty(user())) {
+            $model->is_collected = 0;
+        } else {
+            $model->is_collected = CollectionModel::findByModuleIdAndUserIdAndRelationTypeAndRelationId($model->module_id , user()->id , 'image_project' , $model->id) ? 1 : 0;
+        }
+    }
+
+    public static function isPraised($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        if (empty(user())) {
+            $model->is_praised = 0;
+        } else {
+            $model->is_praised = PraiseModel::findByModuleIdAndUserIdAndRelationTypeAndRelationId($model->module_id , user()->id , 'image_project' , $model->id) ? 1 : 0;
+        }
+    }
+
+    // 附加：模块
+    public static function module($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $module = ModuleModel::find($model->module_id);
+        $module = ModuleHandler::handle($module);
+
+        $model->module = $module;
+    }
+
+    // 附加：用户
+    public static function user($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $user = UserModel::find($model->user_id);
+        $user = UserHandler::handle($user);
+
+        $model->user = $user;
+    }
+
+
+    // 附加：分类
+    public static function category($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $category = CategoryModel::find($model->category_id);
+        $category = CategoryHandler::handle($category);
+        $model->category = $category;
+    }
+
+
+    // 附加：图片专题
+    public static function imageSubject($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        if ($model->type === 'pro') {
+            $image_subject = ImageSubjectModel::find($model->image_subject_id);
+            $image_subject = ImageSubjectHandler::handle($image_subject);
+        } else {
+            $image_subject = null;
+        }
+        $model->image_subject = $image_subject;
+    }
+
+    // 附加：图片专题
+    public static function images($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $images = ImageModel::getByImageProjectId($model->id);
+        $images = ImageHandler::handleAll($images);
+
+        $model->images = $images;
+    }
+
+    // 附加：标签
+    public static function tags($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $tags = RelationTagModel::getByRelationTypeAndRelationId('image_project' , $model->id);
+        $tags = RelationTagHandler::handleAll($tags);
+        $model->tags = $tags;
+    }
+
 
 }

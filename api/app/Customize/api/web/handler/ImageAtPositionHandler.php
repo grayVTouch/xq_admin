@@ -50,10 +50,11 @@ class ImageAtPositionHandler extends Handler
         if (empty($model)) {
             return ;
         }
-        $position = PositionModel::find($res->position_id);
+        $position = PositionModel::find($model->position_id);
         $position = PositionHandler::handle($position);
 
-        $res->position = $position;
+        $model->position = $position;
     }
+
 
 }
