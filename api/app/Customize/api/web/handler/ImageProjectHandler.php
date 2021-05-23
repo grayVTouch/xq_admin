@@ -40,24 +40,23 @@ class ImageProjectHandler extends Handler
         $res->__type__      = get_config_key_mapping_value('business.type_for_image_project', $res->type);
         $res->__status__    = get_config_key_mapping_value('business.status_for_image_project' , $res->status);
 
-        // 针对当前用户的一些字段
-        // 是否收藏
-        if (empty(user())) {
-            $res->collected = 0;
-            $res->praised = 0;
-        } else {
-            $res->collected = CollectionModel::findByModuleIdAndUserIdAndRelationTypeAndRelationId($res->module_id , user()->id , 'image_project' , $res->id) ? 1 : 0;
-            $res->praised = PraiseModel::findByModuleIdAndUserIdAndRelationTypeAndRelationId($res->module_id , user()->id , 'image_project' , $res->id) ? 1 : 0;
-        }
-
-        // 收藏数量
-        $res->collect_count = CollectionModel::countByModuleIdAndRelationTypeAndRelationId($res->module_id , 'image_project' , $res->id);
 
         $res->format_time = date('Y-m-d H:i' , strtotime($res->created_at));
 
         return $res;
     }
 
+    // 附加：收藏数量
+    public static function collectCount($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        // 收藏数量
+        $model->collect_count = CollectionModel::countByModuleIdAndRelationTypeAndRelationId($model->module_id , 'image_project' , $model->id);
+    }
+
+    // 附加：是否收藏
     public static function isCollected($model): void
     {
         if (empty($model)) {
@@ -70,6 +69,7 @@ class ImageProjectHandler extends Handler
         }
     }
 
+    // 附加：是否点赞
     public static function isPraised($model): void
     {
         if (empty($model)) {

@@ -31,7 +31,7 @@
                                         <div class="type" v-if="v.relation.type === 'pro'"><my-icon icon="zhuanyerenzheng" size="35" /></div>
                                         <div class="praise" v-ripple @click.prevent="praiseHandle(v)">
                                             <my-loading size="16" v-if="val.pending.praiseHandle"></my-loading>
-                                            <my-icon icon="shoucang2" :class="{'run-red': v.relation.praised }" /> 喜欢
+                                            <my-icon icon="shoucang2" :class="{'run-red': v.relation.is_praised }" /> 喜欢
                                         </div>
                                     </div>
                                     <div class="btm">
@@ -130,7 +130,7 @@
                 if (this.pending('praiseHandle')) {
                     return ;
                 }
-                const action = collection.relation.praised ? 0 : 1;
+                const action = collection.relation.is_praised ? 0 : 1;
                 this.pending('praiseHandle' , true);
                 Api.user
                     .praiseHandle({

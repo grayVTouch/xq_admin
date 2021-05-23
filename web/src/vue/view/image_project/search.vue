@@ -87,7 +87,7 @@
 
                                         <div class="praise" v-ripple @click.prevent="praiseHandle(v)">
                                             <my-loading size="16" v-if="val.pending.praiseHandle"></my-loading>
-                                            <my-icon icon="shoucang2" :class="{'run-red': v.praised }" /> 喜欢
+                                            <my-icon icon="shoucang2" :class="{'run-red': v.is_praised }" /> 喜欢
                                         </div>
                                     </div>
                                     <div class="btm">

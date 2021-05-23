@@ -71,7 +71,7 @@ export default {
                 return ;
             }
             const self = this;
-            const praised = this.data.praised ? 0 : 1;
+            const praised = this.data.is_praised ? 0 : 1;
             this.pending('praiseHandle' , true);
             Api.user
                 .praiseHandle(null , {
@@ -86,7 +86,7 @@ export default {
                         });
                         return ;
                     }
-                    this.data.praised = praised;
+                    this.data.is_praised = praised;
                     praised ? this.data.praise_count++ : this.data.praise_count--;
                 })
                 .finally(() => {
@@ -158,7 +158,7 @@ export default {
                 return ;
             }
             this.pending(pendingKey , true);
-            const action = row.inside ? 0 : 1;
+            const action = row.is_inside ? 0 : 1;
             Api.user
                 .collectionHandle(null , {
                     relation_type: 'image_project' ,
@@ -173,7 +173,7 @@ export default {
                         });
                         return ;
                     }
-                    row.inside = action;
+                    row.is_inside = action;
                     action ? row.count++ : row.count--;
                     this.getData();
                 })

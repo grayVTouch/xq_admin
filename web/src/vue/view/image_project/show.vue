@@ -10,11 +10,11 @@
 
                             <my-button class="praise" @click="praiseHandle">
                                 <my-loading size="16" v-if="val.pending.praiseHandle"></my-loading>
-<!--                                <my-icon :class="{'run-red': data.praised }" icon="shoucang2" /> 喜欢 {{ data.praise_count }}-->
-                                <my-icon :class="{'run-red': data.praised }" icon="shoucang2" /> 喜欢
+<!--                                <my-icon :class="{'run-red': data.is_praised }" icon="shoucang2" /> 喜欢 {{ data.praise_count }}-->
+                                <my-icon :class="{'run-red': data.is_praised }" icon="shoucang2" /> 喜欢
                             </my-button>
-<!--                            <my-button class="praise" @click="showFavorites"><my-icon icon="shoucang5" :class="{'run-red': data.collected}" /> 收藏 {{ data.collect_count }}</my-button>-->
-                            <my-button class="praise" @click="showFavorites"><my-icon icon="shoucang5" :class="{'run-red': data.collected}" /> 收藏</my-button>
+<!--                            <my-button class="praise" @click="showFavorites"><my-icon icon="shoucang5" :class="{'run-red': data.is_collected}" /> 收藏 {{ data.collect_count }}</my-button>-->
+                            <my-button class="praise" @click="showFavorites"><my-icon icon="shoucang5" :class="{'run-red': data.is_collected}" /> 收藏</my-button>
                         </div>
                     </div>
 
@@ -208,10 +208,10 @@
                         <div class="item" v-for="v in favorites">
                             <div class="name">
                                 {{ v.name }}
-                                <span class="exists" v-if="v.inside">/已在此列表</span>
+                                <span class="exists" v-if="v.is_inside">/已在此列表</span>
                                 <my-button class="button" @click="collectionHandle(v)">
                                     <my-loading v-if="val.pending['collectionHandle_' + v.id]" size="16"></my-loading>
-                                    <template v-if="v.inside">移除</template>
+                                    <template v-if="v.is_inside">移除</template>
                                     <template v-else>添加</template>
                                 </my-button>
                             </div>

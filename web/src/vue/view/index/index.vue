@@ -76,7 +76,7 @@
                                             <div class="type" v-if="v.type === 'pro'"><my-icon icon="zhuanyerenzheng" size="35" /></div>
                                             <div class="praise" v-ripple @click.prevent="praiseImageProject(v)">
                                                 <my-loading size="16" v-if="val.pending.praiseImageProject"></my-loading>
-                                                <my-icon icon="shoucang2" :class="{'run-red': v.praised }" /> 喜欢
+                                                <my-icon icon="shoucang2" :class="{'run-red': v.is_praised }" /> 喜欢
                                             </div>
                                         </div>
                                         <div class="btm">

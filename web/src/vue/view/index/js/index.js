@@ -110,7 +110,7 @@ export default {
                 return ;
             }
             const self = this;
-            const praised = row.praised ? 0 : 1;
+            const praised = row.is_praised ? 0 : 1;
             this.pending('praiseImageProject' , true);
             Api.user
                 .praiseHandle(null , {
@@ -125,7 +125,7 @@ export default {
                         });
                         return ;
                     }
-                    row.praised = praised;
+                    row.is_praised = praised;
                     praised ? row.praise_count++ : row.praise_count--;
                 })
                 .finally(() => {

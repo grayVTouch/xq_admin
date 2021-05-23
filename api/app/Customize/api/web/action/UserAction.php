@@ -400,7 +400,14 @@ class UserAction extends Action
         $res = CollectionGroupHandler::handleAll($res);
         foreach ($res as $v)
         {
-            CollectionGroupUtil::handle($v , $param['relation_type'] , $relation->id);
+            // 附加：累计数量
+            CollectionGroupHandler::count($v);
+            // 附加：封面
+            CollectionGroupHandler::thumb($v);
+            // 附加：图片专题数量
+            CollectionGroupHandler::countForImageProject($v);
+            // 附加：是否存在于里面
+            CollectionGroupHandler::isInside($v , $param['relation_type'] , $relation->id);
         }
         return self::success('' , $res);
     }
@@ -616,7 +623,7 @@ class UserAction extends Action
             ]);
             $collection_group = CollectionGroupModel::find($id);
             $collection_group = CollectionGroupHandler::handle($collection_group);
-            CollectionGroupUtil::handle($collection_group , $param['relation_type'] , $relation->id);
+            CollectionGroupHandler::isInside($collection_group , $param['relation_type'] , $relation->id);
             DB::commit();
             return self::success('' , $collection_group);
         } catch(Exception $e) {
@@ -696,7 +703,7 @@ class UserAction extends Action
             'created_at' => current_datetime() ,
         ]);
         $collection_group = CollectionGroupHandler::handle($collection_group);
-        CollectionGroupUtil::handle($collection_group , $param['relation_type'] , $relation->id);
+        CollectionGroupHandler::isInside($collection_group , $param['relation_type'] , $relation->id);
         return self::success('' , $collection_group);
     }
 
