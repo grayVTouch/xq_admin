@@ -12,22 +12,24 @@ use function core\convert_object;
 
 class NavHandler extends Handler
 {
-    public static function handle(?Model $model , array $with = [] , bool $deep = true): ?stdClass
+    public static function handle(?Model $model): ?stdClass
     {
         if (empty($model)) {
             return null;
         }
         $res = convert_object($model);
-        if ($deep) {
-            $nav = $res->p_id ? NavModel::find($res->p_id) : null;
-            $nav = self::handle($nav , $with , false);
-        } else {
-            $nav = null;
-        }
-        $res->nav = $nav;
-
-//        $res->__platform__ = get_config_key_mapping_value('business.platform' , $res->platform);
 
         return $res;
     }
+
+    public static function parent($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $nav = $model->p_id ? NavModel::find($model->p_id) : null;
+        $nav = self::handle($nav);
+        $model->nav = $nav;
+    }
+
 }

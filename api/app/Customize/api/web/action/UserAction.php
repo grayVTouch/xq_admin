@@ -285,6 +285,12 @@ class UserAction extends Action
         };
         foreach ($res as $v)
         {
+            // 附加：模块
+            HistoryHandler::module($v);
+            // 附加：关联对象
+            HistoryHandler::relation($v);
+            // 附加：用户
+            HistoryHandler::user($v);
             switch ($v->date)
             {
                 case $date:

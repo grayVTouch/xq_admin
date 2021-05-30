@@ -522,9 +522,12 @@ export default {
                     }
                     const data = res.data;
                     data.forEach((v) => {
-                        v.relation = v.relation ? v.relation : {};
-                        v.relation.user = v.relation.user ? v.relation.user : {};
-                        v.relation.module = v.relation.module ? v.relation.module : {};
+                        v.data = v.data ? v.data : [];
+                        v.data.forEach((v1) => {
+                            v1.relation = v1.relation ? v1.relation : {};
+                            v1.relation.user = v1.relation.user ? v1.relation.user : {};
+                            v1.relation.module = v1.relation.module ? v1.relation.module : {};
+                        });
                     });
                     this.histories = data;
                 })

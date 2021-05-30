@@ -4,7 +4,8 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = merge(common, {
     mode: 'development',
-    devtool: 'inline-source-map',
+    // devtool: 'inline-source-map',
+    devtool: 'inline-cheap-module-source-map',
     devServer: {
         // web 网站根目录
         contentBase: './dist' ,

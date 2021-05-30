@@ -17,7 +17,7 @@ use function core\convert_object;
 
 class FocusUserHandler extends Handler
 {
-    public static function handle(?Model $model , array $with = []): ?stdClass
+    public static function handle(?Model $model): ?stdClass
     {
         if (empty($model)) {
             return null;

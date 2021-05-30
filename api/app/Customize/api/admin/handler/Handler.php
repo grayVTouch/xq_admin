@@ -19,12 +19,12 @@ class Handler
      * @param mixed $list  可迭代结构
      * @return array
      */
-    public static function handleAll($list , array $with = []) :array
+    public static function handleAll($list) :array
     {
         $res = [];
         foreach ($list as $v)
         {
-            $res[] = static::handle($v , $with);
+            $res[] = static::handle($v);
         }
         return $res;
     }
@@ -37,37 +37,19 @@ class Handler
      * @param Paginator $paginator
      * @return stdClass
      */
-    public static function handlePaginator(Paginator $paginator , array $with = []): stdClass
+    public static function handlePaginator(Paginator $paginator): stdClass
     {
-        $data   = static::handleAll($paginator->items() , $with);
+        $data   = static::handleAll($paginator->items());
         $object = convert_object($paginator);
         $object->data = $data;
         return $object;
     }
 
-//    public static function handle(?Model $model , array $with = []): ?stdClass
-    public static function handle(?Model $model , array $with = []): ?stdClass
+    public static function handle(?Model $model): ?stdClass
     {
         if (empty($model)) {
             return null;
         }
         return convert_object($model);
-    }
-
-    public static function resolve(string $key , array $with = [] , callable $callback = null)
-    {
-        $keys = array_keys($with);
-        if (!in_array($key , $with) && !in_array($key , $keys)) {
-            // 不符合返回的条件
-            return ;
-        }
-        if (in_array($key , $keys)) {
-            // 要求返回
-            if (is_callable($callback)) {
-                // 回调函数处理
-                call_user_func($callback , $key , $with[$key]);
-            }
-            return ;
-        }
     }
 }

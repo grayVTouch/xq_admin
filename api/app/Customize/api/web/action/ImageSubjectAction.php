@@ -27,6 +27,10 @@ class ImageSubjectAction extends Action
         }
         $image_subject = ImageSubjectModel::find($id);
         $image_subject = ImageSubjectHandler::handle($image_subject);
+
+        // 附加：图片专题
+        ImageSubjectHandler::module($image_subject);
+
         return self::success('' , $image_subject);
     }
 }
