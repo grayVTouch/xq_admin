@@ -18,6 +18,9 @@ class NavAction extends Action
         }
         $res = NavModel::getAllByModuleId($param['module_id']);
         $res = NavHandler::handleAll($res);
+        array_walk($res , function($v){
+            NavHandler::parent($v);
+        });
         $res = object_to_array($res);
         $res = Category::childrens(0 , $res , null , false ,false);
         return self::success('' , $res);

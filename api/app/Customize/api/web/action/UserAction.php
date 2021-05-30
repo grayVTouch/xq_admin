@@ -349,6 +349,12 @@ class UserAction extends Action
         };
         foreach ($res->data as $v)
         {
+            // 附加：模块
+            HistoryHandler::module($v);
+            // 附加：关联对象
+            HistoryHandler::relation($v);
+            // 附加：用户
+            HistoryHandler::user($v);
             switch ($v->date)
             {
                 case $date:
@@ -435,6 +441,14 @@ class UserAction extends Action
         $user = user();
         $res = CollectionGroupModel::getByModuleIdAndUserIdAndRelationTypeAndValue($module->id , $user->id , $param['relation_type'] ,  $param['value']);
         $res = CollectionGroupHandler::handleAll($res);
+        array_walk($res , function ($v){
+            // 附加：累计数量
+            CollectionGroupHandler::count($v);
+            // 附加：封面
+            CollectionGroupHandler::thumb($v);
+            // 附加：图片专题数量
+            CollectionGroupHandler::countForImageProject($v);
+        });
         return self::success('' , $res);
     }
 
@@ -631,7 +645,7 @@ class UserAction extends Action
             $collection_group = CollectionGroupHandler::handle($collection_group);
             CollectionGroupHandler::isInside($collection_group , $param['relation_type'] , $relation->id);
             DB::commit();
-            return self::success('' , $collection_group);
+            return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
             throw $e;
@@ -710,7 +724,7 @@ class UserAction extends Action
         ]);
         $collection_group = CollectionGroupHandler::handle($collection_group);
         CollectionGroupHandler::isInside($collection_group , $param['relation_type'] , $relation->id);
-        return self::success('' , $collection_group);
+        return self::success('操作成功');
     }
 
     public static function lessRelationInCollection(Base $context , array $param = [])
@@ -734,6 +748,13 @@ class UserAction extends Action
         $user = user();
         $res = CollectionModel::getByModuleIdAndUserIdAndCollectionGroupIdAndLimit($module->id , $user->id , $collection_group->id , $limit);
         $res = CollectionHandler::handleAll($res);
+        foreach ($res as $v)
+        {
+            CollectionHandler::module($v);
+            CollectionHandler::user($v);
+            CollectionHandler::collectionGroup($v);
+            CollectionHandler::relation($v);
+        }
         return self::success('' , $res);
     }
 

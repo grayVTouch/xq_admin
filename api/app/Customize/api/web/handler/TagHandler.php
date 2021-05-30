@@ -17,6 +17,7 @@ class TagHandler extends Handler
             return null;
         }
         $res = convert_object($model);
+
         return $res;
     }
 
