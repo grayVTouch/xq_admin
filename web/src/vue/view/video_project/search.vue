@@ -52,12 +52,12 @@
                         <div class="action item order" ref="order" @click="showOrderSelectorInHorizontal" v-ripple>
                             <div class="inner">
                                 <my-icon icon="paixu" /> 排序
-                                <span class="number" v-if="images.order">1</span>
+                                <span class="number" v-if="videoProjects.order">1</span>
                             </div>
                             <div class="order-selector hide" ref="order-selector-in-horizontal" @click.stop @mousedown.stop>
                                 <div class="background" @click.stop="closeOrderSelectorInHorizontal"></div>
                                 <div class="list">
-                                    <div class="item" v-ripple v-for="v in orders" :key="v.key" :data-id="v.key" :class="{cur: images.order === v.key}" @click.stop="orderInImageProject(v)">{{ v.name }}</div>
+                                    <div class="item" v-ripple v-for="v in orders" :key="v.key" :data-id="v.key" :class="{cur: videoProjects.order === v.key}" @click.stop="orderInImageProject(v)">{{ v.name }}</div>
                                     <!--                            <div class="item cur">测试项</div>-->
                                 </div>
                             </div>
@@ -81,27 +81,22 @@
                     <my-loading width="50" height="50"></my-loading>
                 </div>
 
-                <div class="empty" v-if="!val.pending.getWithPager && images.data.length === 0">暂无数据</div>
+                <div class="empty" v-if="!val.pending.getWithPager && videoProjects.data.length === 0">暂无数据</div>
 
                 <div class="list">
 
 
-                    <div class="item card-box" v-for="v in images.data">
+                    <div class="item card-box" v-for="v in videoProjects.data" :key="v.id">
                         <!-- 封面 -->
                         <div class="thumb">
-                            <a class="link" :href="genUrl(`/image_project/${v.id}/show`)" target="_blank">
-                                <img :src="v.__thumb__" class="image judge-img-size" v-judge-img-size>
+                            <a class="link" target="_blank" :href="genUrl(`/video_project/${v.id}/show`)">
+                                <img :src="v.thumb ? v.thumb : TopContext.res.notFound" v-judge-img-size class="image judge-img-size">
                                 <div class="mask">
                                     <div class="top">
-                                        <div class="type" v-if="v.type === 'pro'"><my-icon icon="zhuanyerenzheng" size="35" /></div>
-
-                                        <div class="praise" v-ripple @click.prevent="praiseHandle(v)">
-                                            <my-loading size="16" v-if="val.pending.praiseHandle"></my-loading>
-                                            <my-icon icon="shoucang2" :class="{'run-red': v.is_praised }" /> 喜欢
-                                        </div>
+                                        <div class="type"><my-icon icon="zhuanyerenzheng" size="35" /></div>
                                     </div>
                                     <div class="btm">
-                                        <div class="count">{{ v.images.length }}P</div>
+                                        <div class="count">{{ v.count }}</div>
                                     </div>
                                 </div>
                             </a>
@@ -111,19 +106,10 @@
                             <!-- 标签 -->
                             <div class="tags">
                                 <span class="ico"><my-icon icon="icontag" size="18" /></span>
-
-                                <a class="tag" v-for="tag in v.tags" :href="`#/image_project/search?tag_id=${tag.tag_id}`">{{ tag.name }}</a>
+                                <a class="tag" target="_blank" v-for="tag in v.tags" :href="genUrl(`/video_project/search?tag_id=${tag.tag_id}`)">{{ tag.name }}</a>
                             </div>
                             <!-- 标题 -->
-                            <div class="title"><a class="link" target="_blank" :href="`#/image_project/${v.id}/show`">{{ v.name }}</a></div>
-                            <!-- 发布者 -->
-                            <div class="user">
-                                <div class="sender">
-                                    <span class="avatar-outer"><img :src="v.user ? v.user.avatar : TopContext.res.avatar" alt="" class="image avatar"></span>
-                                    <a class="name">{{ v.user ? v.user.nickname : 'unknow' }}</a>
-                                </div>
-                                <div class="action"></div>
-                            </div>
+                            <div class="title"><a target="_blank" :href="genUrl(`/video_project/${v.id}/show`)">{{ v.name }}</a></div>
                             <!-- 统计信息 -->
                             <div class="info">
                                 <div class="left"><my-icon icon="shijian" class="ico" mode="right" /> {{ v.created_at }}</div>
@@ -134,7 +120,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
                 </div>
@@ -142,7 +127,7 @@
             </div>
 
             <div class="pager">
-                <my-page :total="images.total" :limit="images.limit" :page="images.page" @on-change="toPageInImageProject"></my-page>
+                <my-page :total="videoProjects.total" :limit="videoProjects.limit" :page="videoProjects.page" @on-change="toPageInImageProject"></my-page>
             </div>
 
         </div>
@@ -185,11 +170,11 @@
                 <div class="action item order" @click.stop="showOrderSelectorInVertical" v-ripple>
                     <div class="inner">
                         <my-icon icon="paixu" /> 排序
-                        <span class="number" v-if="images.order">1</span>
+                        <span class="number" v-if="videoProjects.order">1</span>
                     </div>
                     <div class="order-selector hide" ref="order-selector-in-vertical" @click.stop @mousedown.stop>
                         <div class="list">
-                            <div class="item" v-ripple v-for="v in orders" :key="v.key" :data-id="v.key" :class="{cur: images.order === v.key}" @click="orderInImageProject(v)">{{ v.name }}</div>
+                            <div class="item" v-ripple v-for="v in orders" :key="v.key" :data-id="v.key" :class="{cur: videoProjects.order === v.key}" @click="orderInImageProject(v)">{{ v.name }}</div>
                         </div>
                     </div>
                 </div>

@@ -111,6 +111,7 @@ Route::prefix('web')
              * 视频专题
              * ************************************
              */
+            Route::get('video_project' , [VideoProject::class , 'index']);
             Route::get('video_project/newest' , [VideoProject::class , 'newest']);
             Route::get('video_project/hot_tags' , [VideoProject::class , 'hotTags']);
             Route::get('video_project/hot' , [VideoProject::class , 'hot']);

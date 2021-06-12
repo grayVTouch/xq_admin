@@ -326,7 +326,7 @@ export default {
                 })
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
-                        this.message('error' , msg);
+                        this.message('error' , res.message);
                         return ;
                     }
                     this.recommend.data = res.data;

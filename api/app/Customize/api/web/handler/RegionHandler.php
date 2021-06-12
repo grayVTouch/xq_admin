@@ -28,7 +28,7 @@ class RegionHandler extends Handler
         }
         $region = $model->p_id ? RegionModel::find($model->p_id) : null;
         $region = self::handle($region);
-        $model->user = $region;
+        $model->region = $region;
     }
 
 }

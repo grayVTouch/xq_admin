@@ -1,6 +1,7 @@
 
 import '@asset/css/base.css';
 import '@asset/css/vars.css';
+import '@asset/css/animation.css';
 
 /**
  * **************************

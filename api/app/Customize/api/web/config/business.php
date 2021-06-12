@@ -26,6 +26,11 @@ return [
         'misc' => '杂类' ,
     ] ,
 
+    'type_for_video_project' => [
+        'pro' => '专题' ,
+        'misc' => '杂类' ,
+    ] ,
+
     'status_for_image_project' => [
         -1 => '审核失败',
         0 => '待审核' ,
@@ -48,6 +53,13 @@ return [
     ] ,
 
     'mode_for_image_project' => [
+        // 收藏
+        'strict' ,
+        // 取消收藏
+        'loose' ,
+    ] ,
+
+    'mode_for_video_project' => [
         // 收藏
         'strict' ,
         // 取消收藏

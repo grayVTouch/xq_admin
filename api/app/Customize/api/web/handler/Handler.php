@@ -39,7 +39,7 @@ class Handler
      */
     public static function handlePaginator(Paginator $paginator): stdClass
     {
-        $data   = static::handleAll($paginator->items() , $with);
+        $data   = static::handleAll($paginator->items());
         $object = convert_object($paginator);
         $object->data = $data;
         return $object;

@@ -184,7 +184,6 @@ class RelationTagModel extends Model
     public static function hotTagsWithPagerInVideoProjectByValueAndFilterAndLimit(string $value , array $filter = [] , int $limit = 20): Paginator
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
-        $filter['type']      = $filter['type'] ?? '';
 
         $where = [
             ['rt.relation_type' , '=' , 'video_project'] ,
@@ -201,14 +200,6 @@ class RelationTagModel extends Model
         return self::from('xq_relation_tag as rt')
             ->select('rt.*' , DB::raw('count(rt.id) as total'))
             ->where($where)
-            ->whereExists(function($query) use($filter){
-                if ($filter['type'] === '') {
-                    return ;
-                }
-                $query->from('xq_video_project')
-                    ->where('type' , $filter['type'])
-                    ->whereRaw('rt.relation_id = id');
-            })
             ->groupBy('rt.tag_id')
             ->orderBy('total' , 'desc')
             ->orderBy('rt.id' , 'asc')

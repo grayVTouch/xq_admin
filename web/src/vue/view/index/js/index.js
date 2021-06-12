@@ -138,7 +138,7 @@ export default {
             Api.imageProject.show(imageProjectId.then((res) => {
                 this.pending('findImageProjectByImageProjectId' , false);
                 if (res.code !== TopContext.code.Success) {
-                    this.message('error' , msg);
+                    this.message('error' , res.message);
                     G.invoke(callback , null , false);
                     return ;
                 }
@@ -282,37 +282,41 @@ export default {
         hotInVideoProject () {
             this.group.videoProject.curTag = 'hot';
             this.pending('videoProject' , true);
-            Api.videoProject.hot({
-                limit: this.videoProjects.limit ,
-            }.then((res) => {
-                this.pending('videoProject' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.message('error' , msg);
-                    return ;
-                }
-                this.videoProjects.data = data;
-                this.$nextTick(() => {
-                    this.initContentGroupContainerWidthByGroup('videoProject');
+            Api.videoProject
+                .hot({
+                    limit: this.videoProjects.limit ,
+                })
+                .then((res) => {
+                    this.pending('videoProject' , false);
+                    if (res.code !== TopContext.code.Success) {
+                        this.message('error' , res.message);
+                        return ;
+                    }
+                    this.videoProjects.data = res.data;
+                    this.$nextTick(() => {
+                        this.initContentGroupContainerWidthByGroup('videoProject');
+                    });
                 });
-            }));
         } ,
 
         getVideoProjectsByTagId (tagId) {
             this.group.videoProject.curTag = 'tag_' + tagId;
             this.pending('videoProject' , true);
-            Api.videoProject.getByTagId(tagId , {
-                limit: this.videoProjects.limit ,
-            }.then((res) => {
-                this.pending('videoProject' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.message('error' , msg);
-                    return ;
-                }
-                this.videoProjects.data = data;
-                this.$nextTick(() => {
-                    this.initContentGroupContainerWidthByGroup('videoProject');
+            Api.videoProject
+                .getByTagId(tagId , {
+                    limit: this.videoProjects.limit ,
+                })
+                .then((res) => {
+                    this.pending('videoProject' , false);
+                    if (res.code !== TopContext.code.Success) {
+                        this.message('error' , res.message);
+                        return ;
+                    }
+                    this.videoProjects.data = res.data;
+                    this.$nextTick(() => {
+                        this.initContentGroupContainerWidthByGroup('videoProject');
+                    });
                 });
-            }));
         } ,
 
         // 标签-视频专题

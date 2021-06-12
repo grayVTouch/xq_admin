@@ -33,12 +33,12 @@
                                 <!-- 登录状态 -->
                                 <div class="logged-layer" v-if="$store.state.user">
 
-                                    <div class="item history" @click.stop>
-                                        <div class="action"><button v-ripple @click="showHistoryCtrl" class="button history"><my-icon icon="lishijilu" mode="right" />记录</button></div>
+                                    <div class="item history" @click.stop @mouseenter="showHistoryCtrl" @mouseleave="hideHistoryCtrl">
+                                        <div class="action"><button v-ripple class="button history"><my-icon icon="lishijilu" mode="right" />记录</button></div>
                                         <div class="groups hide" ref="groups-for-history">
 
                                             <div class="inner">
-
+                                                <div class="transparent-block"></div>
                                                 <div class="loading" v-if="val.pending.getHistories">
                                                     <my-loading></my-loading>
                                                 </div>
@@ -56,7 +56,7 @@
                                                                 <div class="info">
                                                                     <div class="name f-14">{{ v1.relation.name ?  v1.relation.name : '' }}</div>
                                                                     <div class="time f-12">
-                                                                        <my-icon icon="shijian" mode="right" />{{ v1.relation.created_at }}&nbsp;&nbsp;{{ v1.relation.user ? v1.relation.user.nickname : 'unknow' }}
+                                                                        <my-icon icon="shijian" mode="right" />{{ v1.created_at }}&nbsp;&nbsp;{{ v1.relation.user ? v1.relation.user.nickname : 'unknow' }}
                                                                     </div>
                                                                 </div>
                                                             </a>
@@ -72,9 +72,10 @@
                                         </div>
                                     </div>
 
-                                    <div class="item favorites" @click.stop>
-                                        <div class="action"><button v-ripple @click="showFavoritesCtrl" class="button favorites"><my-icon icon="shoucang6" mode="right" />收藏</button></div>
+                                    <div class="item favorites" @click.stop @mouseenter="showFavoritesCtrl" @mouseleave="hideFavoritesCtrl">
+                                        <div class="action"><button v-ripple class="button favorites"><my-icon icon="shoucang6" mode="right" />收藏</button></div>
                                         <div class="collection hide" ref="collection">
+                                            <div class="transparent-block"></div>
                                             <div class="nav">
                                                 <div class="item" v-for="v in favorites.collectionGroups" :key="v.id" :class="{cur: v.id === favorites.collection_group.id}" v-ripple @click="favorites.collection_group = v">
                                                     <div class="name">{{ v.name }}</div>
@@ -88,7 +89,7 @@
                                                         <div class="info">
                                                             <div class="name f-14">{{ v.relation.name }}</div>
                                                             <div class="time f-12">
-                                                                <my-icon icon="shijian" mode="right" />{{ v.relation.created_at }} {{ v.relation.user.nickname }}
+                                                                <my-icon icon="shijian" mode="right" />{{ v.created_at }} {{ v.relation.user.nickname }}
                                                             </div>
                                                         </div>
                                                     </a>
@@ -107,11 +108,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="item user" @click.stop>
-                                        <div class="action" @click="showUserCtrl">
+                                    <div class="item user" @click.stop @mouseenter="showUserCtrl" @mouseleave="hideUserCtrl">
+                                        <div class="action">
                                             <a class="link" v-ripple><img :src="$store.state.user.avatar ? $store.state.user.avatar : TopContext.res.avatar" v-judge-img-size class="image judge-img-size"></a>
                                         </div>
                                         <div class="info hide" ref="info-for-user">
+                                            <div class="transparent-block"></div>
                                             <div class="user m-b-10">
                                                 <a href="#/user/info" v-ripple target="_self" class="link" @click="hideUserCtrl">
                                                     <div class="avatar">

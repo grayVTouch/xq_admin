@@ -100,7 +100,7 @@ export default {
         changeThumb (channelThumb) {
             this.pending('changeThumb' , true);
             Api.user
-                .localUpdate({
+                .localUpdate(null , {
                     channel_thumb: channelThumb
                 })
                 .then((res) => {
@@ -136,7 +136,7 @@ export default {
         changeNickname () {
             this.pending('changeNickname' , true);
             Api.user
-                .localUpdate({
+                .localUpdate(null , {
                     nickname: this.form.nickname
                 })
                 .then((res) => {
@@ -154,7 +154,7 @@ export default {
         changeDescription () {
             this.pending('changeDescription' , true);
             Api.user
-                .localUpdate({
+                .localUpdate(null , {
                     description: this.form.description
                 })
                 .then((res) => {

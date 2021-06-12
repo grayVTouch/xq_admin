@@ -118,6 +118,7 @@ export default {
 
                 playlist.push({
                     name: v.name ,
+                    index: v.index ,
                     thumb: v.thumb ,
                     preview: {
                         src: v.preview ,
@@ -149,6 +150,8 @@ export default {
                 volume: 1 ,
                 // 开启字幕
                 enableSubtitle: true ,
+                minIndex: this.videoProject.min_index ,
+                maxIndex: this.videoProject.max_index ,
                 // definition: '480P' ,
                 // 当视频播放结束时的回调
                 ended () {
@@ -157,7 +160,13 @@ export default {
                 } ,
 
                 switch (index) {
-                    self.videoProject.current = self.videoProject.videos[index - 1];
+                    for (let i = 0; i < self.videoProject.videos.length; ++i)
+                    {
+                        const cur = self.videoProject.videos[i];
+                        if (index === cur.index) {
+                            self.videoProject.current = cur;
+                        }
+                    }
                     self.selectedIndexRange(index);
                     if (self.onceLoadVideosInIndex) {
                         self.onceLoadVideosInIndex = false;
@@ -213,7 +222,7 @@ export default {
                         max: i ,
                     };
                 }
-                if (i >= min + groupCount * this.indexRange.split || i === max) {
+                if (i >= min + groupCount * this.indexRange.split - 1 || i === max) {
                     obj.max = i;
                     if (groupCount <= this.indexRange.indexGroupCount) {
                         this.indexRange.group.index.push(obj);

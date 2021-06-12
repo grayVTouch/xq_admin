@@ -195,7 +195,7 @@ export default {
                 .show(tagId)
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
-                        this.message('error' , msg);
+                        this.message('error' , res.message);
                         return ;
                     }
                     if (this.tags.selectedIds.indexOf(tagId) >= 0) {

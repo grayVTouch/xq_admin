@@ -42,6 +42,17 @@ class CollectionGroupModel extends Model
             ->get();
     }
 
+    public static function getByModuleIdAndUserId(int $module_id , int $user_id): Collection
+    {
+
+        return self::where([
+                ['module_id' , '=' , $module_id] ,
+                ['user_id' , '=' , $user_id] ,
+            ])
+            ->orderBy('id' , 'desc')
+            ->get();
+    }
+
     public static function getByModuleIdAndUserIdAndRelationTypeAndValue(int $module_id , int $user_id , string $relation_type = '' , string $value = ''): Collection
     {
         $where = [

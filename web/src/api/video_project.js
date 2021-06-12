@@ -29,20 +29,20 @@ export default {
         return Http.get(`${TopContext.api}/video_project/hot`, query);
     } ,
 
-    getByTagId (tagId , data) {
-        return request(getByTagId.replace('{tag_id}' , tagId), 'get' , data);
+    getByTagId (tagId , query) {
+        return  Http.get(`${TopContext.api}/video_project/${tagId}/get_by_tag_id` , query);
     } ,
 
-    getByTagIds (data) {
-        return request(getByTagIds , 'get' , data);
+    getByTagIds (query) {
+        return Http.get(`${TopContext.api}/video_project/get_by_tag_ids` , query);
     } ,
 
     videosInRange (id , query) {
         return Http.get( `${TopContext.api}/video_project/${id}/videos_in_range`, query);
     } ,
 
-    videoSubjects (id , data) {
-        return request(videoSubjects.replace('{id}' , id), 'get' , data);
+    videoSubjects (id , query) {
+        return Http.get(`${TopContext.api}/video_project/${id}/video_projects` , query);
     } ,
 
     categories () {

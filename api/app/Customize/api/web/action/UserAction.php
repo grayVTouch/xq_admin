@@ -290,7 +290,12 @@ class UserAction extends Action
             // 附加：关联对象
             HistoryHandler::relation($v);
             // 附加：用户
-            HistoryHandler::user($v);
+            switch ($v->relation_type)
+            {
+                case 'image_project':
+                    ImageProjectHandler::user($v->relation);
+                    break;
+            }
             switch ($v->date)
             {
                 case $date:
@@ -408,7 +413,7 @@ class UserAction extends Action
             return self::error('关联事物不存在');
         }
         $user = user();
-        $res = CollectionGroupModel::getByModuleIdAndUserIdAndValue($module->id , $user->id);
+        $res = CollectionGroupModel::getByModuleIdAndUserId($module->id , $user->id);
         $res = CollectionGroupHandler::handleAll($res);
         foreach ($res as $v)
         {
@@ -780,6 +785,20 @@ class UserAction extends Action
         {
             $collections = CollectionModel::getByModuleIdAndUserIdAndCollectionGroupIdAndLimit($module->id , $user->id , $v->id , $relation_limit);
             $collections = CollectionHandler::handleAll($collections);
+            foreach ($collections as $v1)
+            {
+                CollectionHandler::relation($v1);
+                switch ($v1->relation_type)
+                {
+                    case 'image_project':
+                        ImageProjectHandler::user($v1->relation);
+                        ImageProjectHandler::images($v1->relation);
+                        ImageProjectHandler::tags($v1->relation);
+                        ImageProjectHandler::collectCount($v1->relation);
+                        ImageProjectHandler::isPraised($v1->relation);
+                        break;
+                }
+            }
             $v->collections = $collections;
         }
         return self::success('' , [
@@ -888,6 +907,20 @@ class UserAction extends Action
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = CollectionModel::getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndLimit($module->id , $collection_group->user_id , $collection_group->id , $param['relation_type'] , $limit);
         $res = CollectionHandler::handlePaginator($res);
+        foreach ($res->data as $v)
+        {
+            CollectionHandler::relation($v);
+            switch ($v->relation_type)
+            {
+                case 'image_project':
+                    ImageProjectHandler::user($v->relation);
+                    ImageProjectHandler::images($v->relation);
+                    ImageProjectHandler::tags($v->relation);
+                    ImageProjectHandler::collectCount($v->relation);
+                    ImageProjectHandler::isPraised($v->relation);
+                    break;
+            }
+        }
         return self::success('' , $res);
     }
 
@@ -1010,6 +1043,15 @@ class UserAction extends Action
         }
         $res = CollectionGroupModel::getByModuleIdAndUserIdAndRelationTypeAndValue($module->id , $user->id , $param['relation_type'] ,  $param['value']);
         $res = CollectionGroupHandler::handleAll($res);
+        foreach ($res as $v)
+        {
+            // 附加：累计数量
+            CollectionGroupHandler::count($v);
+            // 附加：封面
+            CollectionGroupHandler::thumb($v);
+            // 附加：图片专题数量
+            CollectionGroupHandler::countForImageProject($v);
+        }
         return self::success('' , $res);
     }
 
@@ -1052,11 +1094,13 @@ class UserAction extends Action
     // 局部更新
     public static function collectionGroupInfo(Base $context , int $collection_group_id , array $param = []): array
     {
-        $collection_group = CollectionGroupModel::find($collection_group_id);
-        if (empty($collection_group)) {
+        $res = CollectionGroupModel::find($collection_group_id);
+        if (empty($res)) {
             return self::error('记录不存在' , '' , 404);
         }
-        $collection_group = CollectionGroupHandler::handle($collection_group);
-        return self::success('' , $collection_group);
+        $res = CollectionGroupHandler::handle($res);
+        CollectionGroupHandler::user($res);
+        CollectionGroupHandler::thumb($res);
+        return self::success('' , $res);
     }
 }

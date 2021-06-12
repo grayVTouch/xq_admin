@@ -109,9 +109,9 @@
                             </div>
                         </div>
                         <div class="info">
-                            <div class="name">test</div>
-                            <div class="subject">Pink Pineapple</div>
-                            <div class="statistics">1000次观看</div>
+                            <div class="name">{{ v.name }}</div>
+<!--                            <div class="subject">Pink Pineapple</div>-->
+                            <div class="statistics">{{ v.view_count }}次观看</div>
                         </div>
                     </div>
 

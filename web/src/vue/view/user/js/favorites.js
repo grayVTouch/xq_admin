@@ -114,7 +114,7 @@ export default {
             }
             this.pending(pending , true);
             Api.user
-                .destroyAllCollectionGroup({
+                .destroyAllCollectionGroup(null , {
                     collection_group_ids: G.jsonEncode([collectionGroup.id])
                 })
                 .then((res) => {

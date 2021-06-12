@@ -145,6 +145,8 @@
                         <my-icon icon="empty" size="40"></my-icon>
                     </div>
                     <div class="inner" ref="inner-for-videoProject">
+
+
                         <div class="item card-box" v-for="v in videoProjects.data" :key="v.id">
                             <!-- 封面 -->
                             <div class="thumb">
@@ -180,6 +182,8 @@
                                 </div>
                             </div>
                         </div>
+
+
                     </div>
 
                 </div>

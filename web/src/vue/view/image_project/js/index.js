@@ -337,7 +337,7 @@ export default {
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
                         this.pending('images' , false);
-                        this.message('error' , msg);
+                        this.message('error' , res.message);
                         return ;
                     }
                     const data = res.data;

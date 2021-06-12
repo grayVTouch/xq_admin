@@ -44,9 +44,10 @@
         methods: {
             getData () {
                 this.pending('getData' , true);
-                Api.user.collectionGroupByUserId(this.$parent.id , {
-                        limit: this.data.limit ,
-                        page: this.data.page ,
+                Api.user
+                    .collectionGroupByUserId(this.$parent.id , {
+                        // limit: this.data.limit ,
+                        // page: this.data.page ,
                         relation_type: 'image_project' ,
                     })
                     .then((res) => {
@@ -64,10 +65,10 @@
                     });
             } ,
 
-            toPage (page) {
-                this.data.page = page;
-                this.getData();
-            } ,
+            // toPage (page) {
+            //     this.data.page = page;
+            //     this.getData();
+            // } ,
 
         } ,
     }

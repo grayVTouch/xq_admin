@@ -34,6 +34,8 @@ class UserHandler extends Handler
         $res->praise_count = PraiseModel::countByUserId($res->id);
         // 收藏数（收藏数量）
         $res->collect_count = CollectionModel::countByUserId($res->id);
+
+
         // 当前登录用户
         $user = user();
 
@@ -46,9 +48,6 @@ class UserHandler extends Handler
         } else {
             $res->focused = 0;
         }
-
-        $res->__channel_thumb__ = empty($res->channel_thumb) ? '' : FileUtil::generateUrlByRelativePath($res->channel_thumb);
-
         $res->__sex__ = get_config_key_mapping_value('business.sex' , $res->sex);
 
         return $res;

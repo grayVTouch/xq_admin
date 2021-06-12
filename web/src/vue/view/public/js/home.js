@@ -74,6 +74,7 @@ export default {
     data () {
         return {
             val: {
+                isGroupsBindAnimationendListener: false ,
                 fixed: false,
                 navTypeList: false,
                 mime: {
@@ -449,14 +450,27 @@ export default {
         } ,
 
         showNavTypeList () {
-            window.clearTimeout(this.val.navTypeListTimer);
-            this.dom.navTypeList.removeClass('hide');
-            this.dom.navTypeList.startTransition('show');
+            this.val.navTypeList = true;
+            this.dom.navTypeList.removeClass(['hide' , 'animate-out']);
+            this.dom.navTypeList.addClass('animate-in');
         } ,
 
         hideNavTypeList () {
-            this.dom.navTypeList.removeClass('show');
-            this.dom.navTypeList.addClass('hide');
+            this.val.navTypeList = false;
+            const listener = 'animationend';
+            this.dom.navTypeList
+                .off(listener)
+                .on(listener , () => {
+                    if (!this.val.navTypeList) {
+                        this.dom.navTypeList.addClass('hide');
+                    }
+                    this.dom.navTypeList.off(listener);
+                    this.dom.navTypeList.removeClass('animate-out');
+                });
+            this.dom.navTypeList.removeClass('animate-in');
+            this.dom.navTypeList.addClass('animate-out');
+
+
             // this.dom.navTypeList.endTransition('show');
             // this.val.navTypeListTimer = window.setTimeout(() => {
             //     this.dom.navTypeList.addClass('hide');
@@ -488,9 +502,10 @@ export default {
         initEvent () {
             // this.dom.win.on('click' , this.hideNavTypeList.bind(this));
 
-            this.dom.win.on('click' , this.hideHistoryCtrl.bind(this));
-            this.dom.win.on('click' , this.hideUserCtrl.bind(this));
-            this.dom.win.on('click' , this.hideFavoritesCtrl.bind(this));
+            // this.dom.win.on('click' , this.hideHistoryCtrl.bind(this));
+            // this.dom.win.on('click' , this.hideUserCtrl.bind(this));
+            // this.dom.win.on('click' , this.hideFavoritesCtrl.bind(this));
+
             this.dom.root.on('scroll' , this.fixedHeader.bind(this));
 
             this.dom.win.on('scroll' , this.fixedHeader.bind(this));
@@ -538,36 +553,69 @@ export default {
 
 
         showHistoryCtrl () {
+            console.log('显示内容');
             this.hideFavoritesCtrl();
             this.hideUserCtrl();
+
+            this.val.showHistoryCtrl = true;
+
             this.dom.groupsForHistory = G(this.$refs['groups-for-history']);
-            this.dom.groupsForHistory.removeClass('hide');
-            this.dom.groupsForHistory.startTransition('show');
+            this.dom.groupsForHistory.removeClass(['hide' , 'animate-out']);
+            this.dom.groupsForHistory.addClass('animate-in');
             if (this.histories.length <= 0) {
                 this.getHistories();
             }
         } ,
 
         hideHistoryCtrl () {
+            this.val.showHistoryCtrl = false;
             this.dom.groupsForHistory = G(this.$refs['groups-for-history']);
-            this.dom.groupsForHistory.endTransition('show' , () => {
-                this.dom.groupsForHistory.addClass('hide');
-            });
+
+            if (!this.val.isGroupsBindAnimationendListener) {
+                this.val.isGroupsBindAnimationendListener = true;
+                this.dom.groupsForHistory
+                    .on('animationend' , () => {
+                        if (!this.val.showHistoryCtrl) {
+                            this.dom.groupsForHistory.addClass('hide');
+                            this.dom.groupsForHistory.removeClass('animate-out');
+                        }
+                    });
+            }
+
+            this.dom.groupsForHistory = G(this.$refs['groups-for-history']);
+            this.dom.groupsForHistory.removeClass('animate-in');
+            this.dom.groupsForHistory.addClass('animate-out');
         } ,
 
         showUserCtrl () {
             this.hideFavoritesCtrl();
             this.hideHistoryCtrl();
             this.dom.infoForUser = G(this.$refs['info-for-user']);
-            this.dom.infoForUser.removeClass('hide');
-            this.dom.infoForUser.startTransition('show');
+
+            this.val.showUserCtrl = true;
+            this.dom.infoForUser.removeClass(['hide' , 'animate-out']);
+            this.dom.infoForUser.addClass('animate-in');
+
         } ,
 
         hideUserCtrl () {
+            this.val.showUserCtrl = false;
             this.dom.infoForUser = G(this.$refs['info-for-user']);
-            this.dom.infoForUser.endTransition('show' , () => {
-                this.dom.infoForUser.addClass('hide');
-            });
+
+            if (!this.val.isInfoBindAnimationendListener) {
+                this.val.isInfoBindAnimationendListener = true;
+                this.dom.infoForUser
+                    .on('animationend' , () => {
+                        if (!this.val.showUserCtrl) {
+                            this.dom.infoForUser.addClass('hide');
+                            this.dom.infoForUser.removeClass('animate-out');
+                        }
+                    });
+            }
+
+            this.dom.infoForUser.removeClass('animate-in');
+            this.dom.infoForUser.addClass('animate-out');
+
         } ,
 
         // 获取收藏夹内容
@@ -575,18 +623,35 @@ export default {
             this.hideUserCtrl();
             this.hideHistoryCtrl();
             this.dom.collection = G(this.$refs['collection']);
-            this.dom.collection.removeClass('hide');
-            this.dom.collection.startTransition('show');
+
+            this.dom.collection.removeClass(['hide' , 'animate-out']);
+            this.dom.collection.addClass('animate-in');
+
+            this.val.showFavoritesCtrl = true;
             if (this.favorites.collectionGroups.length <= 0) {
                 this.getCollectionGroupWithCollection();
             }
         } ,
 
         hideFavoritesCtrl () {
+            this.val.showFavoritesCtrl = false;
             this.dom.collection = G(this.$refs['collection']);
-            this.dom.collection.endTransition('show' , () => {
-                this.dom.collection.addClass('hide');
-            });
+
+
+            if (!this.val.isCollectionBindAnimationendListener) {
+                this.val.isCollectionBindAnimationendListener = true;
+                this.dom.collection
+                    .on('animationend' , () => {
+                        if (!this.val.showFavoritesCtrl) {
+                            this.dom.collection.addClass('hide');
+                            this.dom.collection.removeClass('animate-out');
+                        }
+                    });
+            }
+
+            this.dom.collection = G(this.$refs['collection']);
+            this.dom.collection.removeClass('animate-in');
+            this.dom.collection.addClass('animate-out');
         } ,
 
         getCollectionGroupWithCollection () {

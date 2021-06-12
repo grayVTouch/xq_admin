@@ -1,0 +1,69 @@
+/**
+ * *********************
+ * 弹性-淡入
+ * *********************
+ */
+@keyframes round-fade-in {
+    0% {
+        opacity: 0;
+        transform: translateY(100%) scale(0.8 , 0.8);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(calc(100% - 2px)) scale(1 , 1);
+    }
+}
+
+/**
+ * *********************
+ * 弹性-淡出
+ * *********************
+ */
+@keyframes round-fade-out {
+    0% {
+        opacity: 1;
+        transform: translateY(calc(100% - 2px)) scale(1 , 1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(100%) scale(0.8 , 0.8);
+    }
+}
+
+
+/**
+ * *********************
+ * 平移-淡入
+ * *********************
+ */
+@keyframes translate-fade-in {
+    0% {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(calc(100% - 20px));
+    }
+}
+
+
+/**
+ * *********************
+ * 平移-淡出
+ * *********************
+ */
+@keyframes translate-fade-out {
+    0% {
+        opacity: 1;
+        transform: translateY(calc(100% - 20px));
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+}

@@ -26,7 +26,6 @@ class ImageProjectHandler extends Handler
 {
     /**
      * @param Model|null $model
-     * @param array $with
      * @return stdClass|null
      * @throws Exception
      */

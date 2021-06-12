@@ -441,11 +441,15 @@ class ImageProjectAction extends Action
             default:
                 return self::error('不支持的搜索模式，当前支持的模式有：' . implode(' , ' , $mode_range));
         }
-        $res = ImageProjectHandler::handlePaginator($res , [
-            'user' ,
-            'images' ,
-            'tags' ,
-        ]);
+        $res = ImageProjectHandler::handlePaginator($res);
+        foreach ($res->data as $v)
+        {
+            ImageProjectHandler::user($v);
+            ImageProjectHandler::images($v);
+            ImageProjectHandler::tags($v);
+            ImageProjectHandler::collectCount($v);
+            ImageProjectHandler::isPraised($v);
+        }
         return self::success('' , $res);
     }
 
@@ -485,6 +489,7 @@ class ImageProjectAction extends Action
 
         $res = ImageProjectModel::recommendExcludeSelfByFilterAndLimit($image_project->id , $param , $limit);
         $res = ImageProjectHandler::handleAll($res);
+
         return self::success('' , $res);
     }
 }

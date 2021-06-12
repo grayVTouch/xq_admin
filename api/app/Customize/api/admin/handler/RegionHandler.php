@@ -18,18 +18,17 @@ class RegionHandler extends Handler
         }
         $model = convert_object($model);
 
-        if (in_array('region' , $with)) {
-            if ($deep) {
-                $region = $model->p_id ? RegionModel::find($model->p_id) : null;
-                $region = self::handle($region , $with , false);
-            } else {
-                $region = null;
-            }
-            $model->region = $region;
-
-        }
-
         return $model;
+    }
+
+    public static function region($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $region = $model->p_id ? RegionModel::find($model->p_id) : null;
+        $region = self::handle($region);
+        $model->region = $region;
     }
 
 }
