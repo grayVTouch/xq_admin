@@ -60,15 +60,15 @@ class VideoProject extends Base
     }
 
     // 标签对应内容
-    public function getByTagId($tag_id)
+    public function getByTagId()
     {
         $param = $this->request->query();
 
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['type']      = $param['type'] ?? '';
+        $param['tag_id']      = $param['tag_id'] ?? '';
         $param['limit']     = $param['limit'] ?? '';
 
-        $res = VideoProjectAction::getByTagId($this , $tag_id , $param);
+        $res = VideoProjectAction::getByTagId($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
@@ -164,7 +164,8 @@ class VideoProject extends Base
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
         $param['category_ids'] = $param['category_ids'] ?? '';
-        $param['subject_ids'] = $param['subject_ids'] ?? '';
+        $param['video_series_ids'] = $param['video_series_ids'] ?? '';
+        $param['video_company_ids'] = $param['video_company_ids'] ?? '';
         $param['tag_ids'] = $param['tag_ids'] ?? '';
         $param['order'] = $param['order'] ?? '';
         $param['value'] = $param['value'] ?? '';
@@ -211,11 +212,12 @@ class VideoProject extends Base
         return success($res['message'] , $res['data']);
     }
 
-    public function videoSubjectsInSeries(int $video_series_id)
+    public function getByVideoSeriesId()
     {
         $param = $this->request->post();
         $param['video_project_id'] = $param['video_project_id'] ?? '';
-        $res = VideoProjectAction::videoSubjectsInSeries($this , $video_series_id , $param);
+        $param['video_series_id'] = $param['video_project_id'] ?? '';
+        $res = VideoProjectAction::getByVideoSeriesId($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }

@@ -64,14 +64,15 @@ class ImageProject extends Base
     }
 
     // 标签对应内容
-    public function getByTagId($tag_id)
+    public function getByTagId()
     {
         $param = $this->request->query();
 
         $param['module_id'] = $param['module_id'] ?? '';
+        $param['tag_id']      = $param['tag_id'] ?? '';
         $param['type']      = $param['type'] ?? '';
         $param['limit']     = $param['limit'] ?? '';
-        $res = ImageProjectAction::getByTagId($this , $tag_id , $param);
+        $res = ImageProjectAction::getByTagId($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }

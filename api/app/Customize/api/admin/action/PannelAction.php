@@ -31,7 +31,7 @@ use function core\get_quarter;
 
 class PannelAction extends Action
 {
-    public static function info(Base $base , array $param = [])
+    public static function info(Base $context , array $param = [])
     {
         $today = date('Y-m-d');
         $yesterday  = date_create('yesterday')->format('Y-m-d');

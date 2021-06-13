@@ -81,8 +81,9 @@
 
                                     <template v-if="!data.user.focused"><my-icon icon="add" v-if="!data.user.focused" class="run-position-relative run-t--2" /> 关注</template>
                                     <template v-else>取消关注</template>
-                                    <my-loading size="16" v-if="val.pending.focusHandle"></my-loading></my-button>
-                                <my-button class="message" @click.prevent>私信</my-button>
+                                    <my-loading size="16" v-if="val.pending.focusHandle"></my-loading>
+                                </my-button>
+                                <my-button class="message" v-if="false" @click.prevent>私信</my-button>
                             </div>
                         </div>
                     </a>

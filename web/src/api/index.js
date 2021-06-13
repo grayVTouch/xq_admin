@@ -2,7 +2,7 @@ const homeSlideshow         = `${TopContext.api}/home_slideshow`;
 const newestInImageProjects = `${TopContext.api}/image_project/newest`;
 const hotInImageProjects    = `${TopContext.api}/image_project/hot`;
 const hotTags               = `${TopContext.api}/image_project/hot_tags`;
-const getImageByTagId       = `${TopContext.api}/image_project/{tag_id}/get_by_tag_id`;
+const getImageByTagId       = `${TopContext.api}/image_project/get_by_tag_id`;
 const getImageByTagIds      = `${TopContext.api}/image_project/get_by_tag_ids`;
 
 export default {

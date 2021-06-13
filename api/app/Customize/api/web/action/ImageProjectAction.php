@@ -108,17 +108,18 @@ class ImageProjectAction extends Action
      * @return array
      * @throws \Exception
      */
-    public static function getByTagId(Base $context , $tag_id , array $param = [])
+    public static function getByTagId(Base $context , array $param = []): array
     {
         $type_range = my_config_keys('business.type_for_image_project');
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
             'type'      => ['required' , Rule::in($type_range)] ,
+            'tag_id'    => 'required' ,
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-        $tag = TagModel::find($tag_id);
+        $tag = TagModel::find($param['tag_id']);
         if (empty($tag)) {
             return self::error('标签不存在' , '' , 404);
         }

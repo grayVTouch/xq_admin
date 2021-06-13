@@ -17,7 +17,17 @@ const tags = {
     type: 'pro' ,
 };
 
-const videoSubjects = {
+const videoSeries = {
+    selected: [] ,
+    selectedIds: [] ,
+    data: [] ,
+    page: 1 ,
+    limit: TopContext.limit ,
+    total: 0 ,
+    value: '' ,
+};
+
+const videoCompanies = {
     selected: [] ,
     selectedIds: [] ,
     data: [] ,
@@ -48,15 +58,18 @@ export default {
             // 分类
             categories: G.copy(categories) ,
 
-            // 关联主体
-            videoSubjects: G.copy(videoSubjects) ,
+            // 视频系列
+            videoSeries: G.copy(videoSeries) ,
+
+            // 视频公司
+            videoCompanies: G.copy(videoCompanies) ,
 
             // 标签
             tags: G.copy(tags) ,
 
             val: {
                 categories: false ,
-                videoSubjects: true ,
+                videoSeries: true ,
                 pending: {} ,
             } ,
 
@@ -69,14 +82,14 @@ export default {
                     name: '上传日期' ,
                     key: 'created_at|desc' ,
                 } ,
-                {
-                    name: '点赞数量' ,
-                    key: 'praise_count|desc' ,
-                } ,
-                {
-                    name: '查看次数' ,
-                    key: 'view_count|desc' ,
-                } ,
+                // {
+                //     name: '点赞数量' ,
+                //     key: 'praise_count|desc' ,
+                // } ,
+                // {
+                //     name: '查看次数' ,
+                //     key: 'view_count|desc' ,
+                // } ,
             ] ,
         };
     } ,
@@ -84,7 +97,7 @@ export default {
     mounted () {
         this.initDom();
         this.initEvent();
-        this.getWithPager();
+        this.getData();
     } ,
 
     beforeRouteEnter (to , from , next) {
@@ -127,7 +140,7 @@ export default {
                     this.categories.selected.push(data);
                     this.categories.selectedIds.push(data.id);
                     this.videoProjects.page = 1;
-                    this.getWithPager();
+                    this.getData();
                 })
                 .finally(() => {
                     this.pending('focusCategoryByCategoryId' , false);
@@ -151,7 +164,7 @@ export default {
                     this.tags.selected.push(data);
                     this.tags.selectedIds.push(data.id);
                     this.videoProjects.page = 1;
-                    this.getWithPager();
+                    this.getData();
                 })
                 .finally(() => {
 
@@ -160,11 +173,12 @@ export default {
 
         resetFilter () {
             this.categories = G.copy(categories);
-            this.videoSubjects = G.copy(videoSubjects);
+            this.videoSeries = G.copy(videoSeries);
+            this.videoCompanies = G.copy(videoCompanies);
             this.tags = G.copy(tags);
             this.videoProjects.order = '';
             this.videoProjects.page = 1;
-            this.getWithPager();
+            this.getData();
         } ,
 
         orderInImageProject (v) {
@@ -172,22 +186,17 @@ export default {
             this.closeOrderSelectorInVertical();
             this.videoProjects.order = v.key;
             this.videoProjects.page = 1;
-            this.getWithPager();
+            this.getData();
         } ,
 
         toPageInImageProject (page) {
             this.videoProjects.page = page;
-            this.getWithPager();
-        } ,
-
-        toPageInSubject (page) {
-            this.videoSubjects.page = page;
-            this.getSubjects();
+            this.getData();
         } ,
 
         filterModeChangeEvent () {
             this.videoProjects.page = 1;
-            this.getWithPager();
+            this.getData();
         } ,
 
         toPageInTag (page) {
@@ -199,7 +208,7 @@ export default {
             this.tags = G.copy(tags , true);
             this.getTags();
             this.videoProjects.page = 1;
-            this.getWithPager();
+            this.getData();
         } ,
 
         // 检查分类是否存在
@@ -229,7 +238,7 @@ export default {
             this.tags.selected.push(tag);
             this.tags.selectedIds.push(tag.tag_id);
             this.videoProjects.page = 1;
-            this.getWithPager();
+            this.getData();
         } ,
 
         delTag (tag) {
@@ -237,7 +246,7 @@ export default {
             this.tags.selected.splice(index , 1);
             this.tags.selectedIds.splice(index , 1);
             this.videoProjects.page = 1;
-            this.getWithPager();
+            this.getData();
         } ,
 
         searchTag () {
@@ -272,7 +281,7 @@ export default {
             this.categories.selected.push(category);
             this.categories.selectedIds.push(category.id);
             this.videoProjects.page = 1;
-            this.getWithPager();
+            this.getData();
         } ,
 
         delCategory (category) {
@@ -280,21 +289,21 @@ export default {
             this.categories.selected.splice(index , 1);
             this.categories.selectedIds.splice(index , 1);
             this.videoProjects.page = 1;
-            this.getWithPager();
+            this.getData();
         } ,
 
         resetCategoryFilter () {
             this.categories = G.copy(categories);
             this.getCategories();
             this.videoProjects.page = 1;
-            this.getWithPager();
+            this.getData();
         } ,
 
         // 检查分类是否存在
-        findIndexInSubjectsBySubjectId (subjectId) {
-            for (let i = 0; i < this.videoSubjects.selected.length; ++i)
+        findIndexInVideoSeriesByVideoSeriesId (subjectId) {
+            for (let i = 0; i < this.videoSeries.selected.length; ++i)
             {
-                const cur = this.videoSubjects.selected[i];
+                const cur = this.videoSeries.selected[i];
                 if (cur.id === subjectId) {
                     return i;
                 }
@@ -304,41 +313,179 @@ export default {
 
 
         // 根据分类对内容进行过滤
-        filterBySubject (subject) {
-            const index = this.findIndexInSubjectsBySubjectId(subject.id);
+        filterByVideoSeries (row) {
+            const index = this.findIndexInVideoSeriesByVideoSeriesId(row.id);
             if (index === false) {
-                this.addSubject(subject);
+                this.addVideoSeries(row);
             } else {
-                this.delSubject(subject);
+                this.delVideoSeries(row);
             }
         } ,
 
-        addSubject (subject) {
-            const index = this.findIndexInCategoriesByCategoryId(subject.id);
-            this.videoSubjects.selected.push(subject);
-            this.videoSubjects.selectedIds.push(subject.id);
+        addVideoSeries (row) {
+            const index = this.findIndexInCategoriesByCategoryId(row.id);
+            this.videoSeries.selected.push(row);
+            this.videoSeries.selectedIds.push(row.id);
             this.videoProjects.page = 1;
-            this.getWithPager();
+            this.getData();
         } ,
 
-        delSubject (subject) {
-            const index = this.findIndexInCategoriesByCategoryId(subject.id);
-            this.videoSubjects.selected.splice(index , 1);
-            this.videoSubjects.selectedIds.splice(index , 1);
+        delVideoSeries (row) {
+            const index = this.findIndexInCategoriesByCategoryId(row.id);
+            this.videoSeries.selected.splice(index , 1);
+            this.videoSeries.selectedIds.splice(index , 1);
             this.videoProjects.page = 1;
-            this.getWithPager();
+            this.getData();
         } ,
 
-        searchSubject () {
-            this.videoSubjects.page = 1;
-            this.getSubjects();
+        searchVideoSeries () {
+            this.videoSeries.page = 1;
+            this.getVideoSeries();
         } ,
 
-        resetSubjectFilter () {
-            this.videoSubjects = G.copy(videoSubjects);
-            this.getSubjects();
+        resetVideoSeriesFilter () {
+            this.videoSeries = G.copy(videoSeries);
+            this.getVideoSeries();
             this.videoProjects.page = 1;
-            this.getWithPager();
+            this.getData();
+        } ,
+
+        toPageInVideoSeries (page) {
+            this.videoSeries.page = page;
+            this.getVideoSeries();
+        } ,
+
+        showVideoSeriesSelector () {
+            this.dom.videoSeriesSelector.removeClass('hide');
+            this.dom.videoSeriesSelector.startTransition('show');
+            this.videoSeries.page = 1;
+            this.getVideoSeries();
+        } ,
+
+        closeVideoSeriesSelector () {
+            this.videoSeries.data = [];
+            this.dom.videoSeriesSelector.endTransition('show' , () => {
+                this.dom.videoSeriesSelector.addClass('hide');
+            });
+        } ,
+
+        getVideoSeries () {
+            this.pending('getVideoSeries' , true);
+            Api.videoSeries
+                .index({
+                    page: this.videoSeries.page ,
+                    limit: this.videoSeries.limit ,
+                    value: this.videoSeries.value ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message);
+                        return ;
+                    }
+                    const data = res.data;
+                    this.videoSeries.total = data.total;
+                    this.videoSeries.page = data.current_page;
+                    this.videoSeries.maxPage = data.last_page;
+                    this.videoSeries.data = data.data;
+                })
+                .finally(() => {
+                    this.pending('getVideoSeries' , false);
+                });
+        } ,
+
+        // ------------------------
+        // 检查分类是否存在
+        findIndexInVideoCompanyByVideoCompanyId (subjectId) {
+            for (let i = 0; i < this.videoCompanies.selected.length; ++i)
+            {
+                const cur = this.videoCompanies.selected[i];
+                if (cur.id === subjectId) {
+                    return i;
+                }
+            }
+            return false;
+        } ,
+
+
+        // 根据分类对内容进行过滤
+        filterByVideoCompany (row) {
+            const index = this.findIndexInVideoCompanyByVideoCompanyId(row.id);
+            if (index === false) {
+                this.addVideoCompany(row);
+            } else {
+                this.delVideoCompany(row);
+            }
+        } ,
+
+        addVideoCompany (row) {
+            const index = this.findIndexInCategoriesByCategoryId(row.id);
+            this.videoCompanies.selected.push(row);
+            this.videoCompanies.selectedIds.push(row.id);
+            this.videoProjects.page = 1;
+            this.getData();
+        } ,
+
+        delVideoCompany (row) {
+            const index = this.findIndexInCategoriesByCategoryId(row.id);
+            this.videoCompanies.selected.splice(index , 1);
+            this.videoCompanies.selectedIds.splice(index , 1);
+            this.videoProjects.page = 1;
+            this.getData();
+        } ,
+
+        searchVideoCompany () {
+            this.videoCompanies.page = 1;
+            this.getVideoCompany();
+        } ,
+
+        resetVideoCompanyFilter () {
+            this.videoCompanies = G.copy(videoCompanies);
+            this.getVideoCompany();
+            this.videoProjects.page = 1;
+            this.getData();
+        } ,
+
+        toPageInVideoCompany (page) {
+            this.videoCompanies.page = page;
+            this.getVideoCompany();
+        } ,
+
+        showVideoCompanySelector () {
+            this.dom.videoCompanySelector.removeClass('hide');
+            this.dom.videoCompanySelector.startTransition('show');
+            this.videoCompanies.page = 1;
+            this.getVideoCompany();
+        } ,
+
+        closeVideoCompanySelector () {
+            this.videoCompanies.data = [];
+            this.dom.videoCompanySelector.endTransition('show' , () => {
+                this.dom.videoCompanySelector.addClass('hide');
+            });
+        } ,
+
+        getVideoCompany () {
+            this.pending('getVideoCompany' , true);
+            Api.videoCompany
+                .index({
+                    page: this.videoCompanies.page ,
+                    limit: this.videoCompanies.limit ,
+                    value: this.videoCompanies.value ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message);
+                        return ;
+                    }
+                    const data = res.data;
+                    this.videoCompanies.total = data.total;
+                    this.videoCompanies.page = data.current_page;
+                    this.videoCompanies.maxPage = data.last_page;
+                    this.videoCompanies.data = data.data;
+                })
+                .finally(() => {
+                    this.pending('getVideoCompany' , false);
+                });
         } ,
 
         showOrderSelectorInHorizontal () {
@@ -373,20 +520,6 @@ export default {
             this.categories.data = [];
             this.dom.categorySelector.endTransition('show' , () => {
                 this.dom.categorySelector.addClass('hide');
-            });
-        } ,
-
-        showSubjectSelector () {
-            this.dom.subjectSelector.removeClass('hide');
-            this.dom.subjectSelector.startTransition('show');
-            this.videoSubjects.page = 1;
-            this.getSubjects();
-        } ,
-
-        closeSubjectSelector () {
-            this.videoSubjects.data = [];
-            this.dom.subjectSelector.endTransition('show' , () => {
-                this.dom.subjectSelector.addClass('hide');
             });
         } ,
 
@@ -450,7 +583,11 @@ export default {
             this.dom.win = G(window);
             this.dom.categorySelector = G(this.$refs['category-selector']);
             this.dom.tagSelector = G(this.$refs['tag-selector']);
-            this.dom.subjectSelector = G(this.$refs['image-subject-selector']);
+
+            this.dom.videoSeriesSelector = G(this.$refs['video-series-selector']);
+            this.dom.videoCompanySelector = G(this.$refs['video-company-selector']);
+
+
             this.dom.orderSelector = G(this.$refs['order-selector']);
             this.dom.orderSelectorInHorizontal = G(this.$refs['order-selector-in-horizontal']);
             this.dom.orderSelectorInVertical = G(this.$refs['order-selector-in-vertical']);
@@ -460,13 +597,15 @@ export default {
             this.dom.search = G(this.$parent.$refs['search']);
         } ,
 
-        getWithPager () {
-            this.pending('getWithPager' , true);
+        getData () {
+            this.pending('getData' , true);
             Api.videoProject
                 .index({
                     page: this.videoProjects.page ,
                     mode: this.tags.mode ,
                     limit: this.videoProjects.limit ,
+                    video_series_ids: G.jsonEncode(this.videoSeries.selectedIds) ,
+                    video_company_ids: G.jsonEncode(this.videoCompanies.selectedIds) ,
                     category_ids: G.jsonEncode(this.categories.selectedIds) ,
                     tag_ids: G.jsonEncode(this.tags.selectedIds) ,
                     value: this.videoProjects.value ,
@@ -483,7 +622,7 @@ export default {
                     this.videoProjects.data = data.data;
                 })
                 .finally(() => {
-                    this.pending('getWithPager' , false);
+                    this.pending('getData' , false);
                 });
         } ,
 
@@ -494,7 +633,7 @@ export default {
             const tar = G(e.currentTarget);
             this.videoProjects.value = tar.val();
             this.videoProjects.page = 1;
-            this.getWithPager();
+            this.getData();
         } ,
 
         scrollEvent () {
@@ -509,7 +648,6 @@ export default {
                 this.dom.filterFixedInSlidebar.startTransition('show');
             }
         } ,
-
 
         initEvent () {
             this.dom.win.on('click' , this.closeOrderSelectorInVertical.bind(this));

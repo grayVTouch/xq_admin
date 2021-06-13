@@ -152,8 +152,8 @@ export default {
             mimeRange: {
                 image_project: '图片专题',
                 video_project: '视频专题',
-                video: '视频',
-                image: '图片',
+                // video: '视频',
+                // image: '图片',
                 // article: '资讯' ,
                 // bbs: '论坛' ,
             },
@@ -319,9 +319,9 @@ export default {
                 [];
             // console.log(this.$route.fullPath , position);
             this.ins.nav    = new Nav(this.dom.navMenu.get(0) , {
-                click (id) {
-                    self.openWindow(self.genUrl(id) , '_self');
-                } ,
+                // click (id) {
+                //     self.openWindow(self.genUrl(id) , '_self');
+                // } ,
                 // 是否选中项
                 focus: true ,
                 // 是否选中顶级项
@@ -428,6 +428,11 @@ export default {
 
                     appendVideoProjectPosition.forEach((v) => {
                         videoProjectPosition.children.push(v);
+                    });
+
+                    // 路由模式修正（根据路由模式自动修正）
+                    G.tree.loop(this.positions , (v) => {
+                        v.route = this.genUrl(v.route);
                     });
 
                     // 初始化获取获取当前路由所在具体位置

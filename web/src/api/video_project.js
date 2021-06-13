@@ -1,8 +1,4 @@
 
-const getByTagId = `${TopContext.api}/video_project/{tag_id}/get_by_tag_id`;
-const getByTagIds = `${TopContext.api}/video_project/get_by_tag_ids`;
-const videoSubjects = `${TopContext.api}/video_project/{id}/video_projects`;
-
 export default {
 
     show (id) {
@@ -29,8 +25,8 @@ export default {
         return Http.get(`${TopContext.api}/video_project/hot`, query);
     } ,
 
-    getByTagId (tagId , query) {
-        return  Http.get(`${TopContext.api}/video_project/${tagId}/get_by_tag_id` , query);
+    getByTagId (query) {
+        return  Http.get(`${TopContext.api}/video_project/get_by_tag_id` , query);
     } ,
 
     getByTagIds (query) {
@@ -41,8 +37,8 @@ export default {
         return Http.get( `${TopContext.api}/video_project/${id}/videos_in_range`, query);
     } ,
 
-    videoSubjects (id , query) {
-        return Http.get(`${TopContext.api}/video_project/${id}/video_projects` , query);
+    vdieoProjectFilterByVideoSeriesId (query) {
+        return Http.get(`${TopContext.api}/video_project_filter_by_video_series_id` , query);
     } ,
 
     categories () {

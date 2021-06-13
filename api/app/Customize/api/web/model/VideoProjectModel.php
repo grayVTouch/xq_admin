@@ -195,9 +195,11 @@ class VideoProjectModel extends Model
         $filter['value']        = $filter['value'] ?? '';
         $filter['module_id']    = $filter['module_id'] ?? '';
         $filter['tag_ids']      = $filter['tag_ids'] ?? [];
+        $filter['video_series_ids']      = $filter['video_series_ids'] ?? [];
+        $filter['video_company_ids']      = $filter['video_company_ids'] ?? [];
+        $filter['category_ids']      = $filter['video_company_ids'] ?? [];
 
         $order = $order ?? ['field' => 'created_at' , 'value' => 'desc'];
-        $value = strtolower($filter['value']);
 
         $where = [];
 
@@ -205,11 +207,26 @@ class VideoProjectModel extends Model
             $where[] = ['vs.module_id' , '=' , $filter['module_id']];
         }
 
+        if ($filter['value'] !== '') {
+            $where[] = ['vs.name' , 'like' , "%{$filter['module_id']}%"];
+        }
+
         $query = self::from('xq_video_project as vs')
             ->where($where);
 
-        return $query->whereRaw("lower(vs.name) like ?" , ["%{$value}%"])
-            ->whereExists(function($query) use($filter){
+        if (!empty($filter['video_series_ids'])) {
+            $query->whereIn('video_series_id' , $filter['video_series_ids']);
+        }
+
+        if (!empty($filter['video_company_ids'])) {
+            $query->whereIn('video_company_id' , $filter['video_company_ids']);
+        }
+
+        if (!empty($filter['category_ids'])) {
+            $query->whereIn('category_id' , $filter['category_ids']);
+        }
+
+        return $query->whereExists(function($query) use($filter){
                 $query->select('id')
                     ->selectRaw('count(id) as total')
                     ->from('xq_relation_tag')

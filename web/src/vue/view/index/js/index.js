@@ -217,7 +217,8 @@ export default {
             this.pending('imageProject' , true);
             this.group.imageProject.curTag = 'tag_' + tagId;
             Api.imageProject
-                .getByTagId(tagId , {
+                .getByTagId({
+                    tag_id: tagId ,
                     limit: this.imageProjects.limit ,
                     type:  this.imageProjects.type ,
                 }).then((res) => {
@@ -303,8 +304,9 @@ export default {
             this.group.videoProject.curTag = 'tag_' + tagId;
             this.pending('videoProject' , true);
             Api.videoProject
-                .getByTagId(tagId , {
+                .getByTagId({
                     limit: this.videoProjects.limit ,
+                    tag_id: tagId ,
                 })
                 .then((res) => {
                     this.pending('videoProject' , false);

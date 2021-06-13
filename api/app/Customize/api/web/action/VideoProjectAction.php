@@ -82,17 +82,16 @@ class VideoProjectAction extends Action
         return self::success('' , $res);
     }
 
-    public static function getByTagId(Base $context , $tag_id , array $param = [])
+    public static function getByTagId(Base $context , array $param = [])
     {
         $validator = Validator::make($param , [
             'module_id' => 'required|integer' ,
+            'tag_id' => 'required' ,
         ]);
-
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-
-        $tag = TagModel::find($tag_id);
+        $tag = TagModel::find($param['tag_id']);
         if (empty($tag)) {
             return self::error('标签不存在');
         }
@@ -290,7 +289,8 @@ class VideoProjectAction extends Action
         }
 
         $param['category_ids']   = $param['category_ids'] === '' ? [] : json_decode($param['category_ids'] , true);
-        $param['subject_ids']    = $param['subject_ids'] === '' ? [] : json_decode($param['subject_ids'] , true);
+        $param['video_series_ids']    = $param['video_series_ids'] === '' ? [] : json_decode($param['video_series_ids'] , true);
+        $param['video_company_ids']    = $param['video_company_ids'] === '' ? [] : json_decode($param['video_company_ids'] , true);
         $param['tag_ids']        = $param['tag_ids'] === '' ? [] : json_decode($param['tag_ids'] , true);
 
         $order                   = $param['order'] === '' ? null : parse_order($param['order']);
@@ -385,16 +385,17 @@ class VideoProjectAction extends Action
         return self::success('' , $res);
     }
 
-    public static function videoSubjectsInSeries(Base $base , int $video_series_id , array $param = []): array
+    public static function getByVideoSeriesId(Base $context , array $param = []): array
     {
         $validator = Validator::make($param , [
             'video_project_id' => 'required|integer' ,
+            'video_series_id' => 'required|integer' ,
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-        $video_series = VideoSeriesModel::find($video_series_id);
-        if (empty($video_series_id)) {
+        $video_series = VideoSeriesModel::find($param['video_series_id']);
+        if (empty($video_series)) {
             return self::error('视频系列不存在' , '' , 404);
         }
         $res = VideoProjectModel::getByVideoSeriesIdAndExcludeVideoSubjectId($video_series->id , $param['video_project_id']);

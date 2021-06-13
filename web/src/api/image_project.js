@@ -56,8 +56,8 @@ export default {
     } ,
 
     // 图片专题：根据标签返回
-    getByTagId (tagId , query) {
-        return Http.get(`${TopContext.api}/image_project/${tagId}/get_by_tag_id` , query);
+    getByTagId (query) {
+        return Http.get(`${TopContext.api}/image_project/get_by_tag_id` , query);
     } ,
 
     getByTagIds (query) {

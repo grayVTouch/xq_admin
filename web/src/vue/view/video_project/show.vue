@@ -125,7 +125,7 @@
                 <div class="title">系列视频</div>
                 <div class="list">
 
-                    <div class="video-subject" v-for="v in videoProjectsInSeries" :key="v.id" @click="linkAndRefresh(`/video_subject/${v.id}/show`)">
+                    <div class="video-subject" v-for="v in videoProjectsInSeries" :key="v.id" @click="linkAndRefresh(`/video_project/${v.id}/show`)">
                         <div class="thumb"><img :src="v.thumb ? v.thumb : TopContext.res.notFound" class="judge-img-size" v-judge-img-size alt=""></div>
                         <div class="info">
                             <div class="name">{{ v.name }}</div>

@@ -10,6 +10,8 @@ import user from '@api/user.js';
 import file from '@api/file.js';
 import module from '@api/module.js';
 import videoProject from '@api/video_project.js';
+import videoSeries from '@api/video_series.js';
+import videoCompany from '@api/video_company.js';
 
 window.Api = {
     misc ,
@@ -24,4 +26,6 @@ window.Api = {
     user ,
     file ,
     videoProject ,
+    videoSeries ,
+    videoCompany ,
 };

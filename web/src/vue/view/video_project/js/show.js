@@ -68,14 +68,14 @@ export default {
         this.initIns();
         this.getVideoProject()
             .then(() => {
-                console.log(this.videoProject.min_index , this.videoProject.max_index);
+                // console.log(this.videoProject.min_index , this.videoProject.max_index);
 
                 // 生成剧集信息
                 this.generateIndexRange(this.videoProject.min_index , this.videoProject.max_index);
                 // 初始化视频播放器
                 this.initVideoPlayer();
                 // 获取系列下的视频专题
-                // this.getVideoProjectsInSeries();
+                this.getVideoProjectsInSeries();
             });
         this.initEvent();
     } ,
@@ -315,7 +315,14 @@ export default {
                 })
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
-                        return this.errorHandle(msg , data , code);
+                        this.errorHandle(res.message)
+                            .then((keep) => {
+                                if (!keep) {
+                                    return ;
+                                }
+                                this.videosInRange(min , max);
+                            });
+                        return ;
                     }
                     const data = res.data;
                     data.forEach((v) => {
@@ -361,15 +368,22 @@ export default {
         getVideoProjectsInSeries () {
             this.pending('getVideoProjectsInSeries' , true);
             Api.videoProject
-                .videoProjects(this.videoProject.video_series_id , {
-                    video_subject_id: this.videoProject.id ,
+                .vdieoProjectFilterByVideoSeriesId({
+                    video_project_id: this.videoProject.id ,
+                    video_series_id: this.videoProject.video_series_id ,
                 })
                 .then((res) => {
                     this.pending('getVideoProjectsInSeries' , false);
                     if (res.code !== TopContext.code.Success) {
-                        return this.errorHandle(msg , data , code);
+                        return this.errorHandle(res.message)
+                            .then((keep) => {
+                                if (!keep) {
+                                    return ;
+                                }
+                                this.getVideoProjectsInSeries();
+                            });
                     }
-                    this.videoProjectsInSeries = data;
+                    this.videoProjectsInSeries = res.data;
                 });
         } ,
 
