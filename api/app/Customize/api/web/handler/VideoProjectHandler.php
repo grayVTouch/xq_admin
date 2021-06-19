@@ -6,6 +6,7 @@ namespace App\Customize\api\web\handler;
 
 use App\Customize\api\web\handler\VideoCompanyHandler;
 use App\Customize\api\web\handler\VideoSeriesHandler;
+use App\Customize\api\web\model\UserVideoProjectPlayRecordModel;
 use App\Customize\api\web\model\VideoSeriesModel;
 use App\Customize\api\web\model\VideoCompanyModel;
 use App\Customize\api\web\model\CollectionModel;
@@ -44,7 +45,7 @@ class VideoProjectHandler extends Handler
         $category = CategoryModel::find($res->category_id);
         $category = CategoryHandler::handle($category);
 
-        $videos = VideoModel::getByVideoSubjectId($res->id);
+        $videos = VideoModel::getByVideoProjectId($res->id);
         $videos = VideoHandler::handleAll($videos);
 
         $tags = RelationTagModel::getByRelationTypeAndRelationId('video_project' , $res->id);
@@ -60,28 +61,68 @@ class VideoProjectHandler extends Handler
         $res->__status__ = get_config_key_mapping_value('business.status_for_video_project' , $res->status);
 
         // 点赞数
-        $res->play_count = VideoModel::sumPlayCountByVideoSubjectId($res->id);
-        // 观看数
-        $res->view_count = VideoModel::sumViewCountByVideoSubjectId($res->id);
-        // 点赞数
-        $res->praise_count = VideoModel::sumPraiseCountByVideoSubjectId($res->id);
-        // 反对数
-        $res->against_count = VideoModel::sumAgainstCountByVideoSubjectId($res->id);
-        // 收藏数
-        $res->collect_count = CollectionModel::countByModuleIdAndRelationTypeAndRelationId($res->module_id , 'video_project' , $res->id);
+//        $res->play_count = VideoModel::sumPlayCountByVideoProjectId($res->id);
+//        // 观看数
+//        $res->view_count = VideoModel::sumViewCountByVideoProjectId($res->id);
+//        // 点赞数
+//        $res->praise_count = VideoModel::sumPraiseCountByVideoProjectId($res->id);
+//        // 反对数
+//        $res->against_count = VideoModel::sumAgainstCountByVideoProjectId($res->id);
+//        // 收藏数
+//        $res->collect_count = CollectionModel::countByModuleIdAndRelationTypeAndRelationId($res->module_id , 'video_project' , $res->id);
 
-        $user = user();
-        if (empty($user)) {
-            $res->collected = 0;
-            $res->praised   = 0;
-        } else {
-            $res->collected = CollectionModel::findByModuleIdAndUserIdAndRelationTypeAndRelationId($res->module_id , $user->id , 'video_project' , $res->id) ? 1 : 0;
-            $res->praised   = PraiseModel::getByModuleIdAndUserIdAndRelationTypeAndRelationIds($res->module_id , $user->id , 'video' , array_column($videos , 'id'))->count() ? 1 : 0;
-        }
+//        $user = user();
+//        if (empty($user)) {
+//            $res->collected = 0;
+//            $res->praised   = 0;
+//        } else {
+//            $res->collected = CollectionModel::findByModuleIdAndUserIdAndRelationTypeAndRelationId($res->module_id , $user->id , 'video_project' , $res->id) ? 1 : 0;
+//            $res->praised   = PraiseModel::getByModuleIdAndUserIdAndRelationTypeAndRelationIds($res->module_id , $user->id , 'video' , array_column($videos , 'id'))->count() ? 1 : 0;
+//        }
 
         $res->format_time = date('Y-m-d H:i' , strtotime($res->created_at));
 
         return $res;
+    }
+
+    // 附加：是否收藏
+    public static function isCollected($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        if (empty(user())) {
+            $model->is_collected = 0;
+        } else {
+            $model->is_collected = CollectionModel::findByModuleIdAndUserIdAndRelationTypeAndRelationId($model->module_id , user()->id , 'video_project' , $model->id) ? 1 : 0;
+        }
+    }
+
+    // 附加：是否点赞
+    public static function isPraised($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        if (empty(user())) {
+            $model->is_praised = 0;
+        } else {
+            $model->is_praised = PraiseModel::findByModuleIdAndUserIdAndRelationTypeAndRelationId($model->module_id , user()->id , 'video_project' , $model->id) ? 1 : 0;
+        }
+    }
+
+    // 附加：用户播放记录
+    public static function userPlayRecord($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $user = user();
+        $user_play_record = null;
+        if (!empty($user)) {
+            $user_play_record = UserVideoProjectPlayRecordModel::findByModuleIdAndUserIdAndVideoProjectId($model->module_id , $user->id , $model->id);
+        }
+        $model->user_play_record = $user_play_record;
     }
 
 }

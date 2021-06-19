@@ -229,6 +229,8 @@ class VideoProjectAction extends Action
             return self::error('图片专题不存在' , '' , 404);
         }
         $video_project = VideoProjectHandler::handle($video_project);
+        // 附加：视频专题播放记录
+        VideoProjectHandler::userPlayRecord($video_project);
         return self::success('' , $video_project);
     }
 
@@ -380,7 +382,7 @@ class VideoProjectAction extends Action
             return self::error('记录不存在' , null , 404);
         }
 
-        $res = VideoModel::findByVideoSubjectIdAndMinIndexAndMaxIndex($video_project->id , $param['min'] , $param['max']);
+        $res = VideoModel::getByVideoProjectIdAndMinIndexAndMaxIndex($video_project->id , $param['min'] , $param['max']);
         $res = VideoHandler::handleAll($res);
         return self::success('' , $res);
     }
@@ -398,7 +400,7 @@ class VideoProjectAction extends Action
         if (empty($video_series)) {
             return self::error('视频系列不存在' , '' , 404);
         }
-        $res = VideoProjectModel::getByVideoSeriesIdAndExcludeVideoSubjectId($video_series->id , $param['video_project_id']);
+        $res = VideoProjectModel::getByVideoSeriesIdAndExcludeVideoProjectId($video_series->id , $param['video_project_id']);
         $res = VideoProjectHandler::handleAll($res);
         return self::success('' , $res);
     }

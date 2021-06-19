@@ -410,12 +410,11 @@ class VideoAction extends Action
             if (empty($video)) {
                 return self::error('包含无效记录' , '' , 404);
             }
-            $video = VideoHandler::handle($video , [
-                'video_project'
-            ]);
+            $video = VideoHandler::handle($video);
             if ($video->video_process_status !== -1) {
                 return self::error('包含无效处理状态视频' , '' , 403);
             }
+            VideoHandler::videoProject($video);
             if ($video->type === 'pro' && empty($video->video_project)) {
                 return self::error('包含类型为专题视频但视频专题不存在的记录');
             }

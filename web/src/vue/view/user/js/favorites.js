@@ -244,7 +244,7 @@ export default {
             }
             this.pending(pendingKey , true);
             Api.user
-                .destroyCollection({
+                .destroyCollection(null , {
                     collection_id: collection.id ,
                 })
                 .then((res) => {

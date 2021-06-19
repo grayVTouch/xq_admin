@@ -29,7 +29,7 @@ class CreateVideoProjectTable extends Migration
             $table->unsignedSmallInteger('min_index')->default(1)->comment('视频剧集的开始');
             $table->unsignedSmallInteger('max_index')->default(1)->comment('视频剧集的结束');
             $table->unsignedSmallInteger('index_split_count')->default(30)->comment('剧集切割的数量');
-            $table->unsignedBigInteger('play_count')->default(0)->comment('播放数量');
+
             $table->string('description' , 1000)->default('')->comment('描述');
             $table->unsignedBigInteger('video_series_id')->default(0)->comment('xq_video_series.id');
             $table->unsignedBigInteger('category_id')->default(0)->comment('xq_category.id');
@@ -40,6 +40,12 @@ class CreateVideoProjectTable extends Migration
             $table->unsignedBigInteger('user_id')->default(0)->comment('xq_user.id，发布者用户id');
             $table->tinyInteger('status')->default(0)->comment('状态： -1-审核不通过 0-待审核 1-审核通过');
             $table->string('fail_reason' , 255)->default('')->comment('失败原因，当status=-1时，必须提供');
+
+            $table->unsignedBigInteger('praise_count')->default(0)->comment('点赞数');
+            $table->unsignedBigInteger('against_count')->default(0)->comment('反对数');
+            $table->unsignedBigInteger('view_count')->default(0)->comment('观看次数');
+            $table->unsignedBigInteger('play_count')->default(0)->comment('播放数量');
+            $table->unsignedBigInteger('collect_count')->default(0)->comment('收藏量');
 
             $table->timestamps();
 

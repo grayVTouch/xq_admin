@@ -70,7 +70,7 @@ export default {
     },
 
     update (query , data) {
-        return Http.put(`${TopContext.api}/update_user` , query , data);
+        return Http.put(`${TopContext.api}/user` , query , data);
     },
 
     updatePasswordInLogged (query , data) {
@@ -122,9 +122,8 @@ export default {
     } ,
 
     localUpdate (query , data) {
-        return Http.patch(`${TopContext.api}/update_user` , query , data);
+        return Http.patch(`${TopContext.api}/user` , query , data);
     } ,
-
 
     collectionGroupInfo (collectionGroupId) {
         return Http.get(`${TopContext.api}/user/${collectionGroupId}/collection_group_info`);

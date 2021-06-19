@@ -29,6 +29,7 @@ class CreateImageProjectTable extends Migration
             $table->integer('weight')->default(0)->comment('权重');
             $table->unsignedBigInteger('view_count')->default(0)->comment('浏览次数');
             $table->unsignedBigInteger('praise_count')->default(0)->comment('获赞次数');
+            $table->unsignedBigInteger('collect_count')->default(0)->comment('收藏次数');
             $table->tinyInteger('status')->default(0)->comment('审核状态：-1-审核失败 0-待审核 1-审核通过');
             $table->string('fail_reason' , 1000)->default('')->comment('失败原因，当 status=-1 时，必须提供');
             $table->tinyInteger('process_status')->default(0)->comment('处理状态：-1-处理失败 0-待处理 1-处理中 2-处理完毕');

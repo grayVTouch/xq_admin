@@ -92,9 +92,9 @@ export default {
             if (G.isEmptyString(this.form.password)) {
                 error.password = '请填写密码';
             }
-            if (G.isEmptyString(this.form.captcha_code)) {
-                error.captcha_code = '请填写验证码';
-            }
+            // if (G.isEmptyString(this.form.captcha_code)) {
+            //     error.captcha_code = '请填写验证码';
+            // }
             return {
                 status: G.isEmptyObject(error) ,
                 error ,

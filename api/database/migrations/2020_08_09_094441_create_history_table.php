@@ -19,12 +19,11 @@ class CreateHistoryTable extends Migration
         Schema::create($this->table , function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->default(0)->comment('xq_user.id');
-            $table->string('relation_type' , 255)->default('')->comment('关联类型: 比如 image_subject-图片专题');
+            $table->string('relation_type' , 255)->default('')->comment('关联类型: 比如 image_subject-图片专题 video_project-视频专题');
             $table->unsignedBigInteger('relation_id')->default(0)->comment('关联表id');
             $table->unsignedBigInteger('module_id')->default(0)->comment('xq_module.id');
             $table->date('date')->nullable(true)->comment('创建日期');
             $table->time('time')->nullable(true)->comment('创建时间');
-
             $table->timestamps();
 
             $table->engine = 'InnoDB';

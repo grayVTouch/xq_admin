@@ -156,7 +156,7 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
             /**
              * 视频第一帧
              */
-            $video_first_frame_file = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , $video->name . '【第一帧】' , 'jpeg'));
+            $video_first_frame_file = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , $video->name . '【第一帧】' , 'png'));
             $video_first_frame_url  = FileUtil::generateUrlByRealPath($video_first_frame_file);
 
             FFmpeg::create()
@@ -224,7 +224,7 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
 
             for ($i = 0; $i < $preview_count; ++$i)
             {
-                $image      = $temp_dir . '/' . $datetime . random(6 , 'letter' , true) . '.jpeg';
+                $image      = $temp_dir . '/' . $datetime . random(6 , 'letter' , true) . '.png';
                 $timepoint  = $i * $video_preview_config['duration'];
 
                 FFmpeg::create()
@@ -236,17 +236,18 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
                     ->save($image);
 
                 $previews[] = $image;
-                $image_cav  = imagecreatefromjpeg($image);
+                $image_cav  = imagecreatefrompng($image);
                 $x          = $i % $video_preview_config['count'] * $video_preview_config['width'];
                 $y          = floor($i / $video_preview_config['count']) * $video_preview_config['height'];
 
                 imagecopymerge($cav , $image_cav , $x , $y , 0 , 0 , $video_preview_config['width'] , $video_preview_config['height'] , 100);
             }
 
-            $preview_file   = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , $video->name . '【预览】' ,'jpeg'));
+            $preview_file   = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , $video->name . '【预览】' ,'png'));
             $preview_url    = FileUtil::generateUrlByRealPath($preview_file);
 
-            imagejpeg($cav , $preview_file);
+            // jpeg 最大支持的像素有限！请务必使用 png
+            imagepng($cav , $preview_file);
 
             ResourceUtil::create($preview_url , $preview_file , 'local' , 0 , 0);
 

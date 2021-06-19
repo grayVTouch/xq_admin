@@ -97,7 +97,7 @@ class VideoModel extends Model
         ])->first();
     }
 
-    public static function getByVideoSubjectId()
+    public static function getByVideoProjectId()
     {
 
     }

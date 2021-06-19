@@ -12,6 +12,7 @@ import module from '@api/module.js';
 import videoProject from '@api/video_project.js';
 import videoSeries from '@api/video_series.js';
 import videoCompany from '@api/video_company.js';
+import video from '@api/video.js';
 
 window.Api = {
     misc ,
@@ -28,4 +29,5 @@ window.Api = {
     videoProject ,
     videoSeries ,
     videoCompany ,
+    video ,
 };

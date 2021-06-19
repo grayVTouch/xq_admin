@@ -24,17 +24,17 @@ class LoginAction extends Action
         $validator = Validator::make($param , [
             'username' => 'required|min:4' ,
             'password' => 'required|min:4' ,
-            'captcha_code' => 'required|min:4' ,
+//            'captcha_code' => 'required|min:4' ,
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-        if (empty($param['captcha_key'])) {
-            return self::error('必要参数丢失【captcha_key】');
-        }
-        if (!Captcha::check_api($param['captcha_code'] , $param['captcha_key'])) {
-            return self::error('图形验证码错误');
-        }
+//        if (empty($param['captcha_key'])) {
+//            return self::error('必要参数丢失【captcha_key】');
+//        }
+//        if (!Captcha::check_api($param['captcha_code'] , $param['captcha_key'])) {
+//            return self::error('图形验证码错误');
+//        }
         $user = AdminModel::findByUsername($param['username']);
         if (empty($user)) {
             return self::error('用户不存在');

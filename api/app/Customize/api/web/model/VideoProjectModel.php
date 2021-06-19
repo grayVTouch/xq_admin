@@ -326,7 +326,7 @@ class VideoProjectModel extends Model
             ->get();
     }
 
-    public static function getByVideoSeriesIdAndExcludeVideoSubjectId(int $video_series_id , int $exclude_video_project_id): Collection
+    public static function getByVideoSeriesIdAndExcludeVideoProjectId(int $video_series_id , int $exclude_video_project_id): Collection
     {
         return self::where([
                 ['id' , '!=' , $exclude_video_project_id] ,

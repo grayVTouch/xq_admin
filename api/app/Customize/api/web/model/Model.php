@@ -39,4 +39,14 @@ class Model extends BaseModel
         return static::whereIn('id' , $ids)
             ->delete();
     }
+
+    public static function incrementByIdAndColumnAndStep(int $id , string $column , $step = 1)
+    {
+        return static::where('id' , $id)->increment($column , $step);
+    }
+
+    public static function decrementByIdAndColumnAndStep(int $id , string $column , $step = 1)
+    {
+        return static::where('id' , $id)->decrement($column , $step);
+    }
 }

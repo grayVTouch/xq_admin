@@ -39,7 +39,7 @@
                         </div>
                     </div>
 
-                    <div class="line captcha" :class="{error: isValid(myValue.error.captcha_code) , focus: myValue.focus.captcha_code}" ref="line-captcha">
+                    <div class="line captcha" v-if="false" :class="{error: isValid(myValue.error.captcha_code) , focus: myValue.focus.captcha_code}" ref="line-captcha">
                         <div class="top">
                             <div class="left"><input type="text" class="form-input"  v-model="form.captcha_code" @input="myValue.error.captcha_code = ''" data-name="captcha_code" placeholder="图形验证码" @focus="focusEvent" @blur="blurEvent"></div>
                             <div class="right">

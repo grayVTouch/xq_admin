@@ -10,7 +10,7 @@ class VideoModel extends Model
 {
     protected $table = 'xq_video';
 
-    public static function getByVideoSubjectId(int $video_project_id): Collection
+    public static function getByVideoProjectId(int $video_project_id): Collection
     {
         return self::where('video_project_id' , $video_project_id)
             ->orderBy('index' , 'asc')
@@ -18,7 +18,7 @@ class VideoModel extends Model
             ->get();
     }
 
-    public static function sumPraiseCountByVideoSubjectId(int $video_project_id): int
+    public static function sumPraiseCountByVideoProjectId(int $video_project_id): int
     {
         return (int) self::where([
                 ['type' , '=' , 'pro'] ,
@@ -27,7 +27,7 @@ class VideoModel extends Model
             ->sum('praise_count');
     }
 
-    public static function sumPlayCountByVideoSubjectId(int $video_project_id): int
+    public static function sumPlayCountByVideoProjectId(int $video_project_id): int
     {
         return (int) self::where([
                 ['type' , '=' , 'pro'] ,
@@ -36,7 +36,7 @@ class VideoModel extends Model
             ->sum('play_count');
     }
 
-    public static function sumViewCountByVideoSubjectId(int $video_project_id): int
+    public static function sumViewCountByVideoProjectId(int $video_project_id): int
     {
         return (int) self::where([
                 ['type' , '=' , 'pro'] ,
@@ -45,7 +45,7 @@ class VideoModel extends Model
             ->sum('view_count');
     }
 
-    public static function sumAgainstCountByVideoSubjectId(int $video_project_id): int
+    public static function sumAgainstCountByVideoProjectId(int $video_project_id): int
     {
         return (int) self::where([
                 ['type' , '=' , 'pro'] ,
@@ -54,13 +54,14 @@ class VideoModel extends Model
             ->sum('against_count');
     }
 
-    public static function findByVideoSubjectIdAndMinIndexAndMaxIndex(int $video_project_id , int $min , int $max): Collection
+    public static function getByVideoProjectIdAndMinIndexAndMaxIndex(int $video_project_id , int $min , int $max): Collection
     {
         return self::where([
                 ['video_project_id' , '=' , $video_project_id] ,
                 ['index' , '>=' , $min] ,
                 ['index' , '<=' , $max] ,
             ])
+            ->orderBy('index' , 'asc')
             ->get();
     }
 }

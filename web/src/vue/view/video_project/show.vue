@@ -14,13 +14,22 @@
                     </div>
                 </div>
                 <div class="actions">
-                    <div class="action praise run-red" v-ripple><my-icon icon="shoucang2" size="24"></my-icon>{{ videoProject.current.praise_count }}</div>
-                    <div class="action hate"><my-icon icon="shoucang2" size="24"></my-icon>{{ videoProject.current.against_count }}</div>
-                    <div class="action collect"><my-icon icon="shoucang5" size="24"></my-icon>{{ videoProject.current.collect_count }}</div>
+
+                    <my-button class="button praise m-r-12" @click.stop>
+                        <my-loading size="16" v-if="val.pending.praiseHandle"></my-loading>
+                        <!--                                <my-icon :class="{'run-red': data.is_praised }" icon="shoucang2" /> 喜欢 {{ data.praise_count }}-->
+                        <my-icon :class="{'run-red': videoProject.is_praised }" icon="shoucang2" /> 喜欢
+                    </my-button>
+                    <my-button class="button collect" @click.stop><my-icon icon="shoucang5" :class="{'run-red': videoProject.is_collected}" /> 收藏</my-button>
+
+
+<!--                    <div class="action praise run-red" v-ripple><my-icon icon="shoucang2" size="24"></my-icon>{{ videoProject.current.praise_count }}</div>-->
+<!--                    <div class="action hate"><my-icon icon="shoucang2" size="24"></my-icon>{{ videoProject.current.against_count }}</div>-->
+<!--                    <div class="action collect"><my-icon icon="shoucang5" size="24"></my-icon>{{ videoProject.current.collect_count }}</div>-->
                 </div>
             </div>
 
-            <div class="video-subject">
+            <div class="video-project">
                 <div class="thumb"><img :src="videoProject.thumb ? videoProject.thumb : TopContext.res.notFound" v-judge-img-size class="image judge-img-size"></div>
                 <div class="info">
 
@@ -125,7 +134,7 @@
                 <div class="title">系列视频</div>
                 <div class="list">
 
-                    <div class="video-subject" v-for="v in videoProjectsInSeries" :key="v.id" @click="linkAndRefresh(`/video_project/${v.id}/show`)">
+                    <div class="video-project" v-for="v in videoProjectsInSeries" :key="v.id" @click="linkAndRefresh(`/video_project/${v.id}/show`)">
                         <div class="thumb"><img :src="v.thumb ? v.thumb : TopContext.res.notFound" class="judge-img-size" v-judge-img-size alt=""></div>
                         <div class="info">
                             <div class="name">{{ v.name }}</div>

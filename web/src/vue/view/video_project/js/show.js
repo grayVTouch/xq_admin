@@ -68,8 +68,6 @@ export default {
         this.initIns();
         this.getVideoProject()
             .then(() => {
-                // console.log(this.videoProject.min_index , this.videoProject.max_index);
-
                 // 生成剧集信息
                 this.generateIndexRange(this.videoProject.min_index , this.videoProject.max_index);
                 // 初始化视频播放器
@@ -85,6 +83,42 @@ export default {
     } ,
 
     methods: {
+
+        incrementViewCount (videoId) {
+            this.pending('incrementViewCount' , true);
+            Api.video
+                .incrementViewCount(videoId)
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        console.log('更新视频观看次数失败');
+                        return ;
+                    }
+                })
+                .finally(() => {
+                    this.pending('incrementViewCount' , false);
+                });
+        } ,
+
+        record (videoId , index , playedDuration , videoSrcId , videoSubtitleId) {
+            this.pending('record' , true);
+            Api.video
+                .record(videoId , null , {
+                    index ,
+                    played_duration: playedDuration ,
+                    video_src_id: videoSrcId ? videoSrcId : 0 ,
+                    video_subtitle_id: videoSubtitleId ? videoSubtitleId : 0 ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        console.log('更新视频观看信息失败');
+                        return ;
+                    }
+                })
+                .finally(() => {
+                    this.pending('record' , false);
+                });
+        } ,
+
         initDom () {
             this.dom.win = G(window);
             this.dom.videoContainer = G(this.$refs['video-container']);
@@ -93,6 +127,35 @@ export default {
 
         initIns () {
 
+        } ,
+
+        // 图片点赞
+        praiseHandle () {
+            if (this.pending('praiseHandle')) {
+                return ;
+            }
+            const self = this;
+            const praised = this.data.is_praised ? 0 : 1;
+            this.pending('praiseHandle' , true);
+            Api.user
+                .praiseHandle(null , {
+                    relation_type: 'image_project' ,
+                    relation_id: this.videoProject.id ,
+                    action: praised ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message , res.code , () => {
+                            this.praiseHandle();
+                        });
+                        return ;
+                    }
+                    this.data.is_praised = praised;
+                    praised ? this.videoProject.current.praise_count++ : this.videoProject.current.praise_count--;
+                })
+                .finally(() => {
+                    this.pending('praiseHandle' , false);
+                });
         } ,
 
         initVideoPlayer () {
@@ -104,6 +167,7 @@ export default {
 
                 v.videos.forEach((v1) => {
                     definition.push({
+                        id: v1.id ,
                         name: v1.definition ,
                         src: v1.src ,
                     });
@@ -111,15 +175,17 @@ export default {
 
                 v.video_subtitles.forEach((v1) => {
                     subtitle.push({
+                        id: v1.id ,
                         name: v1.name ,
                         src: v1.src ,
                     });
                 });
 
                 playlist.push({
+                    id: v.id ,
                     name: v.name ,
                     index: v.index ,
-                    thumb: v.thumb ,
+                    thumb: v.thumb ? v.thumb : v.thumb_for_program ,
                     preview: {
                         src: v.preview ,
                         width: v.preview_width ,
@@ -131,7 +197,29 @@ export default {
                     subtitle ,
                 });
             });
-
+            const findVideoProjectByIndex = (index) => {
+                for (let i = 0; i < playlist.length; ++i)
+                {
+                    const cur = playlist[i];
+                    if (cur.index == index) {
+                        return cur;
+                    }
+                }
+                throw new Error(`未找到当前索引【${index}】对应的视频记录`);
+            };
+            const findVideoSrcByName = (name) => {
+                for (let i = 0; i < playlist.length; ++i)
+                {
+                    const cur = playlist[i];
+                    if (cur.index == index) {
+                        return cur;
+                    }
+                }
+                throw new Error(`未找到当前索引【${index}】对应的视频记录`);
+            };
+            // 当前播放视频
+            const userPlayRecord = this.videoProject.userPlayRecord;
+            const index = playlist.length > 0 ? playlist[0].index : 1;
             this.ins.videoPlayer = new VideoPlayer(this.dom.videoContainer.get(0) , {
                 // 海报
                 // poster: './res/poster.jpg' ,
@@ -143,7 +231,9 @@ export default {
                 // 视频源
                 playlist ,
                 // 当前播放索引
-                index: 1 ,
+                index: userPlayRecord ? userPlayRecord.index : index ,
+                // 画质
+                definition: userPlayRecord ? userPlayRecord.
                 // 静音
                 muted: false ,
                 // 音量大小
@@ -160,20 +250,41 @@ export default {
                 } ,
 
                 switch (index) {
+                    const currentVideo      = this.getCurrentVideo();
+                    const currentDefinition = this.getCurrentDefinition();
+                    const currentSubtitle   = this.getCurrentSubtitle();
+                    self.incrementViewCount(currentVideo.id);
+                    self.record(currentVideo.id , currentVideo.index , 0 , currentDefinition?.id , currentSubtitle?.id);
                     for (let i = 0; i < self.videoProject.videos.length; ++i)
                     {
                         const cur = self.videoProject.videos[i];
                         if (index === cur.index) {
                             self.videoProject.current = cur;
+                            break;
                         }
                     }
+                    // 选中范围
                     self.selectedIndexRange(index);
                     if (self.onceLoadVideosInIndex) {
                         self.onceLoadVideosInIndex = false;
                         self.videosInRange(self.indexRange.current.min , self.indexRange.current.max);
                     }
                 } ,
+                // 间隔多长时间执行下述回调
+                timeUpdateInterval: 5 ,
+                // 时间更新时触发
+                timeUpdate (index , playedDuration) {
+                    const currentVideo      = this.getCurrentVideo();
+                    const currentDefinition = this.getCurrentDefinition();
+                    const currentSubtitle   = this.getCurrentSubtitle();
+                    self.record(currentVideo.id , currentVideo.index , playedDuration , currentDefinition?.id , currentSubtitle?.id);
+                } ,
             });
+            const currentVideo      = this.ins.videoPlayer.getCurrentVideo();
+            const currentDefinition = this.ins.videoPlayer.getCurrentDefinition();
+            const currentSubtitle   = this.ins.videoPlayer.getCurrentSubtitle();
+            this.incrementViewCount(currentVideo.id);
+            this.record(currentVideo.id , currentVideo.index , 0 , currentDefinition?.id , currentSubtitle?.id);
         } ,
 
         getVideoProject () {

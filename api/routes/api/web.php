@@ -14,6 +14,7 @@ use App\Http\Controllers\api\web\Nav;
 use App\Http\Controllers\api\web\ImageSubject;
 use App\Http\Controllers\api\web\Tag;
 use App\Http\Controllers\api\web\User;
+use App\Http\Controllers\api\web\Video;
 use App\Http\Controllers\api\web\VideoCompany;
 use App\Http\Controllers\api\web\VideoProject;
 use App\Http\Controllers\api\web\VideoSeries;
@@ -160,40 +161,67 @@ Route::prefix('web')
             Route::get('video_series' , [VideoSeries::class , 'index']);
             // 视频专题 - 视频公司
             Route::get('video_company' , [VideoCompany::class , 'index']);
-
+            // 视频专题 - 增加观看次数
+            Route::post('video/{id}/increment_view_count' , [Video::class , 'incrementViewCount']);
+            // 视频专题 - 增加播放次数
+            Route::post('video/{id}/increment_play_count' , [Video::class , 'incrementPlayCount']);
         });
 
         Route::middleware([
             UserAuthMiddleware::class
         ])->group(function(){
             // 要求登录的相关接口
+
+            // 用户 - 收藏动作
             Route::post('user/collection_handle'    , [User::class , 'collectionHandle']);
+            // 用户 - 点赞动作
             Route::post('user/praise_handle'        , [User::class , 'praiseHandle']);
+            // 用户 - 记录历史
             Route::post('user/record'               , [User::class , 'record']);
+            // 用户 - 创建并加入收藏夹
             Route::post('user/create_and_join_collection_group' , [User::class , 'createAndJoinCollectionGroup']);
+            // 用户 - 创建收藏夹
             Route::post('user/create_collection_group' , [User::class , 'createCollectionGroup']);
+            // 用户 - 加入收藏夹
             Route::post('user/join_collection_group' , [User::class , 'joinCollectionGroup']);
+            // 用户 - 删除收藏夹
             Route::delete('user/destroy_collection_group' , [User::class , 'destroyCollectionGroup']);
+            // 用户 - 批量删除收藏夹
             Route::delete('user/destroy_all_collection_group' , [User::class , 'destroyAllCollectionGroup']);
+            // 用户 - 删除收藏夹
             Route::delete('user/destroy_collection' , [User::class , 'destroyCollection']);
+            // 用户 - 删除历史记录
             Route::delete('user/destroy_history' , [User::class , 'destroyHistory']);
+            // 用户 - 收藏夹列表（带判断 某事物是否存在于此收藏夹）
             Route::get('user/collection_group_with_judge' , [User::class , 'collectionGroupWithJudge']);
-
+            // 用户 - 收藏夹列表
             Route::get('user/collection_group' , [User::class , 'collectionGroup']);
-
+            // 用户 - 个人信息
             Route::get('user_info' , [User::class , 'info']);
+            // 用户 - 历史记录 - 简要
             Route::get('less_history' , [User::class , 'lessHistory']);
+            // 用户 - 历史记录 - 完整
             Route::get('history' , [User::class , 'histories']);
+            // 用户 - 收藏夹（含收藏内容） - 简要
             Route::get('less_relation_in_collection' , [User::class , 'lessRelationInCollection']);
+            // 用户 - 收藏夹（含收藏内容） - 简要
             Route::get('less_collection_group_with_collection' , [User::class , 'lessCollectionGroupWithCollection']);
-            Route::put('update_user' , [User::class , 'update']);
-            Route::patch('update_user' , [User::class , 'localUpdate']);
+            // 用户 - 更新用户信息
+            Route::put('user' , [User::class , 'update']);
+            // 用户 - 局部更新
+            Route::patch('user' , [User::class , 'localUpdate']);
+            // 用户 - 更新密码（用户已登录状态）
             Route::patch('user/update_password_in_logged' , [User::class , 'updatePasswordInLogged']);
+            // 用户 - 更新收藏夹
             Route::patch('user/update_collection_group' , [User::class , 'updateCollectionGroup']);
-
             // 关注用户
             Route::post('user/focus_handle' , [User::class , 'focusHandle']);
 
 
+            /**
+             * 视频专题
+             */
+            Route::post('video/{id}/record' , [Video::class , 'record']);
+            Route::post('video/{id}/praise_handle' , [Video::class , 'praiseHandle']);
         });
     });

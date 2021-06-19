@@ -13,8 +13,8 @@
 <!--                                <my-icon :class="{'run-red': data.is_praised }" icon="shoucang2" /> 喜欢 {{ data.praise_count }}-->
                                 <my-icon :class="{'run-red': data.is_praised }" icon="shoucang2" /> 喜欢
                             </my-button>
-<!--                            <my-button class="praise" @click="showFavorites"><my-icon icon="shoucang5" :class="{'run-red': data.is_collected}" /> 收藏 {{ data.collect_count }}</my-button>-->
                             <my-button class="praise" @click="showFavorites"><my-icon icon="shoucang5" :class="{'run-red': data.is_collected}" /> 收藏</my-button>
+
                         </div>
                     </div>
 

@@ -141,6 +141,7 @@
     transition: all 0.3s;
     margin-top: -20px;
     opacity: 0;
+    white-space: nowrap;
     /*background-color: #5d5d5d;*/
     /*box-shadow: 0 0 10px 0 #5d5d5d;*/
 }

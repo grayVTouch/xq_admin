@@ -82,14 +82,14 @@ export default {
                     name: '上传日期' ,
                     key: 'created_at|desc' ,
                 } ,
-                // {
-                //     name: '点赞数量' ,
-                //     key: 'praise_count|desc' ,
-                // } ,
-                // {
-                //     name: '查看次数' ,
-                //     key: 'view_count|desc' ,
-                // } ,
+                {
+                    name: '点赞数量' ,
+                    key: 'praise_count|desc' ,
+                } ,
+                {
+                    name: '查看次数' ,
+                    key: 'view_count|desc' ,
+                } ,
             ] ,
         };
     } ,

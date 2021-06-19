@@ -20,6 +20,9 @@ class CreateImageTable extends Migration
             $table->id();
             $table->unsignedBigInteger('image_project_id')->default(0)->comment('xq_image_project.id');
             $table->string('src' , 500)->default('')->comment('图片源');
+            $table->unsignedBigInteger('view_count')->default(0)->comment('浏览次数');
+            $table->unsignedBigInteger('praise_count')->default(0)->comment('获赞次数');
+            $table->unsignedBigInteger('collect_count')->default(0)->comment('收藏次数');
 
             $table->timestamps();
 

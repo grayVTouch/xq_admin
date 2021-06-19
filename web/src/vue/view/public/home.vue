@@ -95,7 +95,7 @@
                                                     </a>
                                                 </template>
 
-                                                <div class="empty" v-if="favorites.collection_group.count === 0">
+                                                <div class="empty" v-if="favorites.collection_group.collections.length === 0">
                                                     <span>尚无数据</span>
                                                 </div>
 
