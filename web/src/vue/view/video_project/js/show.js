@@ -99,14 +99,14 @@ export default {
                 });
         } ,
 
-        record (videoId , index , playedDuration , videoSrcId , videoSubtitleId) {
+        record (videoId , index , playedDuration , definition , subtitle) {
             this.pending('record' , true);
             Api.video
                 .record(videoId , null , {
                     index ,
                     played_duration: playedDuration ,
-                    video_src_id: videoSrcId ? videoSrcId : 0 ,
-                    video_subtitle_id: videoSubtitleId ? videoSubtitleId : 0 ,
+                    definition: definition ? definition : '' ,
+                    subtitle: subtitle ? subtitle : '' ,
                 })
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
@@ -254,7 +254,7 @@ export default {
                     const currentDefinition = this.getCurrentDefinition();
                     const currentSubtitle   = this.getCurrentSubtitle();
                     self.incrementViewCount(currentVideo.id);
-                    self.record(currentVideo.id , currentVideo.index , 0 , currentDefinition?.id , currentSubtitle?.id);
+                    self.record(currentVideo.id , currentVideo.index , 0 , currentDefinition?.name , currentSubtitle?.name);
                     for (let i = 0; i < self.videoProject.videos.length; ++i)
                     {
                         const cur = self.videoProject.videos[i];
@@ -277,14 +277,14 @@ export default {
                     const currentVideo      = this.getCurrentVideo();
                     const currentDefinition = this.getCurrentDefinition();
                     const currentSubtitle   = this.getCurrentSubtitle();
-                    self.record(currentVideo.id , currentVideo.index , playedDuration , currentDefinition?.id , currentSubtitle?.id);
+                    self.record(currentVideo.id , currentVideo.index , playedDuration , currentDefinition?.name , currentSubtitle?.name);
                 } ,
             });
             const currentVideo      = this.ins.videoPlayer.getCurrentVideo();
             const currentDefinition = this.ins.videoPlayer.getCurrentDefinition();
             const currentSubtitle   = this.ins.videoPlayer.getCurrentSubtitle();
             this.incrementViewCount(currentVideo.id);
-            this.record(currentVideo.id , currentVideo.index , 0 , currentDefinition?.id , currentSubtitle?.id);
+            this.record(currentVideo.id , currentVideo.index , 0 , currentDefinition?.name , currentSubtitle?.name);
         } ,
 
         getVideoProject () {
