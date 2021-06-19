@@ -218,8 +218,9 @@ export default {
                 throw new Error(`未找到当前索引【${index}】对应的视频记录`);
             };
             // 当前播放视频
-            const userPlayRecord = this.videoProject.userPlayRecord;
+            const userPlayRecord = this.videoProject.user_play_record;
             const index = playlist.length > 0 ? playlist[0].index : 1;
+            let once = true;
             this.ins.videoPlayer = new VideoPlayer(this.dom.videoContainer.get(0) , {
                 // 海报
                 // poster: './res/poster.jpg' ,
@@ -233,7 +234,11 @@ export default {
                 // 当前播放索引
                 index: userPlayRecord ? userPlayRecord.index : index ,
                 // 画质
-                definition: userPlayRecord ? userPlayRecord.
+                definition: userPlayRecord ? userPlayRecord.definition : '' ,
+                // 字幕
+                subtitle: userPlayRecord ? userPlayRecord.subtitle : '' ,
+                // 当前播放时间点
+                currentTime: userPlayRecord ? userPlayRecord.played_duration : '' ,
                 // 静音
                 muted: false ,
                 // 音量大小
@@ -250,11 +255,11 @@ export default {
                 } ,
 
                 switch (index) {
-                    const currentVideo      = this.getCurrentVideo();
-                    const currentDefinition = this.getCurrentDefinition();
-                    const currentSubtitle   = this.getCurrentSubtitle();
-                    self.incrementViewCount(currentVideo.id);
-                    self.record(currentVideo.id , currentVideo.index , 0 , currentDefinition?.name , currentSubtitle?.name);
+                    if (!once) {
+                        // 如果不存在，则记录
+                        this.record(currentVideo.id , currentVideo.index , 0 , currentDefinition?.name , currentSubtitle?.name);
+                    }
+                    once = false;
                     for (let i = 0; i < self.videoProject.videos.length; ++i)
                     {
                         const cur = self.videoProject.videos[i];
@@ -280,11 +285,15 @@ export default {
                     self.record(currentVideo.id , currentVideo.index , playedDuration , currentDefinition?.name , currentSubtitle?.name);
                 } ,
             });
-            const currentVideo      = this.ins.videoPlayer.getCurrentVideo();
-            const currentDefinition = this.ins.videoPlayer.getCurrentDefinition();
-            const currentSubtitle   = this.ins.videoPlayer.getCurrentSubtitle();
+
+            const currentVideo      = this.getCurrentVideo();
+            const currentDefinition = this.getCurrentDefinition();
+            const currentSubtitle   = this.getCurrentSubtitle();
+            if (!userPlayRecord) {
+                // 如果不存在，则记录
+                this.record(currentVideo.id , currentVideo.index , 0 , currentDefinition?.name , currentSubtitle?.name);
+            }
             this.incrementViewCount(currentVideo.id);
-            this.record(currentVideo.id , currentVideo.index , 0 , currentDefinition?.name , currentSubtitle?.name);
         } ,
 
         getVideoProject () {
