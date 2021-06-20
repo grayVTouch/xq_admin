@@ -4,8 +4,7 @@
 namespace App\Customize\api\web\handler;
 
 
-use App\Customize\api\web\handler\VideoCompanyHandler;
-use App\Customize\api\web\handler\VideoSeriesHandler;
+use App\Customize\api\web\model\UserModel;
 use App\Customize\api\web\model\UserVideoProjectPlayRecordModel;
 use App\Customize\api\web\model\VideoSeriesModel;
 use App\Customize\api\web\model\VideoCompanyModel;
@@ -125,4 +124,14 @@ class VideoProjectHandler extends Handler
         $model->user_play_record = $user_play_record;
     }
 
+     public static function user($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $user = UserModel::find($model->user_id);
+        $user = UserHandler::handle($user);
+
+        $model->user = $user;
+    }
 }

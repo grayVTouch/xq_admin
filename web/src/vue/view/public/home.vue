@@ -60,6 +60,35 @@
                                                                     </div>
                                                                 </div>
                                                             </a>
+
+                                                            <a class="item image" v-if="v1.relation_type === 'video_project'" target="_blank" :href="`#/video_project/${v1.relation_id}/show`">
+                                                                <div class="thumb"><img :src="
+                                                                            v1.relation ?
+                                                                            (v1.relation.user_play_record ?
+                                                                                (v1.relation.user_play_record.video ?
+                                                                                    v1.relation.user_play_record.video.__thumb__ :
+                                                                                    TopContext.res.notFound
+                                                                                ) :
+                                                                                TopContext.res.notFound
+                                                                            ) :
+                                                                            TopContext.res.notFound"
+                                                                                        v-judge-img-size class="image judge-img-size" alt=""></div>
+                                                                <div class="info">
+                                                                    <div class="name f-14">{{ v1.relation.name ?  v1.relation.name : '' }}</div>
+                                                                    <div class="sub-name f-12">{{ v1.relation ?
+                                                                        (v1.relation.user_play_record ?
+                                                                            (v1.relation.user_play_record.video ?
+                                                                                v1.relation.user_play_record.video.name :
+                                                                                ''
+                                                                            ) :
+                                                                            ''
+                                                                            ) :
+                                                                        '' }}</div>
+                                                                    <div class="time f-12">
+                                                                        <my-icon icon="shijian" mode="right" />{{ v1.created_at }}&nbsp;&nbsp;{{ v1.relation.user ? v1.relation.user.nickname : 'unknow' }}
+                                                                    </div>
+                                                                </div>
+                                                            </a>
                                                         </template>
                                                     </div>
                                                 </div>

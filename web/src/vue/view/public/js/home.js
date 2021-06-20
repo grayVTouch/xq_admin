@@ -558,7 +558,6 @@ export default {
 
 
         showHistoryCtrl () {
-            console.log('显示内容');
             this.hideFavoritesCtrl();
             this.hideUserCtrl();
 

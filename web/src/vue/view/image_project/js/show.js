@@ -230,10 +230,13 @@ export default {
                     relation_id: this.id ,
                 })
                 .then((res) => {
-
+                    if (res.code !== TopContext.code.Success) {
+                        console.warn(res.message);
+                        return ;
+                    }
                 })
                 .finally(() => {
-                    this.pending('record' , true);
+                    this.pending('record' , false);
                 });
         } ,
 

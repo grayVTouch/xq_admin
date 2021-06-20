@@ -75,6 +75,7 @@ export default {
                 // 获取系列下的视频专题
                 this.getVideoProjectsInSeries();
             });
+        this.recordAccessHistory();
         this.initEvent();
     } ,
 
@@ -83,6 +84,24 @@ export default {
     } ,
 
     methods: {
+
+        recordAccessHistory () {
+            this.pending('recordAccessHistory' , true);
+            Api.user
+                .record(null , {
+                    relation_type: 'video_project' ,
+                    relation_id: this.id ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        console.warn(res.message);
+                        return ;
+                    }
+                })
+                .finally(() => {
+                    this.pending('recordAccessHistory' , false);
+                });
+        } ,
 
         incrementViewCount (videoId) {
             this.pending('incrementViewCount' , true);

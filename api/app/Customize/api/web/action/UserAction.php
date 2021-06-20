@@ -9,6 +9,9 @@ use App\Customize\api\web\handler\FocusUserHandler;
 use App\Customize\api\web\handler\HistoryHandler;
 use App\Customize\api\web\handler\ImageProjectHandler;
 use App\Customize\api\web\handler\UserHandler;
+use App\Customize\api\web\handler\UserVideoProjectPlayRecordHandler;
+use App\Customize\api\web\handler\VideoHandler;
+use App\Customize\api\web\handler\VideoProjectHandler;
 use App\Customize\api\web\model\CollectionGroupModel;
 use App\Customize\api\web\model\CollectionModel;
 use App\Customize\api\web\model\EmailCodeModel;
@@ -19,6 +22,7 @@ use App\Customize\api\web\model\ModuleModel;
 use App\Customize\api\web\model\PraiseModel;
 use App\Customize\api\web\model\UserModel;
 use App\Customize\api\web\model\UserTokenModel;
+use App\Customize\api\web\model\VideoProjectModel;
 use App\Customize\api\web\util\CollectionGroupUtil;
 use App\Http\Controllers\api\web\Base;
 use Exception;
@@ -289,11 +293,18 @@ class UserAction extends Action
             HistoryHandler::module($v);
             // 附加：关联对象
             HistoryHandler::relation($v);
-            // 附加：用户
             switch ($v->relation_type)
             {
                 case 'image_project':
                     ImageProjectHandler::user($v->relation);
+                    break;
+                case 'video_project':
+                    VideoProjectHandler::user($v->relation);
+                    // 记录历史
+                    VideoProjectHandler::userPlayRecord($v->relation);
+                    if (!empty($v->relation)) {
+                        UserVideoProjectPlayRecordHandler::video($v->relation->user_play_record);
+                    }
                     break;
             }
             switch ($v->date)
@@ -359,7 +370,23 @@ class UserAction extends Action
             // 附加：关联对象
             HistoryHandler::relation($v);
             // 附加：用户
-            HistoryHandler::user($v);
+//            HistoryHandler::user($v);
+
+            switch ($v->relation_type)
+            {
+                case 'image_project':
+                    ImageProjectHandler::user($v->relation);
+                    break;
+                case 'video_project':
+                    VideoProjectHandler::user($v->relation);
+                    // 记录历史
+                    VideoProjectHandler::userPlayRecord($v->relation);
+                    if (!empty($v->relation)) {
+                        UserVideoProjectPlayRecordHandler::video($v->relation->user_play_record);
+                    }
+                    break;
+            }
+
             switch ($v->date)
             {
                 case $date:
@@ -571,6 +598,9 @@ class UserAction extends Action
         {
             case 'image_project':
                 $relation = ImageProjectModel::find($param['relation_id']);
+                break;
+            case 'video_project':
+                $relation = VideoProjectModel::find($param['relation_id']);
                 break;
         }
         if (empty($relation)) {
