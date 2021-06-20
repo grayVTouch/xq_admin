@@ -20,7 +20,7 @@ export default {
 
             relationType: {
                 image_project: '图片专题' ,
-                // video_subject: '视图专题' ,
+                video_project: '视频专题' ,
                 // article_subject: '文章专题' ,
                 // bbs_subject: '论坛帖子' ,
             } ,
@@ -86,6 +86,12 @@ export default {
                                 case 'image_project':
                                     this.handleImageProject(v.relation);
                                     break;
+                                case 'video_project':
+                                    v.relation.user = v.relation.user ? v.relation.user : {};
+                                    v.relation.user_play_record = v.relation.user_play_record ? v.relation.user_play_record : {};
+                                    v.relation.user_play_record.video = v.relation.user_play_record.video ? v.relation.user_play_record.video : {};
+                                    break;
+                                default:
                             }
                         });
                     });

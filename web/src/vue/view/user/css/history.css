@@ -89,6 +89,7 @@
 .content-mask .history .groups .group .list > .item .thumb {
     width: 220px;
     height:120px;
+    position: relative;
 }
 
 .content-mask .history .groups .group .list > .item .thumb .mask {
@@ -106,6 +107,15 @@
     top: 50%;
     transform: translate(-50% , -50%);
     vertical-align: top;
+}
+
+.content-mask .history .groups .group .list > .item .thumb .progress-bar {
+    position:absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 4px;
+    background-color: var(--progress-bar-color);
 }
 
 .content-mask .history .groups .group .list > .item > .info {

@@ -15,6 +15,7 @@ import '@bootstrap/api.js';
 import '@bootstrap/vue.js';
 import '@vue/mixin/mixin.js';
 import '@vue/directive/directive.js';
+import '@vue/filter/filter.js';
 
 // import vuetify from '@asset/js/vuetify.js';
 // import '@asset/js/iview.js';

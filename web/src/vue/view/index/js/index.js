@@ -133,6 +133,32 @@ export default {
                 });
         } ,
 
+        // 视频点赞
+        praiseVideoProject (row) {
+            if (this.pending('praiseImageProject')) {
+                return ;
+            }
+            const praised = row.is_praised ? 0 : 1;
+            this.pending('praiseVideoProject' , true);
+            Api.videoProject
+                .praiseHandle(row.id , null , {
+                    action: praised ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message , res.code , () => {
+                            this.praiseVideoProject(row)
+                        });
+                        return ;
+                    }
+                    row.is_praised = praised;
+                    praised ? row.praise_count++ : row.praise_count--;
+                })
+                .finally(() => {
+                    this.pending('praiseVideoProject' , false);
+                });
+        } ,
+
         findImageProjectByImageProjectId (imageProjectId , callback) {
             this.pending('findImageProjectByImageProjectId' , true);
             Api.imageProject.show(imageProjectId.then((res) => {

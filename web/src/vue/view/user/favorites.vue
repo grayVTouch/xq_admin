@@ -68,31 +68,59 @@
                     <div class="collections">
                         <div class="list m-b-15">
 
-                            <a class="item" target="_blank" v-for="v in collections.data" :key="v.id" v-if="v.relation_type === 'image_project'" :href="`#/image_project/${v.relation_id}/show`">
+                            <template v-for="v in collections.data">
+                                <a v-if="v.relation_type === 'image_project'" class="item" target="_blank" :key="v.id" :href="`#/image_project/${v.relation_id}/show`">
 
-                                <div class="checkbox">
-                                    <div class="mask">
-                                        <input type="checkbox" class="input-checkbox">
-                                    </div>
-                                </div>
-
-                                <div class="thumb">
-                                    <div class="mask"><img :src="v.relation.thumb ? v.relation.thumb : TopContext.res.notFound" alt="" v-judge-img-size class="image judge-img-size"></div>
-                                </div>
-                                <div class="info">
-                                    <div class="title">
-                                        <div class="name">{{ v.relation.name }}</div>
-                                        <div class="action">
-                                            <my-button class="button" @click.prevent="destroyCollection(v)">
-                                                <my-loading size="16" v-if="val.pending['destroyCollection_' + v.id]"></my-loading>
-                                                <my-icon icon="delete" class="v-a-t" mode="right"></my-icon>删除
-                                            </my-button>
+                                    <div class="checkbox">
+                                        <div class="mask">
+                                            <input type="checkbox" class="input-checkbox">
                                         </div>
                                     </div>
-                                    <div class="info">{{ v.relation.created_at }} · {{ v.relation.view_count }}次观看 · {{ v.relation.collect_count }}次收藏 · {{ v.relation.praise_count }}次点赞 · {{ v.relation.user.username }}</div>
-                                    <div class="desc">{{ v.relation.description }}</div>
-                                </div>
-                            </a>
+
+                                    <div class="thumb">
+                                        <div class="mask"><img :src="v.relation.thumb ? v.relation.thumb : TopContext.res.notFound" alt="" v-judge-img-size class="image judge-img-size"></div>
+                                    </div>
+                                    <div class="info">
+                                        <div class="title">
+                                            <div class="name">{{ v.relation.name }}</div>
+                                            <div class="action">
+                                                <my-button class="button" @click.prevent="destroyCollection(v)">
+                                                    <my-loading size="16" v-if="val.pending['destroyCollection_' + v.id]"></my-loading>
+                                                    <my-icon icon="delete" class="v-a-t" mode="right"></my-icon>删除
+                                                </my-button>
+                                            </div>
+                                        </div>
+                                        <div class="info">{{ v.created_at }} · {{ v.relation.view_count }}次观看 · {{ v.relation.collect_count }}次收藏 · {{ v.relation.praise_count }}次点赞 · {{ v.relation.user.username }}</div>
+                                        <div class="desc">{{ v.relation.description }}</div>
+                                    </div>
+                                </a>
+
+                                <a v-if="v.relation_type === 'video_project'" class="item" target="_blank" :key="v.id" :href="`#/video_project/${v.relation_id}/show`">
+
+                                    <div class="checkbox">
+                                        <div class="mask">
+                                            <input type="checkbox" class="input-checkbox">
+                                        </div>
+                                    </div>
+
+                                    <div class="thumb">
+                                        <div class="mask"><img :src="v.relation.thumb ? v.relation.thumb : TopContext.res.notFound" alt="" v-judge-img-size class="image judge-img-size"></div>
+                                    </div>
+                                    <div class="info">
+                                        <div class="title">
+                                            <div class="name">{{ v.relation.name }}</div>
+                                            <div class="action">
+                                                <my-button class="button" @click.prevent="destroyCollection(v)">
+                                                    <my-loading size="16" v-if="val.pending['destroyCollection_' + v.id]"></my-loading>
+                                                    <my-icon icon="delete" class="v-a-t" mode="right"></my-icon>删除
+                                                </my-button>
+                                            </div>
+                                        </div>
+                                        <div class="info">{{ v.created_at }} · {{ v.relation.view_count }}次观看 · {{ v.relation.collect_count }}次收藏 · {{ v.relation.praise_count }}次点赞 · {{ v.relation.user.username }}</div>
+                                        <div class="desc">{{ v.relation.description }}</div>
+                                    </div>
+                                </a>
+                            </template>
 
                             <div class="empty" v-if="!val.pending.getCollections && collections.data.length === 0">暂无数据</div>
 
@@ -113,15 +141,15 @@
                         <div class="search-input">
                             <div class="inner">
                                 <my-icon icon="search" class="ico v-a-t"></my-icon>
-                                <input type="text" class="input" v-model="search.value" @keyup.enter="getCollectionGroup" placeholder="搜索收藏夹">
-                                <my-loading class="pending" size="16" v-if="val.pending.getCollectionGroup"></my-loading>
+                                <input type="text" class="input" v-model="search.value" @keyup.enter="getCollections(currentCollectionGroup.id)" placeholder="搜索收藏夹">
+                                <my-loading class="pending" size="16" v-if="val.pending.getCollections"></my-loading>
                             </div>
                         </div>
 
                         <div class="relation-type">
                             <label class="item" v-ripple  v-for="(v,k) in TopContext.business.relationType" :key="k">
                                 <span class="name">{{ v }}</span>
-                                <input type="radio" name="relation_type" :value="k" @change="getCollectionGroup" v-model="search.relation_type">
+                                <input type="radio" name="relation_type" :value="k" @change="getCollections(currentCollectionGroup.id)" v-model="search.relation_type">
                             </label>
                         </div>
 

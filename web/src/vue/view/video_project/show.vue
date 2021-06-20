@@ -15,13 +15,12 @@
                 </div>
                 <div class="actions">
 
-                    <my-button class="button praise m-r-12" @click.stop>
+                    <my-button class="button praise m-r-12" @click.stop="praiseHandle">
                         <my-loading size="16" v-if="val.pending.praiseHandle"></my-loading>
                         <!--                                <my-icon :class="{'run-red': data.is_praised }" icon="shoucang2" /> 喜欢 {{ data.praise_count }}-->
                         <my-icon :class="{'run-red': videoProject.is_praised }" icon="shoucang2" /> 喜欢
                     </my-button>
-                    <my-button class="button collect" @click.stop><my-icon icon="shoucang5" :class="{'run-red': videoProject.is_collected}" /> 收藏</my-button>
-
+                    <my-button class="button collect" @click.stop="$refs['my-collection-group'].show()"><my-icon icon="shoucang5" :class="{'run-red': videoProject.is_collected}" /> 收藏</my-button>
 
 <!--                    <div class="action praise run-red" v-ripple><my-icon icon="shoucang2" size="24"></my-icon>{{ videoProject.current.praise_count }}</div>-->
 <!--                    <div class="action hate"><my-icon icon="shoucang2" size="24"></my-icon>{{ videoProject.current.against_count }}</div>-->
@@ -150,6 +149,13 @@
 
             <div class="relation"></div>
         </div>
+
+        <my-collection-group
+                ref="my-collection-group"
+                :relation-id="id"
+                relation-type="video_project"
+                @on-change="collectionHandle"
+        ></my-collection-group>
     </div>
 </template>
 

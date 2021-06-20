@@ -34,8 +34,8 @@ export default {
 
     // 关联事物类型
     relationType: {
-        image_project: '图片' ,
-        // video_subject: '视图专题' ,
+        image_project: '图片专题' ,
+        video_project: '视频专题' ,
         // article_subject: '文章专题' ,
         // bbs_subject: '论坛帖子' ,
     } ,

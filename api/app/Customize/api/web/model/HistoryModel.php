@@ -32,18 +32,50 @@ class HistoryModel extends Model
         if (!empty($relation_type)) {
             $where[] = ['h.relation_type' , '=' , $relation_type];
         }
-        if (!empty($value)) {
-            $where[] = ['ip.name' , 'like' , "%{$value}%"];
-        }
-        return self::select('h.*')
-            ->from('xq_history as h')
-            ->leftJoin('xq_image_project as ip' , function($join){
+        $query = self::select('h.*')
+            ->from('xq_history as h');
+
+        $handle_image_project = function() use($value , $query){
+            $query->leftJoin('xq_image_project as ip' , function($join){
                 // $join->on 会把内容当成是字段
                 // $join->where 仅把值当成是值
                 $join->on('h.relation_id' , '=' , 'ip.id')
                     ->where('h.relation_type' , '=' , 'image_project');
-            })
-            ->where($where)
+            });
+        };
+        $handle_video_project = function() use($value , $query){
+            $query->leftJoin('xq_video_project as vp' , function($join){
+                // $join->on 会把内容当成是字段
+                // $join->where 仅把值当成是值
+                $join->on('h.relation_id' , '=' , 'vp.id')
+                    ->where('h.relation_type' , '=' , 'video_project');
+            });
+        };
+        switch ($relation_type)
+        {
+            case 'image_project':
+                if (!empty($value)) {
+                    $where[] = ['ip.name' , 'like' , "%{$value}%"];
+                }
+                $handle_image_project();
+                break;
+            case 'video_project':
+                if (!empty($value)) {
+                    $where[] = ['vp.name' , 'like' , "%{$value}%"];
+                }
+                $handle_video_project();
+                break;
+            default:
+                $handle_image_project();
+                $handle_video_project();
+                if (!empty($value)) {
+                    $query->where(function($query) use($value){
+                        $query->where('ip.name' , 'like' , "%{$value}%")
+                            ->orWhere('vp.name' , 'like' , "%{$value}%");
+                    });
+                }
+        }
+        return $query->where($where)
             ->orderBy('h.created_at' , 'desc')
             ->paginate($limit);
     }

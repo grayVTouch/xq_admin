@@ -490,6 +490,7 @@
     background-color: grey;
 }
 
+
 .logged-layer > .history .groups .inner .group .list .item > * {
     margin: 0;
     flex: 0 0 auto;
@@ -510,6 +511,15 @@
     height: 100%;
     min-width: 100%;
     vertical-align: top;
+}
+
+.logged-layer > .history .groups .inner .group .list .item .thumb .progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 4px;
+    background-color: var(--progress-bar-color);
 }
 
 .logged-layer > .history .groups .inner .group .list .item .info {

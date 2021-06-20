@@ -203,6 +203,7 @@ class VideoAction extends Action
                         'video_id' => $video->id ,
                         'index' => $param['index'] ,
                         'played_duration' => $param['played_duration'] ,
+                        'ratio' => $param['ratio'] ,
                         'definition' => $param['definition'] ,
                         'subtitle' => $param['subtitle'] ,
                         'date' => date('Y-m-d' , $timestamp) ,

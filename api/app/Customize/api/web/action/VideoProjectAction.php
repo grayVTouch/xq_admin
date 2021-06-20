@@ -22,6 +22,8 @@ use App\Customize\api\web\model\ImageSubjectModel;
 use App\Customize\api\web\model\TagModel;
 use App\Http\Controllers\api\web\Base;
 use Core\Lib\Category;
+use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use function api\web\get_form_error;
@@ -47,6 +49,11 @@ class VideoProjectAction extends Action
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = VideoProjectModel::getNewestByFilterAndLimit($param , $limit);
         $res = VideoProjectHandler::handleAll($res);
+        foreach ($res as $v)
+        {
+            VideoProjectHandler::isCollected($v);
+            VideoProjectHandler::isPraised($v);
+        }
         return self::success('' , $res);
     }
 
@@ -63,6 +70,11 @@ class VideoProjectAction extends Action
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = VideoProjectModel::getHotByFilterAndLimit($param , $limit);
         $res = VideoProjectHandler::handleAll($res);
+        foreach ($res as $v)
+        {
+            VideoProjectHandler::isCollected($v);
+            VideoProjectHandler::isPraised($v);
+        }
         return self::success('' , $res);
     }
 
@@ -99,6 +111,11 @@ class VideoProjectAction extends Action
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
         $res = VideoProjectModel::getByTagIdAndFilterAndLimit($tag->id , $param , $limit);
         $res = VideoProjectHandler::handleAll($res);
+        foreach ($res as $v)
+        {
+            VideoProjectHandler::isCollected($v);
+            VideoProjectHandler::isPraised($v);
+        }
         return self::success('' , $res);
     }
 
@@ -231,6 +248,9 @@ class VideoProjectAction extends Action
         $video_project = VideoProjectHandler::handle($video_project);
         // 附加：视频专题播放记录
         VideoProjectHandler::userPlayRecord($video_project);
+        VideoProjectHandler::isPraised($video_project);
+        VideoProjectHandler::isCollected($video_project);
+
         return self::success('' , $video_project);
     }
 
@@ -324,6 +344,11 @@ class VideoProjectAction extends Action
                 return self::error('不支持的搜索模式，当前支持的模式有：' . implode(' , ' , $mode_range));
         }
         $res = VideoProjectHandler::handlePaginator($res);
+        foreach ($res->data as $v)
+        {
+            VideoProjectHandler::isCollected($v);
+            VideoProjectHandler::isPraised($v);
+        }
         return self::success('' , $res);
     }
 
@@ -403,5 +428,54 @@ class VideoProjectAction extends Action
         $res = VideoProjectModel::getByVideoSeriesIdAndExcludeVideoProjectId($video_series->id , $param['video_project_id']);
         $res = VideoProjectHandler::handleAll($res);
         return self::success('' , $res);
+    }
+
+    public static function praiseHandle(Base $context , int $id , array $param = []): array
+    {
+        $action_range = my_config_keys('business.bool_for_int');
+        $validator = Validator::make($param , [
+            'module_id'     => 'required|integer' ,
+            'action'        => ['required' , Rule::in($action_range)] ,
+        ]);
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first() , $validator->errors());
+        }
+        $module = ModuleModel::find($param['module_id']);
+        if (empty($module)) {
+            return self::error('模块不存在');
+        }
+        $video_project = VideoProjectModel::find($id);
+        if (empty($video_project)) {
+            return self::error('视频不存在' , '' , 404);
+        }
+        $relation_type = 'video_project';
+        $relation_id = $video_project->id;
+        $datetime = date('Y-m-d H:i:s');
+        $user = user();
+        try {
+            DB::beginTransaction();
+            // 视频专题
+            if ($param['action'] == 1) {
+                $praise = PraiseModel::findByModuleIdAndUserIdAndRelationTypeAndRelationId($module->id , $user->id , $relation_type , $relation_id);
+                if (empty($praise)) {
+                    PraiseModel::insertOrIgnore([
+                        'module_id' => $module->id ,
+                        'user_id' => $user->id ,
+                        'relation_type' => $relation_type ,
+                        'relation_id' => $relation_id ,
+                        'created_at' => $datetime
+                    ]);
+                }
+                VideoProjectModel::incrementByIdAndColumnAndStep($video_project->id , 'praise_count' , 1);
+            } else {
+                PraiseModel::delByModuleIdAndUserIdAndRelationTypeAndRelationId($module->id , $user->id , $relation_type , $relation_id);
+                VideoProjectModel::decrementByIdAndColumnAndStep($video_project->id , 'praise_count' , 1);
+            }
+            DB::commit();
+            return self::success('操作成功');
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 }

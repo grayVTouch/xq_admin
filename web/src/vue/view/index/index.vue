@@ -155,9 +155,13 @@
                                     <div class="mask">
                                         <div class="top">
                                             <div class="type"><my-icon icon="zhuanyerenzheng" size="35" /></div>
+                                            <div class="praise" v-ripple @click.prevent="praiseVideoProject(v)">
+                                                <my-loading size="16" v-if="val.pending.praiseVideoProject"></my-loading>
+                                                <my-icon icon="shoucang2" :class="{'run-red': v.is_praised }" /> 喜欢
+                                            </div>
                                         </div>
                                         <div class="btm">
-                                            <div class="count">{{ v.count }}</div>
+                                            <div class="count">{{ v.min_index | zero_fill }}-{{ v.max_index | zero_fill }}</div>
                                         </div>
                                     </div>
                                 </a>

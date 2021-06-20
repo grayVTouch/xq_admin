@@ -330,6 +330,7 @@ class User extends Base
         $param['module_id'] = $param['module_id'] ?? '';
         $param['collection_group_id'] = $param['collection_group_id'] ?? '';
         $param['relation_type'] = $param['relation_type'] ?? '';
+        $param['value'] = $param['value'] ?? '';
         $param['limit'] = $param['limit'] ?? '';
         $res = UserAction::collections($this , $param);
         if ($res['code'] !== 0) {

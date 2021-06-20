@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\web;
 
 
 use App\Customize\api\web\action\VideoProjectAction;
+use Illuminate\Http\JsonResponse;
 use function api\web\error;
 use function api\web\success;
 
@@ -218,6 +219,18 @@ class VideoProject extends Base
         $param['video_project_id'] = $param['video_project_id'] ?? '';
         $param['video_series_id'] = $param['video_series_id'] ?? '';
         $res = VideoProjectAction::getByVideoSeriesId($this , $param);
+        if ($res['code'] !== 0) {
+            return error($res['message'] , $res['data'] , $res['code']);
+        }
+        return success($res['message'] , $res['data']);
+    }
+
+    public function praiseHandle(int $id): JsonResponse
+    {
+        $param = $this->request->post();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $param['action'] = $param['action'] ?? '';
+        $res = VideoProjectAction::praiseHandle($this , $id , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }

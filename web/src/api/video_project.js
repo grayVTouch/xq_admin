@@ -45,4 +45,8 @@ export default {
         return Http.get(`${TopContext.api}/video_project/category`);
     } ,
 
+    praiseHandle (id , query , data) {
+        return Http.post(`${TopContext.api}/video_project/${id}/praise_handle` , query , data);
+    } ,
+
 };

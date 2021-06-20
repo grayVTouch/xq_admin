@@ -221,7 +221,15 @@ Route::prefix('web')
             /**
              * 视频专题
              */
+            // 视频专题 - 点赞（取消点赞）
+            Route::post('video_project/{id}/praise_handle' , [VideoProject::class , 'praiseHandle']);
+
+            /**
+             * 视频（可能包含专题）
+             */
+            // 视频专题 - 记录播放情况
             Route::post('video/{id}/record' , [Video::class , 'record']);
+            // 视频 - 点赞（取消点赞）
             Route::post('video/{id}/praise_handle' , [Video::class , 'praiseHandle']);
         });
     });

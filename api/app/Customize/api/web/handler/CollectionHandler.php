@@ -9,6 +9,7 @@ use App\Customize\api\web\model\CollectionModel;
 use App\Customize\api\web\model\ImageProjectModel;
 use App\Customize\api\web\model\ModuleModel;
 use App\Customize\api\web\model\UserModel;
+use App\Customize\api\web\model\VideoProjectModel;
 use App\Customize\api\web\util\CollectionGroupUtil;
 use App\Customize\api\web\model\Model;
 use stdClass;
@@ -71,6 +72,10 @@ class CollectionHandler extends Handler
             case 'image_project':
                 $relation = ImageProjectModel::find($model->relation_id);
                 $relation = ImageProjectHandler::handle($relation);
+                break;
+            case 'video_project':
+                $relation = VideoProjectModel::find($model->relation_id);
+                $relation = VideoProjectHandler::handle($relation);
                 break;
             default:
                 $relation = null;

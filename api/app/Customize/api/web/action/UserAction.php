@@ -370,8 +370,6 @@ class UserAction extends Action
             // 附加：关联对象
             HistoryHandler::relation($v);
             // 附加：用户
-//            HistoryHandler::user($v);
-
             switch ($v->relation_type)
             {
                 case 'image_project':
@@ -432,6 +430,9 @@ class UserAction extends Action
         {
             case 'image_project':
                 $relation = ImageProjectModel::find($param['relation_id']);
+                break;
+            case 'video_project':
+                $relation = VideoProjectModel::find($param['relation_id']);
                 break;
             default:
                 $relation = null;
@@ -507,14 +508,23 @@ class UserAction extends Action
             return self::error('收藏夹不存在' , '' , 404);
         }
         $user = user();
-        $res = null;
-        if ($param['relation_type'] === 'image_project') {
-            $relation = ImageProjectModel::find($param['relation_id']);
-            if (empty($relation)) {
-                return self::error('关联事物不存在');
-            }
-            if ($param['action'] == 1) {
-                // 收藏
+        switch ($param['relation_type'])
+        {
+            case 'image_project':
+                $relation = ImageProjectModel::find($param['relation_id']);
+                break;
+            case 'video_project':
+                $relation = VideoProjectModel::find($param['relation_id']);
+                break;
+            default:
+        }
+        if (empty($relation)) {
+            return self::error('关联事物不存在');
+        }
+        if ($param['action'] == 1) {
+            // 收藏
+            $res = CollectionModel::findByModuleIdAndUserIdAndCollectionGroupIdAndRelationTypeAndRelationId($module->id , $user->id , $collection_group->id , $param['relation_type'] , $relation->id);
+            if (empty($res)) {
                 CollectionModel::insertOrIgnore([
                     'module_id' => $module->id ,
                     'user_id' => $user->id ,
@@ -523,12 +533,10 @@ class UserAction extends Action
                     'relation_id' => $relation->id ,
                     'created_at' => date('Y-m-d H:i:s')
                 ]);
-            } else {
-                // 取消收藏
-                CollectionModel::delByModuleIdAndUserIdAndCollectionGroupIdAndRelationTypeAndRelationId($module->id , $user->id , $collection_group->id , 'image_project' , $relation->id);
             }
         } else {
-            // 其他类型，预留
+            // 取消收藏
+            CollectionModel::delByModuleIdAndUserIdAndCollectionGroupIdAndRelationTypeAndRelationId($module->id , $user->id , $collection_group->id , $param['relation_type'] , $relation->id);
         }
         return self::success('操作成功');
     }
@@ -646,6 +654,9 @@ class UserAction extends Action
             case 'image_project':
                 $relation = ImageProjectModel::find($param['relation_id']);
                 break;
+            case 'video_project':
+                $relation = VideoProjectModel::find($param['relation_id']);
+                break;
             default:
                 $relation = null;
         }
@@ -676,9 +687,6 @@ class UserAction extends Action
                 'relation_id' => $relation->id ,
                 'created_at' => current_datetime() ,
             ]);
-            $collection_group = CollectionGroupModel::find($id);
-            $collection_group = CollectionGroupHandler::handle($collection_group);
-            CollectionGroupHandler::isInside($collection_group , $param['relation_type'] , $relation->id);
             DB::commit();
             return self::success('操作成功');
         } catch(Exception $e) {
@@ -935,7 +943,7 @@ class UserAction extends Action
             return self::error('收藏夹不存在' , '' , 404);
         }
         $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = CollectionModel::getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndLimit($module->id , $collection_group->user_id , $collection_group->id , $param['relation_type'] , $limit);
+        $res = CollectionModel::getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndValueAndRelationTypeAndLimit($module->id , $collection_group->user_id , $collection_group->id , $param['value'] , $param['relation_type'] , $limit);
         $res = CollectionHandler::handlePaginator($res);
         foreach ($res->data as $v)
         {
@@ -948,6 +956,12 @@ class UserAction extends Action
                     ImageProjectHandler::tags($v->relation);
                     ImageProjectHandler::collectCount($v->relation);
                     ImageProjectHandler::isPraised($v->relation);
+                    ImageProjectHandler::isCollected($v->relation);
+                    break;
+                case 'video_project':
+                    VideoProjectHandler::user($v->relation);
+                    VideoProjectHandler::isPraised($v->relation);
+                    VideoProjectHandler::isCollected($v->relation);
                     break;
             }
         }

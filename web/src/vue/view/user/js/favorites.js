@@ -87,7 +87,7 @@ export default {
             return new Promise((resolve) => {
                 this.pending('getCollectionGroup' , true);
                 Api.user
-                    .collectionGroup(this.search)
+                    .collectionGroup()
                     .then((res) => {
                         this.pending('getCollectionGroup' , false);
                         if (res.code !== TopContext.code.Success) {
@@ -147,20 +147,20 @@ export default {
         } ,
 
         // 获取指定收藏夹下收藏的内容
-        getCollections (collectionGroup) {
+        getCollections (collectionGroupId) {
             this.pending('getCollections' , true);
             Api.user
                 .collections({
                     limit: this.collections.limit ,
                     page: this.collections.page ,
-                    collection_group_id: collectionGroup.id ,
-                    relation_type: this.search.relation_type ,
+                    collection_group_id: collectionGroupId ,
+                    ...this.search ,
                 })
                 .then((res) => {
                     this.pending('getCollections' , false);
                     if (res.code !== TopContext.code.Success) {
                         this.errorHandleAtUserChildren(res.message , res.code , () => {
-                            this.getCollections(collectionGroup);
+                            this.getCollections(collectionGroupId);
                         });
                         return ;
                     }
@@ -171,6 +171,8 @@ export default {
                         {
                             case 'image_project':
                                 this.handleImageProject(collection.relation);
+                                break;
+                            case 'video_project':
                                 break;
                         }
                     });
@@ -185,12 +187,12 @@ export default {
 
         toPage (page) {
             this.collections.page = page;
-            this.getCollections(this.currentCollectionGroup);
+            this.getCollections(this.currentCollectionGroup.id);
         } ,
 
         switchCollectionGroup (collectionGroup) {
             this.currentCollectionGroup = collectionGroup;
-            this.getCollections(collectionGroup);
+            this.getCollections(collectionGroup.id);
         } ,
 
         showCollectionGroupAction (collectionGroup) {
@@ -256,7 +258,7 @@ export default {
                         return ;
                     }
                     this.getCollectionGroup();
-                    this.getCollections(this.currentCollectionGroup);
+                    this.getCollections(this.currentCollectionGroup.id);
                 })
                 .finally(() => {
 

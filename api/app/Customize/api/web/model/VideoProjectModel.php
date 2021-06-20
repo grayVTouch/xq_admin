@@ -204,14 +204,70 @@ class VideoProjectModel extends Model
         $where = [];
 
         if ($filter['module_id'] !== '') {
-            $where[] = ['vs.module_id' , '=' , $filter['module_id']];
+            $where[] = ['vp.module_id' , '=' , $filter['module_id']];
         }
 
         if ($filter['value'] !== '') {
-            $where[] = ['vs.name' , 'like' , "%{$filter['module_id']}%"];
+            $where[] = ['vp.name' , 'like' , "%{$filter['value']}%"];
         }
 
-        $query = self::from('xq_video_project as vs')
+        $query = self::from('xq_video_project as vp')
+            ->where($where);
+
+        if (!empty($filter['video_series_ids'])) {
+            $query->whereIn('vp.video_series_id' , $filter['video_series_ids']);
+        }
+
+        if (!empty($filter['video_company_ids'])) {
+            $query->whereIn('vp.video_company_id' , $filter['video_company_ids']);
+        }
+
+        if (!empty($filter['category_ids'])) {
+            $query->whereIn('vp.category_id' , $filter['category_ids']);
+        }
+
+        if (!empty($filter['tag_ids'])) {
+            $query->whereExists(function($query) use($filter){
+                $query->select('id')
+                    ->selectRaw('count(id) as total')
+                    ->from('xq_relation_tag')
+                    ->where([
+                        ['relation_type' , '=' , 'video_project'] ,
+                    ])
+                    ->whereIn('tag_id' , $filter['tag_ids'])
+                    ->groupBy('relation_id')
+                    ->having('total' , '=' , count($filter['tag_ids']))
+                    ->whereRaw('relation_id = vp.id');
+            });
+        }
+
+        return $query->orderBy("vp.{$order['field']}" , $order['value'])
+            ->orderBy('vp.id' , 'desc')
+            ->paginate($limit);
+    }
+
+    public static function getWithPagerInLooseByFilterAndOrderAndLimit(array $filter = [] , $order = null , int $limit = 20)
+    {
+        $filter['value']        = $filter['value'] ?? '';
+        $filter['module_id']    = $filter['module_id'] ?? '';
+        $filter['tag_ids']      = $filter['tag_ids'] ?? [];
+        $filter['video_series_ids']      = $filter['video_series_ids'] ?? [];
+        $filter['video_company_ids']      = $filter['video_company_ids'] ?? [];
+        $filter['category_ids']      = $filter['video_company_ids'] ?? [];
+
+        $order = $order ?? ['field' => 'created_at' , 'value' => 'desc'];
+
+        $where = [];
+
+        if ($filter['module_id'] !== '') {
+            $where[] = ['vp.module_id' , '=' , $filter['module_id']];
+        }
+
+        if ($filter['value'] !== '') {
+            $where[] = ['vp.name' , 'like' , "%{$filter['value']}%"];
+        }
+
+        $query = self::from('xq_video_project as vp')
             ->where($where);
 
         if (!empty($filter['video_series_ids'])) {
@@ -233,53 +289,15 @@ class VideoProjectModel extends Model
                     ->where([
                         ['relation_type' , '=' , 'video_project'] ,
                     ]);
-                if (!empty($filter['tag_ids'])) {
-                    $query->whereIn('tag_id' , $filter['tag_ids'])
-                        ->groupBy('relation_id')
-                        ->having('total' , '=' , count($filter['tag_ids']));
-                }
-                $query->whereRaw('relation_id = vs.id');
-            })
-            ->orderBy("vs.{$order['field']}" , $order['value'])
-            ->orderBy('vs.id' , 'desc')
-            ->paginate($limit);
-    }
-
-    public static function getWithPagerInLooseByFilterAndOrderAndLimit(array $filter = [] , $order = null , int $limit = 20)
-    {
-        $filter['value']        = $filter['value'] ?? '';
-        $filter['module_id']    = $filter['module_id'] ?? '';
-        $filter['tag_ids']      = $filter['tag_ids'] ?? [];
-
-        $order = $order ?? ['field' => 'created_at' , 'value' => 'desc'];
-        $value = strtolower($filter['value']);
-
-        $where = [];
-
-        if ($filter['module_id'] !== '') {
-            $where[] = ['vs.module_id' , '=' , $filter['module_id']];
-        }
-
-        $query = self::from('xq_video_project as vs')
-            ->where($where);
-
-        return $query->whereRaw("lower(vs.name) like ?" , ["%{$value}%"])
-            ->whereExists(function($query) use($filter){
-                $query->select('id')
-                    ->selectRaw('count(id) as total')
-                    ->from('xq_relation_tag')
-                    ->where([
-                        ['relation_type' , '=' , 'video_project'] ,
-                    ]);
 
                 if (!empty($filter['tag_ids'])) {
                     $query->whereIn('tag_id' , $filter['tag_ids']);
                 }
 
-                $query->whereRaw('relation_id = vs.id');
+                $query->whereRaw('relation_id = vp.id');
             })
-            ->orderBy("vs.{$order['field']}" , $order['value'])
-            ->orderBy('vs.id' , 'desc')
+            ->orderBy("vp.{$order['field']}" , $order['value'])
+            ->orderBy('vp.id' , 'desc')
             ->paginate($limit);
     }
 

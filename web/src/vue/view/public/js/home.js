@@ -545,6 +545,10 @@ export default {
                         v.data = v.data ? v.data : [];
                         v.data.forEach((v1) => {
                             v1.relation = v1.relation ? v1.relation : {};
+                            if (v1.relation_type === 'video_project') {
+                                v1.relation.user_play_record = v1.relation.user_play_record ? v1.relation.user_play_record : {};
+                                v1.relation.user_play_record.video = v1.relation.user_play_record.video ? v1.relation.user_play_record.video : {};
+                            }
                             v1.relation.user = v1.relation.user ? v1.relation.user : {};
                             v1.relation.module = v1.relation.module ? v1.relation.module : {};
                         });

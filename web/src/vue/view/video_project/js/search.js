@@ -112,6 +112,32 @@ export default {
     } ,
     methods: {
 
+        praiseHandle (row) {
+            if (this.pending('praiseHandle')) {
+                return ;
+            }
+            const self = this;
+            const praised = row.is_praised ? 0 : 1;
+            this.pending('praiseHandle' , true);
+            Api.videoProject
+                .praiseHandle(row.id , null , {
+                    action: praised ,
+                })
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message , res.code , () => {
+                            this.praiseHandle(row);
+                        });
+                        return ;
+                    }
+                    row.is_praised = praised;
+                    praised ? row.praise_count++ : row.praise_count--;
+                })
+                .finally(() => {
+                    this.pending('praiseHandle' , false);
+                });
+        } ,
+
         initQuery (query) {
             if (query.category_id) {
                 // 选中该分类

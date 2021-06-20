@@ -34,17 +34,13 @@
 
                                     <a v-if="v.relation_type === 'video_project'" class="item" target="_blank" :href="`#/video_project/${v.relation_id}/show`">
                                         <div class="thumb">
-                                            <div class="mask"><img :src="
-                                                 v.relation ?
-                                                    (v.relation.user_play_record ?
-                                                        (v.relation.user_play_record.video ?
-                                                            v.relation.user_play_record.video.__thumb__ :
-                                                            TopContext.res.notFound
-                                                        ) :
-                                                        TopContext.res.notFound
-                                                    ) :
-                                                    TopContext.res.notFound"
-                                                 v-judge-img-size class="image judge-img-size"></div>
+                                            <div class="mask">
+                                                <img
+                                                        :src="v.relation.user_play_record.video.__thumb__ ? v.relation.user_play_record.video.__thumb__ : TopContext.res.notFound"
+                                                        v-judge-img-size
+                                                        class="image judge-img-size">
+                                            </div>
+                                            <div class="progress-bar" :style="`width: ${v.relation.user_play_record.ratio * 100}%`"></div>
                                         </div>
                                         <div class="info">
                                             <div class="title">
@@ -56,15 +52,7 @@
                                                     </my-button>
                                                 </div>
                                             </div>
-                                            <div class="sub-name f-12 run-eee">{{ v.relation ?
-                                                (v.relation.user_play_record ?
-                                                (v.relation.user_play_record.video ?
-                                                v.relation.user_play_record.video.name :
-                                                ''
-                                                ) :
-                                                ''
-                                                ) :
-                                                '' }}</div>
+                                            <div class="sub-name f-12 run-eee">{{ v.relation.user_play_record.video.name ? v.relation.user_play_record.video.name : '' }}</div>
                                             <div class="info">{{ getUsername(v.relation.user.username , v.relation.user.nickname) }} · {{ v.relation.view_count }}次观看 · {{ v.relation.collect_count }}次收藏 · {{ v.relation.praise_count }}次点赞 {{ v.created_at }}</div>
                                             <div class="desc">{{ v.relation.description }}</div>
                                         </div>

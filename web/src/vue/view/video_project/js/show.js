@@ -148,18 +148,21 @@ export default {
 
         } ,
 
-        // 图片点赞
+        collectionHandle (action) {
+            console.log('collection handle handler');
+            this.videoProject.is_collected = action;
+            action == 1 ? this.videoProject.collect_count++ : this.videoProject.collect_count--;
+        } ,
+
         praiseHandle () {
             if (this.pending('praiseHandle')) {
                 return ;
             }
             const self = this;
-            const praised = this.data.is_praised ? 0 : 1;
+            const praised = this.videoProject.is_praised ? 0 : 1;
             this.pending('praiseHandle' , true);
-            Api.user
-                .praiseHandle(null , {
-                    relation_type: 'image_project' ,
-                    relation_id: this.videoProject.id ,
+            Api.videoProject
+                .praiseHandle(this.id , null , {
                     action: praised ,
                 })
                 .then((res) => {
@@ -169,8 +172,8 @@ export default {
                         });
                         return ;
                     }
-                    this.data.is_praised = praised;
-                    praised ? this.videoProject.current.praise_count++ : this.videoProject.current.praise_count--;
+                    this.videoProject.is_praised = praised;
+                    praised ? this.videoProject.praise_count++ : this.videoProject.praise_count--;
                 })
                 .finally(() => {
                     this.pending('praiseHandle' , false);

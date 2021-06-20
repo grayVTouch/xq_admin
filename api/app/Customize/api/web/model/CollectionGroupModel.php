@@ -59,19 +59,41 @@ class CollectionGroupModel extends Model
             ['cg.module_id' , '=' , $module_id] ,
             ['cg.user_id' , '=' , $user_id] ,
         ];
+
         $where[] = ['cg.name' , 'like' , "%{$value}%"];
+
         $query = self::from('xq_collection_group as cg')
             ->where($where);
-        if (!empty($relation_type)) {
+
+        $handle_image_project = function()use($relation_type , $query){
             $query->whereExists(function($query) use($relation_type){
                 $query->select('id')
                     ->from('xq_collection')
                     ->whereRaw('collection_group_id = cg.id')
                     ->where('relation_type' , $relation_type);
             });
+        };
+
+        $handle_video_project = function()use($relation_type , $query){
+            $query->whereExists(function($query) use($relation_type){
+                $query->select('id')
+                    ->from('xq_collection')
+                    ->whereRaw('collection_group_id = cg.id')
+                    ->where('relation_type' , $relation_type);
+            });
+        };
+
+        switch ($relation_type)
+        {
+            case 'image_project':
+                $handle_image_project();
+                break;
+            case 'video_project':
+                $handle_video_project();
+                break;
+            default:
         }
-        return $query
-            ->orderBy('cg.created_at' , 'desc')
+        return $query->orderBy('cg.created_at' , 'desc')
             ->get();
     }
 
