@@ -81,7 +81,7 @@
                     <my-table-video-preview :src="row.simple_preview"></my-table-video-preview>
                 </template>
                 <template v-slot:preview="{row,index}">
-                    <my-table-image-preview-by-button :src="row.preview"></my-table-image-preview-by-button>
+                    <i-button @click.stop="openWindow(row.preview)">点击查看</i-button>
                 </template>
                 <template v-slot:user_id="{row,index}">
                     {{ row.user ? `${row.user.username}【${row.user.id}】` : `unknow【${row.user_id}】` }}

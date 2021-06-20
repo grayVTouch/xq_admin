@@ -216,7 +216,7 @@ class VideoProject extends Base
     {
         $param = $this->request->post();
         $param['video_project_id'] = $param['video_project_id'] ?? '';
-        $param['video_series_id'] = $param['video_project_id'] ?? '';
+        $param['video_series_id'] = $param['video_series_id'] ?? '';
         $res = VideoProjectAction::getByVideoSeriesId($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);

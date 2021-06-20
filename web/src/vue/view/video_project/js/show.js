@@ -286,11 +286,11 @@ export default {
                 } ,
             });
 
-            const currentVideo      = this.getCurrentVideo();
-            const currentDefinition = this.getCurrentDefinition();
-            const currentSubtitle   = this.getCurrentSubtitle();
+            const currentVideo = this.ins.videoPlayer.getCurrentVideo();
             if (!userPlayRecord) {
                 // 如果不存在，则记录
+                const currentDefinition = this.ins.videoPlayer.getCurrentDefinition();
+                const currentSubtitle   = this.ins.videoPlayer.getCurrentSubtitle();
                 this.record(currentVideo.id , currentVideo.index , 0 , currentDefinition?.name , currentSubtitle?.name);
             }
             this.incrementViewCount(currentVideo.id);

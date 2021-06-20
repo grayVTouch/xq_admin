@@ -32,9 +32,9 @@ return [
     // 预览视频截取段数
     'video_simple_preview' => [
         // 截取的段数
-        'count' => 4 ,
+        'count' => 5 ,
         // 截取的时间长度
-        'duration' => 2 ,
+        'duration' => 3 ,
         // 单张图片尺寸：宽
         'width' => 320 ,
         // 单张图片尺寸：高
