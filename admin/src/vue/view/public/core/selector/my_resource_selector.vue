@@ -54,12 +54,14 @@
             } ,
 
             loadData (row , callback) {
-                this.search.parent_path = row.title;
+                console.log('path' , row.path);
+                this.search.parent_path = row.path;
                 this.getData()
                     .then((res) => {
                         const data = res.map((v) => {
                             return {
-                                title: v ,
+                                title: v.name ,
+                                path: v.path ,
                                 loading: false ,
                                 children: [] ,
                             };
@@ -69,7 +71,7 @@
             } ,
 
             selectChangedEvent (selections , selection) {
-                this.$emit('on-change' , selection.title);
+                this.$emit('on-change' , selection.path);
                 this.hide();
             },
 
@@ -84,7 +86,8 @@
                     .then((res) => {
                         this.data = res.map((v) => {
                             return {
-                                title: v ,
+                                title: v.name ,
+                                path: v.path ,
                                 loading: false ,
                                 children: [] ,
                             };

@@ -20,6 +20,11 @@ class DiskModel extends Model
         return self::where('prefix' , $prefix)->first();
     }
 
+    public static function findByPath(string $path = ''): ?DiskModel
+    {
+        return self::where('path' , $path)->first();
+    }
+
     public static function countByIsDefault(int $is_default = 1): int
     {
         return self::where('is_default' , $is_default)->count();
@@ -32,6 +37,14 @@ class DiskModel extends Model
                 ['prefix' , '=' , $prefix] ,
             ])
             ->first();
+    }
+
+    public static function findByExcludeIdAndPath(int $exclude_id , string $path): ?DiskModel
+    {
+        return self::where([
+            ['id' , '!=' , $exclude_id] ,
+            ['path' , '=' , $path] ,
+        ])->first();
     }
 
     public static function setNotDefaultByExcludeId(int $id): int

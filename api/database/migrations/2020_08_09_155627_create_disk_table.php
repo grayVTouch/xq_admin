@@ -26,6 +26,7 @@ class CreateDiskTable extends Migration
 
             $table->timestamps();
 
+            // 这个实际上是 当前 web 项目的快捷方式名称！由于在同一个目录，所以要求不能重复
             $table->unique('prefix');
 
             $table->engine = 'InnoDB';

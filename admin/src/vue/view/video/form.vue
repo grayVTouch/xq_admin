@@ -37,9 +37,9 @@
                             <tr :class="{error: myValue.error.type}">
                                 <td>类型：</td>
                                 <td>
-                                    <i-radio-group v-model="form.type" @on-change="typeChangedEvent">
-                                        <i-radio v-for="(v,k) in TopContext.business.video.type" :key="k" :label="k">{{ v }}</i-radio>
-                                    </i-radio-group>
+                                    <i-select v-model="form.type" :style="`width: ${TopContext.style.inputItemW}px`" :disabled="true">
+                                        <i-option v-for="(v,k) in TopContext.business.video.type" :key="k" :value="k">{{ v }}</i-option>
+                                    </i-select>
                                     <span class="need">*</span>
                                     <div class="msg">默认：杂类</div>
                                     <div class="e-msg">{{ myValue.error.type }}</div>
@@ -419,11 +419,30 @@
                     :closable="true"
             >
                 <span class="f-12">所属模块：</span>
-                <my-select :width="TopContext.style.inputItemW" :data="modules" v-model="form.module_id" @change="myValue.error.module_id = ''"></my-select>
+                <my-select :width="TopContext.style.inputItemW" :data="modules" v-model="form.module_id" @on-change="moduleChangedEvent"></my-select>
                 <span class="need run-red">*</span>
 
                 <template slot="footer">
-                    <i-button type="primary" @click="nextStepAtForm">确认</i-button>
+                    <i-button type="primary" @click="handleStep('type')">确认</i-button>
+                </template>
+            </my-form-modal>
+
+            <!-- 第二步：类型选择器 -->
+            <my-form-modal
+                    v-model="myValue.showTypeSelector"
+                    title="请选择"
+                    width="auto"
+                    :mask-closable="true"
+                    :closable="true"
+            >
+                <span class="f-12">所属类型：</span>
+                <i-select v-model="form.type" :style="`width: ${TopContext.style.inputItemW}px`" @on-change="typeChangedEvent">
+                    <i-option v-for="(v,k) in TopContext.business.video.type" :key="k" :value="k">{{ v }}</i-option>
+                </i-select>
+                <span class="need run-red">*</span>
+
+                <template slot="footer">
+                    <i-button type="primary" @click="handleStep('form')">确认</i-button>
                 </template>
             </my-form-modal>
 

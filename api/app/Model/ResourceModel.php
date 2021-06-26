@@ -13,7 +13,7 @@ class ResourceModel extends Model
     public static function getWaitDeleteByLimitIdAndLimit(int $limit_id = 0 , int $limit = 20): Collection
     {
         return self::where(function($query){
-                $query->where('used' , 0)
+                $query->where('is_used' , 0)
                     ->orWhere('is_deleted' , 1);
             })
             ->where('id' , '>' , $limit_id)

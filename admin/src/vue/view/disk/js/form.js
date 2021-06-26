@@ -1,6 +1,7 @@
 const form = {
     os: 'windows' ,
     is_default: 0 ,
+    path: '' ,
 };
 
 export default {

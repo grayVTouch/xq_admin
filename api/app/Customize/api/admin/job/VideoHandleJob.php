@@ -209,6 +209,16 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
             /**
              * 视频完整进度预览
              */
+            $determine_duration = function() use($video_info): int
+            {
+                $duration = $video_info['duration'];
+                if ($duration < 2100) {
+                    return 1;
+                }
+                return 8;
+            };
+            // 自动判断
+            $video_preview_config['duration'] = $determine_duration();
             $previews       = [];
             $preview_count  = floor($video_info['duration'] / $video_preview_config['duration']);
             // 图片合成
@@ -224,7 +234,7 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
 
             for ($i = 0; $i < $preview_count; ++$i)
             {
-                $image      = $temp_dir . '/' . $datetime . random(6 , 'letter' , true) . '.png';
+                $image      = $temp_dir . '/' . $datetime . random(6 , 'letter' , true) . '.jpeg';
                 $timepoint  = $i * $video_preview_config['duration'];
 
                 FFmpeg::create()
@@ -236,13 +246,12 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
                     ->save($image);
 
                 $previews[] = $image;
-                $image_cav  = imagecreatefrompng($image);
+                $image_cav  = imagecreatefromjpeg($image);
                 $x          = $i % $video_preview_config['count'] * $video_preview_config['width'];
                 $y          = floor($i / $video_preview_config['count']) * $video_preview_config['height'];
 
                 imagecopymerge($cav , $image_cav , $x , $y , 0 , 0 , $video_preview_config['width'] , $video_preview_config['height'] , 100);
             }
-
             $preview_file   = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , $video->name . '【预览】' ,'png'));
             $preview_url    = FileUtil::generateUrlByRealPath($preview_file);
 

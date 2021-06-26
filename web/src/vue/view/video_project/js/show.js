@@ -279,6 +279,8 @@ export default {
                 switch (index) {
                     if (!once) {
                         // 如果不存在，则记录
+                        const currentDefinition = this.getCurrentDefinition();
+                        const currentSubtitle   = this.getCurrentSubtitle();
                         this.record(currentVideo.id , currentVideo.index , 0 , currentDefinition?.name , currentSubtitle?.name);
                     }
                     once = false;

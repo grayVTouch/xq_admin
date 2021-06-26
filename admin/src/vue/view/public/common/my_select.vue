@@ -59,6 +59,7 @@
         methods: {
             changeEvent (value) {
                 this.$emit('change' , G.isValid(value) ? value : '');
+                this.$emit('on-change' , G.isValid(value) ? value : '');
             } ,
         } ,
 

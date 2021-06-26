@@ -74,7 +74,6 @@ class DiskAction extends Action
 
         try {
             DB::beginTransaction();
-
             DiskModel::updateById($res->id , array_unit($param , [
                 'path' ,
                 'os' ,
@@ -83,18 +82,13 @@ class DiskAction extends Action
                 'is_linked' ,
                 'updated_at' ,
             ]));
-
             if ($param['is_default']) {
                 DiskModel::setNotDefaultByExcludeId($res->id);
             }
-
             DB::commit();
-
             return self::success('操作成功');
         } catch(Exception $e) {
-
             DB::rollBack();
-
             throw $e;
         }
     }
@@ -115,28 +109,21 @@ class DiskAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-
         $res = DiskModel::find($id);
-
         if (empty($res)) {
             return self::error('标签不存在' , '' , 404);
         }
-
         if (!File::isDir($param['path'])) {
             return self::error('请提供真实有效的磁盘目录绝对路径');
         }
-
-        $repeat = DiskModel::findByExcludeIdAndPrefix($res->id , $param['prefix']);
-
-        if (!empty($repeat)) {
-            return self::error('表单错误' , [
-                'prefix' => '前缀已经存在，请重新输入' ,
-            ]);
+        if (!empty(DiskModel::findByExcludeIdAndPrefix($res->id , $param['prefix']))) {
+            return self::error('前缀已经存在，请重新提供');
         }
-
+        if (!empty(DiskModel::findByExcludeIdAndPath($res->id , $param['path']))) {
+            return self::error('路径已经存在，请重新提供');
+        }
         try {
             DB::beginTransaction();
-
             DiskModel::updateById($res->id , array_unit($param , [
                 'path' ,
                 'os' ,
@@ -145,18 +132,13 @@ class DiskAction extends Action
                 'is_linked' ,
                 'updated_at' ,
             ]));
-
             if ($param['is_default']) {
                 DiskModel::setNotDefaultByExcludeId($res->id);
             }
-
             DB::commit();
-
             return self::success('操作成功');
         } catch(Exception $e) {
-
             DB::rollBack();
-
             throw $e;
         }
     }
@@ -175,14 +157,14 @@ class DiskAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
+        if (!empty(DiskModel::findByPrefix($param['prefix']))) {
+            return self::error('前缀已经存在，请重新提供');
+        }
         if (!File::isDir($param['path'])) {
             return self::error('请提供真实有效的磁盘目录绝对路径');
         }
-        $repeat = DiskModel::findByPrefix($param['prefix']);
-        if (!empty($repeat)) {
-            return self::error('表单错误' , [
-                'prefix' => '前缀已经存在，请重新输入' ,
-            ]);
+        if (!empty(DiskModel::findByPath($param['path']))) {
+            return self::error('路径已经存在，请重新提供');
         }
         $param['created_at'] = current_datetime();
         try {

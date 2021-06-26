@@ -1,5 +1,5 @@
 const form = {
-    type: 'misc' ,
+    type: '' ,
     user_id: '' ,
     module_id: '' ,
     category_id: '' ,
@@ -115,11 +115,7 @@ export default {
                 error: {} ,
                 show: false ,
                 showModuleSelector: false ,
-                /**
-                 * module - 选择模块
-                 * form - 输入表单
-                 */
-                step: 'module' ,
+                showTypeSelector: false ,
             } ,
 
             owner: G.copy(owner) ,
@@ -322,21 +318,14 @@ export default {
             this.getModules();
             if (this.mode === 'add') {
                 // 添加
-                this.handleModuleStep();
+                this.handleStep('module');
             } else {
-                this.handleFormStep();
+                this.handleForm();
             }
         } ,
 
-        // 模块处理
-        handleModuleStep () {
-            this.myValue.step = 'module';
-            this.myValue.showModuleSelector = true;
-        } ,
-
         // 表单处理
-        handleFormStep () {
-            this.myValue.step = 'form';
+        handleForm () {
             this.myValue.show = true;
             if (this.mode === 'edit') {
                 this.findById(this.id)
@@ -354,16 +343,26 @@ export default {
             }
         } ,
 
-        // 下一步
-        nextStepAtForm () {
-            if (this.form.module_id  < 1) {
-                this.errorHandle('请选择模块');
-                return ;
+        handleStep (step) {
+            if (step === 'module') {
+                this.myValue.showModuleSelector = true;
+            } else if (step === 'type') {
+                if (this.form.module_id  < 1) {
+                    this.errorHandle('请选择模块');
+                    return ;
+                }
+                this.myValue.showModuleSelector = false;
+                this.myValue.showTypeSelector = true;
+            } else if (step === 'form') {
+                if (this.form.type  === '') {
+                    this.errorHandle('请选择类型');
+                    return ;
+                }
+                this.myValue.showTypeSelector = false;
+                this.handleForm();
+            } else {
+                // 其他相关操作
             }
-            this.myValue.showModuleSelector = false;
-            // 获取分类
-            this.getCategories(this.form.module_id);
-            this.handleFormStep();
         } ,
 
         closeFormModal () {

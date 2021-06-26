@@ -18,12 +18,13 @@ use function api\admin\my_config_keys;
 use function api\admin\parse_order;
 use function core\array_unit;
 use function core\current_datetime;
+use function core\format_capacity;
 
 class SystemDiskAction extends Action
 {
     public static function index(Base $context , array $param = [])
     {
-        $res = [];
+        $suitable_res = [];
         if (empty($param['parent_path'])) {
             $fastjson_jar_path  = __DIR__ . "/../java/jar/fastjson.jar";
             $out_path           = __DIR__ . "/../java/out";
@@ -35,10 +36,29 @@ class SystemDiskAction extends Action
             }
             $res = implode('' , $res);
             $res = json_decode($res , true);
+            $suitable_res = [];
+            foreach ($res as $v)
+            {
+                $total_space = disk_total_space($v);
+                $total_space = format_capacity($total_space);
+                $free_space = disk_free_space($v);
+                $free_space = format_capacity($free_space);
+                $suitable_res[] = [
+                    'name'          => sprintf('%30s 【总容量：%30s】 【可用容量：%30s】' , $v , $total_space , $free_space) ,
+                    'path'          => $v ,
+                ];
+            }
         } else {
             // 列出子级
             $res = File::getDirs($param['parent_path'] , false);
+            foreach ($res as $v)
+            {
+                $suitable_res[] = [
+                    'name' => $v ,
+                    'path' => $v ,
+                ];
+            }
         }
-        return self::success('' , $res);
+        return self::success('' , $suitable_res);
     }
 }
