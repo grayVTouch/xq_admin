@@ -212,8 +212,12 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
             $determine_duration = function() use($video_info): int
             {
                 $duration = $video_info['duration'];
-                if ($duration < 2100) {
+                if ($duration < 1500) {
                     return 1;
+                } else if ($duration < 1800) {
+                    return 3;
+                } else if ($duration < 2400) {
+                    return 5;
                 }
                 return 8;
             };
