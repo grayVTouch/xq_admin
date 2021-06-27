@@ -26,8 +26,9 @@ class CreateUserVideoProjectPlayRecordTable extends Migration
             $table->unsignedInteger('played_duration')->default(0)->comment('已播放时长');
             $table->unsignedInteger('index')->default(1)->comment('播放的剧集');
             $table->unsignedDecimal('ratio' , 13 , 2)->default(0)->comment('播放进度');
-            $table->unsignedBigInteger('video_src_id')->default(0)->comment('video_src.id，视频源');
-            $table->unsignedBigInteger('video_subtitle_id')->default(0)->comment('video_subtitle.id，视频字幕');
+            $table->string('definition' , 255)->default('')->comment('清晰度');
+            $table->string('subtitle' , 255)->default('')->comment('字幕');
+            $table->unsignedDecimal('volume')->default(0)->comment('音量');
 
             $table->date('date')->nullable(true)->comment('日期');
             $table->time('time')->nullable(true)->comment('时间');

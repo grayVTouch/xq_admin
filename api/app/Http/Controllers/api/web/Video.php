@@ -51,6 +51,7 @@ class Video extends Base
         $param['played_duration'] = $param['played_duration'] ?? '';
         $param['definition'] = $param['definition'] ?? '';
         $param['subtitle'] = $param['subtitle'] ?? '';
+        $param['volume'] = $param['volume'] ?? '';
         $res = VideoAction::record($this , $id , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);

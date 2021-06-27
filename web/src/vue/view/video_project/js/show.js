@@ -118,7 +118,7 @@ export default {
                 });
         } ,
 
-        record (videoId , index , playedDuration , definition , subtitle) {
+        record (videoId , index , playedDuration , volume , definition , subtitle) {
             this.pending('record' , true);
             Api.video
                 .record(videoId , null , {
@@ -126,6 +126,7 @@ export default {
                     played_duration: playedDuration ,
                     definition: definition ? definition : '' ,
                     subtitle: subtitle ? subtitle : '' ,
+                    volume: volume ,
                 })
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
@@ -277,8 +278,9 @@ export default {
                 } ,
 
                 switch (index) {
-                    if (!once) {
-                        // 如果不存在，则记录
+                    if (userPlayRecord && userPlayRecord.index !== index) {
+                        // 检查当前记录的内容是否是当前的索引
+                        // 如果不是当前记录的视频索引，那么应该切换成给定的索引
                         const currentDefinition = this.getCurrentDefinition();
                         const currentSubtitle   = this.getCurrentSubtitle();
                         this.record(currentVideo.id , currentVideo.index , 0 , currentDefinition?.name , currentSubtitle?.name);
