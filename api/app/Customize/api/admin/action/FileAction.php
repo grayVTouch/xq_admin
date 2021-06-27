@@ -92,7 +92,7 @@ class FileAction extends Action
                     'height'    => $param['h'] ,
                 ] , false);
                 // 删除源文件
-                FileUtil::delete($path);
+                FileUtil::deleteWithoutPrefix($path);
                 $relative_path  = FileUtil::prefix() . '/' . str_replace(FileUtil::dir() . '/' , '' , $real_path);
                 $url            = FileUtil::generateUrlByRelativePath($relative_path);
             }

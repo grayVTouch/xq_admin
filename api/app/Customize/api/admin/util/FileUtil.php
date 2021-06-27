@@ -129,9 +129,19 @@ class FileUtil
     }
 
     // 删除文件（通过相对路径）
-    public static function delete(string $relative_path = ''): void
+    public static function deleteWithoutPrefix(string $relative_path = ''): void
     {
         $real_path = self::generateRealPathByRelativePathWithoutPrefix($relative_path);
+        if (!File::exists($real_path)) {
+            return ;
+        }
+        File::delete($real_path);
+    }
+
+    // 删除文件（通过相对路径）
+    public static function deleteWithPrefix(string $relative_path = ''): void
+    {
+        $real_path = self::generateRealPathByRelativePathWithPrefix($relative_path);
         if (!File::exists($real_path)) {
             return ;
         }
