@@ -17,7 +17,7 @@
                 </my-search-form-item>
 
                 <my-search-form-item name="模块">
-                    <my-select :data="modules" v-model="search.module_id" empty="" @change="getCategories"></my-select>
+                    <my-select :clear="true" :data="modules" v-model="search.module_id" empty="" @change="getCategories"></my-select>
                     <my-loading v-if="myValue.pending.getModules"></my-loading>
                 </my-search-form-item>
 
@@ -34,7 +34,7 @@
                 </my-search-form-item>
 
                 <my-search-form-item name="视频专题ID">
-                    <input type="number" class="form-text" v-model="search.video_project_id">
+                    <input type="number" class="form-text run-cursor-pointer" v-model="search.video_project_id" readonly @click="openVideoSelector" />
                 </my-search-form-item>
 
                 <my-search-form-item name="状态">
@@ -113,6 +113,13 @@
         </template>
 
         <my-form ref="form" :id="current.id" :mode="myValue.mode" @on-success="getData"></my-form>
+
+        <!-- 视频专题选择器 -->
+        <my-video-project-selector
+                ref="video-project-selector"
+                :module-id="search.module_id"
+                @on-change="videoProjectChangedEvent"
+        ></my-video-project-selector>
     </my-base>
 </template>
 

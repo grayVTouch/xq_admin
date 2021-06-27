@@ -61,4 +61,6 @@ window.TopContext = {
         asc: 'asc' ,
         desc: 'desc' ,
     } ,
+    // 登录时长
+    userCredentialsEffectDuration: 8 * 3600 ,
 };

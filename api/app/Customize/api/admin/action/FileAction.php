@@ -52,13 +52,12 @@ class FileAction extends Action
             'm' => ['sometimes' , Rule::in($mode_range)] ,
             'w' => 'sometimes|integer' ,
             'h' => 'sometimes|integer' ,
-            'file' => 'required|mimes:jpg,jpeg,png,gif' ,
+            'file' => 'required|mimes:jpg,jpeg,png,gif,webp' ,
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
         try {
-
             $dir        = date('Ymd');
             $path       = FileUtil::upload($file , $dir);
             $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
@@ -128,16 +127,16 @@ class FileAction extends Action
     public static function uploadSubtitle(Base $context , ?UploadedFile $file , array $param = [])
     {
         $validator = Validator::make($param , [
-            'file' => 'required|mimes:ass,idx,sub,srt,vtt,ssa' ,
+//            'file' => 'required|mimes:ass,idx,sub,srt,vtt,ssa' ,
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-//        $extension = $file->getClientOriginalExtension();
-//        $ext_range = ['ass' , 'idx' , 'sub' , 'srt' , 'vtt' , 'ssa'];
-//        if (!in_array($extension , $ext_range)) {
-//            return self::error('不支持的文件类型');
-//        }
+        $extension = $file->getClientOriginalExtension();
+        $ext_range = ['ass' , 'idx' , 'sub' , 'srt' , 'vtt' , 'ssa'];
+        if (!in_array($extension , $ext_range)) {
+            return self::error('不支持的文件类型');
+        }
         try {
             $dir        = date('Ymd');
             $path       = FileUtil::upload($file , $dir);

@@ -25,8 +25,8 @@ class TagAction extends Action
         if (empty($module)) {
             return self::error('模块不存在' , '' , 404);
         }
-        $subject = TagModel::find($id);
-        $subject = TagHandler::handle($subject);
-        return self::success('' , $subject);
+        $res = TagModel::find($id);
+        $res = TagHandler::handle($res);
+        return self::success('' , $res);
     }
 }

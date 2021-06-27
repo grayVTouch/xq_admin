@@ -244,7 +244,7 @@ export default {
             const userPlayRecord = this.videoProject.user_play_record;
             const index = playlist.length > 0 ? playlist[0].index : 1;
             let once = true;
-            this.ins.videoPlayer = new VideoPlayer(this.dom.videoContainer.get(0) , {
+            const videoPlayer = new VideoPlayer(this.dom.videoContainer.get(0) , {
                 // 海报
                 // poster: './res/poster.jpg' ,
                 poster: '' ,
@@ -315,15 +315,16 @@ export default {
                 } ,
             });
 
-            const currentVideo = this.ins.videoPlayer.getCurrentVideo();
+            const currentVideo = videoPlayer.getCurrentVideo();
             if (!userPlayRecord) {
                 // 如果不存在，则记录
-                const currentDefinition = this.ins.videoPlayer.getCurrentDefinition();
-                const currentSubtitle   = this.ins.videoPlayer.getCurrentSubtitle();
-                const volume            = this.getCurrentVolume();
+                const currentDefinition = videoPlayer.getCurrentDefinition();
+                const currentSubtitle   = videoPlayer.getCurrentSubtitle();
+                const volume            = videoPlayer.getCurrentVolume();
                 this.record(currentVideo.id , currentVideo.index , 0 , volume , currentDefinition?.name , currentSubtitle?.name);
             }
             this.incrementViewCount(currentVideo.id);
+            this.ins.videoPlayer = videoPlayer;
         } ,
 
         getVideoProject () {
@@ -516,6 +517,9 @@ export default {
 
         // 获取视频系列
         getVideoProjectsInSeries () {
+            if (this.videoProject.video_series_id <= 0) {
+                return ;
+            }
             this.pending('getVideoProjectsInSeries' , true);
             Api.videoProject
                 .vdieoProjectFilterByVideoSeriesId({

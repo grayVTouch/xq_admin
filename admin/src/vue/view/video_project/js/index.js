@@ -415,5 +415,31 @@ export default {
         rowDblclickEvent (row , index) {
             this.editEvent(row);
         } ,
+
+        openVideoSeriesSelector () {
+            if (this.search.module_id <= 0) {
+                this.errorHandle('请先选择模块');
+                return ;
+            }
+            this.$refs['video-series-selector'].show();
+        } ,
+
+        openVideoCompanySelector () {
+            if (this.search.module_id <= 0) {
+                this.errorHandle('请先选择模块');
+                return ;
+            }
+            this.$refs['video-company-selector'].show();
+        } ,
+
+        videoSeriesChangedEvent (row) {
+            this.search.video_series_id = row.id;
+            this.searchEvent();
+        } ,
+
+        videoCompanyChangedEvent (row) {
+            this.search.video_company_id = row.id;
+            this.searchEvent();
+        } ,
     } ,
 }

@@ -139,6 +139,10 @@ export default {
         } ,
 
         initQuery (query) {
+            // if (query.video_series_id) {
+            //     // 视频系列
+            //     this.focusCategoryByCategoryId(query.category_id);
+            // }
             if (query.category_id) {
                 // 选中该分类
                 this.focusCategoryByCategoryId(query.category_id);

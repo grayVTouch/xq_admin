@@ -583,6 +583,13 @@
     margin-bottom: 0;
 }
 
+.view > .recommend .video-series .list .empty {
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .view > .recommend .video-series .list .video-project {
     display: flex;
     justify-content: flex-start;

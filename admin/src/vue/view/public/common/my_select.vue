@@ -5,6 +5,7 @@
 <!--    </select>-->
 
     <i-select v-model="valueCopy" filterable @on-change="changeEvent" :style="`width: ${width}px`" :disabled="disabled">
+        <i-option v-if="clear" value="">所有</i-option>
         <i-option v-for="v in data" :value="v[attr.id]" :key="v[attr.id]">{{ v[attr.name] }}</i-option>
     </i-select>
 </template>
@@ -52,6 +53,11 @@
 
             disabled: {
                 type: [Boolean] ,
+                default: false ,
+            } ,
+
+            clear: {
+                type: Boolean ,
                 default: false ,
             } ,
         } ,

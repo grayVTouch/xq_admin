@@ -34,18 +34,6 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: myValue.error.type}">
-                                <td>类型：</td>
-                                <td>
-                                    <i-select v-model="form.type" :style="`width: ${TopContext.style.inputItemW}px`" :disabled="true">
-                                        <i-option v-for="(v,k) in TopContext.business.video.type" :key="k" :value="k">{{ v }}</i-option>
-                                    </i-select>
-                                    <span class="need">*</span>
-                                    <div class="msg">默认：杂类</div>
-                                    <div class="e-msg">{{ myValue.error.type }}</div>
-                                </td>
-                            </tr>
-
                             <tr :class="{error: myValue.error.user_id}">
                                 <td>所属用户：</td>
                                 <td>
@@ -55,6 +43,18 @@
                                     <span class="need">*</span>
                                     <div class="msg"></div>
                                     <div class="e-msg">{{ myValue.error.user_id }}</div>
+                                </td>
+                            </tr>
+
+                            <tr :class="{error: myValue.error.type}">
+                                <td>类型：</td>
+                                <td>
+                                    <i-select v-model="form.type" :style="`width: ${TopContext.style.inputItemW}px`" :disabled="true">
+                                        <i-option v-for="(v,k) in TopContext.business.video.type" :key="k" :value="k">{{ v }}</i-option>
+                                    </i-select>
+                                    <span class="need">*</span>
+                                    <div class="msg">默认：杂类</div>
+                                    <div class="e-msg">{{ myValue.error.type }}</div>
                                 </td>
                             </tr>
 

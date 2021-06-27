@@ -507,5 +507,17 @@ export default {
             this.editEvent(row);
         } ,
 
+        openVideoSelector () {
+            if (this.search.module_id <= 0) {
+                this.errorHandle('请先选择模块');
+                return ;
+            }
+            this.$refs['video-project-selector'].show();
+        } ,
+
+        videoProjectChangedEvent (row) {
+            this.search.video_project_id = row.id;
+            this.searchEvent();
+        } ,
     } ,
 }

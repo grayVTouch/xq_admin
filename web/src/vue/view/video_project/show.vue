@@ -37,12 +37,12 @@
                             <div class="name">{{ videoProject.name }}</div>
                             <div class="info">
                                 <div class="statistics-1">{{ videoProject.view_count }}观看 · {{ videoProject.play_count }}播放 · {{ videoProject.collect_count }}收藏 · {{ videoProject.praise_count }}点赞· {{ videoProject.against_count }}反对</div>
-                                <div class="statistics-2">{{ videoProject.__status__ }}, 全{{ videoProject.count }}话</div>
+                                <div class="statistics-2">{{ videoProject.__status__ }}, 全{{ videoProject.max_index }}话</div>
                             </div>
                         </div>
                         <div class="item company" v-if="videoProject.video_company">
                             <div class="field">视频制作公司</div>
-                            <div class="value">{{ videoProject.video_company.name }}</div>
+                            <div class="value"><a :href="genUrl(`/video_project/search?video_company_id=${videoProject.video_company_id}`)" target="_blank">{{ videoProject.video_company.name }}</a></div>
                         </div>
                     </div>
 
@@ -63,7 +63,7 @@
 
                     <div class="desc">{{ videoProject.description }}</div>
                     <div class="item run-tags">
-                        <my-link class="tag border-tag" target="_blank" v-for="v in videoProject.tags" :key="v.id">{{ v.name }}</my-link>
+                        <my-link class="tag border-tag" target="_blank" v-for="v in videoProject.tags" :key="v.id" :href="genUrl(`/video_project/search?tag_id=${v.tag_id}`)">{{ v.name }}</my-link>
                     </div>
                 </div>
                 <div class="mark">
@@ -143,6 +143,8 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="empty" v-if="videoProjectsInSeries.length === 0"><my-icon icon="empty" size="40"></my-icon></div>
 
                 </div>
             </div>

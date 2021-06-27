@@ -101,8 +101,10 @@ Route::prefix('web')
             Route::post('image_project/{id}/increment_view_count' , [ImageProject::class , 'incrementViewCount']);
 
             // 分类 - 详情
-//            Route::get('category/{id}' , [Category::class , 'show']);
-//            Route::get('tag/{id}' , [Tag::class , 'show']);
+            Route::get('category/{id}' , [Category::class , 'show']);
+
+            // 标签 - 详情
+            Route::get('tag/{id}' , [Tag::class , 'show']);
 
             // 验证码
             Route::get('captcha' , [Misc::class , 'captcha']);

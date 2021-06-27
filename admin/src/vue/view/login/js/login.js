@@ -126,7 +126,8 @@ export default {
                     }
                     this.request('submit' , false);
                     this.topMessage('登录成功，进入首页中...' , 'run-green');
-                    G.cookie.set('token' , res.data);
+                    // 时间默认 8h
+                    G.cookie.set('token' , res.data , TopContext.userCredentialsEffectDuration);
                     G.setTimeout(() => {
                         // 延迟一些时间跳转到首页
                         // 给人更好的衔接感
