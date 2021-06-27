@@ -255,17 +255,17 @@ export default {
                 // 视频源
                 playlist ,
                 // 当前播放索引
-                index: userPlayRecord ? userPlayRecord.index : index ,
+                index: userPlayRecord?.index ,
                 // 画质
-                definition: userPlayRecord ? userPlayRecord.definition : '' ,
+                definition: userPlayRecord?.definition ,
                 // 字幕
-                subtitle: userPlayRecord ? userPlayRecord.subtitle : '' ,
+                subtitle: userPlayRecord?.subtitle ,
                 // 当前播放时间点
-                currentTime: userPlayRecord ? userPlayRecord.played_duration : '' ,
+                currentTime: userPlayRecord?.played_duration ,
                 // 静音
                 muted: false ,
                 // 音量大小
-                volume: 1 ,
+                volume: userPlayRecord?.volume ,
                 // 开启字幕
                 enableSubtitle: true ,
                 minIndex: this.videoProject.min_index ,
@@ -281,9 +281,11 @@ export default {
                     if (userPlayRecord && userPlayRecord.index !== index) {
                         // 检查当前记录的内容是否是当前的索引
                         // 如果不是当前记录的视频索引，那么应该切换成给定的索引
+                        const volume = this.getCurrentVolume();
+                        const currentVideo = this.getCurrentVideo();
                         const currentDefinition = this.getCurrentDefinition();
                         const currentSubtitle   = this.getCurrentSubtitle();
-                        this.record(currentVideo.id , currentVideo.index , 0 , currentDefinition?.name , currentSubtitle?.name);
+                        self.record(currentVideo.id , currentVideo.index , 0 , volume , currentDefinition?.name , currentSubtitle?.name);
                     }
                     once = false;
                     for (let i = 0; i < self.videoProject.videos.length; ++i)
@@ -308,7 +310,8 @@ export default {
                     const currentVideo      = this.getCurrentVideo();
                     const currentDefinition = this.getCurrentDefinition();
                     const currentSubtitle   = this.getCurrentSubtitle();
-                    self.record(currentVideo.id , currentVideo.index , playedDuration , currentDefinition?.name , currentSubtitle?.name);
+                    const volume            = this.getCurrentVolume();
+                    self.record(currentVideo.id , currentVideo.index , playedDuration , volume , currentDefinition?.name , currentSubtitle?.name);
                 } ,
             });
 
@@ -317,7 +320,8 @@ export default {
                 // 如果不存在，则记录
                 const currentDefinition = this.ins.videoPlayer.getCurrentDefinition();
                 const currentSubtitle   = this.ins.videoPlayer.getCurrentSubtitle();
-                this.record(currentVideo.id , currentVideo.index , 0 , currentDefinition?.name , currentSubtitle?.name);
+                const volume            = this.getCurrentVolume();
+                this.record(currentVideo.id , currentVideo.index , 0 , volume , currentDefinition?.name , currentSubtitle?.name);
             }
             this.incrementViewCount(currentVideo.id);
         } ,
