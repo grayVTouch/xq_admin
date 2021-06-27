@@ -213,13 +213,16 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
             {
                 $duration = $video_info['duration'];
                 if ($duration < 1500) {
-                    return 1;
-                } else if ($duration < 1800) {
                     return 3;
+                } else if ($duration < 1800) {
+                    return 6;
                 } else if ($duration < 2400) {
-                    return 5;
+                    return 9;
+                } else if ($duration < 3600) {
+                    return 12;
+                } else {
+                    return 15;
                 }
-                return 8;
             };
             // 自动判断
             $video_preview_config['duration'] = $determine_duration();
