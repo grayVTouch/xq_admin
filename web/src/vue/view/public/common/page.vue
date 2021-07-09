@@ -3,9 +3,9 @@
         <div class="info">共 {{ total }} 条记录</div>
         <div class="links">
             <a class="link home" v-ripple :class="{'run-cursor-not-allow': page === 1}" @click="toPage(1)">首页</a>
-            <a class="link" :class="{'run-cursor-not-allow': page === 1}" v-ripple @click="toPage(pageCopy - 1)">上一页</a>
+            <a class="link" :class="{'run-cursor-not-allow': page === 1}" v-ripple @click="prev">上一页</a>
             <a class="link" v-ripple v-for="v in pages" :class="{cur: pageCopy === v , 'run-cursor-not-allow': page === v}" :key="v" @click="toPage(v)">{{ v }}</a>
-            <a class="link" :class="{'run-cursor-not-allow': page === maxPage}" v-ripple @click="toPage(pageCopy + 1)">下一页</a>
+            <a class="link" :class="{'run-cursor-not-allow': page === maxPage}" v-ripple @click="next">下一页</a>
             <a class="link end" :class="{'run-cursor-not-allow': page === maxPage}" v-ripple @click="toPage(maxPage)">尾页</a>
         </div>
         <div class="go-to">共 {{ maxPage }} 页 跳至 <input type="text" class="step" ref="input" @keyup.enter="inputEvent"> 页
@@ -109,6 +109,14 @@
                     return ;
                 }
                 this.toPage(value);
+            } ,
+
+            next () {
+                this.toPage(this.pageCopy + 1);
+            } ,
+
+            prev () {
+                this.toPage(this.pageCopy - 1);
             } ,
         } ,
 
