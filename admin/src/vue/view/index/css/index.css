@@ -645,19 +645,12 @@
  */
 .main > .content > .inner > .view .navigation {
     height: 60px;
-    line-height: 60px;
     position: relative;
-}
-
-.main > .content > .inner > .view .navigation:after {
-    display: block;
-    content: '';
-    clear: both;
 }
 
 .main > .content > .inner > .view .navigation > .nav {
     background-color: #777d8a;
-    height: 100%;
+    height: inherit;
     /*background-color: #8e95a5;*/
     /*transition: all 0.3s;*/
 }
@@ -667,7 +660,7 @@
 .main > .content > .inner > .view .navigation > .nav.fixed {
     z-index: 10000;
     width: calc(100% - 17px);
-    height: 60px;
+    height: inherit;
     padding-left: 240px;
     padding-right: 20px;
     position: fixed;
@@ -703,6 +696,10 @@
 
 .main > .content > .inner > .view .navigation > .nav > .inner {
     height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
 }
 
 .main > .content > .inner > .view .navigation > .nav.fixed > .inner {
@@ -710,7 +707,6 @@
 }
 
 .main > .content > .inner > .view .navigation > .nav > .inner > * {
-    height: 100%;
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -719,12 +715,11 @@
 }
 
 .main > .content > .inner > .view .navigation > .nav > .inner > .left {
-    float: left;
     font-size: 20px;
 }
 
 .main > .content > .inner > .view .navigation > .nav > .inner > .right {
-    float: right;
+
 }
 
 .main > .content > .inner > .view .navigation > .nav > .inner > .left > .image {

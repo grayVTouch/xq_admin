@@ -2,7 +2,7 @@
     <div>
         <Modal
                 title="图片列表"
-                width="1064"
+                width="1059"
                 :mask-closable="maskClosable"
                 :closable="closable"
                 v-model="visibleCopy"
@@ -12,26 +12,38 @@
                 <div class="image-preview-container">
                     <div class="inner">
 
-                        <div class="images">
-                            <div class="item" v-for="v in tableData.data" :key="v.id">
-                                <div class="preview"><img :src="v[mapping.src]" class="image" alt="" /></div>
-                                <div class="actions">
-                                    <div class="action view run-action-feedback-round" @click="preview(v)">
-                                        <i class="iconfont run-iconfont run-iconfont-chakan f-30"></i>
-                                    </div>
-                                    <div class="action delete run-action-feedback-round" v-if="!isDisabledDelete">
-                                        <i class="iconfont run-iconfont run-iconfont-shanchu f-30"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="pager">
+                        <div class="line pager">
                             <my-page
                                     class="run-page-center"
                                     :total="tableData.total"
                                     :size="tableData.size"
                                     :sizes="tableData.sizes"
+                                    :page="tableData.page"
+                                    @on-page-change="pageEvent"
+                                    @on-size-change="sizeEvent"
+                            ></my-page>
+                        </div>
+
+                        <div class="line image-line">
+                            <div class="images">
+                                <div class="item" v-for="v in tableData.data" :key="v.id">
+                                    <div class="preview"><img :src="v[mapping.src]" class="image" alt="" /></div>
+                                    <div class="actions">
+                                        <div class="action view run-action-feedback-round" @click="preview(v)">
+                                            <i class="iconfont run-iconfont run-iconfont-chakan f-30"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="line pager">
+                            <my-page
+                                    class="run-page-center"
+                                    :total="tableData.total"
+                                    :size="tableData.size"
+                                    :sizes="tableData.sizes"
+                                    :page="tableData.page"
                                     @on-page-change="pageEvent"
                                     @on-size-change="sizeEvent"
                             ></my-page>
@@ -72,8 +84,8 @@
     const tableData = {
         data: [] ,
         page: 1 ,
-        size: 16 ,
-        sizes: [16 , 32 , 48 , 64] ,
+        size: 12 ,
+        sizes: [12 , 24 , 36 , 48] ,
     };
 
     const current = {
@@ -291,15 +303,25 @@
         margin-bottom: 0;
     }
 
-    .image-preview-container .inner .images {
+    .image-preview-container .inner .image-line {
+        display: flex;
+        justify-content: flex-start;
+        align-items: stretch;
+        align-content: flex-start;
+        min-height: 425px;
+    }
+
+    .image-preview-container .inner .image-line .images {
         display: flex;
         justify-content: flex-start;
         align-items: flex-start;
         align-content: flex-start;
         flex-wrap: wrap;
+        width: 997px;
+        flex: 0 0 auto;
     }
 
-    .image-preview-container .inner .images .item {
+    .image-preview-container .inner .image-line .images .item {
         width: 240px;
         height: 135px;
         overflow: hidden;
@@ -310,28 +332,28 @@
         position: relative;
     }
 
-    .image-preview-container .inner .images .item:nth-of-type(1) ,
-    .image-preview-container .inner .images .item:nth-of-type(2) ,
-    .image-preview-container .inner .images .item:nth-of-type(3) ,
-    .image-preview-container .inner .images .item:nth-of-type(4)
+    .image-preview-container .inner .image-line .images .item:nth-of-type(1) ,
+    .image-preview-container .inner .image-line .images .item:nth-of-type(2) ,
+    .image-preview-container .inner .image-line .images .item:nth-of-type(3) ,
+    .image-preview-container .inner .image-line .images .item:nth-of-type(4)
     {
         margin-top: 0;
     }
-    .image-preview-container .inner .images .item:nth-of-type(4n) {
+    .image-preview-container .inner .image-line .images .item:nth-of-type(4n) {
         margin-right: 0;
     }
 
-    .image-preview-container .inner .images .item:hover .actions {
+    .image-preview-container .inner .image-line .images .item:hover .actions {
         opacity: 1;
     }
 
-    .image-preview-container .inner .images .item .preview {
+    .image-preview-container .inner .image-line .images .item .preview {
         width: inherit;
         height: inherit;
         position: relative;
     }
 
-    .image-preview-container .inner .images .item .preview .image {
+    .image-preview-container .inner .image-line .images .item .preview .image {
         width: 100%;
         /*min-height: 100%;*/
         position: absolute;
@@ -340,7 +362,7 @@
         transform: translate(-50% , -50%);
     }
 
-    .image-preview-container .inner .images .item .actions {
+    .image-preview-container .inner .image-line .images .item .actions {
         position: absolute;
         left: 0;
         top: 0;
@@ -356,7 +378,7 @@
     }
 
 
-    .image-preview-container .inner .images .item .actions .action {
+    .image-preview-container .inner .image-line .images .item .actions .action {
         width: 60px;
         height: 60px;
         display: flex;
@@ -366,7 +388,7 @@
         margin-right: 5px;
     }
 
-    .image-preview-container .inner .images .item .actions .action:nth-last-of-type(1) {
+    .image-preview-container .inner .image-line .images .item .actions .action:nth-last-of-type(1) {
         margin-right: 0;
     }
 

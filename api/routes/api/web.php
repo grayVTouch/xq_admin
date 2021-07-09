@@ -161,8 +161,12 @@ Route::prefix('web')
             Route::get('video_project_filter_by_video_series_id' , [VideoProject::class , 'getByVideoSeriesId']);
             // 视频专题 - 视频系列
             Route::get('video_series' , [VideoSeries::class , 'index']);
+            // 视频专题 - 视频系列 - 详情
+            Route::get('video_series/{id}' , [VideoSeries::class , 'show']);
             // 视频专题 - 视频公司
             Route::get('video_company' , [VideoCompany::class , 'index']);
+            // 视频专题 - 视频公司 - 详情
+            Route::get('video_company/{id}' , [VideoCompany::class , 'show']);
             // 视频专题 - 增加观看次数
             Route::post('video/{id}/increment_view_count' , [Video::class , 'incrementViewCount']);
             // 视频专题 - 增加播放次数

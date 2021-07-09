@@ -21,12 +21,8 @@ class CategoryAction extends Action
 {
     public static function index(Base $context , array $param = [])
     {
-        $res = CategoryModel::getAll();
-        $res = CategoryHandler::handleAll($res , [
-            'module' ,
-            'parent' ,
-            'user' ,
-        ]);
+        $res = CategoryModel::getByFilter($param);
+        $res = CategoryHandler::handleAll($res);
         foreach ($res as $v)
         {
             // 附加：模块

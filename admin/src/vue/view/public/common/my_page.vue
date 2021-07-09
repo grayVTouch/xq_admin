@@ -136,6 +136,8 @@
                     return ;
                 }
                 this.toPage(value);
+                tar.origin('focus');
+                tar.origin('select');
             } ,
 
             sizeChangeEvent () {

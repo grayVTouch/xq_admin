@@ -359,7 +359,6 @@ export default {
 
         // 表单处理
         handleForm () {
-            this.myValue.step = 'form';
             this.myValue.show = true;
             if (this.mode === 'edit') {
                 this.findById(this.id)
@@ -405,7 +404,6 @@ export default {
                 this.message('warning' , '请求中...请耐心等待');
                 return ;
             }
-            this.myValue.step = 'module';
             this.myValue.showUserSelector = false;
             this.myValue.showModuleSelector = false;
             this.myValue.show = false;

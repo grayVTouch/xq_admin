@@ -155,10 +155,14 @@ export default {
         } ,
 
         initQuery (query) {
-            // if (query.video_series_id) {
-            //     // 视频系列
-            //     this.focusCategoryByCategoryId(query.category_id);
-            // }
+            if (query.video_series_id) {
+                // 视频系列
+                this.focusVideoSeriesByVideoSeriesId(query.video_series_id);
+            }
+            if (query.video_company_id) {
+                // 视频系列
+                this.focusVideoCompanyByVideoCompanyId(query.video_company_id);
+            }
             if (query.category_id) {
                 // 选中该分类
                 this.focusCategoryByCategoryId(query.category_id);
@@ -167,6 +171,56 @@ export default {
                 // 选中该主体
                 this.focusTagByTagId(query.tag_id);
             }
+        } ,
+
+        focusVideoSeriesByVideoSeriesId (videoSeriesId) {
+            videoSeriesId = parseInt(videoSeriesId);
+            this.pending('focusVideoSeriesByVideoSeriesId' , true);
+            Api.videoSeries
+                .show(videoSeriesId)
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message);
+                        return ;
+                    }
+                    if (this.videoSeries.selectedIds.indexOf(videoSeriesId) >= 0) {
+                        return ;
+                    }
+                    const data = res.data;
+                    this.videoSeries = G.copy(videoSeries);
+                    this.videoSeries.selected.push(data);
+                    this.videoSeries.selectedIds.push(data.id);
+                    this.videoProjects.page = 1;
+                    this.getData();
+                })
+                .finally(() => {
+                    this.pending('focusVideoSeriesByVideoSeriesId' , false);
+                });
+        } ,
+
+        focusVideoCompanyByVideoCompanyId (videoCompanyId) {
+            videoCompanyId = parseInt(videoCompanyId);
+            this.pending('focusVideoCompanyByVideoCompanyId' , true);
+            Api.videoCompany
+                .show(videoCompanyId)
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandleAtHomeChildren(res.message);
+                        return ;
+                    }
+                    if (this.videoCompanies.selectedIds.indexOf(videoCompanyId) >= 0) {
+                        return ;
+                    }
+                    const data = res.data;
+                    this.videoCompanies = G.copy(videoCompanies);
+                    this.videoCompanies.selected.push(data);
+                    this.videoCompanies.selectedIds.push(data.id);
+                    this.videoProjects.page = 1;
+                    this.getData();
+                })
+                .finally(() => {
+                    this.pending('focusVideoCompanyByVideoCompanyId' , false);
+                });
         } ,
 
         focusCategoryByCategoryId (categoryId) {
@@ -183,6 +237,7 @@ export default {
                         return ;
                     }
                     const data = res.data;
+                    this.categories = G.copy(categories);
                     this.categories.selected.push(data);
                     this.categories.selectedIds.push(data.id);
                     this.videoProjects.page = 1;
@@ -207,6 +262,7 @@ export default {
                     }
                     const data = res.data;
                     data.tag_id = data.id;
+                    this.tags = G.copy(tags);
                     this.tags.selected.push(data);
                     this.tags.selectedIds.push(data.id);
                     this.videoProjects.page = 1;

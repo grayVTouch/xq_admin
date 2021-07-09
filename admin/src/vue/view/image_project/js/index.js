@@ -98,7 +98,8 @@ export default {
                         title: '图片列表' ,
                         slot: 'images' ,
                         minWidth: TopContext.table.name ,
-                        align: TopContext.table.alignCenter
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
                     } ,
                     {
                         title: '标签' ,

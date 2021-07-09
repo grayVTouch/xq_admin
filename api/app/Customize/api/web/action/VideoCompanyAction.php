@@ -32,4 +32,24 @@ class VideoCompanyAction extends Action
         $res = VideoCompanyHandler::handlePaginator($res);
         return self::success('' , $res);
     }
+
+    public static function show(Base $context , $id , array $param = [])
+    {
+        $validator = Validator::make($param , [
+            'module_id' => 'required|integer' ,
+        ]);
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first());
+        }
+        $module = ModuleModel::find($param['module_id']);
+        if (empty($module)) {
+            return self::error('模块不存在' , '' , 404);
+        }
+        $video_company = VideoCompanyModel::find($id);
+        if (empty($video_company)) {
+            return self::error('公司不存在' , '' , 404);
+        }
+        $video_company = VideoCompanyHandler::handle($video_company);
+        return self::success('' , $video_company);
+    }
 }

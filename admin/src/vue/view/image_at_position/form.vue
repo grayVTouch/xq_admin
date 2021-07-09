@@ -26,7 +26,7 @@
                         <tr :class="{error: myValue.error.position_id}">
                             <td>位置</td>
                             <td>
-                                <i-select v-model="form.position_id" @on-change="myValue.error.position_id = ''" :style="`width: ${TopContext.style.inputItemW}px`">
+                                <i-select v-model="form.position_id" @on-change="myValue.error.position_id = ''" class="w-400">
                                     <i-option v-for="v in positions" :value="v.id" :key="v.id">{{ v.name + `【${v.platform}】` }}</i-option>
                                 </i-select>
                                 <my-loading v-if="myValue.pending.getPositions"></my-loading>

@@ -34,9 +34,9 @@
                         </tr>
 
                         <tr :class="{error: myValue.error.type}">
-                            <td>类型：</td>
+                            <td>所属类型：</td>
                             <td>
-                                <i-select v-model="form.type" :style="`width: ${TopContext.style.inputItemW}px`" @on-change="typeChangeEvent">
+                                <i-select v-model="form.type" class="w-400" @on-change="typeChangedEvent" :disabled="mode === 'add'">
                                     <i-option v-for="(v,k) in TopContext.business.category.type" :key="k" :value="k">{{ v }}</i-option>
                                 </i-select>
                                 <span class="need">*</span>
@@ -138,6 +138,7 @@
 
         <my-user-selector ref="user-selector" @on-change="userChangeEvent"></my-user-selector>
 
+
         <!-- 第一步：模块选择器 -->
         <my-form-modal
                 v-model="myValue.showModuleSelector"
@@ -147,11 +148,30 @@
                 :closable="true"
         >
             <span class="f-12">所属模块：</span>
-            <my-select :width="TopContext.style.inputItemW" :data="modules" v-model="form.module_id" @change="myValue.error.module_id = ''"></my-select>
+            <my-select class-name="w-400" :data="modules" v-model="form.module_id" @on-change="moduleChangedEvent"></my-select>
             <span class="need run-red">*</span>
 
             <template slot="footer">
-                <i-button type="primary" @click="nextStepAtForm">确认</i-button>
+                <i-button type="primary" @click="handleStep('type')">确认</i-button>
+            </template>
+        </my-form-modal>
+
+        <!-- 第二步：类型选择器 -->
+        <my-form-modal
+                v-model="myValue.showTypeSelector"
+                title="请选择"
+                width="auto"
+                :mask-closable="true"
+                :closable="true"
+        >
+            <span class="f-12">所属类型：</span>
+            <i-select v-model="form.type" class="w-400" @on-change="typeChangedEvent">
+                <i-option v-for="(v,k) in TopContext.business.category.type" :key="k" :value="k">{{ v }}</i-option>
+            </i-select>
+            <span class="need run-red">*</span>
+
+            <template slot="footer">
+                <i-button type="primary" @click="handleStep('form')">确认</i-button>
             </template>
         </my-form-modal>
     </div>

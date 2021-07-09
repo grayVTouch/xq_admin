@@ -14,6 +14,7 @@ import link from '../vue/view/public/common/link.vue';
 import uploader from '../vue/view/public/common/uploader.vue';
 import video from '../vue/view/public/common/video.vue';
 import collectionGroup from '@vue/view/public/system/collection_group.vue';
+import myPicPreview from '@vue/view/public/common/pic_preview.vue';
 
 Vue.component('my-loading' , loading);
 Vue.component('my-avatar' , avatar);
@@ -30,4 +31,5 @@ Vue.component('my-button' , button);
 Vue.component('my-uploader' , uploader);
 Vue.component('my-video' , video);
 Vue.component('my-collection-group' , collectionGroup);
+Vue.component('my-pic-preview' , myPicPreview);
 

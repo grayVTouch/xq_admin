@@ -13,6 +13,8 @@ class Category extends Base
     public function index()
     {
         $param = $this->request->query();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $param['type'] = $param['type'] ?? '';
         $res = CategoryAction::index($this , $param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);

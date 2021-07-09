@@ -146,46 +146,7 @@
         </div>
 
         <!-- 图片预览 -->
-        <div class="pic-preview-async-container" ref="pic-preview-async-container">
-            <div class="pic-preview-async">
-                <div class="preview">
-
-                    <div class="header">
-                        <div class="info"></div>
-                        <div class="action">
-                            <button class="origin"><i class="run-iconfont run-iconfont-huanyuan"></i></button>
-                            <button class="shrink"><i class="run-iconfont run-iconfont-suoxiao"></i></button>
-                            <button class="grow"><i class="run-iconfont run-iconfont-fangda-copy"></i></button>
-                            <button class="full-screen"><i class="run-iconfont run-iconfont-quanping1"></i></button>
-                            <button class="normal-screen"><i class="run-iconfont run-iconfont-quanping"></i></button>
-                            <button class="spread"><i class="run-iconfont run-iconfont-weibiaoti26"></i></button>
-                            <button class="narrow"><i class="run-iconfont run-iconfont-daohangzhankai-"></i></button>
-                            <button class="close"><i class="run-iconfont run-iconfont-close"></i></button>
-                        </div>
-                    </div>
-
-                    <div class="content">
-                        <div class="b-images">
-<!--                            <div class="item" v-for="v in data.images"><img :src="v.src" class="image" alt=""></div>-->
-                        </div>
-                        <div class="action prev"><i class="run-iconfont run-iconfont-houtui"></i></div>
-                        <div class="action next"><i class="run-iconfont run-iconfont-qianjin"></i></div>
-                    </div>
-                </div>
-
-                <div class="s-images">
-                    <div class="title m-b-15">
-                        <div class="name">图片列表</div>
-                        <div class="action">
-                            <button class="close"><i class="run-iconfont run-iconfont-close"></i></button>
-                        </div>
-                    </div>
-                    <div class="list">
-                        <!--                <div class="item cur"><img src="./res/01.jpg" class="image" alt=""></div>-->
-                    </div>
-                </div>
-            </div>
-        </div>
+        <my-pic-preview ref="pic-preview"></my-pic-preview>
 
         <!-- 收藏夹 -->
         <div class="my-favorites hide" ref="my-favorites" @click="hideFavorites">

@@ -156,6 +156,7 @@ export default {
                         return ;
                     }
                     const data = res.data;
+                    this.categories = G.copy(categories);
                     this.categories.selected.push(data);
                     this.categories.selectedIds.push(data.id);
                     this.images.page = 1;
@@ -179,6 +180,7 @@ export default {
                         return ;
                     }
                     const data = res.data;
+                    this.imageSubjects = G.copy(imageSubjects);
                     this.imageSubjects.selected.push(data);
                     this.imageSubjects.selectedIds.push(data.id);
                     this.images.page = 1;
@@ -203,6 +205,7 @@ export default {
                     }
                     const data = res.data;
                     data.tag_id = data.id;
+                    this.tags = G.copy(tags);
                     this.tags.selected.push(data);
                     this.tags.selectedIds.push(data.id);
                     this.images.page = 1;

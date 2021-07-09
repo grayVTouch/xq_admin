@@ -49,7 +49,7 @@
                             <tr :class="{error: myValue.error.type}">
                                 <td>类型：</td>
                                 <td>
-                                    <i-select v-model="form.type" :style="`width: ${TopContext.style.inputItemW}px`" :disabled="true">
+                                    <i-select v-model="form.type" class="w-400" :disabled="true">
                                         <i-option v-for="(v,k) in TopContext.business.video.type" :key="k" :value="k">{{ v }}</i-option>
                                     </i-select>
                                     <span class="need">*</span>
@@ -436,7 +436,7 @@
                     :closable="true"
             >
                 <span class="f-12">所属类型：</span>
-                <i-select v-model="form.type" :style="`width: ${TopContext.style.inputItemW}px`" @on-change="typeChangedEvent">
+                <i-select v-model="form.type" class="w-400" @on-change="typeChangedEvent">
                     <i-option v-for="(v,k) in TopContext.business.video.type" :key="k" :value="k">{{ v }}</i-option>
                 </i-select>
                 <span class="need run-red">*</span>

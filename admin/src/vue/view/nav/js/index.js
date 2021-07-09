@@ -1,5 +1,6 @@
 import myForm from '../form.vue';
 
+const search = {};
 
 const current = {id: ''};
 
@@ -79,6 +80,7 @@ export default {
                         slot: 'is_enabled' ,
                         minWidth: TopContext.table.status ,
                         align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
                     } ,
                     {
                         title: '权重' ,
@@ -110,12 +112,15 @@ export default {
             modules: [] ,
 
             selection: [] ,
+
+            search: G.copy(search) ,
         };
     } ,
 
     mounted () {
         this.initDom();
         this.initIns();
+        this.getModules();
         this.getData();
     } ,
 
@@ -139,34 +144,9 @@ export default {
                 });
         } ,
 
-        getCategories (moduleId) {
-            this.pending('getCategories' , true);
-            Api.nav.searchByModuleId(moduleId , (res) => {
-                this.pending('getCategories' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                if (this.myValue.mode === 'edit') {
-                    data = this.getCategoryExcludeSelfAndChildrenByIdAndData(this.form.id , data);
-                }
-                this.categories = data;
-            });
-        } ,
-
-
-
-        moduleChangedEvent (moduleId) {
-            this.myValue.error.module_id = '';
-            this.form.p_id = 0;
-            this.getCategories(moduleId);
-        } ,
-
         initDom () {
 
         } ,
-
-
 
         initIns () {
 
@@ -175,7 +155,9 @@ export default {
         getData () {
             this.pending('getData' , true);
             Api.nav
-                .index()
+                .index({
+                    ...this.search ,
+                })
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
                         this.errorHandle(res.message);
@@ -282,7 +264,6 @@ export default {
         } ,
 
         searchEvent () {
-            this.search.page = 1;
             this.getData();
         } ,
 

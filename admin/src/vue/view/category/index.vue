@@ -1,8 +1,25 @@
 <template>
 
-    <my-base :show-search="false">
+    <my-base>
         <template slot="search">
+            <my-search-form @submit="searchEvent">
 
+                <my-search-form-item name="模块">
+                    <my-select :data="modules" v-model="search.module_id"></my-select>
+                    <my-loading v-if="myValue.pending.getModules"></my-loading>
+                </my-search-form-item>
+
+                <my-search-form-item name="类型">
+                    <i-select v-model="search.type" class="w-200">
+                        <i-option v-for="(v,k) in TopContext.business.category.type" :key="k" :value="k">{{ v }}</i-option>
+                    </i-select>
+                </my-search-form-item>
+
+                <my-search-form-item :show-separator="false">
+                    <my-table-button @click="searchEvent"><my-icon icon="search" mode="right" />搜索</my-table-button>
+                    <my-table-button @click="resetEvent" class="m-l-10"><my-icon icon="reset" mode="right" />重置</my-table-button>
+                </my-search-form-item>
+            </my-search-form>
         </template>
 
         <template slot="action">

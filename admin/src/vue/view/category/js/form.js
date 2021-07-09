@@ -39,11 +39,7 @@ export default {
                 show: false ,
                 showUserSelector: false ,
                 showModuleSelector: false ,
-                /**
-                 * module - 选择模块
-                 * form - 输入表单
-                 */
-                step: 'module' ,
+                showTypeSelector: false ,
             } ,
 
             dom: {} ,
@@ -114,51 +110,61 @@ export default {
             this.getModules();
             if (this.mode === 'add') {
                 // 添加
-                this.handleModuleStep();
+                this.handleStep('module');
             } else {
-                this.handleFormStep();
+                this.handleForm();
             }
         } ,
 
         // 模块处理
         handleModuleStep () {
-            this.myValue.step = 'module';
+            this.step = 'module';
             this.myValue.showModuleSelector = true;
         } ,
 
         // 表单处理
-        handleFormStep () {
+        handleForm () {
             this.myValue.step = 'form';
             this.myValue.show = true;
             if (this.mode === 'edit') {
                 this.findById(this.id)
-                    .then(() => {
+                    .then((res) => {
                         this.getCategories(this.form.module_id);
                         this.owner = this.form.user ? this.form.user : G.copy(owner);
                     });
             }
         } ,
 
-        // 下一步
-        nextStepAtForm () {
-            if (this.form.module_id  < 1) {
-                this.errorHandle('请选择模块');
-                return ;
+        handleStep (step) {
+            if (step === 'module') {
+                this.form.module_id = '';
+                this.form.type = '';
+                this.myValue.showModuleSelector = true;
+            } else if (step === 'type') {
+                if (this.form.module_id  < 1) {
+                    this.errorHandle('请选择模块');
+                    return ;
+                }
+                this.myValue.showModuleSelector = false;
+                this.myValue.showTypeSelector = true;
+            } else if (step === 'form') {
+                if (this.form.type  === '') {
+                    this.errorHandle('请选择类型');
+                    return ;
+                }
+                this.myValue.showTypeSelector = false;
+                this.handleForm();
+            } else {
+                // 其他相关操作
             }
-            this.myValue.showModuleSelector = false;
-            // 获取分类
-            this.getCategories(this.form.module_id);
-            // 表单处理
-            this.handleFormStep();
         } ,
-
 
         closeFormModal () {
             if (this.pending('submitEvent')) {
                 this.message('warning' , '请求中...请耐心等待');
                 return;
             }
-            this.myValue.step = 'module';
+            this.myValue.showUserSelector = false;
             this.myValue.showModuleSelector = false;
             this.myValue.show   = false;
             this.modules    = [];
@@ -280,7 +286,7 @@ export default {
             this.getCategories(moduleId);
         } ,
 
-        typeChangeEvent () {
+        typeChangedEvent () {
             this.myValue.error.type = '';
             this.getCategories(this.form.module_id);
         } ,

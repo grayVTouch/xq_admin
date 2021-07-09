@@ -1,5 +1,6 @@
 import myForm from '../form.vue';
 
+const search = {};
 
 const current = {id: ''};
 
@@ -116,12 +117,15 @@ export default {
             modules: [] ,
 
             selection: [] ,
+
+            search: G.copy(search) ,
         };
     } ,
 
     mounted () {
         this.initDom();
         this.initIns();
+        this.getModules();
         this.getData();
     } ,
 
@@ -181,7 +185,9 @@ export default {
         getData () {
             this.pending('getData' , true);
             Api.category
-                .index()
+                .index({
+                    ...this.search ,
+                })
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
                         this.errorHandle(res.message);
@@ -288,7 +294,6 @@ export default {
         } ,
 
         searchEvent () {
-            this.search.page = 1;
             this.getData();
         } ,
 

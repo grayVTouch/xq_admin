@@ -172,7 +172,14 @@ Vue.mixin({
         } ,
 
         genUrl (route) {
-            return (TopContext.enabledHistoryMode ? '' : '#') + route;
+            if (!route) {
+                return ;
+            }
+            const firstChar = route[0];
+            if (firstChar === '/') {
+                route = route.slice(1);
+            }
+            return (TopContext.enabledHistoryMode ? '' : '#/') + route;
         } ,
 
         reload () {

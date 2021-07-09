@@ -390,15 +390,15 @@ export default {
                         {
                             case 'image_project':
                                 mapping.newParentId = v.p_id === 0 ? imageProjectPosition.id : findInMappingsByOldId(v.p_id).newId;
-                                appendImageProjectPosition.push({
+                                const r = {
                                     id: mapping.newId ,
                                     name: v.name ,
                                     parentId: mapping.newParentId ,
-                                    // route: '/image_project/search?category_id=' + v.value ,
-                                    route: v.value ,
+                                    route: '/image_project/search?category_id=' + v.value ,
                                     hidden: false ,
                                     isBuiltIn: false ,
-                                });
+                                };
+                                appendImageProjectPosition.push(r);
                                 break;
                             case 'video_project':
                                 mapping.newParentId = v.p_id === 0 ? videoProjectPosition.id : findInMappingsByOldId(v.p_id).newId;

@@ -24,7 +24,7 @@
                         <tr :class="{error: myValue.error.type}">
                             <td>类型：</td>
                             <td>
-                                <i-select v-model="form.type" :disabled="mode === 'add'" :style="`width: ${TopContext.style.inputItemW}px`" @on-change="typeChangeEvent">
+                                <i-select v-model="form.type" :disabled="mode === 'add'" class="w-400" @on-change="typeChangeEvent">
                                     <i-option v-for="(v,k) in TopContext.business.nav.type" :key="k" :value="k">{{ v }}</i-option>
                                 </i-select>
                                 <span class="msg"></span>
@@ -80,7 +80,7 @@
 <!--                        <tr :class="{error: myValue.error.platform}">-->
 <!--                            <td>所属平台</td>-->
 <!--                            <td>-->
-<!--                                <i-select v-model="form.platform" @on-change="myValue.error.platform = ''" :style="`width: ${TopContext.style.inputItemW}px`">-->
+<!--                                <i-select v-model="form.platform" @on-change="myValue.error.platform = ''" class="w-400">-->
 <!--                                    <i-option v-for="(v,k) in TopContext.business.platform" :key="k" :value="k">{{ v }}</i-option>-->
 <!--                                </i-select>-->
 <!--                                <span class="need">*</span>-->
@@ -141,7 +141,7 @@
                 :closable="true"
         >
             <span class="f-12">选择类型：</span>
-            <i-select v-model="form.type" :style="`width: ${TopContext.style.inputItemW}px`">
+            <i-select v-model="form.type" class="w-400">
                 <i-option v-for="(v,k) in TopContext.business.nav.type" :key="k" :value="k">{{ v }}</i-option>
             </i-select>
             <span class="need run-red">*</span>

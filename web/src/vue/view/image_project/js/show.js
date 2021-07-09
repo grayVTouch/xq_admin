@@ -241,9 +241,11 @@ export default {
         } ,
 
         initPicPreview () {
-            var images = [];
-            this.data.images.forEach((v) => {
-                images.push(v.src);
+            const images = this.data.images.map((v) => {
+                return {
+                    src: v.src ,
+                    originalSrc: v.original_src ,
+                };
             });
             this.ins.picPreviewAsync = new PicPreview_Async(this.dom.picPreviewAsyncContainer.get(0) , {
                 index: 1 ,
@@ -259,7 +261,7 @@ export default {
             this.dom.win = G(window);
             this.dom.html = G(document.documentElement);
             this.dom.images = G(this.$refs.images);
-            this.dom.picPreviewAsyncContainer = G(this.$refs['pic-preview-async-container']);
+            this.dom.picPreviewAsyncContainer = G(this.$refs['pic-preview'].$el);
             this.dom.myFavorites = G(this.$refs['my-favorites']);
             this.dom.misc = G(this.$refs['misc']);
             this.dom.newest = G(this.$refs.newest);

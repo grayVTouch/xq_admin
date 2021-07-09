@@ -1,5 +1,11 @@
 <template>
-    <i class="run-iconfont" :title="title" :class="{['run-iconfont-' + icon]: true , 'padding-left': mode === 'left' || mode === 'both' , 'padding-right': mode === 'right' || mode === 'both' , ['f-' + size]: true}"></i>
+    <i class="run-iconfont" :title="title" :class="{
+        ['run-iconfont-' + icon]: true ,
+        'padding-left': mode === 'left' || mode === 'both' ,
+        'padding-right': mode === 'right' || mode === 'both' ,
+        ['f-' + size]: true ,
+        gray: color === 'gray' ,
+       }"></i>
 </template>
 
 <script>
@@ -26,6 +32,11 @@
                 type: String ,
                 default: '' ,
             } ,
+
+            color: {
+                type: String ,
+                default: 'white' ,
+            } ,
         } ,
     }
 </script>
@@ -41,5 +52,9 @@
 
     .run-iconfont.padding-right {
         padding-right: 5px;
+    }
+
+    .run-iconfont.gray {
+        color: #555;
     }
 </style>
