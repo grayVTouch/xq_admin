@@ -15,7 +15,7 @@ class Module extends Base
         $param = $this->request->query();
         $param['name'] = $param['name'] ?? '';
         $param['order'] = $param['order'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $res = ModuleAction::index($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);

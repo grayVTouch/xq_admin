@@ -1,6 +1,6 @@
 const allHotTags = {
     page: 1 ,
-    limit: TopContext.limit ,
+    size: TopContext.size ,
     data: [] ,
     total: 0 ,
     value: '' ,
@@ -8,7 +8,7 @@ const allHotTags = {
 };
 
 const partHotTags = {
-    limit: 5 ,
+    size: 5 ,
     data: [] ,
     type: 'pro' ,
 };
@@ -16,7 +16,7 @@ const partHotTags = {
 const images = {
     page: 1 ,
     maxPage: 1 ,
-    limit: TopContext.limit ,
+    size: TopContext.size ,
     data: [] ,
     total: 0 ,
     end: false ,
@@ -226,7 +226,7 @@ export default {
             this.images.end = false;
             Api.imageProject
                 .newestWithPager({
-                    limit: this.images.limit ,
+                    size: this.images.size ,
                     page:  this.images.page ,
                     type: this.images.type ,
                 })
@@ -266,7 +266,7 @@ export default {
             this.images.end = false;
             Api.imageProject
                 .hotWithPager({
-                    limit: this.images.limit ,
+                    size: this.images.size ,
                     page:  this.images.page ,
                     type: this.images.type ,
                 })
@@ -299,7 +299,7 @@ export default {
         hotTags () {
             Api.imageProject
                 .hotTags({
-                    limit: partHotTags.limit ,
+                    size: partHotTags.size ,
                     type: this.partHotTags.type ,
                 })
                 .then((res) => {
@@ -330,7 +330,7 @@ export default {
                 .getWithPagerByTagIds({
                     mode ,
                     tag_ids: G.jsonEncode(tagIds) ,
-                    limit: this.images.limit ,
+                    size: this.images.size ,
                     page: this.images.page ,
                     type: this.images.type ,
                 })
@@ -375,7 +375,7 @@ export default {
             this.pending('hotTagsWithPager' , true);
             Api.imageProject
                 .hotTagsWithPager({
-                    limit: this.allHotTags.limit ,
+                    size: this.allHotTags.size ,
                     page:  this.allHotTags.page ,
                     value: this.allHotTags.value ,
                     type: this.allHotTags.type ,

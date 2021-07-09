@@ -19,7 +19,7 @@
         name: "page" ,
 
         props: {
-            limit: {
+            size: {
                 type: Number ,
                 default: 20 ,
             } ,
@@ -73,7 +73,7 @@
             } ,
 
             initPage () {
-                this.maxPage = Math.ceil(this.total / this.limit);
+                this.maxPage = Math.ceil(this.total / this.size);
                 // 当前页数
                 if (this.page < this.showPage) {
                     this.startPage = 1;

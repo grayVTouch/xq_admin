@@ -57,7 +57,14 @@
         </template>
 
         <template slot="page">
-            <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
+            <my-page
+                    :total="table.total"
+                    :sizes="table.sizes"
+                    :size="table.size"
+                    :page="table.page"
+                    @on-page-change="pageEvent"
+                    @on-size-change="sizeEvent"
+            ></my-page>
         </template>
 
         <template slot="table">
@@ -95,18 +102,7 @@
                 </template>
 
                 <template v-slot:images="{row,index}">
-                    <!--                            <i-poptip placement="right" width="400" title="图片列表" :transfer="true" trigger="hover">-->
-                    <i-button>{{ row.images.length }}P</i-button>
-                    <!--                                <div slot="content">-->
-                    <!--                                    <table class="line-table">-->
-                    <!--                                        <tbody>-->
-                    <!--                                        <tr v-for="v in row.images" :key="v.id">-->
-                    <!--                                            <td><img :src="v.path ? v.path : TopContext.res.notFound" @click="openWindow(v.path , '__blank')" class="image"></td>-->
-                    <!--                                        </tr>-->
-                    <!--                                        </tbody>-->
-                    <!--                                    </table>-->
-                    <!--                                </div>-->
-                    <!--                            </i-poptip>-->
+                    <i-button @click.stop="showImagePreview(row)">点击查看【{{ row.images.length }}P】</i-button>
                 </template>
 
                 <template v-slot:tags="{row,index}">
@@ -128,7 +124,17 @@
 
         </template>
 
-        <my-form ref="form" :id="current.id" :mode="myValue.mode" @on-success="getData"></my-form>
+        <my-form
+                ref="form"
+                :id="current.id"
+                :mode="myValue.mode"
+                @on-success="getData"
+        ></my-form>
+
+        <my-image-preview
+            :visible.sync="myValue.showImagePreview"
+            :images="current.images"
+        ></my-image-preview>
 
     </my-base>
 

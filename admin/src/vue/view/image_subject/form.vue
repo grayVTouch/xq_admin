@@ -47,6 +47,7 @@
                         <td>所属模块</td>
                         <td>
                             <my-select :width="TopContext.style.inputItemW" :disabled="mode === 'add'" :data="modules" v-model="form.module_id" @change="myValue.error.module_id = ''"></my-select>
+                            <i-button type="primary" :loading="myValue.pending.getModules" @click="getModules">刷新</i-button>
                             <span class="need">*</span>
                             <div class="msg"></div>
                             <div class="e-msg">{{ myValue.error.module_id }}</div>

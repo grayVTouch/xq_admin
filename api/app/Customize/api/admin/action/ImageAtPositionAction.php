@@ -22,8 +22,8 @@ class ImageAtPositionAction extends Action
     public static function index(Base $context , array $param = [])
     {
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
-        $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $res = ImageAtPositionModel::index($param , $order , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = ImageAtPositionModel::index($param , $order , $size);
         $res = ImageAtPositionHandler::handlePaginator($res);
         foreach ($res->data as $v)
         {

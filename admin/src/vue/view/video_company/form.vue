@@ -3,6 +3,7 @@
         <my-form-modal
                 v-model="myValue.show"
                 :title="title"
+                :width="700"
                 :loading="myValue.pending.submitEvent"
                 @on-ok="submitEvent"
                 @on-cancel="closeFormModal"
@@ -37,7 +38,7 @@
                             <td>所属模块</td>
                             <td>
                                 <my-select :data="modules" :disabled="mode === 'add'" v-model="form.module_id" @change="myValue.error.module_id = ''" :width="TopContext.style.inputItemW"></my-select>
-                                <my-loading v-if="myValue.pending.getModules"></my-loading>
+                                <i-button type="primary" :loading="myValue.pending.getModules" @click="getModules">刷新</i-button>
                                 <span class="need">*</span>
                                 <div class="msg"></div>
                                 <div class="e-msg">{{ myValue.error.module_id }}</div>

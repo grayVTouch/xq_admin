@@ -131,7 +131,7 @@
                         </div>
 
                         <div class="pager">
-                            <my-page :total="collections.total" :limit="collections.limit" :page="collections.page" @on-change="toPage"></my-page>
+                            <my-page :total="collections.total" :limit="collections.size" :page="collections.page" @on-change="toPage"></my-page>
                         </div>
                     </div>
                 </div>

@@ -18,7 +18,7 @@ class ImageAtPosition extends Base
         $param['module_id'] = $param['module_id'] ?? '';
         $param['position_id'] = $param['position_id'] ?? '';
         $param['order'] = $param['order'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $res = ImageAtPositionAction::index($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);

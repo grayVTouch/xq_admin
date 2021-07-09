@@ -22,8 +22,8 @@ class TagAction extends Action
     public static function index(Base $context , array $param = [])
     {
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
-        $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $res = TagModel::index($param , $order , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = TagModel::index($param , $order , $size);
         $res = TagHandler::handlePaginator($res);
         foreach ($res->data as $v)
         {
@@ -210,8 +210,8 @@ class TagAction extends Action
         if (empty($module_id)) {
             return self::success('' , []);
         }
-        $limit = 10;
-        $res = TagModel::topByModuleId($module_id , $limit);
+        $size = 10;
+        $res = TagModel::topByModuleId($module_id , $size);
         $res = TagHandler::handleAll($res);
         return self::success('' , $res);
     }

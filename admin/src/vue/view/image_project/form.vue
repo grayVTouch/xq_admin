@@ -66,7 +66,7 @@
                                 <td>
 
                                     <my-select :data="modules" :disabled="mode === 'add'" v-model="form.module_id" @change="moduleChangedEvent" :width="TopContext.style.inputItemW"></my-select>
-                                    <my-loading v-if="myValue.pending.getModules"></my-loading>
+                                    <i-button type="primary" :loading="myValue.pending.getModules" @click="getModules">刷新</i-button>
                                     <span class="need">*</span>
                                     <div class="msg"></div>
                                     <div class="e-msg">{{ myValue.error.module_id }}</div>
@@ -77,7 +77,7 @@
                                 <td>所属分类：</td>
                                 <td>
                                     <my-deep-select :data="categories" v-model="form.category_id" @change="myValue.error.category_id = ''" :has="false" :width="TopContext.style.inputItemW"></my-deep-select>
-                                    <my-loading v-if="myValue.pending.getCategories"></my-loading>
+                                    <i-button type="primary" :loading="myValue.pending.getCategories" @click="refreshCategories">刷新</i-button>
                                     <span class="need">*</span>
                                     <div class="msg">请务必在选择类型、模块后操作</div>
                                     <div class="e-msg">{{ myValue.error.category_id }}</div>
@@ -307,19 +307,34 @@
                                         <i-table
                                                 ref="table"
                                                 class="w-r-100"
-                                                border :columns="table.field"
-                                                :data="table.data"
+                                                border
+                                                :columns="imagesTableData.field"
+                                                :data="imagesTableData.data"
                                                 @on-selection-change="selectionChangeEvent"
                                                 @on-row-click="rowClickEvent"
                                         >
-                                            <template v-slot:path="{row,index}">
+                                            <template v-slot:src="{row,index}">
                                                 <my-table-image-preview :src="row.src"></my-table-image-preview>
+                                            </template>
+                                            <template v-slot:original_src="{row,index}">
+                                                <i-button @click="openWindow(row.original_src , '_blank')">点击查看原图</i-button>
                                             </template>
                                             <template v-slot:action="{row,index}">
                                                 <my-table-button :loading="myValue.pending['delete_' + row.id]" @click="destroyEvent(index , row)">删除</my-table-button>
                                             </template>
                                         </i-table>
                                     </div>
+                                </div>
+
+                                <div class="line pager">
+                                    <my-page
+                                        :total="imagesTableData.all.length"
+                                        :size="imagesTableData.size"
+                                        :sizes="imagesTableData.sizes"
+                                        :page="imagesTableData.page"
+                                        @on-page-change="pageEventForImages"
+                                        @on-size-change="sizeEventForImages"
+                                    ></my-page>
                                 </div>
 
                                 <div class="line">

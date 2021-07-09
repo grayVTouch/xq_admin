@@ -70,7 +70,7 @@
 
                     </div>
                     <div class="pager">
-                        <my-page :total="history.total" :limit="history.limit" :page="history.page" @on-change="toPage"></my-page>
+                        <my-page :total="history.total" :limit="history.size" :page="history.page" @on-change="toPage"></my-page>
                     </div>
                 </div>
                 <div class="filter" ref="filter" :class="{fixed: val.fixed}">

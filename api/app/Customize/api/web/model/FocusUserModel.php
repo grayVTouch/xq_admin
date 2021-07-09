@@ -39,15 +39,15 @@ class FocusUserModel extends Model
         return self::where('focus_user_id' , $focus_user_id)->count();
     }
 
-    public static function getWithPagerByUserIdAndLimit(int $user_id , int $limit = 20): Paginator
+    public static function getWithPagerByUserIdAndLimit(int $user_id , int $size = 20): Paginator
     {
         return self::where('user_id' , $user_id)
-            ->paginate($limit);
+            ->paginate($size);
     }
 
-    public static function getWithPagerByFocusUserIdAndLimit(int $focus_user_id , int $limit = 20): Paginator
+    public static function getWithPagerByFocusUserIdAndLimit(int $focus_user_id , int $size = 20): Paginator
     {
         return self::where('focus_user_id' , $focus_user_id)
-            ->paginate($limit);
+            ->paginate($size);
     }
 }

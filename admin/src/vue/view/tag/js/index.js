@@ -94,12 +94,14 @@ export default {
                     // } ,
                 ] ,
                 total: 0 ,
+                size: 0 ,
+                sizes: TopContext.sizes ,
                 page: 1 ,
                 data: [] ,
             } ,
 
             search: {
-                limit: TopContext.limit ,
+                size: TopContext.size ,
                 module_id: '' ,
             } ,
 
@@ -176,6 +178,7 @@ export default {
                         this.pending(`delete_${v.id}` , false);
                     });
                     this.table.total = data.total;
+                    this.table.size = data.per_page;
                     this.table.page = data.current_page;
                     this.table.data = data.data;
                 })
@@ -252,8 +255,15 @@ export default {
             this.getData();
         } ,
 
-        pageEvent (page) {
+        pageEvent (page , size) {
             this.search.page = page;
+            this.search.size = size;
+            this.getData();
+        } ,
+
+        sizeEvent (size , page) {
+            this.search.page = page;
+            this.search.size = size;
             this.getData();
         } ,
 

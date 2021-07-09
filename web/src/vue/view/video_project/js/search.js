@@ -10,7 +10,7 @@ const tags = {
     selectedIds: [] ,
     data: [] ,
     page: 1 ,
-    limit: TopContext.limit ,
+    size: TopContext.size ,
     total: 1 ,
     mode: 'strict' ,
     value: '' ,
@@ -22,7 +22,7 @@ const videoSeries = {
     selectedIds: [] ,
     data: [] ,
     page: 1 ,
-    limit: TopContext.limit ,
+    size: TopContext.size ,
     total: 0 ,
     value: '' ,
 };
@@ -32,7 +32,7 @@ const videoCompanies = {
     selectedIds: [] ,
     data: [] ,
     page: 1 ,
-    limit: TopContext.limit ,
+    size: TopContext.size ,
     total: 0 ,
     value: '' ,
 };
@@ -40,7 +40,7 @@ const videoCompanies = {
 const videoProjects = {
     data: [] ,
     value: '' ,
-    limit: TopContext.limit ,
+    size: TopContext.size ,
     total: 0 ,
     page: 1 ,
     order: '' ,
@@ -83,12 +83,28 @@ export default {
                     key: 'created_at|desc' ,
                 } ,
                 {
+                    name: '播放数量' ,
+                    key: 'play_count|desc' ,
+                } ,
+                {
                     name: '点赞数量' ,
                     key: 'praise_count|desc' ,
                 } ,
                 {
                     name: '查看次数' ,
                     key: 'view_count|desc' ,
+                } ,
+                {
+                    name: '发布日期' ,
+                    key: 'release_date|desc' ,
+                } ,
+                {
+                    name: '完结日期' ,
+                    key: 'end_date|desc' ,
+                } ,
+                {
+                    name: '发布年份' ,
+                    key: 'release_year|desc' ,
                 } ,
             ] ,
         };
@@ -404,7 +420,7 @@ export default {
             Api.videoSeries
                 .index({
                     page: this.videoSeries.page ,
-                    limit: this.videoSeries.limit ,
+                    size: this.videoSeries.size ,
                     value: this.videoSeries.value ,
                 })
                 .then((res) => {
@@ -499,7 +515,7 @@ export default {
             Api.videoCompany
                 .index({
                     page: this.videoCompanies.page ,
-                    limit: this.videoCompanies.limit ,
+                    size: this.videoCompanies.size ,
                     value: this.videoCompanies.value ,
                 })
                 .then((res) => {
@@ -572,7 +588,7 @@ export default {
             this.pending('getTags' , true);
             Api.videoProject
                 .hotTagsWithPager({
-                    limit: this.tags.limit ,
+                    size: this.tags.size ,
                     page:  this.tags.page ,
                     value: this.tags.value ,
                     type: this.tags.type ,
@@ -633,7 +649,7 @@ export default {
                 .index({
                     page: this.videoProjects.page ,
                     mode: this.tags.mode ,
-                    limit: this.videoProjects.limit ,
+                    size: this.videoProjects.size ,
                     video_series_ids: G.jsonEncode(this.videoSeries.selectedIds) ,
                     video_company_ids: G.jsonEncode(this.videoCompanies.selectedIds) ,
                     category_ids: G.jsonEncode(this.categories.selectedIds) ,

@@ -46,7 +46,8 @@ window.TopContext = {
     } ,
     style ,
     // 每页显示记录数
-    limit: 8 ,
+    size: 8 ,
+    sizes: [8 , 20 , 50 , 100 , 200] ,
     config ,
     // 系统信息
     os: {

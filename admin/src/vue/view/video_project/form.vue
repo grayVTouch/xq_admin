@@ -39,6 +39,7 @@
                         <td>所属模块</td>
                         <td>
                             <my-select :width="TopContext.style.inputItemW" :disabled="mode === 'add'" :data="modules" v-model="form.module_id" @change="moduleChanged"></my-select>
+                            <i-button type="primary" :loading="myValue.pending.getModules" @click="getModules">刷新</i-button>
                             <span class="need">*</span>
                             <div class="msg"></div>
                             <div class="e-msg">{{ myValue.error.module_id }}</div>
@@ -49,7 +50,7 @@
                         <td>所属分类：</td>
                         <td>
                             <my-deep-select :width="TopContext.style.inputItemW" :data="categories" v-model="form.category_id" @change="myValue.error.category_id = ''" :has="false"></my-deep-select>
-                            <my-loading v-if="myValue.pending.getCategories"></my-loading>
+                            <i-button type="primary" :loading="myValue.pending.getCategories" @click="refreshCategories">刷新</i-button>
                             <span class="need">*</span>
                             <div class="msg">请务必在选择模块后操作</div>
                             <div class="e-msg">{{ myValue.error.category_id }}</div>

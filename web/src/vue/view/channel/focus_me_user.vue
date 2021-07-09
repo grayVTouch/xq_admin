@@ -29,7 +29,7 @@
         </div>
 
         <div class="pager">
-            <my-page :total="data.total" :page="data.page" :limit="data.limit" @on-change="toPage"></my-page>
+            <my-page :total="data.total" :page="data.page" :limit="data.size" @on-change="toPage"></my-page>
         </div>
 
     </div>
@@ -45,7 +45,7 @@
                     data: [] ,
                     page: 1 ,
                     total: 0 ,
-                    limit: TopContext.limit ,
+                    size: TopContext.size ,
                 } ,
             };
         } ,
@@ -59,7 +59,7 @@
                 this.pending('getData' , true);
                 Api.user
                     .focusMeUser(this.$parent.id , {
-                        limit: this.data.limit ,
+                        size: this.data.size ,
                         page: this.data.page ,
                     })
                     .then((res) => {

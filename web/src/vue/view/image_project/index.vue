@@ -164,7 +164,7 @@
                             <span class="tag" v-ripple v-for="v in allHotTags.data" :class="{selected: search.tagIds.indexOf(v.tag_id) >= 0}" :key="v.id" @click="filterByTag(v)">{{ v.name }}</span>
                         </div>
                         <div class="pager" v-if="allHotTags.total > 0">
-                            <my-page :total="allHotTags.total" :limit="allHotTags.limit" :page="allHotTags.page" @on-change="tagPageEvent"></my-page>
+                            <my-page :total="allHotTags.total" :limit="allHotTags.size" :page="allHotTags.page" @on-change="tagPageEvent"></my-page>
                         </div>
                     </div>
                 </div>

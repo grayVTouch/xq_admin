@@ -291,8 +291,15 @@ export default {
             this.getData();
         } ,
 
-        pageEvent (page) {
+        pageEvent (page , size) {
             this.search.page = page;
+            this.search.size = size;
+            this.getData();
+        } ,
+
+        sizeEvent (size , page) {
+            this.search.page = page;
+            this.search.size = size;
             this.getData();
         } ,
 

@@ -8,9 +8,11 @@ use App\Customize\api\admin\model\ImageModel;
 use App\Customize\api\admin\model\VideoModel;
 use App\Customize\api\admin\model\ResourceModel;
 use App\Customize\api\admin\model\VideoSrcModel;
+use App\Customize\api\admin\model\VideoSubtitleModel;
 use App\Customize\api\admin\util\FileUtil;
 use App\Customize\api\admin\util\ResourceUtil;
 use Core\Lib\File;
+use Core\Wrapper\FFmpeg;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -92,12 +94,21 @@ class VideoResourceHandleJob extends FileBaseJob implements ShouldQueue
             if (!File::exists($save_dir)) {
                 File::mkdir($save_dir , 0777 , true);
             }
+            // 处理文件名称
+            $get_video_name = function($type , $name , $index){
+                if ($type === 'pro') {
+                    // [sprintf 函数可访问右侧链接](https://www.runoob.com/php/func-string-sprintf.html)
+                    return empty($name) ? sprintf("%'03s" , $index) : $name;
+                }
+                return $name;
+            };
+            $video_name = $get_video_name($video->type , $video->name , $video->index);
             // 第一帧图片 + 预览图片 + 预览视频
-            $video_first_frame_file         = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , $video->name . '【第一帧】' , 'jpeg'));
+            $video_first_frame_file         = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , $video_name . '【第一帧】' , 'jpeg'));
             $video_first_frame_url          = FileUtil::generateUrlByRealPath($video_first_frame_file);
-            $video_simple_preview_file      = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , $video->name . '【预览】' , 'mp4'));
+            $video_simple_preview_file      = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , $video_name . '【预览】' , 'mp4'));
             $video_simple_preview_url       = FileUtil::generateUrlByRealPath($video_simple_preview_file);
-            $preview_file                   = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , $video->name . '【预览】' ,'jpeg'));
+            $preview_file                   = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , $video_name . '【预览】' ,'jpeg'));
             $preview_url                    = FileUtil::generateUrlByRealPath($preview_file);
             if (!File::exists($video_first_frame_file)) {
                 // 移动文件
@@ -160,21 +171,21 @@ class VideoResourceHandleJob extends FileBaseJob implements ShouldQueue
                     $filename       = $this->generateVideoMediaSuffix($video->type , $v->definition , $video->index , $video->name , $extension);
                     $source_file    = $resource->path;
                     $target_file    = $this->generateRealPath($save_dir , $filename);
-                    if (File::exists($target_file)) {
-                        // 文件已经存在，跳过
-                        DB::rollBack();
-                        continue ;
+                    if ($source_file !== $target_file) {
+                        if (File::exists($target_file)) {
+                            // 文件已经存在，删除
+                            File::dFile($target_file);
+                        }
+                        $target_url = FileUtil::generateUrlByRealPath($target_file);
+                        // 移动文件
+                        File::move($source_file , $target_file);
+                        VideoSrcModel::updateById($v->id , [
+                            'src' => $target_url
+                        ]);
+                        // 删除源文件
+                        ResourceUtil::delete($v->src);
+                        ResourceUtil::create($target_url , $target_file , 'local' , 1 , 0);
                     }
-                    $target_url = FileUtil::generateUrlByRealPath($target_file);
-                    // 移动文件
-                    File::move($source_file , $target_file);
-                    VideoSrcModel::updateById($v->id , [
-                        'src' => $target_url
-                    ]);
-                    // 删除源文件
-                    ResourceUtil::delete($v->src);
-                    ResourceUtil::create($target_url , $target_file , 'local' , 1 , 0);
-
                     DB::commit();
                 } catch (Exception $e) {
                     DB::rollBack();
@@ -197,24 +208,32 @@ class VideoResourceHandleJob extends FileBaseJob implements ShouldQueue
                         continue ;
                     }
                     $extension      = get_extension($v->src);
-                    $filename       =  $this->generateMediaSuffix($video->type , "{$video->name}【{$v->name}】" , $extension);
+                    $filename       =  $this->generateMediaSuffix($video->type , "{$video_name}【{$v->name}】" , 'vtt');
                     $source_file    = $resource->path;
                     $target_file    = $this->generateRealPath($save_dir , $filename);
-                    if (File::exists($target_file)) {
-                        // 文件已经存在，跳过
-                        DB::rollBack();
-                        continue ;
+                    if ($source_file !== $target_file) {
+                        if (File::exists($target_file)) {
+                            // 文件已经存在，删除
+                            File::dFile($target_file);
+                        }
+                        if (!in_array($extension , ['vtt'])) {
+                            // 非 web vtt 格式 - 转码 并保存到目标位置
+                            FFmpeg::create()
+                                ->input($resource->path)
+                                ->quiet()
+                                ->save($target_file);
+                        } else {
+                            // 移动文件
+                            File::move($source_file , $target_file);
+                        }
+                        $target_url = FileUtil::generateUrlByRealPath($target_file);
+                        VideoSubtitleModel::updateById($v->id , [
+                            'src' => $target_url
+                        ]);
+                        // 删除源文件
+                        ResourceUtil::delete($v->src);
+                        ResourceUtil::create($target_url , $target_file , 'local' , 1 , 0);
                     }
-                    $target_url = FileUtil::generateUrlByRealPath($target_file);
-                    // 移动文件
-                    File::move($source_file , $target_file);
-                    VideoSrcModel::updateById($v->id , [
-                        'src' => $target_url
-                    ]);
-                    // 删除源文件
-                    ResourceUtil::delete($v->src);
-                    ResourceUtil::create($target_url , $target_file , 'local' , 1 , 0);
-
                     DB::commit();
                 } catch (Exception $e) {
                     DB::rollBack();

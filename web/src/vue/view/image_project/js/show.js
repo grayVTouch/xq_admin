@@ -12,7 +12,7 @@ export default {
             } ,
             images: {
                 data: [] ,
-                limit: 5 ,
+                size: 5 ,
             } ,
 
             dom: {} ,
@@ -32,13 +32,13 @@ export default {
 
             // 推荐数据
             recommend: {
-                limit: 5 ,
+                size: 5 ,
                 data: [] ,
                 type: 'pro' ,
             } ,
 
             newest: {
-                limit: 5 ,
+                size: 5 ,
                 data: [] ,
                 type: 'pro' ,
             } ,
@@ -195,7 +195,7 @@ export default {
                     this.handleData(data);
                     this.data = data;
                     // 加载首页图片
-                    this.images.data = data.images.slice(0 , this.images.limit);
+                    this.images.data = data.images.slice(0 , this.images.size);
                     this.$nextTick(() => {
                         this.initPicPreview();
                     });
@@ -281,7 +281,7 @@ export default {
             if (imagesDataLen >= dataImagesLen) {
                 return ;
             }
-            this.images.data = this.images.data.concat(this.data.images.slice(imagesDataLen , imagesDataLen + this.images.limit));
+            this.images.data = this.images.data.concat(this.data.images.slice(imagesDataLen , imagesDataLen + this.images.size));
         } ,
 
         scrollWithMiscEvent () {
@@ -304,7 +304,7 @@ export default {
             this.pending('getNewestData' , true);
             Api.imageProject
                 .newest({
-                    limit: this.newest.limit ,
+                    size: this.newest.size ,
                     type: this.newest.type ,
                 })
                 .then((res) => {
@@ -324,7 +324,7 @@ export default {
             this.pending('getRecommendData' , true);
             Api.imageProject
                 .recommend(this.id , {
-                    limit: this.recommend.limit ,
+                    size: this.recommend.size ,
                     type: this.recommend.type ,
                 })
                 .then((res) => {

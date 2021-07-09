@@ -12,7 +12,7 @@ class ImageProjectModel extends Model
 {
     protected $table = 'xq_image_project';
 
-    public static function getNewestByFilterAndLimit(array $filter = [] , int $limit = 0): Collection
+    public static function getNewestByFilterAndLimit(array $filter = [] , int $size = 0): Collection
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -32,11 +32,11 @@ class ImageProjectModel extends Model
         return self::where($where)
             ->orderBy('created_at' , 'desc')
             ->orderBy('id' , 'asc')
-            ->limit($limit)
+            ->limit($size)
             ->get();
     }
 
-    public static function getHotByFilterAndLimit(array $filter = [] , int $limit = 0): Collection
+    public static function getHotByFilterAndLimit(array $filter = [] , int $size = 0): Collection
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -61,11 +61,11 @@ class ImageProjectModel extends Model
             // id 倒叙排序
             ->orderBy('created_at' , 'desc')
             ->orderBy('id' , 'asc')
-            ->limit($limit)
+            ->limit($size)
             ->get();
     }
 
-    public static function getHotWithPagerByFilterAndLimit(array $filter = [] , int $limit = 0): Paginator
+    public static function getHotWithPagerByFilterAndLimit(array $filter = [] , int $size = 0): Paginator
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -90,11 +90,11 @@ class ImageProjectModel extends Model
             // id 倒叙排序
             ->orderBy('created_at' , 'desc')
             ->orderBy('id' , 'asc')
-            ->paginate($limit);
+            ->paginate($size);
     }
 
 
-    public static function getByTagIdAndFilterAndLimit(int $tag_id , array $filter = [] , int $limit = 0): Collection
+    public static function getByTagIdAndFilterAndLimit(int $tag_id , array $filter = [] , int $size = 0): Collection
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -124,12 +124,12 @@ class ImageProjectModel extends Model
             })
             ->orderBy('ip.created_at' , 'desc')
             ->orderBy('ip.id' , 'asc')
-            ->limit($limit)
+            ->limit($size)
             ->get();
     }
 
     // 标签对应的图片专题-非严格模式匹配
-    public static function getByTagIdsAndFilterAndLimit(array $tag_ids = [] , array $filter = [] , int $limit = 0): Paginator
+    public static function getByTagIdsAndFilterAndLimit(array $tag_ids = [] , array $filter = [] , int $size = 0): Paginator
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -160,11 +160,11 @@ class ImageProjectModel extends Model
             })
             ->orderBy('ip.created_at' , 'desc')
             ->orderBy('ip.id' , 'asc')
-            ->paginate($limit);
+            ->paginate($size);
     }
 
     // 标签对应的图片专题-严格模式匹配
-    public static function getInStrictByTagIdsAndFilterAndLimit(array $tag_ids = [] , array $filter = [] , int $limit = 0): Paginator
+    public static function getInStrictByTagIdsAndFilterAndLimit(array $tag_ids = [] , array $filter = [] , int $size = 0): Paginator
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -198,10 +198,10 @@ class ImageProjectModel extends Model
             })
             ->orderBy('ip.created_at' , 'desc')
             ->orderBy('ip.id' , 'asc')
-            ->paginate($limit);
+            ->paginate($size);
     }
 
-    public static function getNewestWithPagerByFilterAndLimit(array $filter = [] , int $limit = 0): Paginator
+    public static function getNewestWithPagerByFilterAndLimit(array $filter = [] , int $size = 0): Paginator
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -221,10 +221,10 @@ class ImageProjectModel extends Model
         return self::where($where)
             ->orderBy('created_at' , 'desc')
             ->orderBy('id' , 'asc')
-            ->paginate($limit);
+            ->paginate($size);
     }
 
-    public static function getWithPagerInStrictByFilterAndOrderAndLimit(array $filter = [] , $order = null , int $limit = 20)
+    public static function getWithPagerInStrictByFilterAndOrderAndLimit(array $filter = [] , $order = null , int $size = 20)
     {
         $filter['value']        = $filter['value'] ?? '';
         $filter['module_id']    = $filter['module_id'] ?? '';
@@ -276,10 +276,10 @@ class ImageProjectModel extends Model
             })
             ->orderBy("ip.{$order['field']}" , $order['value'])
             ->orderBy('ip.id' , 'desc')
-            ->paginate($limit);
+            ->paginate($size);
     }
 
-    public static function getWithPagerInLooseByFilterAndOrderAndLimit(array $filter = [] , $order = null , int $limit = 20)
+    public static function getWithPagerInLooseByFilterAndOrderAndLimit(array $filter = [] , $order = null , int $size = 20)
     {
         $filter['value']        = $filter['value'] ?? '';
         $filter['module_id']    = $filter['module_id'] ?? '';
@@ -328,7 +328,7 @@ class ImageProjectModel extends Model
             })
             ->orderBy("ip.{$order['field']}" , $order['value'])
             ->orderBy('ip.id' , 'desc')
-            ->paginate($limit);
+            ->paginate($size);
     }
 
     public static function countHandle(int $id , string $field , string $mode = '' , int $step = 1)
@@ -336,7 +336,7 @@ class ImageProjectModel extends Model
         return self::where('id' , $id)->$mode($field , $step);
     }
 
-    public static function recommendExcludeSelfByFilterAndLimit(int $self_id , array $filter = [] , int $limit = 20): Collection
+    public static function recommendExcludeSelfByFilterAndLimit(int $self_id , array $filter = [] , int $size = 20): Collection
     {
         $filter['module_id']    = $filter['module_id'] ?? '';
         $filter['category_id']  = $filter['category_id'] ?? '';
@@ -367,7 +367,7 @@ class ImageProjectModel extends Model
             ->orderBy('view_count' , 'desc')
             ->orderBy('praise_count' , 'desc')
             ->orderBy('created_at' , 'desc')
-            ->limit($limit)
+            ->limit($size)
             ->get();
     }
 }

@@ -533,7 +533,7 @@ export default {
             this.pending('getHistories' , true);
             Api.user
                 .lessHistory({
-                    limit: TopContext.limit
+                    size: TopContext.size
                 })
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
@@ -666,7 +666,7 @@ export default {
             this.pending('getCollectionGroupWithCollection' , true);
             Api.user
                 .lessCollectionGroupWithCollection({
-                    // limit: TopContext.limit
+                    // size: TopContext.size
                 })
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {

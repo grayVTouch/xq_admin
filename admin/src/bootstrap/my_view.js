@@ -24,6 +24,7 @@ import mySearchForm from '@vue/view/public/common/my_search_form.vue';
 import mySearchFormItem from '@vue/view/public/common/my_search_form_item.vue';
 import myVideoPreview from '@vue/view/public/common/my_video_preview.vue';
 import myResourceSelector from '@vue/view/public/core/selector/my_resource_selector.vue';
+import myImagePreview from '@vue/view/public/common/my_image_preview.vue';
 
 Vue.component('my-base' , myBase);
 // Vue.component('my-loading' , loading);
@@ -54,5 +55,6 @@ Vue.component('my-resource-selector' , myResourceSelector);
 Vue.component('my-search-form' , mySearchForm);
 Vue.component('my-search-form-item' , mySearchFormItem);
 Vue.component('my-video-preview' , myVideoPreview);
+Vue.component('my-image-preview' , myImagePreview);
 
 

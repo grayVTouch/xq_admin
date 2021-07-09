@@ -3,7 +3,7 @@ import mixin from './mixin.js';
 const collections = {
     page: 1 ,
     total: 0 ,
-    limit: TopContext.limit ,
+    size: TopContext.size ,
     data: [] ,
 };
 
@@ -151,7 +151,7 @@ export default {
             this.pending('getCollections' , true);
             Api.user
                 .collections({
-                    limit: this.collections.limit ,
+                    size: this.collections.size ,
                     page: this.collections.page ,
                     collection_group_id: collectionGroupId ,
                     ...this.search ,

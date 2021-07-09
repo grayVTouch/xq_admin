@@ -31,7 +31,7 @@
                     </i-table>
                 </div>
                 <div class="pager">
-                    <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
+                    <my-page :total="table.total" :size="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
                 </div>
             </div>
         </template>
@@ -68,7 +68,7 @@
                 slot: 'action' ,
             } ,
         ] ,
-        limit: TopContext.limit ,
+        size: TopContext.size ,
         search: {
             value: '' ,
         } ,

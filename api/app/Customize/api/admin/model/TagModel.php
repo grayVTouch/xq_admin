@@ -12,7 +12,7 @@ class TagModel extends Model
 {
     protected $table = 'xq_tag';
 
-    public static function index(array $filter = [] , array $order = [] , int $limit = 20): Paginator
+    public static function index(array $filter = [] , array $order = [] , int $size = 20): Paginator
     {
         $filter['id']           = $filter['id'] ?? '';
         $filter['name']         = $filter['name'] ?? '';
@@ -37,7 +37,7 @@ class TagModel extends Model
 
         return self::where($where)
             ->orderBy($order['field'] , $order['value'])
-            ->paginate($limit);
+            ->paginate($size);
     }
 
     public static function search(string $value = ''): Collection
@@ -47,11 +47,11 @@ class TagModel extends Model
             ->get();
     }
 
-    public static function topByModuleId(int $module_id = 0 , int $limit = 10): Collection
+    public static function topByModuleId(int $module_id = 0 , int $size = 10): Collection
     {
         return self::where('module_id' , $module_id)
             ->orderBy('count' , 'desc')
-            ->limit($limit)
+            ->limit($size)
             ->get();
     }
 

@@ -26,8 +26,8 @@ class UserAction extends Action
 
     public static function search(Base $context , array $param = [])
     {
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = UserModel::search($param['value'] , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = UserModel::search($param['value'] , $size);
         $res = UserHandler::handlePaginator($res);
         return self::success('' , $res);
     }
@@ -35,8 +35,8 @@ class UserAction extends Action
     public static function index(Base $context , array $param = [])
     {
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
-        $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $res = UserModel::index($param , $order , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = UserModel::index($param , $order , $size);
         $res = UserHandler::handlePaginator($res);
         return self::success('' , $res);
     }

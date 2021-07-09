@@ -7,15 +7,6 @@
             <div class="filter">
                 <div class="condition">
                     <div class="filter-selector horizontal" ref="filter-selector-in-horizontal">
-                        <div class="action item" @click.stop="showCategorySelector" v-ripple>
-                            <div class="inner">
-                                <my-icon icon="leimupinleifenleileibie" /> 分类
-                                <span class="number" v-if="categories.selected.length > 0">
-                                <template v-if="categories.selected.length < 10">{{ categories.selected.length }}</template>
-                                <template v-else>9+</template>
-                            </span>
-                            </div>
-                        </div>
 
                         <div class="action item" @click.stop="showVideoSeriesSelector" v-ripple>
                             <div class="inner">
@@ -32,6 +23,16 @@
                                 <my-icon icon="gongsi" /> 制作公司
                                 <span class="number" v-if="videoCompanies.selected.length > 0">
                                 <template v-if="videoCompanies.selected.length < 10">{{ videoCompanies.selected.length }}</template>
+                                <template v-else>9+</template>
+                            </span>
+                            </div>
+                        </div>
+
+                        <div class="action item" @click.stop="showCategorySelector" v-ripple>
+                            <div class="inner">
+                                <my-icon icon="leimupinleifenleileibie" /> 分类
+                                <span class="number" v-if="categories.selected.length > 0">
+                                <template v-if="categories.selected.length < 10">{{ categories.selected.length }}</template>
                                 <template v-else>9+</template>
                             </span>
                             </div>
@@ -131,7 +132,7 @@
             </div>
 
             <div class="pager">
-                <my-page :total="videoProjects.total" :limit="videoProjects.limit" :page="videoProjects.page" @on-change="toPageInImageProject"></my-page>
+                <my-page :total="videoProjects.total" :limit="videoProjects.size" :page="videoProjects.page" @on-change="toPageInImageProject"></my-page>
             </div>
 
         </div>
@@ -140,16 +141,6 @@
         <div class="filter-fixed-in-slidebar hide" ref="filter-fiexed-in-slidebar">
 
             <div class="filter-selector vertical">
-
-                <div class="action item" @click.stop="showCategorySelector" v-ripple>
-                    <div class="inner">
-                        <my-icon icon="leimupinleifenleileibie" /> 分类
-                        <span class="number" v-if="categories.selected.length > 0">
-                        <template v-if="categories.selected.length < 10">{{ categories.selected.length }}</template>
-                        <template v-else>9+</template>
-                    </span>
-                    </div>
-                </div>
 
                 <div class="action item" @click.stop="showVideoSeriesSelector" v-ripple>
                     <div class="inner">
@@ -168,6 +159,16 @@
                                 <template v-if="videoCompanies.selected.length < 10">{{ videoCompanies.selected.length }}</template>
                                 <template v-else>9+</template>
                             </span>
+                    </div>
+                </div>
+
+                <div class="action item" @click.stop="showCategorySelector" v-ripple>
+                    <div class="inner">
+                        <my-icon icon="leimupinleifenleileibie" /> 分类
+                        <span class="number" v-if="categories.selected.length > 0">
+                        <template v-if="categories.selected.length < 10">{{ categories.selected.length }}</template>
+                        <template v-else>9+</template>
+                    </span>
                     </div>
                 </div>
 
@@ -268,7 +269,7 @@
                         </div>
                     </div>
                     <div class="pager">
-                        <my-page :total="videoSeries.total" :limit="videoSeries.limit" :page="videoSeries.page" @on-change="toPageInVideoSeries"></my-page>
+                        <my-page :total="videoSeries.total" :limit="videoSeries.size" :page="videoSeries.page" @on-change="toPageInVideoSeries"></my-page>
                     </div>
                 </div>
             </div>
@@ -313,7 +314,7 @@
                         </div>
                     </div>
                     <div class="pager">
-                        <my-page :total="videoCompanies.total" :limit="videoCompanies.limit" :page="videoCompanies.page" @on-change="toPageInVideoCompany"></my-page>
+                        <my-page :total="videoCompanies.total" :limit="videoCompanies.size" :page="videoCompanies.page" @on-change="toPageInVideoCompany"></my-page>
                     </div>
                 </div>
             </div>
@@ -365,7 +366,7 @@
                             <my-button class="tag" v-for="v in tags.data" :class="{selected: tags.selectedIds.indexOf(v.tag_id) >= 0}" :key="v.id" @click="filterByTag(v)">{{ v.name }}</my-button>
                         </div>
                         <div class="pager" v-if="tags.total > 0">
-                            <my-page :total="tags.total" :limit="tags.limit" :page="tags.page" @on-change="toPageInTag"></my-page>
+                            <my-page :total="tags.total" :limit="tags.size" :page="tags.page" @on-change="toPageInTag"></my-page>
                         </div>
                     </div>
                 </div>

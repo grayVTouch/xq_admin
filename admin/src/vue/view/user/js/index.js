@@ -7,7 +7,7 @@ const form = {
 const current = {id: 0};
 
 const search = {
-    limit: TopContext.limit ,
+    size: TopContext.size ,
 };
 
 export default {
@@ -115,6 +115,8 @@ export default {
                 ] ,
                 total: 0 ,
                 page: 1 ,
+                size: 0 ,
+                sizes: TopContext.sizes ,
                 data: [] ,
             } ,
             search: G.copy(search) ,
@@ -160,6 +162,7 @@ export default {
                     }
                     const data = res.data;
                     this.table.total = data.total;
+                    this.table.size = data.per_page;
                     this.table.page = data.current_page;
                     this.handleData(data.data);
                     this.table.data = data.data;
@@ -307,8 +310,15 @@ export default {
             this.getData();
         } ,
 
-        pageEvent (page) {
+        pageEvent (page , size) {
             this.search.page = page;
+            this.search.size = size;
+            this.getData();
+        } ,
+
+        sizeEvent (size , page) {
+            this.search.page = page;
+            this.search.size = size;
             this.getData();
         } ,
 

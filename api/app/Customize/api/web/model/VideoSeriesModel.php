@@ -9,7 +9,7 @@ class VideoSeriesModel extends Model
 {
     protected $table = 'xq_video_series';
 
-    public static function index($field = null , array $filter = [] , array $order = null , int $limit = 20): Paginator
+    public static function index($field = null , array $filter = [] , array $order = null , int $size = 20): Paginator
     {
         $field = $field ?? '*';
         $filter = $filter ?? [];
@@ -42,6 +42,6 @@ class VideoSeriesModel extends Model
 
         return $query
             ->orderBy($order['field'] , $order['value'])
-            ->paginate($limit);
+            ->paginate($size);
     }
 }

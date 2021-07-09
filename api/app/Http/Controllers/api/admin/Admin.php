@@ -40,7 +40,7 @@ class Admin extends Base
         $param['role_id']   = $param['role_id'] ?? '';
         $param['is_root']   = $param['is_root'] ?? '';
         $param['order']     = $param['order'] ?? '';
-        $param['limit']     = $param['limit'] ?? '';
+        $param['size']     = $param['size'] ?? '';
 
         $res = AdminAction::index($this , $param);
 

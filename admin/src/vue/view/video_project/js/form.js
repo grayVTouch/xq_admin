@@ -58,7 +58,7 @@ export default {
 
             // 搜索条件
             search: {
-                limit: TopContext.limit
+                size: TopContext.size
             } ,
 
             // 模块
@@ -124,7 +124,18 @@ export default {
                 });
         } ,
 
+        refreshCategories () {
+            if (this.form.module_id < 1) {
+                this.errorHandle('请选择模块');
+                return ;
+            }
+            this.getCategories();
+        } ,
+
         getCategories (callback) {
+            if (this.form.module_id < 1) {
+                return ;
+            }
             this.pending('getCategories' , true);
             Api.category
                 .search({
@@ -221,6 +232,8 @@ export default {
                 this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
                 return ;
             }
+            form.release_date = form.release_data ? form.release_date : '';
+            form.end_date = form.end_date ? form.end_date : '';
             const thenCallback = (res) => {
                 this.error();
                 if (res.code !== TopContext.code.Success) {

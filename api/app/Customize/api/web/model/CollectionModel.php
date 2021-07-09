@@ -95,7 +95,7 @@ class CollectionModel extends Model
         ])->count();
     }
 
-    public static function getByModuleIdAndUserIdAndCollectionGroupIdAndLimit(int $module_id , string $user_id , int $collection_group_id , int $limit = 20): Collection
+    public static function getByModuleIdAndUserIdAndCollectionGroupIdAndLimit(int $module_id , string $user_id , int $collection_group_id , int $size = 20): Collection
     {
         return self::where([
                 ['module_id' , '=' , $module_id] ,
@@ -103,11 +103,11 @@ class CollectionModel extends Model
                 ['collection_group_id' , '=' , $collection_group_id] ,
             ])
             ->orderBy('created_at' , 'desc')
-            ->limit($limit)
+            ->limit($size)
             ->get();
     }
 
-    public static function getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndLimit(int $module_id , int $user_id , int $collection_group_id , string $relation_type = '' , int $limit = 20): Paginator
+    public static function getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndLimit(int $module_id , int $user_id , int $collection_group_id , string $relation_type = '' , int $size = 20): Paginator
     {
         $where = [
             ['module_id' , '=' , $module_id] ,
@@ -119,10 +119,10 @@ class CollectionModel extends Model
         }
         return self::where($where)
             ->orderBy('created_at' , 'desc')
-            ->paginate($limit);
+            ->paginate($size);
     }
 
-    public static function getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndValueAndRelationTypeAndLimit(int $module_id , int $user_id , int $collection_group_id , string $value = '' , string $relation_type = '' , int $limit = 20): Paginator
+    public static function getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndValueAndRelationTypeAndLimit(int $module_id , int $user_id , int $collection_group_id , string $value = '' , string $relation_type = '' , int $size = 20): Paginator
     {
 //        print_r(func_get_args());
         $where = [
@@ -179,7 +179,7 @@ class CollectionModel extends Model
 
         return $query->where($where)
             ->orderBy('c.created_at' , 'desc')
-            ->paginate($limit);
+            ->paginate($size);
     }
 
     public static function countByUserId(int $user_id)

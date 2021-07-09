@@ -134,6 +134,7 @@
 
 .view > .content .image-subject .images .image {
     max-width: 100%;
+    cursor: pointer;
 }
 
 

@@ -17,21 +17,33 @@ class ResourceUtil
      * @param string $disk
      * @param int $is_used
      * @param int $is_deleted
-     * @return int
+     * @return void
      */
-    public static function create(string $url , string $path , string $disk , int $is_used = 0 , int $is_deleted = 0): int
+    public static function create(string $url , string $path , string $disk , int $is_used = 0 , int $is_deleted = 0): void
     {
         if (empty($path)) {
-            return -1;
+            return ;
         }
         $datetime = current_datetime();
-        return ResourceModel::insertGetId([
-            'url'           => $url ,
+
+        $res = ResourceModel::findByUrl($url);
+        if (empty($res)) {
+            ResourceModel::insert([
+                'url'           => $url ,
+                'path'          => $path ,
+                'disk'          => $disk ,
+                'is_used'       => $is_used ,
+                'is_deleted'    => $is_deleted ,
+                'created_at'    => $datetime ,
+            ]);
+            return ;
+        }
+        ResourceModel::updateByUrl($url , [
             'path'          => $path ,
             'disk'          => $disk ,
             'is_used'       => $is_used ,
             'is_deleted'    => $is_deleted ,
-            'created_at'    => $datetime ,
+            'updated_at'    => $datetime ,
         ]);
     }
 
@@ -45,7 +57,7 @@ class ResourceUtil
      */
     public static function delete(string $url): int
     {
-        if (empty($path)) {
+        if (empty($url)) {
             return -1;
         }
         return ResourceModel::updateByUrl($url , [
@@ -55,7 +67,7 @@ class ResourceUtil
 
     public static function used(string $url): int
     {
-        if (empty($path)) {
+        if (empty($url)) {
             return -1;
         }
         return ResourceModel::updateByUrl($url , [

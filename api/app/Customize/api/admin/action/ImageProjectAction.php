@@ -49,8 +49,8 @@ class ImageProjectAction extends Action
             return self::error($validator->errors()->first() , $validator->errors());
         }
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
-        $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $res = ImageProjectModel::index($param , $order , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = ImageProjectModel::index($param , $order , $size);
         $res = ImageProjectHandler::handlePaginator($res);
         foreach ($res->data as $v)
         {
@@ -187,7 +187,7 @@ class ImageProjectAction extends Action
             {
                 ImageModel::insertGetId([
                     'image_project_id'  => $image_project->id ,
-                    'src'               => $v ,
+                    'original_src'      => $v ,
                     'updated_at'        => $datetime ,
                     'created_at'        => $datetime ,
                 ]);
@@ -303,7 +303,7 @@ class ImageProjectAction extends Action
             {
                 ImageModel::insertGetId([
                     'image_project_id'  => $id ,
-                    'src'               => $v ,
+                    'original_src'      => $v ,
                     'updated_at'        => $datetime ,
                     'created_at'        => $datetime ,
                 ]);

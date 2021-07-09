@@ -25,8 +25,8 @@ class ImageSubjectAction extends Action
     public static function index(Base $context , array $param = [])
     {
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
-        $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $res = ImageSubjectModel::index($param , $order , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = ImageSubjectModel::index($param , $order , $size);
         $res = ImageSubjectHandler::handlePaginator($res);
         foreach ($res->data as $v)
         {
@@ -211,8 +211,8 @@ class ImageSubjectAction extends Action
         if (empty($param['module_id'])) {
             return self::error('请提供 module_id');
         }
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = ImageSubjectModel::search($param['module_id'] , $param['value'] , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = ImageSubjectModel::search($param['module_id'] , $param['value'] , $size);
         $res = ImageSubjectHandler::handlePaginator($res);
         foreach ($res->data as $v)
         {

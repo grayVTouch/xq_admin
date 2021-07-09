@@ -12,7 +12,7 @@ class ImageSubjectModel extends Model
 {
     protected $table = 'xq_image_subject';
 
-    public static function index(array $filter = [] , array $order = [] , int $limit = 20): Paginator
+    public static function index(array $filter = [] , array $order = [] , int $size = 20): Paginator
     {
         $filter['id'] = $filter['id'] ?? '';
         $filter['name'] = $filter['name'] ?? '';
@@ -27,7 +27,7 @@ class ImageSubjectModel extends Model
         }
         return self::where($where)
             ->orderBy($order['field'] , $order['value'])
-            ->paginate($limit);
+            ->paginate($size);
     }
 
     public static function search(string $value = ''): Collection
@@ -37,7 +37,7 @@ class ImageSubjectModel extends Model
             ->get();
     }
 
-    public static function getWithPagerInImageProjectByModuleIdAndValueAndLimit(int $module_id , string $value = '' , int $limit = 20)
+    public static function getWithPagerInImageProjectByModuleIdAndValueAndLimit(int $module_id , string $value = '' , int $size = 20)
     {
         return self::from('xq_image_subject as is')
             ->where('name' , 'like' , "%{$value}%")
@@ -51,6 +51,6 @@ class ImageSubjectModel extends Model
                     ])
                     ->whereRaw('is.id = image_subject_id');
             })
-            ->paginate($limit);
+            ->paginate($size);
     }
 }

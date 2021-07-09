@@ -18,7 +18,7 @@ class RegionModel extends Model
             ->get();
     }
 
-    public static function index(array $filter = [] , int $limit = 20): Paginator
+    public static function index(array $filter = [] , int $size = 20): Paginator
     {
         $filter['value'] = $filter['value'] ?? '';
         $filter['type'] = $filter['type'] ?? '';
@@ -33,6 +33,6 @@ class RegionModel extends Model
                     ->orWhere('name' , 'like' , "%{$filter['value']}%");
             })
             ->orderBy('id' , 'asc')
-            ->paginate($limit);
+            ->paginate($size);
     }
 }

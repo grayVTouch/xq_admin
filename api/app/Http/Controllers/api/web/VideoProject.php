@@ -15,7 +15,7 @@ class VideoProject extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['limit']     = $param['limit'] ?? '';
+        $param['size']     = $param['size'] ?? '';
         $res = VideoProjectAction::newest($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -27,7 +27,7 @@ class VideoProject extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['limit']     = $param['limit'] ?? '';
+        $param['size']     = $param['size'] ?? '';
         $res = VideoProjectAction::hot($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -39,7 +39,7 @@ class VideoProject extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['limit']     = $param['limit'] ?? '';
+        $param['size']     = $param['size'] ?? '';
         $res = VideoProjectAction::hotWithPager($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -52,7 +52,7 @@ class VideoProject extends Base
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
         $param['type']      = $param['type'] ?? '';
-        $param['limit']     = $param['limit'] ?? '';
+        $param['size']     = $param['size'] ?? '';
         $res = VideoProjectAction::newestWithPager($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -67,7 +67,7 @@ class VideoProject extends Base
 
         $param['module_id'] = $param['module_id'] ?? '';
         $param['tag_id']      = $param['tag_id'] ?? '';
-        $param['limit']     = $param['limit'] ?? '';
+        $param['size']     = $param['size'] ?? '';
 
         $res = VideoProjectAction::getByTagId($this , $param);
         if ($res['code'] !== 0) {
@@ -84,7 +84,7 @@ class VideoProject extends Base
         $param['module_id'] = $param['module_id'] ?? '';
         $param['tag_ids']   = $param['tag_ids'] ?? '';
         $param['mode']      = $param['mode'] ?? '';
-        $param['limit']     = $param['limit'] ?? '';
+        $param['size']     = $param['size'] ?? '';
 
         $res = VideoProjectAction::getWithPagerByTagIds($this , $param);
         if ($res['code'] !== 0) {
@@ -100,7 +100,7 @@ class VideoProject extends Base
 
         $param['module_id'] = $param['module_id'] ?? '';
         $param['type']      = $param['type'] ?? '';
-        $param['limit']     = $param['limit'] ?? '';
+        $param['size']     = $param['size'] ?? '';
 
         $res = VideoProjectAction::hotTags($this , $param);
         if ($res['code'] !== 0) {
@@ -114,7 +114,7 @@ class VideoProject extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $param['value'] = $param['value'] ?? '';
         $res = VideoProjectAction::hotTagsWithPager($this , $param);
         if ($res['code'] !== 0) {
@@ -192,7 +192,7 @@ class VideoProject extends Base
         $param = $this->request->query();
 
         $param['type']  = $param['type'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
 
         $res = VideoProjectAction::recommend($this , $image_subject_id , $param);
         if ($res['code'] !== 0) {

@@ -25,6 +25,7 @@ class ImageProjectUtil
         foreach ($res->images as $v)
         {
             ResourceUtil::delete($v->src);
+            ResourceUtil::delete($v->original_src);
         }
         $comment_images = ImageProjectCommentImageModel::getByImageProjectId($res->id);
         foreach ($comment_images as $v)

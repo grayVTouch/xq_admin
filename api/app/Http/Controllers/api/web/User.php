@@ -95,7 +95,7 @@ class User extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $res = UserAction::lessHistory($this , $param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -109,7 +109,7 @@ class User extends Base
         $param['module_id'] = $param['module_id'] ?? '';
         $param['relation_type'] = $param['relation_type'] ?? '';
         $param['value'] = $param['value'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $res = UserAction::histories($this , $param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -240,7 +240,7 @@ class User extends Base
         $param = $this->request->post();
         $param['module_id'] = $param['module_id'] ?? '';
         $param['collection_group_id'] = $param['collection_group_id'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $res = UserAction::lessRelationInCollection($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
@@ -331,7 +331,7 @@ class User extends Base
         $param['collection_group_id'] = $param['collection_group_id'] ?? '';
         $param['relation_type'] = $param['relation_type'] ?? '';
         $param['value'] = $param['value'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $res = UserAction::collections($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
@@ -379,7 +379,7 @@ class User extends Base
     public function myFocusUser(int $user_id)
     {
         $param = $this->request->query();
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $res = UserAction::myFocusUser($this , $user_id , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
@@ -390,7 +390,7 @@ class User extends Base
     public function focusMeUser(int $user_id)
     {
         $param = $this->request->query();
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $res = UserAction::focusMeUser($this , $user_id , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);

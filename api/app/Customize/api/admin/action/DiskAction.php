@@ -24,8 +24,8 @@ class DiskAction extends Action
     public static function index(Base $context , array $param = [])
     {
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
-        $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $res = DiskModel::index($param , $order , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = DiskModel::index($param , $order , $size);
         $res = DiskHandler::handlePaginator($res);
         return self::success('' , $res);
     }

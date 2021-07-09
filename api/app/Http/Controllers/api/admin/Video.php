@@ -22,7 +22,7 @@ class video extends Base
         $param['type']         = $param['type'] ?? '';
         $param['status']       = $param['status'] ?? '';
         $param['order'] = $param['order'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
 
         $res = VideoAction::index($this , $param);
 

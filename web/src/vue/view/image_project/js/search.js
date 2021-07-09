@@ -10,7 +10,7 @@ const tags = {
     selectedIds: [] ,
     data: [] ,
     page: 1 ,
-    limit: TopContext.limit ,
+    size: TopContext.size ,
     total: 1 ,
     mode: 'strict' ,
     value: '' ,
@@ -22,7 +22,7 @@ const imageSubjects = {
     selectedIds: [] ,
     data: [] ,
     page: 1 ,
-    limit: TopContext.limit ,
+    size: TopContext.size ,
     total: 0 ,
     value: '' ,
 };
@@ -30,7 +30,7 @@ const imageSubjects = {
 const images = {
     data: [] ,
     value: '' ,
-    limit: TopContext.limit ,
+    size: TopContext.size ,
     total: 0 ,
     page: 1 ,
     order: '' ,
@@ -464,7 +464,7 @@ export default {
             this.pending('getTags' , true);
             Api.imageProject
                 .hotTagsWithPager({
-                    limit: this.tags.limit ,
+                    size: this.tags.size ,
                     page:  this.tags.page ,
                     value: this.tags.value ,
                     type: this.tags.type ,
@@ -507,7 +507,7 @@ export default {
             Api.imageProject
                 .imageSubjects({
                     page: this.imageSubjects.page ,
-                    limit: this.imageSubjects.limit ,
+                    size: this.imageSubjects.size ,
                     value: this.imageSubjects.value ,
                 })
                 .then((res) => {
@@ -547,7 +547,7 @@ export default {
                 .index({
                     page: this.images.page ,
                     mode: this.tags.mode ,
-                    limit: this.images.limit ,
+                    size: this.images.size ,
                     category_ids: G.jsonEncode(this.categories.selectedIds) ,
                     image_subject_ids: G.jsonEncode(this.imageSubjects.selectedIds) ,
                     tag_ids: G.jsonEncode(this.tags.selectedIds) ,

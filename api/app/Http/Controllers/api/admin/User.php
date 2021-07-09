@@ -14,7 +14,7 @@ class User extends Base
     {
         $param = $this->request->query();
         $param['value'] = $param['value'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $res = UserAction::search($this , $param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -32,7 +32,7 @@ class User extends Base
         $param['phone']     = $param['phone'] ?? '';
         $param['email']     = $param['email'] ?? '';
         $param['order']     = $param['order'] ?? '';
-        $param['limit']     = $param['limit'] ?? '';
+        $param['size']     = $param['size'] ?? '';
 
         $res = UserAction::index($this , $param);
 

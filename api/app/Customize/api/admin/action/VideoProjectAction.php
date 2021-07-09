@@ -30,8 +30,8 @@ class VideoProjectAction extends Action
     public static function index(Base $context , array $param = [])
     {
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
-        $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $res = VideoProjectModel::index($param , $order , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = VideoProjectModel::index($param , $order , $size);
         $res = VideoProjectHandler::handlePaginator($res);
         foreach ($res->data as $v)
         {
@@ -58,8 +58,8 @@ class VideoProjectAction extends Action
         $status_range       = my_config_keys('business.status_for_video_project');
         $validator = Validator::make($param , [
             'name'              => 'required' ,
-            'release_date'      => 'sometimes|date_format:Y-m-d' ,
-            'end_date'          => 'sometimes|date_format:Y-m-d' ,
+//            'release_date'      => 'sometimes|date_format:Y-m-d' ,
+//            'end_date'          => 'sometimes|date_format:Y-m-d' ,
             'end_status'        => ['required' , Rule::in($end_status_range)] ,
             'status'            => ['required' , 'integer' , Rule::in($status_range)] ,
             'count'             => 'sometimes|integer' ,
@@ -115,7 +115,9 @@ class VideoProjectAction extends Action
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
         $param['updated_at']    = $datetime;
         $tags                   = $param['tags'] === '' ? [] : json_decode($param['tags'] , true);
-        $param['release_year']  = $param['release_date'] === '' ? null : date('Y' , strtotime($param['release_date']));
+        $param['release_date']  = empty($param['release_date']) ? null : $param['release_date'];
+        $param['end_date']      = empty($param['end_date']) ? null : $param['end_date'];
+        $param['release_year']  = empty($param['release_date']) ? null : date('Y' , strtotime($param['release_date']));
         try {
             DB::beginTransaction();
             VideoProjectModel::updateById($video_project->id , array_unit($param , [
@@ -189,8 +191,8 @@ class VideoProjectAction extends Action
         $status_range       = my_config_keys('business.status_for_video_project');
         $validator = Validator::make($param , [
             'name'              => 'required' ,
-            'release_date'      => 'sometimes|date_format:Y-m-d' ,
-            'end_date'          => 'sometimes|date_format:Y-m-d' ,
+//            'release_date'      => 'sometimes|date_format:Y-m-d' ,
+//            'end_date'          => 'sometimes|date_format:Y-m-d' ,
             'end_status'        => ['required' , Rule::in($end_status_range)] ,
             'status'            => ['required' , 'integer' , Rule::in($status_range)] ,
             'count'             => 'sometimes|integer' ,
@@ -242,7 +244,9 @@ class VideoProjectAction extends Action
 
 //        var_dump($param['release_date']);
 
-//        $param['release_year']  = $param['release_date'] === '' ? null : date('Y' , strtotime($param['release_date']));
+        $param['release_date']  = empty($param['release_date']) ? null : $param['release_date'];
+        $param['end_date']      = empty($param['end_date']) ? null : $param['end_date'];
+        $param['release_year']  = empty($param['release_date']) ? null : date('Y' , strtotime($param['release_date']));
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
         $param['updated_at']    = $datetime;
         $param['created_at']    = $datetime;
@@ -383,8 +387,8 @@ class VideoProjectAction extends Action
         if (empty($param['module_id'])) {
             return self::error('请提供 module_id');
         }
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = VideoProjectModel::search($param['module_id'] , $param['value'] , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = VideoProjectModel::search($param['module_id'] , $param['value'] , $size);
         $res = VideoProjectHandler::handlePaginator($res);
         foreach ($res->data as $v)
         {

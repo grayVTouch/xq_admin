@@ -35,8 +35,8 @@ class VideoAction extends Action
     public static function index(Base $context , array $param = []): array
     {
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
-        $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $res = VideoModel::index($param , $order , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = VideoModel::index($param , $order , $size);
         $res = VideoHandler::handlePaginator($res);
         foreach ($res->data as $v)
         {

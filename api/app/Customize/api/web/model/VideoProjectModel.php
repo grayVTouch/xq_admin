@@ -13,7 +13,7 @@ class VideoProjectModel extends Model
 {
     protected $table = 'xq_video_project';
 
-    public static function getNewestByFilterAndLimit(array $filter = [] , int $limit = 0): Collection
+    public static function getNewestByFilterAndLimit(array $filter = [] , int $size = 0): Collection
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
 
@@ -26,11 +26,11 @@ class VideoProjectModel extends Model
         return self::where($where)
             ->orderBy('created_at' , 'desc')
             ->orderBy('id' , 'asc')
-            ->limit($limit)
+            ->limit($size)
             ->get();
     }
 
-    public static function getHotByFilterAndLimit(array $filter = [] , int $limit = 0): Collection
+    public static function getHotByFilterAndLimit(array $filter = [] , int $size = 0): Collection
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
 
@@ -54,11 +54,11 @@ class VideoProjectModel extends Model
             ->orderBy('against_count' , 'asc')
             ->orderBy('vs.created_at' , 'desc')
             ->orderBy('vs.id' , 'asc')
-            ->limit($limit)
+            ->limit($size)
             ->get();
     }
 
-    public static function getHotWithPagerByFilterAndLimit(array $filter = [] , int $limit = 0): Paginator
+    public static function getHotWithPagerByFilterAndLimit(array $filter = [] , int $size = 0): Paginator
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
 
@@ -85,11 +85,11 @@ class VideoProjectModel extends Model
             ->orderBy('against_count' , 'asc')
             ->orderBy('vs.created_at' , 'desc')
             ->orderBy('vs.id' , 'asc')
-            ->paginate($limit);
+            ->paginate($size);
     }
 
 
-    public static function getByTagIdAndFilterAndLimit(int $tag_id , array $filter = [] , int $limit = 0): Collection
+    public static function getByTagIdAndFilterAndLimit(int $tag_id , array $filter = [] , int $size = 0): Collection
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
 
@@ -114,12 +114,12 @@ class VideoProjectModel extends Model
             })
             ->orderBy('vs.created_at' , 'desc')
             ->orderBy('vs.id' , 'asc')
-            ->limit($limit)
+            ->limit($size)
             ->get();
     }
 
     // 标签对应的图片专题-非严格模式匹配
-    public static function getByTagIdsAndFilterAndLimit(array $tag_ids = [] , array $filter = [] , int $limit = 0): Paginator
+    public static function getByTagIdsAndFilterAndLimit(array $tag_ids = [] , array $filter = [] , int $size = 0): Paginator
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
 
@@ -141,11 +141,11 @@ class VideoProjectModel extends Model
             })
             ->orderBy('vs.created_at' , 'desc')
             ->orderBy('vs.id' , 'asc')
-            ->paginate($limit);
+            ->paginate($size);
     }
 
     // 标签对应的图片专题-严格模式匹配
-    public static function getInStrictByTagIdsAndFilterAndLimit(array $tag_ids = [] , array $filter = [] , int $limit = 0): Paginator
+    public static function getInStrictByTagIdsAndFilterAndLimit(array $tag_ids = [] , array $filter = [] , int $size = 0): Paginator
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
 
@@ -171,10 +171,10 @@ class VideoProjectModel extends Model
             })
             ->orderBy('vs.created_at' , 'desc')
             ->orderBy('vs.id' , 'asc')
-            ->paginate($limit);
+            ->paginate($size);
     }
 
-    public static function getNewestWithPagerByFilterAndLimit(array $filter = [] , int $limit = 0): Paginator
+    public static function getNewestWithPagerByFilterAndLimit(array $filter = [] , int $size = 0): Paginator
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
 
@@ -187,17 +187,17 @@ class VideoProjectModel extends Model
         return self::where($where)
             ->orderBy('created_at' , 'desc')
             ->orderBy('id' , 'asc')
-            ->paginate($limit);
+            ->paginate($size);
     }
 
-    public static function getWithPagerInStrictByFilterAndOrderAndLimit(array $filter = [] , $order = null , int $limit = 20)
+    public static function getWithPagerInStrictByFilterAndOrderAndLimit(array $filter = [] , $order = null , int $size = 20)
     {
         $filter['value']        = $filter['value'] ?? '';
         $filter['module_id']    = $filter['module_id'] ?? '';
         $filter['tag_ids']      = $filter['tag_ids'] ?? [];
         $filter['video_series_ids']      = $filter['video_series_ids'] ?? [];
         $filter['video_company_ids']      = $filter['video_company_ids'] ?? [];
-        $filter['category_ids']      = $filter['video_company_ids'] ?? [];
+        $filter['category_ids']      = $filter['category_ids'] ?? [];
 
         $order = $order ?? ['field' => 'created_at' , 'value' => 'desc'];
 
@@ -243,17 +243,17 @@ class VideoProjectModel extends Model
 
         return $query->orderBy("vp.{$order['field']}" , $order['value'])
             ->orderBy('vp.id' , 'desc')
-            ->paginate($limit);
+            ->paginate($size);
     }
 
-    public static function getWithPagerInLooseByFilterAndOrderAndLimit(array $filter = [] , $order = null , int $limit = 20)
+    public static function getWithPagerInLooseByFilterAndOrderAndLimit(array $filter = [] , $order = null , int $size = 20)
     {
         $filter['value']        = $filter['value'] ?? '';
         $filter['module_id']    = $filter['module_id'] ?? '';
         $filter['tag_ids']      = $filter['tag_ids'] ?? [];
         $filter['video_series_ids']      = $filter['video_series_ids'] ?? [];
         $filter['video_company_ids']      = $filter['video_company_ids'] ?? [];
-        $filter['category_ids']      = $filter['video_company_ids'] ?? [];
+        $filter['category_ids']      = $filter['category_ids'] ?? [];
 
         $order = $order ?? ['field' => 'created_at' , 'value' => 'desc'];
 
@@ -282,23 +282,21 @@ class VideoProjectModel extends Model
             $query->whereIn('category_id' , $filter['category_ids']);
         }
 
-        return $query->whereExists(function($query) use($filter){
+        if (!empty($filter['tag_ids'])) {
+            $query->whereExists(function($query) use($filter){
                 $query->select('id')
-                    ->selectRaw('count(id) as total')
                     ->from('xq_relation_tag')
                     ->where([
                         ['relation_type' , '=' , 'video_project'] ,
-                    ]);
+                    ])
+                    ->whereRaw('relation_id = vp.id')
+                    ->whereIn('tag_id' , $filter['tag_ids']);
+            });
+        }
 
-                if (!empty($filter['tag_ids'])) {
-                    $query->whereIn('tag_id' , $filter['tag_ids']);
-                }
-
-                $query->whereRaw('relation_id = vp.id');
-            })
-            ->orderBy("vp.{$order['field']}" , $order['value'])
+        return $query->orderBy("vp.{$order['field']}" , $order['value'])
             ->orderBy('vp.id' , 'desc')
-            ->paginate($limit);
+            ->paginate($size);
     }
 
     public static function countHandle(int $id , string $field , string $mode = '' , int $step = 1): int
@@ -310,7 +308,7 @@ class VideoProjectModel extends Model
         return self::where('id' , $id)->$mode($field , $step);
     }
 
-    public static function recommendExcludeSelfByFilterAndLimit(int $self_id , array $filter = [] , int $limit = 20): Collection
+    public static function recommendExcludeSelfByFilterAndLimit(int $self_id , array $filter = [] , int $size = 20): Collection
     {
         $filter['module_id']    = $filter['module_id'] ?? '';
         $filter['category_id']  = $filter['category_id'] ?? '';
@@ -340,7 +338,7 @@ class VideoProjectModel extends Model
             ->orderBy('view_count' , 'desc')
             ->orderBy('against_count' , 'asc')
             ->orderBy('vs.created_at' , 'desc')
-            ->limit($limit)
+            ->limit($size)
             ->get();
     }
 

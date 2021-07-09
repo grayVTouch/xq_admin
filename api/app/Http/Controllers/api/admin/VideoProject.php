@@ -20,7 +20,7 @@ class VideoProject extends Base
         $param['video_series_id']  = $param['video_series_id'] ?? '';
         $param['video_company_id'] = $param['video_company_id'] ?? '';
         $param['order']            = $param['order'] ?? '';
-        $param['limit']            = $param['limit'] ?? '';
+        $param['size']            = $param['size'] ?? '';
 
         $res = VideoProjectAction::index($this , $param);
 
@@ -129,7 +129,7 @@ class VideoProject extends Base
     {
         $param = $this->request->query();
         $param['value'] = $param['value'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $param['module_id'] = $param['module_id'] ?? '';
         $res = VideoProjectAction::search($this , $param);
         if ($res['code'] != 0) {

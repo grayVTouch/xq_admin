@@ -133,7 +133,7 @@
             </div>
 
             <div class="pager">
-                <my-page :total="images.total" :limit="images.limit" :page="images.page" @on-change="toPageInImageProject"></my-page>
+                <my-page :total="images.total" :limit="images.size" :page="images.page" @on-change="toPageInImageProject"></my-page>
             </div>
 
         </div>
@@ -260,7 +260,7 @@
                         </div>
                     </div>
                     <div class="pager">
-                        <my-page :total="imageSubjects.total" :limit="imageSubjects.limit" :page="imageSubjects.page" @on-change="toPageInImageSubject"></my-page>
+                        <my-page :total="imageSubjects.total" :limit="imageSubjects.size" :page="imageSubjects.page" @on-change="toPageInImageSubject"></my-page>
                     </div>
                 </div>
             </div>
@@ -312,7 +312,7 @@
                             <my-button class="tag" v-for="v in tags.data" :class="{selected: tags.selectedIds.indexOf(v.tag_id) >= 0}" :key="v.id" @click="filterByTag(v)">{{ v.name }}</my-button>
                         </div>
                         <div class="pager" v-if="tags.total > 0">
-                            <my-page :total="tags.total" :limit="tags.limit" :page="tags.page" @on-change="toPageInTag"></my-page>
+                            <my-page :total="tags.total" :limit="tags.size" :page="tags.page" @on-change="toPageInTag"></my-page>
                         </div>
                     </div>
                 </div>

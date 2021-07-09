@@ -27,8 +27,8 @@ class VideoSeriesAction extends Action
             return self::error('模块不存在', '', 404);
         }
         $order = $param['order'] === '' ? null : parse_order($param['order']);
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = VideoSeriesModel::index(null, $param, $order, $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = VideoSeriesModel::index(null, $param, $order, $size);
         $res = VideoSeriesHandler::handlePaginator($res);
         return self::success('', $res);
     }

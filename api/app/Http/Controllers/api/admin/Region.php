@@ -50,7 +50,7 @@ class Region extends Base
         $param = $this->request->query();
         $param['value'] = $param['value'] ?? '';
         $param['type']  = $param['type'] ?? '';
-        $param['limit']  = $param['limit'] ?? '';
+        $param['size']  = $param['size'] ?? '';
         $res = RegionAction::search($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);

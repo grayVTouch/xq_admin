@@ -517,6 +517,12 @@ export default {
         } ,
 
         addVideoSubtitleEvent () {
+            if (this.form.merge_video_subtitle) {
+                if (this.uVideoSubtitles.length > 1) {
+                    this.errorHandle('合并字幕只能合成单个字幕');
+                    return ;
+                }
+            }
             const videoSubtitle = this.genVideoSubtitle();
             this.uVideoSubtitles.push(videoSubtitle);
         } ,
@@ -595,13 +601,23 @@ export default {
                     src: v.src ,
                 };
             });
-            form.video_subtitles = G.jsonEncode(form.video_subtitles);
             const filterRes = this.filter(form);
             if (!filterRes.status) {
                 this.error(filterRes.error , true);
                 this.errorHandle(G.getObjectFirstKeyMappingValue(filterRes.error));
                 return ;
             }
+            if (form.merge_video_subtitle) {
+                if (form.video_subtitles.length === 0) {
+                    this.errorHandle('请提供要合并的字幕');
+                    return ;
+                }
+                if (form.video_subtitles.length > 1) {
+                    this.errorHandle('仅允许合成单个字幕');
+                    return ;
+                }
+            }
+            form.video_subtitles = G.jsonEncode(form.video_subtitles);
             const thenCallback = (res) => {
                 this.error();
                 if (res.code !== TopContext.code.Success) {

@@ -18,4 +18,5 @@ class ResourceModel extends Model
     {
         return self::where('url' , $url)->first();
     }
+
 }

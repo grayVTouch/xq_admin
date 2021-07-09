@@ -16,7 +16,7 @@ class Tag extends Base
         $param['name'] = $param['name'] ?? '';
         $param['module_id'] = $param['module_id'] ?? '';
         $param['order'] = $param['order'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $res = TagAction::index($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);

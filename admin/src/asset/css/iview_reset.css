@@ -7,3 +7,18 @@
 .iview-form-select , .iview-form-input {
     width: 400px !important;
 }
+
+/**
+ * ********************
+ * 居中的模态框
+ * ********************
+ */
+.vertical-center-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vertical-center-modal .ivu-modal {
+    top: 0;
+}

@@ -23,7 +23,7 @@ const imageSubject = {
     name: 'unknow' ,
 };
 
-const table = {
+const imagesTableData = {
     field: [
         {
             type: 'selection' ,
@@ -37,9 +37,15 @@ const table = {
             center: TopContext.table.alignCenter ,
         } ,
         {
-            title: '图片' ,
-            slot: 'path' ,
+            title: '预览图' ,
+            slot: 'src' ,
             minWidth: TopContext.table.image ,
+            center: TopContext.table.alignCenter ,
+        } ,
+        {
+            title: '原图' ,
+            slot: 'original_src' ,
+            minWidth: TopContext.table.name ,
             center: TopContext.table.alignCenter ,
         } ,
         {
@@ -48,7 +54,10 @@ const table = {
             slot: 'action' ,
         } ,
     ] ,
+    all: [] ,
     data: [] ,
+    size: 6 ,
+    sizes: [6 , 12 , 18 , 24] ,
 };
 
 export default {
@@ -92,7 +101,7 @@ export default {
             // 实例
             ins: {} ,
 
-            table: G.copy(table) ,
+            imagesTableData: G.copy(imagesTableData) ,
 
             images: [] ,
 
@@ -121,7 +130,54 @@ export default {
 
     methods: {
 
+        initData () {
+            this.imagesTableData.total = this.images.length;
+        } ,
+
+        toPageForImages (page) {
+            const start  = (page - 1) * this.imagesTableData.size;
+            const end    = start + this.imagesTableData.size;
+
+            this.imagesTableData.page = page;
+            this.imagesTableData.data = this.imagesTableData.all.slice(start , end);
+        } ,
+
+        pageEventForImages (page , size) {
+            this.toPageForImages(page);
+        } ,
+
+        sizeEventForImages (size , page) {
+            this.imagesTableData.size= size;
+            this.toPageForImages(1);
+        } ,
+
+        refreshForImages () {
+            const maxPage = Math.ceil(this.imagesTableData.all.length / this.imagesTableData.size);
+            const page = Math.max(1 , Math.min(maxPage , this.imagesTableData.page));
+            this.toPageForImages(page);
+
+            // console.log('refresh page' , page , maxPage , this.imagesTableData.all.length , this.imagesTableData.size);
+        } ,
+
+        refreshCategories () {
+            if (!this.form.type) {
+                this.errorHandle('请选择类型');
+                return ;
+            }
+            if (this.form.module_id < 1) {
+                this.errorHandle('请选择模块');
+                return ;
+            }
+            this.getCategories(this.form.module_id , this.form.type);
+        } ,
+
         getCategories (moduleId , type , callback) {
+            if (!type) {
+                return ;
+            }
+            if (moduleId < 1) {
+                return ;
+            }
             this.pending('getCategories' , true);
             Api.category
                 .search({
@@ -181,8 +237,8 @@ export default {
             this.form.image_subject_id = '';
             this.form.topTags = [];
             this.form.imageSubject = G.copy(imageSubject);
-            this.getCategories(moduleId , this.form.type);
             this.getTopTags(moduleId);
+            this.getCategories(moduleId , this.form.type);
         } ,
 
         typeChangedEvent (type) {
@@ -312,9 +368,11 @@ export default {
                         this.getCategories(this.form.module_id , this.form.type);
 
                         this.ins.thumb.render(this.form.thumb);
-                        this.table.data             = this.form.images;
+                        this.imagesTableData.all = this.form.images;
                         this.owner          = this.form.user ? this.form.user : G.copy(owner);
                         this.imageSubject   = this.form.image_subject ? this.form.image_subject: G.copy(imageSubject);
+
+                        this.toPageForImages(1);
                     });
             }
         } ,
@@ -361,7 +419,7 @@ export default {
             this.categories     = [];
             this.imageSubject  = G.copy(imageSubject);
             this.owner          = G.copy(owner);
-            this.table          = G.copy(table);
+            this.imagesTableData          = G.copy(imagesTableData);
             this.setValue('tab' , 'base');
             this.error();
         } ,
@@ -388,14 +446,15 @@ export default {
                             }
                             G.invoke(callback , this , true);
                             this.message('success' , '操作成功');
-                            for (let i = 0; i < this.table.data.length; ++i)
+                            for (let i = 0; i < this.imagesTableData.all.length; ++i)
                             {
-                                const cur = this.table.data[i];
+                                const cur = this.imagesTableData.all[i];
                                 if (G.contain(cur.id , ids)) {
-                                    this.table.data.splice(i , 1);
+                                    this.imagesTableData.all.splice(i , 1);
                                     i--;
                                 }
                             }
+                            this.refreshForImages();
                         })
                         .finally(() => {
 

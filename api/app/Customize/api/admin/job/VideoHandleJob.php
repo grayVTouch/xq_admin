@@ -11,6 +11,7 @@ use App\Customize\api\admin\model\VideoSrcModel;
 use App\Customize\api\admin\model\VideoSubtitleModel;
 use App\Customize\api\admin\util\ResourceUtil;
 use Core\Lib\File;
+use Core\Lib\ImageProcessor;
 use Core\Wrapper\FFmpeg;
 use Core\Wrapper\FFprobe;
 use Exception;
@@ -132,8 +133,8 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
 
             // ......处理新数据
             $merge_video_subtitle               = $video->merge_video_subtitle == 1 && !empty($video->video_subtitles);
-            $first_video_subtitle               = $merge_video_subtitle ? $video->video_subtitles[0] : '';
-            $first_video_subtitle_resource      = $merge_video_subtitle ? ResourceModel::findByUrl($first_video_subtitle) : null;
+            $first_video_subtitle               = $merge_video_subtitle ? $video->video_subtitles[0] : null;
+            $first_video_subtitle_resource      = $merge_video_subtitle ? ResourceModel::findByUrl($first_video_subtitle->src) : null;
             $video_resource                     = ResourceModel::findByUrl($video->src);
             $video_info                         = FFprobe::create($video_resource->path)->coreInfo();
 
@@ -153,10 +154,19 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
             $date       = date('Ymd');
             $datetime   = date('YmdHis');
 
+            // 处理文件名称
+            $get_video_name = function($type , $name , $index){
+                if ($type === 'pro') {
+                    // [sprintf 函数可访问右侧链接](https://www.runoob.com/php/func-string-sprintf.html)
+                    return empty($name) ? sprintf("%'03s" , $index) : $name;
+                }
+                return $name;
+            };
+            $video_name = $get_video_name($video->type , $video->name , $video->index);
             /**
              * 视频第一帧
              */
-            $video_first_frame_file = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , $video->name . '【第一帧】' , 'png'));
+            $video_first_frame_file = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , $video_name . '【第一帧】' , 'webp'));
             $video_first_frame_url  = FileUtil::generateUrlByRealPath($video_first_frame_file);
 
             FFmpeg::create()
@@ -165,8 +175,14 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
                 ->frames(1)
                 ->quiet()
                 ->save($video_first_frame_file);
-
-            ResourceUtil::create($video_first_frame_url , $video_first_frame_file , 'local' , 0 , 0);
+            // 图片处理
+            $video_first_frame_compress_file = ImageProcessor::originCompress($video_first_frame_file , 'webp' , 100);
+            File::dFile($video_first_frame_file);
+            File::move($video_first_frame_compress_file , $video_first_frame_file);
+            VideoModel::updateById($video->id , [
+                'thumb_for_program' => $video_first_frame_url ,
+            ]);
+            ResourceUtil::create($video_first_frame_url , $video_first_frame_file , 'local' , 1 , 0);
 
             /**
              * 视频简略预览
@@ -196,7 +212,7 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
             }
 
             $input_command                  = rtrim($input_command, '|');
-            $video_simple_preview_file      = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , $video->name . '【预览】' , 'mp4'));
+            $video_simple_preview_file      = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , $video_name . '【预览】' , 'mp4'));
             $video_simple_preview_url       = FileUtil::generateUrlByRealPath($video_simple_preview_file);
 
             FFmpeg::create()
@@ -204,7 +220,10 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
                 ->quiet()
                 ->save($video_simple_preview_file);
 
-            ResourceUtil::create($video_simple_preview_url , $video_simple_preview_file , 'local' , 0 , 0);
+            VideoModel::updateById($video->id , [
+                'simple_preview'    => $video_simple_preview_url ,
+            ]);
+            ResourceUtil::create($video_simple_preview_url , $video_simple_preview_file , 'local' , 1 , 0);
 
             /**
              * 视频完整进度预览
@@ -214,15 +233,8 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
                 $duration = $video_info['duration'];
                 if ($duration < 1500) {
                     return 3;
-                } else if ($duration < 1800) {
-                    return 6;
-                } else if ($duration < 2400) {
-                    return 9;
-                } else if ($duration < 3600) {
-                    return 12;
-                } else {
-                    return 15;
                 }
+                return 5;
             };
             // 自动判断
             $video_preview_config['duration'] = $determine_duration();
@@ -241,7 +253,8 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
 
             for ($i = 0; $i < $preview_count; ++$i)
             {
-                $image      = $temp_dir . '/' . $datetime . random(6 , 'letter' , true) . '.jpeg';
+                $datetime   = date('YmdHis');
+                $image      = $temp_dir . '/' . $datetime . random(6 , 'letter' , true) . '.webp';
                 $timepoint  = $i * $video_preview_config['duration'];
 
                 FFmpeg::create()
@@ -251,38 +264,33 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
                     ->frames(1)
                     ->quiet()
                     ->save($image);
-
                 $previews[] = $image;
-                $image_cav  = imagecreatefromjpeg($image);
+                $image_cav  = imagecreatefromwebp($image);
                 $x          = $i % $video_preview_config['count'] * $video_preview_config['width'];
                 $y          = floor($i / $video_preview_config['count']) * $video_preview_config['height'];
 
                 imagecopymerge($cav , $image_cav , $x , $y , 0 , 0 , $video_preview_config['width'] , $video_preview_config['height'] , 100);
             }
-            $preview_file   = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , $video->name . '【预览】' ,'png'));
+            $preview_file   = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , $video_name . '【预览】' ,'jpeg'));
             $preview_url    = FileUtil::generateUrlByRealPath($preview_file);
 
             // jpeg 最大支持的像素有限！请务必使用 png
-            imagepng($cav , $preview_file);
-
-            ResourceUtil::create($preview_url , $preview_file , 'local' , 0 , 0);
+            // webp 是 jpeg 的升级版
+//            imagewebp($cav , $preview_file , 75);
+            imagejpeg($cav , $preview_file , 75);
 
             VideoModel::updateById($video->id , [
-                'simple_preview'    => $video_simple_preview_url ,
                 'preview'           => $preview_url ,
                 'preview_width'     => $video_preview_config['width'] ,
                 'preview_height'    => $video_preview_config['height'] ,
                 'preview_duration'  => $video_preview_config['duration'] ,
                 'preview_line_count' => $video_preview_config['count'] ,
                 'preview_count'     => $preview_count ,
-                'thumb_for_program' => $video_first_frame_url ,
                 'duration'          => $video_info['duration'] ,
                 'video_process_status'    => 2 ,
             ]);
 
-            ResourceUtil::used($video_first_frame_url);
-            ResourceUtil::used($preview_url);
-            ResourceUtil::used($video_simple_preview_url);
+            ResourceUtil::create($preview_url , $preview_file , 'local' , 1 , 0);
 
             /**
              * 视频转码
@@ -380,7 +388,7 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
                         // 字幕文件不存在，跳过
                         continue ;
                     }
-                    $video_subtitle_convert_file        = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , "{$video->name}【{$v->name}】" , 'vtt'));
+                    $video_subtitle_convert_file        = $this->generateRealPath($save_dir , $this->generateMediaSuffix($video->type , "{$video_name}【{$v->name}】" , 'vtt'));
                     $video_subtitle_convert_access_url  = FileUtil::generateUrlByRealPath($video_subtitle_convert_file);
                     FFmpeg::create()
                         ->input($video_subtitle_resource->path)

@@ -11,7 +11,7 @@ class RoleModel extends Model
 {
     protected $table = 'xq_role';
 
-    public static function index(array $filter = [] , array $order = [] , int $limit = 20): Paginator
+    public static function index(array $filter = [] , array $order = [] , int $size = 20): Paginator
     {
         $filter['id'] = $filter['id'] ?? '';
         $filter['name'] = $filter['name'] ?? '';
@@ -26,6 +26,6 @@ class RoleModel extends Model
         }
         return self::where($where)
             ->orderBy($order['field'] , $order['value'])
-            ->paginate($limit);
+            ->paginate($size);
     }
 }

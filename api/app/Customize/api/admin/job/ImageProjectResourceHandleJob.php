@@ -2,6 +2,7 @@
 
 namespace App\Customize\api\admin\job;
 
+use App\Customize\api\admin\handler\ImageProjectHandler;
 use App\Customize\api\admin\job\middleware\BootMiddleware;
 use App\Customize\api\admin\model\ImageModel;
 use App\Customize\api\admin\model\ImageProjectModel;
@@ -9,6 +10,7 @@ use App\Customize\api\admin\model\ResourceModel;
 use App\Customize\api\admin\util\FileUtil;
 use App\Customize\api\admin\util\ResourceUtil;
 use Core\Lib\File;
+use Core\Lib\ImageProcessor;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -72,15 +74,21 @@ class ImageProjectResourceHandleJob extends FileBaseJob implements ShouldQueue
             if (!File::exists($save_dir)) {
                 File::mkdir($save_dir , 0777 , true);
             }
-            $images = ImageModel::getByImageProjectId($this->imageProjectId);
+            ImageProjectHandler::images($image_project);
             $index = 0;
 
-            foreach ($images as $v)
+            $image_processor = new ImageProcessor($save_dir);
+            foreach ($image_project->images as $v)
             {
                 $index++;
                 try {
                     DB::beginTransaction();
-                    $resource = ResourceModel::findByUrl($v->src);
+                    /**
+                     * *******************
+                     * 移动原图
+                     * *******************
+                     */
+                    $resource = ResourceModel::findByUrl($v->original_src);
                     if (empty($resource)) {
                         DB::rollBack();
                         continue ;
@@ -90,24 +98,78 @@ class ImageProjectResourceHandleJob extends FileBaseJob implements ShouldQueue
                         DB::rollBack();
                         continue ;
                     }
-                    $extension      = get_extension($v->src);
+                    $extension      = get_extension($v->original_src);
                     $filename       = "{$image_project->name}【{$index}】.{$extension}";
                     $source_file    = $resource->path;
                     $target_file    = $this->generateRealPath($save_dir , $filename);
-                    if (File::exists($target_file)) {
-                        // 文件已经存在，跳过
-                        DB::rollBack();
-                        continue ;
+                    $target_url     = FileUtil::generateUrlByRealPath($target_file);
+                    if ($source_file !== $target_file) {
+                        if (File::exists($target_file)) {
+                            // 文件已经存在，删除
+                            File::dFile($target_file);
+                        }
+                        // 移动文件
+                        File::move($source_file , $target_file);
+                        // 删除源文件
+                        ResourceUtil::delete($v->original_src);
+                        ResourceUtil::create($target_url , $target_file , 'local' , 1 , 0);
                     }
-                    $target_url = FileUtil::generateUrlByRealPath($target_file);
-                    // 移动文件
-                    File::move($source_file , $target_file);
+
+                    // 更新原图地址
+                    $original_file = $target_file;
+                    $original_src  = $target_url;
+
+                    /**
+                     * *******************
+                     * 移动预览图
+                     * *******************
+                     */
+                    $extension = 'webp';
+                    if (empty($v->src)) {
+                        // 生成预览图
+                        $source_file = $image_processor->compress($original_file , [
+                            'mode'      => 'fix-width' ,
+                            // 质量
+                            'quality'     => 75 ,
+                            // 处理后图片宽度
+                            'width'     => 1280 ,
+                            // 输出文件类型（如果指定，那么将会以这种类型输出，否则以源文件类型输出）
+                            'extension' => $extension ,
+                        ] , false);
+                    } else {
+                        $resource = ResourceModel::findByUrl($v->src);
+                        if (empty($resource)) {
+                            DB::rollBack();
+                            continue ;
+                        }
+                        if ($resource->disk !== 'local') {
+                            // 跳过非本地存储的资源
+                            DB::rollBack();
+                            continue ;
+                        }
+                        $source_file = $resource->path;
+                    }
+                    $filename       = "{$image_project->name}【{$index}】【预览图】.{$extension}";
+                    $target_file    = $this->generateRealPath($save_dir , $filename);
+                    $target_url     = FileUtil::generateUrlByRealPath($target_file);
+                    if ($source_file !== $target_file) {
+                        if (File::exists($target_file)) {
+                            // 文件已经存在，删除
+                            File::dFile($target_file);
+                        }
+                        File::move($source_file , $target_file);
+                        // 删除旧文件
+                        ResourceUtil::delete($v->src);
+                        ResourceUtil::create($target_url , $target_file , 'local' , 1 , 0);
+                    }
+
+                    // 更新预览图地址
+                    $src = $target_url;
+
                     ImageModel::updateById($v->id , [
-                        'src' => $target_url
+                        'original_src'  => $original_src ,
+                        'src'           => $src ,
                     ]);
-                    // 删除源文件
-                    ResourceUtil::delete($v->src);
-                    ResourceUtil::create($target_url , $target_file , 'local' , 1 , 0);
                     DB::commit();
                 } catch (Exception $e) {
                     DB::rollBack();

@@ -1,4 +1,4 @@
-<template>
+i<template>
     <my-base>
         <template slot="search">
             <my-search-form @submit="searchEvent">
@@ -49,7 +49,14 @@
         </template>
 
         <template slot="page">
-            <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
+            <my-page
+                    :total="table.total"
+                    :sizes="table.sizes"
+                    :size="table.size"
+                    :page="table.page"
+                    @on-page-change="pageEvent"
+                    @on-size-change="sizeEvent"
+            ></my-page>
         </template>
 
         <template slot="table">

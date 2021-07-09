@@ -18,7 +18,7 @@ class VideoSeries extends Base
         $param['name']         = $param['name'] ?? '';
         $param['module_id']    = $param['module_id'] ?? '';
         $param['order'] = $param['order'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
 
         $res = VideoSeriesAction::index($this , $param);
 
@@ -94,7 +94,7 @@ class VideoSeries extends Base
     {
         $param = $this->request->query();
         $param['value'] = $param['value'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $param['module_id'] = $param['module_id'] ?? '';
         $res = VideoSeriesAction::search($this , $param);
         if ($res['code'] != 0) {

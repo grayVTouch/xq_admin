@@ -3,7 +3,7 @@ import myForm from '../form.vue';
 const current = {id: 0};
 
 const search = {
-    limit: TopContext.limit,
+    size: TopContext.size,
     video_series_id: '',
     video_company_id: '',
     module_id: '',
@@ -189,6 +189,8 @@ export default {
                 ] ,
                 total: 0 ,
                 page: 1 ,
+                sizes: TopContext.sizes ,
+                size: 0 ,
                 data: [] ,
             } ,
 
@@ -263,6 +265,7 @@ export default {
                     }
                     const data = res.data;
                     this.table.total = data.total;
+                    this.table.size = data.per_page;
                     this.table.page = data.current_page;
                     this.table.data = data.data;
                 })
@@ -338,7 +341,14 @@ export default {
             this.getData();
         } ,
 
-        pageEvent (page) {
+        pageEvent (page , size) {
+            this.search.page = page;
+            this.search.size = size;
+            this.getData();
+        } ,
+
+        sizeEvent (size , page) {
+            this.search.size = size;
             this.search.page = page;
             this.getData();
         } ,

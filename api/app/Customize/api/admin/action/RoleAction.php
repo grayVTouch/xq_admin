@@ -28,8 +28,8 @@ class RoleAction extends Action
     public static function index(Base $context , array $param = [])
     {
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
-        $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $res = RoleModel::index($param , $order , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = RoleModel::index($param , $order , $size);
         $res = RoleHandler::handlePaginator($res);
         return self::success('' , $res);
     }

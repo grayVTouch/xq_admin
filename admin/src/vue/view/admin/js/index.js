@@ -1,7 +1,7 @@
 import myForm from '../form.vue';
 
 const search = {
-    limit: TopContext.limit ,
+    size: TopContext.size ,
 };
 
 const current = {id: 0};
@@ -120,6 +120,8 @@ export default {
                 ] ,
                 total: 0 ,
                 page: 1 ,
+                size: 1 ,
+                sizes: TopContext.sizes ,
                 data: [] ,
             } ,
 
@@ -178,6 +180,7 @@ export default {
                     this.handleData(data.data);
                     this.table.total = data.total;
                     this.table.page = data.current_page;
+                    this.table.size = data.per_page;
                     this.table.data = data.data;
                 }).finally(() => {
                     this.pending('getData' , false);
@@ -259,8 +262,15 @@ export default {
             this.getData();
         } ,
 
-        pageEvent (page) {
+        pageEvent (page , size) {
             this.search.page = page;
+            this.search.size = size;
+            this.getData();
+        } ,
+
+        sizeEvent (size , page) {
+            this.search.page = page;
+            this.search.size = size;
             this.getData();
         } ,
 

@@ -73,7 +73,7 @@
                         <my-table-button type="error" @click="destroyAllEvent" :loading="myValue.pending.destroyAll"><my-icon icon="shanchu" />删除选中项 <span v-if="selection.length > 0">（{{ selection.length }}）</span></my-table-button>
                     </div>
                     <div class="right">
-                        <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
+                        <my-page :total="table.total" :size="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
                     </div>
                 </div>
             </div>
@@ -112,7 +112,7 @@
             </div>
 
             <div class="line page">
-                <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
+                <my-page :total="table.total" :size="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
             </div>
 
             <my-form-modal v-model="myValue.modal" :title="title" :loading="myValue.pending.submitEvent">

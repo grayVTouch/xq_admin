@@ -1,6 +1,9 @@
 <template>
     <div class="video-player">
-        <div class="title hover"></div>
+        <div class="title hover">
+            <div class="name"></div>
+            <div class="other"></div>
+        </div>
         <div class="video-wrapper">
             <video class="video" crossorigin="anonymous"></video>
         </div>
@@ -61,7 +64,7 @@
                                 <div class="item subtitle" data-id="subtitle">
                                     <div class="name">字幕</div>
                                     <div class="value">
-                                        <span class="text">无</span><i class="run-iconfont run-iconfont-next01"></i>
+                                        <span class="text"></span><i class="run-iconfont run-iconfont-next01"></i>
                                     </div>
                                 </div>
                             </div>

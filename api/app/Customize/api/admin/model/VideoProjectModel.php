@@ -12,7 +12,7 @@ class VideoProjectModel extends Model
 {
     protected $table = 'xq_video_project';
 
-    public static function index(array $filter = [] , array $order = [] , int $limit = 20): Paginator
+    public static function index(array $filter = [] , array $order = [] , int $size = 20): Paginator
     {
         $filter['id']               = $filter['id'] ?? '';
         $filter['name']             = $filter['name'] ?? '';
@@ -47,10 +47,10 @@ class VideoProjectModel extends Model
 
         return self::where($where)
             ->orderBy($order['field'] , $order['value'])
-            ->paginate($limit);
+            ->paginate($size);
     }
 
-    public static function search(int $module_id , string $value = '' , int $limit = 20): Paginator
+    public static function search(int $module_id , string $value = '' , int $size = 20): Paginator
     {
         return self::where('module_id' , $module_id)
             ->where(function($query) use($value){
@@ -60,7 +60,7 @@ class VideoProjectModel extends Model
             ->orderBy('weight' , 'desc')
             ->orderBy('created_at' , 'desc')
             ->orderBy('id' , 'asc')
-            ->paginate($limit);
+            ->paginate($size);
     }
 
     public static function findByName(string $name): ?VideoProjectModel

@@ -16,7 +16,7 @@ class Position extends Base
         $param['value'] = $param['value'] ?? '';
         $param['platform'] = $param['platform'] ?? '';
         $param['order'] = $param['order'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $res = PositionAction::index($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);

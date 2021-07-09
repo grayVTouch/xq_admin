@@ -271,8 +271,8 @@ class UserAction extends Action
             return self::error('模块不存在');
         }
         $user = user();
-        $limit = $param['limit'] ? $param['limit'] : my_config('app.limit');
-        $res = HistoryModel::getOrderTimeByModuleIdAndUserIdAndLimit($module->id , $user->id , $limit);
+        $size = $param['size'] ? $param['size'] : my_config('app.limit');
+        $res = HistoryModel::getOrderTimeByModuleIdAndUserIdAndLimit($module->id , $user->id , $size);
         $res = HistoryHandler::handleAll($res);
         $date = date('Y-m-d');
         $yesterday = date_create('yesterday')->format('Y-m-d');
@@ -346,8 +346,8 @@ class UserAction extends Action
             return self::error('模块不存在');
         }
         $user = user();
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = HistoryModel::getByModuleIdAndUserIdAndRelationTypeAndValueAndLimit($module->id , $user->id , $param['relation_type'] , $param['value'] ,$limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = HistoryModel::getByModuleIdAndUserIdAndRelationTypeAndValueAndLimit($module->id , $user->id , $param['relation_type'] , $param['value'] ,$size);
         $res = HistoryHandler::handlePaginator($res);
         // 对时间进行分组
         $date = date('Y-m-d');
@@ -787,9 +787,9 @@ class UserAction extends Action
         if (empty($collection_group)) {
             return self::error('收藏夹不存在' , '' , 404);
         }
-        $limit = $param['limit'] ? $param['limit'] : my_config('app.limit');
+        $size = $param['size'] ? $param['size'] : my_config('app.limit');
         $user = user();
-        $res = CollectionModel::getByModuleIdAndUserIdAndCollectionGroupIdAndLimit($module->id , $user->id , $collection_group->id , $limit);
+        $res = CollectionModel::getByModuleIdAndUserIdAndCollectionGroupIdAndLimit($module->id , $user->id , $collection_group->id , $size);
         $res = CollectionHandler::handleAll($res);
         foreach ($res as $v)
         {
@@ -942,8 +942,8 @@ class UserAction extends Action
         if (empty($collection_group)) {
             return self::error('收藏夹不存在' , '' , 404);
         }
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = CollectionModel::getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndValueAndRelationTypeAndLimit($module->id , $collection_group->user_id , $collection_group->id , $param['value'] , $param['relation_type'] , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = CollectionModel::getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndValueAndRelationTypeAndLimit($module->id , $collection_group->user_id , $collection_group->id , $param['value'] , $param['relation_type'] , $size);
         $res = CollectionHandler::handlePaginator($res);
         foreach ($res->data as $v)
         {
@@ -1039,8 +1039,8 @@ class UserAction extends Action
         if (empty($user)) {
             return self::error('用户不存在' , '' , 404);
         }
-        $limit = empty($param['limit']) ? $param['limit'] : my_config('app.limit');
-        $res = FocusUserModel::getWithPagerByUserIdAndLimit($user->id , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = FocusUserModel::getWithPagerByUserIdAndLimit($user->id , $size);
         $res = FocusUserHandler::handlePaginator($res);
         return self::success('' , $res);
     }
@@ -1051,8 +1051,8 @@ class UserAction extends Action
         if (empty($user)) {
             return self::error('用户不存在' , '' , 404);
         }
-        $limit = empty($param['limit']) ? $param['limit'] : my_config('app.limit');
-        $res = FocusUserModel::getWithPagerByFocusUserIdAndLimit($user->id , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = FocusUserModel::getWithPagerByFocusUserIdAndLimit($user->id , $size);
         $res = FocusUserHandler::handlePaginator($res);
         return self::success('' , $res);
     }

@@ -12,7 +12,7 @@ class ImageAtPositionModel extends Model
 {
     protected $table = 'xq_image_at_position';
 
-    public static function index(array $filter = [] , array $order = [] , int $limit = 20): Paginator
+    public static function index(array $filter = [] , array $order = [] , int $size = 20): Paginator
     {
         $filter['id'] = $filter['id'] ?? '';
         $filter['name'] = $filter['name'] ?? '';
@@ -39,7 +39,7 @@ class ImageAtPositionModel extends Model
         }
         return self::where($where)
             ->orderBy($order['field'] , $order['value'])
-            ->paginate($limit);
+            ->paginate($size);
     }
 
     public static function search(string $value = ''): Collection
@@ -49,10 +49,10 @@ class ImageAtPositionModel extends Model
             ->get();
     }
 
-    public static function top(int $limit = 10): Collection
+    public static function top(int $size = 10): Collection
     {
         return self::orderBy('count' , 'desc')
-            ->limit($limit)
+            ->limit($size)
             ->get();
     }
 

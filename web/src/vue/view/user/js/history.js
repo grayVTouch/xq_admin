@@ -2,7 +2,7 @@ import mixin from './mixin.js';
 
 const history = {
     page: 1 ,
-    limit: TopContext.limit ,
+    size: TopContext.size ,
     data: [] ,
     total: 0 ,
 };
@@ -65,7 +65,7 @@ export default {
             this.pending('getHistory' , true);
             Api.user
                 .history({
-                    limit: this.history.limit ,
+                    size: this.history.size ,
                     page: this.history.page ,
                     ...this.search ,
                 })

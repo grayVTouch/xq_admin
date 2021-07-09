@@ -11,7 +11,7 @@ class VideoCompanyModel extends Model
     protected $table = 'xq_video_company';
 
 
-    public static function index($field = null , array $filter = null , array $order = null  , int $limit = 20): Paginator
+    public static function index($field = null , array $filter = null , array $order = null  , int $size = 20): Paginator
     {
         $field = $field ?? '*';
         $filter = $filter ?? [];
@@ -43,6 +43,6 @@ class VideoCompanyModel extends Model
         }
 
         return $query->orderBy($order['field'] , $order['value'])
-            ->paginate($limit);
+            ->paginate($size);
     }
 }

@@ -16,7 +16,7 @@ class ImageProject extends Base
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
         $param['type']      = $param['type'] ?? '';
-        $param['limit']     = $param['limit'] ?? '';
+        $param['size']     = $param['size'] ?? '';
         $res = ImageProjectAction::newest($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -29,7 +29,7 @@ class ImageProject extends Base
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
         $param['type']      = $param['type'] ?? '';
-        $param['limit']     = $param['limit'] ?? '';
+        $param['size']     = $param['size'] ?? '';
         $res = ImageProjectAction::hot($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -42,7 +42,7 @@ class ImageProject extends Base
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
         $param['type']      = $param['type'] ?? '';
-        $param['limit']     = $param['limit'] ?? '';
+        $param['size']     = $param['size'] ?? '';
         $res = ImageProjectAction::hotWithPager($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -55,7 +55,7 @@ class ImageProject extends Base
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
         $param['type']      = $param['type'] ?? '';
-        $param['limit']     = $param['limit'] ?? '';
+        $param['size']     = $param['size'] ?? '';
         $res = ImageProjectAction::newestWithPager($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -71,7 +71,7 @@ class ImageProject extends Base
         $param['module_id'] = $param['module_id'] ?? '';
         $param['tag_id']      = $param['tag_id'] ?? '';
         $param['type']      = $param['type'] ?? '';
-        $param['limit']     = $param['limit'] ?? '';
+        $param['size']     = $param['size'] ?? '';
         $res = ImageProjectAction::getByTagId($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -87,7 +87,7 @@ class ImageProject extends Base
         $param['module_id'] = $param['module_id'] ?? '';
         $param['tag_ids']   = $param['tag_ids'] ?? '';
         $param['mode']      = $param['mode'] ?? '';
-        $param['limit']     = $param['limit'] ?? '';
+        $param['size']     = $param['size'] ?? '';
 
         $res = ImageProjectAction::getWithPagerByTagIds($this , $param);
         if ($res['code'] !== 0) {
@@ -103,7 +103,7 @@ class ImageProject extends Base
 
         $param['module_id'] = $param['module_id'] ?? '';
         $param['type']      = $param['type'] ?? '';
-        $param['limit']     = $param['limit'] ?? '';
+        $param['size']     = $param['size'] ?? '';
 
         $res = ImageProjectAction::hotTags($this , $param);
         if ($res['code'] !== 0) {
@@ -117,7 +117,7 @@ class ImageProject extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $param['value'] = $param['value'] ?? '';
         $res = ImageProjectAction::hotTagsWithPager($this , $param);
         if ($res['code'] !== 0) {
@@ -171,6 +171,7 @@ class ImageProject extends Base
         $param['image_subject_ids'] = $param['image_subject_ids'] ?? '';
         $param['tag_ids'] = $param['tag_ids'] ?? '';
         $param['order'] = $param['order'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $param['value'] = $param['value'] ?? '';
         $param['mode'] = $param['mode'] ?? '';
         $res = ImageProjectAction::index($this , $param);
@@ -194,7 +195,7 @@ class ImageProject extends Base
         $param = $this->request->query();
 
         $param['type']  = $param['type'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
 
         $res = ImageProjectAction::recommend($this , $image_subject_id , $param);
         if ($res['code'] !== 0) {

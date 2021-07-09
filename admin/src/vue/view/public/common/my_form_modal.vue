@@ -4,7 +4,7 @@
         :width="width"
         :mask-closable="maskClosable"
         :closable="closable"
-        class-name="my-form-modal"
+        class-name="vertical-center-modal"
         @on-ok="okEvent"
         @on-cancel="cancelEvent"
         :loading="loading"
@@ -97,17 +97,6 @@
 </script>
 
 <style>
-    .my-form-modal {
-        display: flex;
-        display: -webkit-flex;
-        align-items: center;
-        -webkit-align-items: center;
-    }
-
-    .my-form-modal > * {
-        top: 0;
-    }
-
     .my-modal-body {
         max-height: 650px;
         overflow: auto;

@@ -20,7 +20,7 @@ class UserModel extends Model
             ->get();
     }
 
-    public static function index(array $filter = [] , array $order = [] , int $limit = 20): Paginator
+    public static function index(array $filter = [] , array $order = [] , int $size = 20): Paginator
     {
         $filter['id'] = $filter['id'] ?? '';
         $filter['username'] = $filter['username'] ?? '';
@@ -35,7 +35,7 @@ class UserModel extends Model
         }
         return self::where($where)
             ->orderBy($order['field'] , $order['value'])
-            ->paginate($limit);
+            ->paginate($size);
     }
 
     public static function findByUsername(string $username = ''): ?UserModel

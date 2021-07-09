@@ -19,7 +19,7 @@ class VideoCompany extends Base
         $param['module_id']    = $param['module_id'] ?? '';
         $param['country_id']   = $param['country_id'] ?? '';
         $param['order']        = $param['order'] ?? '';
-        $param['limit']        = $param['limit'] ?? '';
+        $param['size']        = $param['size'] ?? '';
 
         $res = VideoCompanyAction::index($this , $param);
 
@@ -101,7 +101,7 @@ class VideoCompany extends Base
     {
         $param = $this->request->query();
         $param['value'] = $param['value'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $param['module_id'] = $param['module_id'] ?? '';
         $res = VideoCompanyAction::search($this , $param);
         if ($res['code'] != 0) {

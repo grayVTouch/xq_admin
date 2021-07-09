@@ -206,7 +206,7 @@ export default {
 
                 playlist.push({
                     id: v.id ,
-                    name: v.name ,
+                    name: v.__name__ ,
                     index: v.index ,
                     thumb: v.thumb ? v.thumb : v.thumb_for_program ,
                     preview: {
@@ -244,12 +244,20 @@ export default {
             const userPlayRecord = this.videoProject.user_play_record;
             const index = playlist.length > 0 ? playlist[0].index : 1;
             let once = true;
+            const recordCallback = (context) => {
+                const currentVideo      = context.getCurrentVideo();
+                const currentDefinition = context.getCurrentDefinition();
+                const currentSubtitle   = context.getCurrentSubtitle();
+                const currentVolume     = context.getCurrentVolume();
+                const currentTime       = context.getCurrentTime();
+                this.record(currentVideo.id , currentVideo.index , currentTime , currentVolume , currentDefinition?.name , currentSubtitle?.name);
+            };
             const videoPlayer = new VideoPlayer(this.dom.videoContainer.get(0) , {
                 // 海报
                 // poster: './res/poster.jpg' ,
                 poster: '' ,
                 // 单次步进时间，单位：s
-                step: 30 ,
+                // step: 30 ,
                 // 音频步进：0-1
                 // soundStep: 0.2 ,
                 // 视频源
@@ -305,25 +313,33 @@ export default {
                 } ,
                 // 间隔多长时间执行下述回调
                 timeUpdateInterval: 5 ,
+
                 // 时间更新时触发
-                timeUpdate (index , playedDuration) {
-                    const currentVideo      = this.getCurrentVideo();
-                    const currentDefinition = this.getCurrentDefinition();
-                    const currentSubtitle   = this.getCurrentSubtitle();
-                    const volume            = this.getCurrentVolume();
-                    self.record(currentVideo.id , currentVideo.index , playedDuration , volume , currentDefinition?.name , currentSubtitle?.name);
+                onTimeUpdate (index , playedDuration) {
+                    recordCallback(this);
+                } ,
+                // 时间更新时触发
+                onDefinitionChange (index , definition) {
+                    recordCallback(this);
+                } ,
+                // 时间更新时触发
+                onSubtitleChange (index , subtitle) {
+                    recordCallback(this);
                 } ,
             });
 
             const currentVideo = videoPlayer.getCurrentVideo();
-            if (!userPlayRecord) {
-                // 如果不存在，则记录
-                const currentDefinition = videoPlayer.getCurrentDefinition();
-                const currentSubtitle   = videoPlayer.getCurrentSubtitle();
-                const volume            = videoPlayer.getCurrentVolume();
-                this.record(currentVideo.id , currentVideo.index , 0 , volume , currentDefinition?.name , currentSubtitle?.name);
+            if (currentVideo) {
+                // 仅在 video 存在的情况下
+                if (!userPlayRecord) {
+                    // 如果不存在，则记录
+                    const currentDefinition = videoPlayer.getCurrentDefinition();
+                    const currentSubtitle   = videoPlayer.getCurrentSubtitle();
+                    const volume            = videoPlayer.getCurrentVolume();
+                    this.record(currentVideo.id , currentVideo.index , 0 , volume , currentDefinition?.name , currentSubtitle?.name);
+                }
+                this.incrementViewCount(currentVideo.id);
             }
-            this.incrementViewCount(currentVideo.id);
             this.ins.videoPlayer = videoPlayer;
         } ,
 

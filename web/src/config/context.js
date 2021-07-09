@@ -48,7 +48,7 @@ window.TopContext = {
     business ,
     table ,
     // 每页显示记录数
-    limit: 20 ,
+    size: 20 ,
     val: {
         fixedTop: 105 ,
         headerH: 105 ,

@@ -3,7 +3,7 @@ import Form from '../form.vue';
 const current = {id: 0};
 
 const search = {
-    limit: TopContext.limit ,
+    size: TopContext.size ,
     user_id: '' ,
     module_id: '' ,
     category_id: '' ,
@@ -205,6 +205,8 @@ export default {
                 ],
                 total: 0,
                 page: 1,
+                size: 0,
+                sizes: TopContext.sizes,
                 data: [],
             },
 
@@ -299,6 +301,7 @@ export default {
                     const data = res.data;
                     this.table.total = data.total;
                     this.table.page = data.current_page;
+                    this.table.size = data.per_page;
                     this.table.data = data.data;
                 })
                 .finally(() => {
@@ -429,8 +432,15 @@ export default {
             this.getData();
         } ,
 
-        pageEvent (page) {
+        pageEvent (page , size) {
             this.search.page = page;
+            this.search.size = size;
+            this.getData();
+        } ,
+
+        sizeEvent (size , page) {
+            this.search.page = page;
+            this.search.size = size;
             this.getData();
         } ,
 

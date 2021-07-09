@@ -46,8 +46,8 @@ class VideoProjectAction extends Action
             return self::error($validator->errors()->first() , $validator->errors());
         }
 
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = VideoProjectModel::getNewestByFilterAndLimit($param , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = VideoProjectModel::getNewestByFilterAndLimit($param , $size);
         $res = VideoProjectHandler::handleAll($res);
         foreach ($res as $v)
         {
@@ -67,8 +67,8 @@ class VideoProjectAction extends Action
             return self::error($validator->errors()->first() , $validator->errors());
         }
 
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = VideoProjectModel::getHotByFilterAndLimit($param , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = VideoProjectModel::getHotByFilterAndLimit($param , $size);
         $res = VideoProjectHandler::handleAll($res);
         foreach ($res as $v)
         {
@@ -88,8 +88,8 @@ class VideoProjectAction extends Action
             return self::error($validator->errors()->first() , $validator->errors());
         }
 
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = VideoProjectModel::getHotWithPagerByFilterAndLimit($param , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = VideoProjectModel::getHotWithPagerByFilterAndLimit($param , $size);
         $res = VideoProjectHandler::handlePaginator($res);
         return self::success('' , $res);
     }
@@ -108,8 +108,8 @@ class VideoProjectAction extends Action
             return self::error('标签不存在');
         }
 
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = VideoProjectModel::getByTagIdAndFilterAndLimit($tag->id , $param , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = VideoProjectModel::getByTagIdAndFilterAndLimit($tag->id , $param , $size);
         $res = VideoProjectHandler::handleAll($res);
         foreach ($res as $v)
         {
@@ -148,15 +148,15 @@ class VideoProjectAction extends Action
             return self::error('部分或全部标签未找到');
         }
 
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
 
         switch ($param['mode'])
         {
             case 'strict':
-                $res = VideoProjectModel::getInStrictByTagIdsAndFilterAndLimit($tag_ids , $param , $limit);
+                $res = VideoProjectModel::getInStrictByTagIdsAndFilterAndLimit($tag_ids , $param , $size);
                 break;
             case 'loose':
-                $res = VideoProjectModel::getByTagIdsAndFilterAndLimit($tag_ids , $param , $limit);
+                $res = VideoProjectModel::getByTagIdsAndFilterAndLimit($tag_ids , $param , $size);
                 break;
             default:
                 return self::error('不支持的 mode ，当前受支持的 mode 有：' . implode(' , ' , $mode_range));
@@ -182,8 +182,8 @@ class VideoProjectAction extends Action
             return self::error('模块不存在' , '' , 404);
         }
 
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = RelationTagModel::hotTagsInVideoSubjectByFilterAndLimit($param , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = RelationTagModel::hotTagsInVideoSubjectByFilterAndLimit($param , $size);
         $res = RelationTagHandler::handleAll($res);
         return self::success('' , $res);
     }
@@ -202,8 +202,8 @@ class VideoProjectAction extends Action
         if (empty($module)) {
             return self::error('模块不存在');
         }
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = RelationTagModel::hotTagsWithPagerInVideoProjectByValueAndFilterAndLimit($param['value'] , $param , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = RelationTagModel::hotTagsWithPagerInVideoProjectByValueAndFilterAndLimit($param['value'] , $param , $size);
         $res = RelationTagHandler::handlePaginator($res);
         return self::success('' , $res);
     }
@@ -223,8 +223,8 @@ class VideoProjectAction extends Action
             return self::error('模块不存在' , '' , 404);
         }
 
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = VideoProjectModel::getNewestWithPagerByFilterAndLimit($param , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = VideoProjectModel::getNewestWithPagerByFilterAndLimit($param , $size);
         $res = VideoProjectHandler::handlePaginator($res);
         return self::success('' , $res);
     }
@@ -284,8 +284,8 @@ class VideoProjectAction extends Action
         if (empty($module)) {
             return self::error('模块不存在' , '' , 404);
         }
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = ImageSubjectModel::getWithPagerInImageProjectByModuleIdAndValueAndLimit($module->id , $param['value'] , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = ImageSubjectModel::getWithPagerInImageProjectByModuleIdAndValueAndLimit($module->id , $param['value'] , $size);
         $res = ImageSubjectHandler::handlePaginator($res);
         return self::success('' , $res);
     }
@@ -316,7 +316,7 @@ class VideoProjectAction extends Action
         $param['tag_ids']        = $param['tag_ids'] === '' ? [] : json_decode($param['tag_ids'] , true);
 
         $order                   = $param['order'] === '' ? null : parse_order($param['order']);
-        $limit                   = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
+        $size                   = $param['size'] === '' ? my_config('app.limit') : $param['size'];
 
         // 获取所有子类
         $categories         = CategoryModel::getAll();
@@ -335,10 +335,10 @@ class VideoProjectAction extends Action
         switch ($param['mode'])
         {
             case 'strict':
-                $res = VideoProjectModel::getWithPagerInStrictByFilterAndOrderAndLimit($param , $order , $limit);
+                $res = VideoProjectModel::getWithPagerInStrictByFilterAndOrderAndLimit($param , $order , $size);
                 break;
             case 'loose':
-                $res = VideoProjectModel::getWithPagerInLooseByFilterAndOrderAndLimit($param , $order , $limit);
+                $res = VideoProjectModel::getWithPagerInLooseByFilterAndOrderAndLimit($param , $order , $size);
                 break;
             default:
                 return self::error('不支持的搜索模式，当前支持的模式有：' . implode(' , ' , $mode_range));
@@ -384,9 +384,9 @@ class VideoProjectAction extends Action
         $param['category_id']   = $video_project->category_id ?? '';
         $param['image_subject_id']    = $video_project->image_subject_id ?? '';
 
-        $limit = $param['limit'] ? $param['limit'] : my_config('app.limit');
+        $size = $param['size'] ? $param['size'] : my_config('app.limit');
 
-        $res = VideoProjectModel::recommendExcludeSelfByFilterAndLimit($video_project->id , $param , $limit);
+        $res = VideoProjectModel::recommendExcludeSelfByFilterAndLimit($video_project->id , $param , $size);
         $res = VideoProjectHandler::handleAll($res);
         return self::success('' , $res);
     }

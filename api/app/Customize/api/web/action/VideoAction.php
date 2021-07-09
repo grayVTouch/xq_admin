@@ -47,7 +47,7 @@ class VideoAction extends Action
         try {
             DB::beginTransaction();
             if ($video->type === 'pro') {
-                VideoProjectModel::incrementByIdAndColumnAndStep($video->id , 'view_count' , 1);
+                VideoProjectModel::incrementByIdAndColumnAndStep($video->video_project_id , 'view_count' , 1);
             }
             VideoModel::incrementByIdAndColumnAndStep($video->id , 'view_count' , 1);
             DB::commit();
@@ -80,7 +80,7 @@ class VideoAction extends Action
         try {
             DB::beginTransaction();
             if ($video->type === 'pro') {
-                VideoProjectModel::incrementByIdAndColumnAndStep($video->id , 'play_count' , 1);
+                VideoProjectModel::incrementByIdAndColumnAndStep($video->video_project_id , 'play_count' , 1);
             }
             VideoModel::incrementByIdAndColumnAndStep($video->id , 'play_count' , 1);
             DB::commit();
@@ -136,13 +136,13 @@ class VideoAction extends Action
                 }
                 VideoModel::incrementByIdAndColumnAndStep($video->id , 'praise_count' , 1);
                 if ($relation_type === 'video_project') {
-                    VideoProjectModel::incrementByIdAndColumnAndStep($video->id , 'praise_count' , 1);
+                    VideoProjectModel::incrementByIdAndColumnAndStep($relation_id , 'praise_count' , 1);
                 }
             } else {
                 PraiseModel::delByModuleIdAndUserIdAndRelationTypeAndRelationId($module->id , $user->id , $relation_type , $relation_id);
                 VideoModel::decrementByIdAndColumnAndStep($video->id , 'praise_count' , 1);
                 if ($relation_type === 'video_project') {
-                    VideoProjectModel::decrementByIdAndColumnAndStep($video->id , 'praise_count' , 1);
+                    VideoProjectModel::decrementByIdAndColumnAndStep($relation_id , 'praise_count' , 1);
                 }
             }
             DB::commit();

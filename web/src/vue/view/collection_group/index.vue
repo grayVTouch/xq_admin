@@ -14,7 +14,7 @@
 
         <div class="content">
             <div class="pager top-pager">
-                <my-page :page="collections.page" :limit="collections.limit" :total="collections.total" @on-change="toPage"></my-page>
+                <my-page :page="collections.page" :limit="collections.size" :total="collections.total" @on-change="toPage"></my-page>
             </div>
 
             <div class="content">
@@ -81,7 +81,7 @@
             </div>
 
             <div class="pager btm-pager">
-                <my-page :page="collections.page" :limit="collections.limit" :total="collections.total" @on-change="toPage"></my-page>
+                <my-page :page="collections.page" :limit="collections.size" :total="collections.total" @on-change="toPage"></my-page>
             </div>
 
 
@@ -109,7 +109,7 @@
                 collections: {
                     page: 1 ,
                     total: 1 ,
-                    limit: TopContext.limit ,
+                    size: TopContext.size ,
                     data: [] ,
                     relation_type: 'image_project' ,
                 } ,
@@ -133,7 +133,7 @@
                 const action = collection.relation.is_praised ? 0 : 1;
                 this.pending('praiseHandle' , true);
                 Api.user
-                    .praiseHandle({
+                    .praiseHandle(null , {
                         relation_type: 'image_project' ,
                         relation_id: collection.relation.id ,
                         action ,
@@ -146,16 +146,8 @@
                             });
                             return ;
                         }
-                        console.log('点赞成功' , collection);
-                        // this.handleImageProject(data);
-                        // for (let i = 0; i <  this.collections.data.length; ++i)
-                        // {
-                        //     const cur = this.collections.data[i];
-                        //     if (cur.relation.id === data.id) {
-                        //         cur.relation = {...data};
-                        //         break;
-                        //     }
-                        // }
+                        collection.relation.is_praised = action;
+                        action ? collection.relation.praise_count++ : collection.relation.praise_count--;
                     })
                     .finally(() => {
                     });
@@ -184,7 +176,7 @@
                     .collections({
                         relation_type: this.collections.relation_type ,
                         collection_group_id: this.id ,
-                        limit: this.collections.limit
+                        size: this.collections.size
                     })
                     .then((res) => {
                         if (res.code !== TopContext.code.Success) {

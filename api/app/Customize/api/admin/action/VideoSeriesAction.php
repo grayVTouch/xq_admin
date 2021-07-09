@@ -23,8 +23,8 @@ class VideoSeriesAction extends Action
     public static function index(Base $context , array $param = [])
     {
         $order = $param['order'] === '' ? [] : parse_order($param['order'] , '|');
-        $limit = $param['limit'] === '' ? my_config('app.limit') : $param['limit'];
-        $res = VideoSeriesModel::index($param , $order , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = VideoSeriesModel::index($param , $order , $size);
         $res = VideoSeriesHandler::handlePaginator($res);
         foreach ($res->data as $v)
         {
@@ -157,8 +157,8 @@ class VideoSeriesAction extends Action
         if (empty($param['module_id'])) {
             return self::error('请提供 module_id');
         }
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = VideoSeriesModel::search($param['module_id'] , $param['value'] , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = VideoSeriesModel::search($param['module_id'] , $param['value'] , $size);
         $res = VideoSeriesHandler::handlePaginator($res);
         return self::success('' , $res);
     }

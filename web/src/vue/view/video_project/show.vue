@@ -117,7 +117,7 @@
                             </div>
                         </div>
                         <div class="info">
-                            <div class="name">{{ v.name }}</div>
+                            <div class="name">{{ v.__name__ }}</div>
 <!--                            <div class="subject">Pink Pineapple</div>-->
                             <div class="statistics">{{ v.view_count }}次观看</div>
                         </div>

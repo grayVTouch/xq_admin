@@ -28,6 +28,14 @@ class SystemDiskAction extends Action
         if (empty($param['parent_path'])) {
             $fastjson_jar_path  = __DIR__ . "/../java/jar/fastjson.jar";
             $out_path           = __DIR__ . "/../java/out";
+            $source_java_file   = __DIR__ . "/../java/src/App.java";
+            if (!file_exists($source_java_file)) {
+                $command = "javac -cp \"{$fastjson_jar_path};\" -d \"{$out_path}\" \"{$source_java_file}\"";
+                exec($command , $res , $status);
+                if ($status > 0) {
+                    return self::error("编译java源文件失败【status: {$status}】" , $res);
+                }
+            }
             $command = "java -cp \"{$fastjson_jar_path};{$out_path}\" App";
             // 列出盘符
             exec($command , $res , $status);

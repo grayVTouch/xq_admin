@@ -32,7 +32,7 @@
                     </i-table>
                 </div>
                 <div class="pager">
-                    <my-page :total="table.total" :limit="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
+                    <my-page :total="table.total" :size="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
                 </div>
             </div>
         </template>
@@ -80,7 +80,7 @@
                 center: TopContext.table.alignCenter ,
             } ,
         ] ,
-        limit: TopContext.limit ,
+        size: TopContext.size ,
         search: {
             value: '' ,
         } ,
@@ -130,8 +130,15 @@
                     });
             } ,
 
-            pageEvent (page) {
-                this.table.page = page;
+            pageEvent (page , size) {
+                this.search.page = page;
+                this.search.size = size;
+                this.getData();
+            } ,
+
+            sizeEvent (size , page) {
+                this.search.page = page;
+                this.search.size = size;
                 this.getData();
             } ,
 

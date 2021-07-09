@@ -3,7 +3,7 @@ import Form from '../form.vue';
 const current = {id: 0};
 
 const search = {
-    limit: TopContext.limit ,
+    size: TopContext.size ,
     category_id: '' ,
 };
 
@@ -29,6 +29,7 @@ export default {
                 selectedIds: [] ,
                 // 抽屉
                 drawer: false ,
+                showImagePreview: false ,
             } ,
             table: {
                 field: [
@@ -94,14 +95,14 @@ export default {
                         align: TopContext.table.alignCenter
                     } ,
                     {
-                        title: '标签' ,
-                        slot: 'tags' ,
+                        title: '图片列表' ,
+                        slot: 'images' ,
                         minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
                     {
-                        title: '图片列表' ,
-                        slot: 'images' ,
+                        title: '标签' ,
+                        slot: 'tags' ,
                         minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
@@ -208,6 +209,14 @@ export default {
 
         } ,
 
+        // 显示图片资源浏览器
+        showImagePreview (row) {
+            this.current = row;
+            this.$nextTick(() => {
+                this.myValue.showImagePreview = true;
+            });
+        } ,
+
         getCategories (moduleId) {
             this.categories = [];
             this.search.category_id = '';
@@ -264,6 +273,7 @@ export default {
                         v.tags = v.tags ? v.tags : [];
                     });
                     this.table.total = data.total;
+                    this.table.size = data.per_page;
                     this.table.page = data.current_page;
                     this.table.data = data.data;
                 })
@@ -341,8 +351,15 @@ export default {
             this.getData();
         } ,
 
-        pageEvent (page) {
+        pageEvent (page , size) {
             this.search.page = page;
+            this.search.size = size;
+            this.getData();
+        } ,
+
+        sizeEvent (size , page) {
+            this.search.page = page;
+            this.search.size = size;
             this.getData();
         } ,
 

@@ -16,7 +16,7 @@ class ImageSubject extends Base
         $param['name'] = $param['name'] ?? '';
         $param['module_id'] = $param['module_id'] ?? '';
         $param['order'] = $param['order'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $res = ImageSubjectAction::index($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
@@ -95,7 +95,7 @@ class ImageSubject extends Base
     {
         $param = $this->request->query();
         $param['value'] = $param['value'] ?? '';
-        $param['limit'] = $param['limit'] ?? '';
+        $param['size'] = $param['size'] ?? '';
         $param['module_id'] = $param['module_id'] ?? '';
         $res = ImageSubjectAction::search($this , $param);
         if ($res['code'] != 0) {

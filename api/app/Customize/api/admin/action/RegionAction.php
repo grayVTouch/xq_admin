@@ -30,8 +30,8 @@ class RegionAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = RegionModel::index($param , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = RegionModel::index($param , $size);
         $res = RegionHandler::handlePaginator($res);
         return self::success('' , $res);
     }

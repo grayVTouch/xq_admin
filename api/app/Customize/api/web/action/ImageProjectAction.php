@@ -40,8 +40,8 @@ class ImageProjectAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = ImageProjectModel::getNewestByFilterAndLimit($param , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = ImageProjectModel::getNewestByFilterAndLimit($param , $size);
         $res = ImageProjectHandler::handleAll($res);
         foreach ($res as $v)
         {
@@ -80,8 +80,8 @@ class ImageProjectAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = ImageProjectModel::getHotByFilterAndLimit($param , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = ImageProjectModel::getHotByFilterAndLimit($param , $size);
         $res = ImageProjectHandler::handleAll($res);
         foreach ($res as $v)
         {
@@ -123,8 +123,8 @@ class ImageProjectAction extends Action
         if (empty($tag)) {
             return self::error('标签不存在' , '' , 404);
         }
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = ImageProjectModel::getByTagIdAndFilterAndLimit($tag->id , $param , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = ImageProjectModel::getByTagIdAndFilterAndLimit($tag->id , $param , $size);
         $res = ImageProjectHandler::handleAll($res);
         foreach ($res as $v)
         {
@@ -191,8 +191,8 @@ class ImageProjectAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = ImageProjectModel::getHotWithPagerByFilterAndLimit($param , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = ImageProjectModel::getHotWithPagerByFilterAndLimit($param , $size);
         $res = ImageProjectHandler::handlePaginator($res);
         foreach ($res->data as $v)
         {
@@ -237,14 +237,14 @@ class ImageProjectAction extends Action
         if (count($tags) !== count($tag_ids)) {
             return self::error('部分或全部标签未找到');
         }
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
         switch ($param['mode'])
         {
             case 'strict':
-                $res = ImageProjectModel::getInStrictByTagIdsAndFilterAndLimit($tag_ids , $param , $limit);
+                $res = ImageProjectModel::getInStrictByTagIdsAndFilterAndLimit($tag_ids , $param , $size);
                 break;
             case 'loose':
-                $res = ImageProjectModel::getByTagIdsAndFilterAndLimit($tag_ids , $param , $limit);
+                $res = ImageProjectModel::getByTagIdsAndFilterAndLimit($tag_ids , $param , $size);
                 break;
             default:
                 return self::error('不支持的 mode ，当前受支持的 mode 有：' . implode(' , ' , $mode_range));
@@ -286,8 +286,8 @@ class ImageProjectAction extends Action
         if (empty($module)) {
             return self::error('模块不存在' , '' , 404);
         }
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = RelationTagModel::hotTagsInImageProjectByFilterAndLimit($param , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = RelationTagModel::hotTagsInImageProjectByFilterAndLimit($param , $size);
         $res = RelationTagHandler::handleAll($res);
         foreach ($res as $v)
         {
@@ -313,8 +313,8 @@ class ImageProjectAction extends Action
         if (empty($module)) {
             return self::error('模块不存在');
         }
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = RelationTagModel::hotTagsWithPagerInImageProjectByValueAndFilterAndLimit($param['value'] , $param , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = RelationTagModel::hotTagsWithPagerInImageProjectByValueAndFilterAndLimit($param['value'] , $param , $size);
         $res = RelationTagHandler::handlePaginator($res);
         return self::success('' , $res);
     }
@@ -331,8 +331,8 @@ class ImageProjectAction extends Action
         if (empty($module)) {
             return self::error('模块不存在' , '' , 404);
         }
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = ImageProjectModel::getNewestWithPagerByFilterAndLimit($param , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = ImageProjectModel::getNewestWithPagerByFilterAndLimit($param , $size);
         $res = ImageProjectHandler::handlePaginator($res);
         foreach ($res->data as $v)
         {
@@ -383,8 +383,8 @@ class ImageProjectAction extends Action
         if (empty($module)) {
             return self::error('模块不存在' , '' , 404);
         }
-        $limit = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
-        $res = ImageSubjectModel::getWithPagerInImageProjectByModuleIdAndValueAndLimit($module->id , $param['value'] , $limit);
+        $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
+        $res = ImageSubjectModel::getWithPagerInImageProjectByModuleIdAndValueAndLimit($module->id , $param['value'] , $size);
         $res = ImageSubjectHandler::handlePaginator($res);
         foreach ($res->data as $v)
         {
@@ -418,7 +418,7 @@ class ImageProjectAction extends Action
         $param['image_subject_ids']    = $param['image_subject_ids'] === '' ? [] : json_decode($param['image_subject_ids'] , true);
         $param['tag_ids']        = $param['tag_ids'] === '' ? [] : json_decode($param['tag_ids'] , true);
         $order                   = $param['order'] === '' ? null : parse_order($param['order']);
-        $limit                   = empty($param['limit']) ? my_config('app.limit') : $param['limit'];
+        $size                   = $param['size'] === '' ? my_config('app.limit') : $param['size'];
         // 获取所有子类
         $categories         = CategoryModel::getAll();
         $categories         = object_to_array($categories);
@@ -434,10 +434,10 @@ class ImageProjectAction extends Action
         switch ($param['mode'])
         {
             case 'strict':
-                $res = ImageProjectModel::getWithPagerInStrictByFilterAndOrderAndLimit($param , $order , $limit);
+                $res = ImageProjectModel::getWithPagerInStrictByFilterAndOrderAndLimit($param , $order , $size);
                 break;
             case 'loose':
-                $res = ImageProjectModel::getWithPagerInLooseByFilterAndOrderAndLimit($param , $order , $limit);
+                $res = ImageProjectModel::getWithPagerInLooseByFilterAndOrderAndLimit($param , $order , $size);
                 break;
             default:
                 return self::error('不支持的搜索模式，当前支持的模式有：' . implode(' , ' , $mode_range));
@@ -486,9 +486,9 @@ class ImageProjectAction extends Action
         $param['category_id']   = $image_project->category_id ?? '';
         $param['image_project_id']    = $image_project->image_project_id ?? '';
 
-        $limit = $param['limit'] ? $param['limit'] : my_config('app.limit');
+        $size = $param['size'] ? $param['size'] : my_config('app.limit');
 
-        $res = ImageProjectModel::recommendExcludeSelfByFilterAndLimit($image_project->id , $param , $limit);
+        $res = ImageProjectModel::recommendExcludeSelfByFilterAndLimit($image_project->id , $param , $size);
         $res = ImageProjectHandler::handleAll($res);
 
         return self::success('' , $res);

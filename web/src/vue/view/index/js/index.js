@@ -1,11 +1,11 @@
 const imageProjects = {
-    limit: 16 ,
+    size: 16 ,
     data: [] ,
     type: 'pro' ,
 };
 
 const videoProjects = {
-    limit: 16 ,
+    size: 16 ,
     data: [] ,
     type: 'pro' ,
 };
@@ -17,7 +17,7 @@ export default {
             dom: {} ,
             ins: {} ,
             val: {
-                limit: 16 ,
+                size: 16 ,
                 pending: {} ,
             } ,
 
@@ -50,7 +50,7 @@ export default {
                     } ,
                     curTag: 'newest' ,
                     tag: {
-                        limit: 5 ,
+                        size: 5 ,
                         type: 'pro' ,
                         data: [] ,
                     } ,
@@ -67,7 +67,7 @@ export default {
                     curTag: 'newest' ,
                     tag: {
                         data: [] ,
-                        limit: 5 ,
+                        size: 5 ,
                     } ,
                 } ,
             } ,
@@ -186,7 +186,7 @@ export default {
             this.group.imageProject.curTag = 'newest';
             Api.imageProject
                 .newest({
-                    limit: this.imageProjects.limit ,
+                    size: this.imageProjects.size ,
                     type: this.imageProjects.type ,
                 })
                 .then((res) => {
@@ -211,7 +211,7 @@ export default {
                 this.pending('imageProject' , true);
                 Api.imageProject
                     .hot({
-                        limit: this.imageProjects.limit ,
+                        size: this.imageProjects.size ,
                         type: this.imageProjects.type ,
                     })
                     .then((res) => {
@@ -245,7 +245,7 @@ export default {
             Api.imageProject
                 .getByTagId({
                     tag_id: tagId ,
-                    limit: this.imageProjects.limit ,
+                    size: this.imageProjects.size ,
                     type:  this.imageProjects.type ,
                 }).then((res) => {
                     if (res.code !== TopContext.code.Success) {
@@ -268,7 +268,7 @@ export default {
             Api.imageProject
                 .hotTags({
                     type: this.group.imageProject.tag.type ,
-                    limit: this.group.imageProject.tag.limit ,
+                    size: this.group.imageProject.tag.size ,
                 })
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
@@ -288,7 +288,7 @@ export default {
             this.group.videoProject.curTag = 'newest';
             Api.videoProject
                 .newest({
-                    limit: this.videoProjects.limit ,
+                    size: this.videoProjects.size ,
                     type: this.videoProjects.type ,
                 })
                 .then((res) => {
@@ -311,7 +311,7 @@ export default {
             this.pending('videoProject' , true);
             Api.videoProject
                 .hot({
-                    limit: this.videoProjects.limit ,
+                    size: this.videoProjects.size ,
                 })
                 .then((res) => {
                     this.pending('videoProject' , false);
@@ -331,7 +331,7 @@ export default {
             this.pending('videoProject' , true);
             Api.videoProject
                 .getByTagId({
-                    limit: this.videoProjects.limit ,
+                    size: this.videoProjects.size ,
                     tag_id: tagId ,
                 })
                 .then((res) => {
@@ -352,7 +352,7 @@ export default {
             this.pending('hotTagsInVideoProject' , true);
             Api.videoProject
                 .hotTags({
-                    limit: this.group.videoProject.tag.limit ,
+                    size: this.group.videoProject.tag.size ,
                 })
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
