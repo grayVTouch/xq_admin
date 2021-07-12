@@ -147,6 +147,10 @@ export default [
         component: index ,
         children: [
             {
+                path: 'settings' ,
+                component: () => import('@vue/view/settings/index.vue') ,
+            } ,
+            {
                 path: 'disk' ,
                 component: () => import('@vue/view/disk/index.vue') ,
             } ,

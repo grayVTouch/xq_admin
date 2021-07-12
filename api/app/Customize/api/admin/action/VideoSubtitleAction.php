@@ -5,7 +5,7 @@ namespace App\Customize\api\admin\action;
 
 use App\Customize\api\admin\model\TagModel;
 use App\Customize\api\admin\model\VideoSubtitleModel;
-use App\Customize\api\admin\util\ResourceUtil;
+use App\Customize\api\admin\repository\ResourceRepository;
 use App\Http\Controllers\api\admin\Base;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +21,7 @@ class VideoSubtitleAction extends Action
         try {
             DB::beginTransaction();
             $count = VideoSubtitleModel::destroy($res->id);
-            ResourceUtil::delete($res->src);
+            ResourceRepository::delete($res->src);
             DB::commit();
             return self::success('操作成功' , $count);
         } catch(Exception $e) {
@@ -38,7 +38,7 @@ class VideoSubtitleAction extends Action
             foreach ($res as $v)
             {
                 VideoSubtitleModel::destroy($v->id);
-                ResourceUtil::delete($v->src);
+                ResourceRepository::delete($v->src);
             }
             DB::commit();
             return self::success('操作成功');

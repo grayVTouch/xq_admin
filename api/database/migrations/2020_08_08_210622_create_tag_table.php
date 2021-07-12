@@ -19,6 +19,7 @@ class CreateTagTable extends Migration
         Schema::create($this->table , function (Blueprint $table) {
             $table->id();
             $table->string('name' , 255)->default('')->comment('名称');
+            $table->string('type' , 255)->default(0)->comment('类型：image_project-图片专题 等');
             $table->integer('weight')->default(0)->comment('权重');
             $table->unsignedBigInteger('count')->default(0)->comment('使用次数');
             $table->unsignedBigInteger('module_id')->default(0)->comment('xq_module.id');
@@ -29,8 +30,7 @@ class CreateTagTable extends Migration
 
             $table->timestamps();
 
-
-            $table->unique(['name' , 'module_id'] , 'name_module_id');
+            $table->unique(['module_id' , 'name' , 'type'] , 'unique_mnt');
 
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';

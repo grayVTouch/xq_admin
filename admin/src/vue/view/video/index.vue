@@ -112,9 +112,20 @@
                     <b :class="{'run-gray': row.file_process_status === -1 , 'run-red': row.file_process_status === 0 , 'run-green': row.file_process_status >= 1}">{{ row.__file_process_status__ }}</b>
                 </template>
                 <template v-slot:action="{row , index}">
-                    <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
-                    <my-table-button @click="retryProcessVideoEvent(row)" :loading="myValue.pending['retry_' + row.id]" v-if="row.process_status === -1"><my-icon icon="reset" />重新处理</my-table-button>
-                    <my-table-button type="error" :loading="myValue.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
+<!--                    <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>-->
+<!--                    <my-table-button @click="retryProcessVideoEvent(row)" :loading="myValue.pending['retry_' + row.id]" v-if="row.process_status === -1"><my-icon icon="reset" />重新处理</my-table-button>-->
+<!--                    <my-table-button type="error" :loading="myValue.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>-->
+
+                    <my-tooltip content="点击查看web端详情">
+                        <my-table-button
+                                v-if="row.type === 'pro'"
+                                @click="linkToShowForVideoProjectAtWeb(row)"
+                        ><my-icon icon="web"></my-icon></my-table-button>
+                        <my-table-button
+                                v-if="row.type === 'misc'"
+                                @click="linkToShowForVideoAtWeb(row)"
+                        ><my-icon icon="web"></my-icon></my-table-button>
+                    </my-tooltip>
                 </template>
             </i-table>
         </template>

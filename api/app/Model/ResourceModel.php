@@ -16,7 +16,10 @@ class ResourceModel extends Model
                 $query->where('is_used' , 0)
                     ->orWhere('is_deleted' , 1);
             })
-            ->where('id' , '>' , $limit_id)
+            ->where([
+                ['id' , '>' , $limit_id] ,
+                ['status' , '=' , 0] ,
+            ])
             ->limit($size)
             ->get();
     }

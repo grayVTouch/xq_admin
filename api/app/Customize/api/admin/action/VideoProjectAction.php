@@ -4,6 +4,7 @@
 namespace App\Customize\api\admin\action;
 
 use App\Customize\api\admin\handler\VideoProjectHandler;
+use App\Customize\api\admin\job\VideoProjectResourceHandleJob;
 use App\Customize\api\admin\model\CategoryModel;
 use App\Customize\api\admin\model\ModuleModel;
 use App\Customize\api\admin\model\RelationTagModel;
@@ -12,7 +13,8 @@ use App\Customize\api\admin\model\UserModel;
 use App\Customize\api\admin\model\VideoCompanyModel;
 use App\Customize\api\admin\model\VideoSeriesModel;
 use App\Customize\api\admin\model\VideoProjectModel;
-use App\Customize\api\admin\util\ResourceUtil;
+use App\Customize\api\admin\repository\ResourceRepository;
+use App\Customize\api\admin\repository\VideoProjectRepository;
 use App\Http\Controllers\api\admin\Base;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -118,6 +120,7 @@ class VideoProjectAction extends Action
         $param['release_date']  = empty($param['release_date']) ? null : $param['release_date'];
         $param['end_date']      = empty($param['end_date']) ? null : $param['end_date'];
         $param['release_year']  = empty($param['release_date']) ? null : date('Y' , strtotime($param['release_date']));
+        $param['file_process_status'] = 0;
         try {
             DB::beginTransaction();
             VideoProjectModel::updateById($video_project->id , array_unit($param , [
@@ -135,6 +138,7 @@ class VideoProjectAction extends Action
                 'user_id',
                 'status',
                 'fail_reason',
+                'file_process_status',
                 'category_id' ,
                 'module_id' ,
                 'weight' ,
@@ -142,9 +146,9 @@ class VideoProjectAction extends Action
                 'max_index' ,
                 'updated_at' ,
             ]));
-            ResourceUtil::used($param['thumb']);
+            ResourceRepository::used($param['thumb']);
             if ($video_project->thumb !== $param['thumb']) {
-                ResourceUtil::delete($video_project->thumb);
+                ResourceRepository::delete($video_project->thumb);
             }
             $my_tags = RelationTagModel::getByRelationTypeAndRelationId('image_project' , $video_project->id);
             foreach ($tags as $v)
@@ -178,6 +182,8 @@ class VideoProjectAction extends Action
                 ]);
             }
             DB::commit();
+            // 执行任务
+            VideoProjectResourceHandleJob::dispatch($video_project->id , $video_project->name);
             return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
@@ -242,8 +248,7 @@ class VideoProjectAction extends Action
         }
         $datetime = current_datetime();
 
-//        var_dump($param['release_date']);
-
+        $param['file_process_status']   = 0;
         $param['release_date']  = empty($param['release_date']) ? null : $param['release_date'];
         $param['end_date']      = empty($param['end_date']) ? null : $param['end_date'];
         $param['release_year']  = empty($param['release_date']) ? null : date('Y' , strtotime($param['release_date']));
@@ -268,6 +273,7 @@ class VideoProjectAction extends Action
                 'user_id',
                 'status',
                 'fail_reason',
+                'file_process_status',
                 'category_id',
                 'module_id',
                 'weight',
@@ -276,7 +282,7 @@ class VideoProjectAction extends Action
                 'updated_at',
                 'created_at',
             ]));
-            ResourceUtil::used($param['thumb']);
+            ResourceRepository::used($param['thumb']);
             foreach ($tags as $v) {
                 $tag = TagModel::find($v);
                 if (empty($tag)) {
@@ -299,6 +305,8 @@ class VideoProjectAction extends Action
                 ]);
             }
             DB::commit();
+            // 执行异步任务
+            VideoProjectResourceHandleJob::dispatch($id);
             return self::success('操作成功');
         } catch(Exception $e) {
             DB::rollBack();
@@ -338,9 +346,7 @@ class VideoProjectAction extends Action
         }
         try {
             DB::beginTransaction();
-            ResourceUtil::delete($res->thumb);
-            VideoProjectModel::destroy($res->id);
-            RelationTagModel::delByRelationTypeAndRelationId('video_project' , $res->id);
+            VideoProjectRepository::destroy($res->id);
             DB::commit();
             return self::success('操作成功');
         } catch(Exception $e) {
@@ -356,9 +362,7 @@ class VideoProjectAction extends Action
             DB::beginTransaction();
             foreach ($res as $v)
             {
-                ResourceUtil::delete($v->thumb);
-                RelationTagModel::delByRelationTypeAndRelationId('video_project' , $v->id);
-                VideoProjectModel::destroy($v->id);
+                VideoProjectRepository::destroy($v->id);
             }
             DB::commit();
             return self::success('操作成功');

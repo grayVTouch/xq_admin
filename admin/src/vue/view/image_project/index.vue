@@ -102,7 +102,7 @@
                 </template>
 
                 <template v-slot:images="{row,index}">
-                    <i-button @click.stop="showImagePreview(row)">点击查看【{{ row.images.length }}P】</i-button>
+
                 </template>
 
                 <template v-slot:tags="{row,index}">
@@ -118,6 +118,15 @@
                             </table>
                         </div>
                     </i-poptip>
+                </template>
+
+                <template v-slot:action="{row,index}">
+                    <my-tooltip content="点击查看web端详情">
+                        <my-table-button v-if="row.type === 'pro'" @click="linkToShowForImageProjectAtWeb(row)"><my-icon icon="web"></my-icon></my-table-button>
+                    </my-tooltip>
+                    <my-tooltip content="点击查看图片列表">
+                        <my-table-button @click="showImagePreview(row)"><my-icon icon="shangchuantupian"></my-icon>【{{ row.images.length }}P】</my-table-button>
+                    </my-tooltip>
                 </template>
 
             </i-table>

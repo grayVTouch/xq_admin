@@ -29,4 +29,14 @@ class Job extends Base
 
         return success($res['message'] , $res['data']);
     }
+
+    public function resourceClear()
+    {
+        $res = JobAction::resourceClear($this);
+        if ($res['code'] !== 0) {
+            return error($res['message'] , $res['data'] , $res['code']);
+        }
+
+        return success($res['message'] , $res['data']);
+    }
 }

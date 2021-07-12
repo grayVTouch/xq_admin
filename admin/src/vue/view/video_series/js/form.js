@@ -82,11 +82,27 @@ export default {
         } ,
 
         initDom () {
-
+            this.dom.thumb = G(this.$refs.thumb);
         } ,
 
         initIns () {
-
+            const self = this;
+            this.ins.thumb = new Uploader(this.dom.thumb.get(0) , {
+                api: this.thumbApi(),
+                mode: 'override' ,
+                clear: true ,
+                uploaded (file , data , code) {
+                    if (code !== TopContext.code.Success) {
+                        this.status(file.id , false);
+                        return ;
+                    }
+                    this.status(file.id , true);
+                    self.form.thumb = data.data;
+                } ,
+                cleared () {
+                    self.form.thumb = '';
+                } ,
+            });
         } ,
 
         findById (id) {
@@ -132,6 +148,8 @@ export default {
                 this.findById(this.id)
                     .then(() => {
                         this.owner = this.form.user ? this.form.user : G.copy(owner);
+
+                        this.ins.thumb.render(this.form.thumb);
                     });
             }
         } ,
@@ -158,6 +176,7 @@ export default {
             this.form       = G.copy(form);
             this.owner      = G.copy(owner);
             this.error();
+            this.ins.thumb.clearAll();
         } ,
 
         filter (form) {

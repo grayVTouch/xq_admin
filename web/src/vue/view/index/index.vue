@@ -120,8 +120,53 @@
                 </div>
             </div>
 
-            <!-- 视频 -->
-            <div class="group group-for-video-subject">
+            <!-- 图片 -->
+            <div class="group group-for-image" v-if="true">
+                <!-- 导航 -->
+                <div class="run-action-title">
+                    <div class="left">图片</div>
+                    <div class="right">
+                        <div class="tags">
+                            <my-button class="tag" :class="{cur: group.videoProject.curTag === 'newest'}" @click="newestInVideoProject">最新</my-button>
+                            <my-button class="tag" :class="{cur: group.videoProject.curTag === 'hot'}" @click="hotInVideoProject">热门</my-button>
+                            <my-button class="tag" v-for="v in group.videoProject.tag.data" :key="v.id" :class="{cur: group.videoProject.curTag === 'tag_' + v.tag_id}" @click="getVideoProjectsByTagId(v.tag_id)">{{ v.name }}</my-button>
+                            <my-link class="tag" :href="genUrl('/video_project/search')">更多</my-link>
+                        </div>
+                        <div class="operation">
+                            <my-button class="prev" :class="{disabled: group.videoProject.action.translateX === group.videoProject.action.maxTranslateX}" @click="prevByGroup('videoProject')"><my-icon icon="prev01" /></my-button>
+                            <my-button class="next" :class="{disabled: group.videoProject.action.translateX === group.videoProject.action.minTranslateX}" @click="nextByGroup('videoProject')"><my-icon icon="next01" /></my-button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="list" ref="list-for-image">
+
+                    <div class="item" v-for="v in listData">
+                        <a class="link">
+                            <div class="mask">
+                                <img class="image" :src="v" v-judge-img-size alt="">
+                            </div>
+                            <div class="actions">
+                                <div class="top">
+                                    <div class="right praise" v-ripple @click.prevent="praiseImageProject(v)">
+                                        <my-loading size="16" v-if="val.pending.praiseImageProject"></my-loading>
+                                        <my-icon icon="shoucang2" :class="{'run-red': true }" /> 喜欢
+                                    </div>
+                                </div>
+                                <div class="btm">
+                                    <span class="view-count"><my-icon icon="chakan" mode="right" />11</span>
+                                    <span class="praise-count"><my-icon icon="shoucang2" mode="right" />2</span>
+                                    <span class="collect-count" v-if="$store.state.user"><my-icon icon="shoucang6" mode="right" />3</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 视频专题 -->
+            <div class="group group-for-video-project">
                 <!-- 导航 -->
                 <div class="run-action-title">
                     <div class="left">视频专题</div>

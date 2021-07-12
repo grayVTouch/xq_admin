@@ -10,7 +10,7 @@ use App\Customize\api\web\model\ImageProjectModel;
 use App\Customize\api\web\model\ModuleModel;
 use App\Customize\api\web\model\UserModel;
 use App\Customize\api\web\model\VideoProjectModel;
-use App\Customize\api\web\util\CollectionGroupUtil;
+use App\Customize\api\web\repository\CollectionGroupRepository;
 use App\Customize\api\web\model\Model;
 use stdClass;
 use function core\convert_object;

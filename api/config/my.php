@@ -21,6 +21,9 @@ return [
     // 后台用户：密码
     'admin_password' => env('ADMIN_PASSWORD' , 'admin') ,
 
-    // 认证模块初始化密码
-    'module_auth_password' => env('MODULE_AUTH_PASSWORD' , 123456) ,
+    // 平台用户：用户名
+    'client_username' => env('CLIENT_USERNAME' , 'admin') ,
+
+    // 平台用户：密码
+    'client_password' => env('CLIENT_PASSWORD' , 'admin') ,
 ];

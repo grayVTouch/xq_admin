@@ -629,7 +629,8 @@
     'res_url' => 'http://res.xq.test',
     'admin_username' => 'admin',
     'admin_password' => 'admin',
-    'module_auth_password' => '364793',
+    'client_username' => 'admin',
+    'client_password' => 'admin',
   ),
   'queue' => 
   array (

@@ -20,8 +20,8 @@ class CreateVideoSeriesTable extends Migration
             $table->id();
             $table->string('name' , 255)->default('')->comment('名称');
             $table->unsignedBigInteger('module_id')->default(0)->comment('xq_module.id');
+            $table->string('thumb' , 500)->default('')->comment('封面');
             $table->integer('weight')->default(0)->comment('权重');
-
             $table->unsignedBigInteger('user_id')->default(0)->comment('xq_user.id，发布者用户id');
             $table->tinyInteger('status')->default(0)->comment('状态： -1-审核不通过 0-待审核 1-审核通过');
             $table->string('fail_reason' , 255)->default('')->comment('失败原因，当status=-1时，必须提供');

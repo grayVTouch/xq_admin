@@ -22,6 +22,7 @@ class CreateResourceTable extends Migration
             $table->string('disk')->default('')->comment('存储介质: local-本地存储 aliyun-阿里云 qiniu-七牛云');
             $table->tinyInteger('is_used')->default(0)->comment('已使用？0-否 1-是');
             $table->tinyInteger('is_deleted')->default(0)->comment('已删除？0-否 1-是');
+            $table->tinyInteger('status')->default(0)->comment('状态：0-未执行 1-已执行');
 
             $table->timestamps();
 

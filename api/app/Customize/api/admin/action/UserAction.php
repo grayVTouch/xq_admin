@@ -8,7 +8,7 @@ namespace App\Customize\api\admin\action;
 use App\Customize\api\admin\handler\UserHandler;
 use App\Customize\api\admin\model\AdminModel;
 use App\Customize\api\admin\model\UserModel;
-use App\Customize\api\admin\util\ResourceUtil;
+use App\Customize\api\admin\repository\ResourceRepository;
 use App\Http\Controllers\api\admin\Base;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -82,9 +82,9 @@ class UserAction extends Action
                 'user_group_id' ,
                 'description' ,
             ]));
-            ResourceUtil::used($param['avatar']);
+            ResourceRepository::used($param['avatar']);
             if ($res->avatar !== $param['avatar']) {
-                ResourceUtil::delete($res->avatar);
+                ResourceRepository::delete($res->avatar);
             }
             DB::commit();
             return self::success('操作成功');
@@ -132,7 +132,7 @@ class UserAction extends Action
                 'user_group_id' ,
                 'description' ,
             ]));
-            ResourceUtil::used($param['avatar']);
+            ResourceRepository::used($param['avatar']);
             DB::commit();
             return self::success('' , $id);
         } catch(Exception $e) {
@@ -166,7 +166,7 @@ class UserAction extends Action
         try {
             DB::beginTransaction();
             $count = UserModel::destroy($res->id);
-            ResourceUtil::delete($res->avatar);
+            ResourceRepository::delete($res->avatar);
             DB::commit();
             return self::success('操作成功' , $count);
         } catch(Exception $e) {
@@ -189,7 +189,7 @@ class UserAction extends Action
                     DB::rollBack();
                     return self::error('包含系统内置用户，禁止操作' , '' , 403);
                 }
-                ResourceUtil::delete($v->avatar);
+                ResourceRepository::delete($v->avatar);
                 UserModel::destroy($v->id);
             }
             DB::commit();

@@ -2,7 +2,7 @@
     <my-form-drawer
             :title="title"
             v-model="myValue.show"
-            width="950"
+            :width="950"
     >
 
         <template slot="header">

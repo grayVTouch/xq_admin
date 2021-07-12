@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Model\DiskModel;
 use App\Model\ResourceModel;
 use App\Model\TimerTaskLogModel;
-use Illuminate\Console\Command;
+use Core\Lib\File;
 
 class ResourceHandle extends Command
 {
@@ -78,21 +78,23 @@ class ResourceHandle extends Command
                         continue ;
                     }
                 }
-                if (file_exists($v->path)) {
-                    unlink($v->path);
+                if (File::exists($v->path)) {
+                    File::delete($v->path);
                 }
                 ResourceModel::updateById($v->id , [
-                    'is_deleted' => 1 ,
+                    'is_deleted'    => 1 ,
+                    'status'        => 1 ,
                     'updated_at' => $datetime ,
                 ]);
                 $deleted_count++;
             }
             usleep($this->interval);
             $res = ResourceModel::getWaitDeleteByLimitIdAndLimit($last->id , $this->limit);
+            echo "\n";
         }
         $end_time = date('Y-m-d H:i:s');
         $duration = strtotime($end_time) - strtotime($start_time);
-        $end_log = "【end: {$end_time}】，删除完毕。耗费时间：{$duration} s；实际删除：{$deleted_count}";
+        $end_log = "【end: {$end_time}】，删除完毕。耗费时间：{$duration}s；实际删除：{$deleted_count}";
         $timer_task_log .= $end_log;
         echo PHP_EOL . $end_log . PHP_EOL;
         TimerTaskLogModel::log($this->signature , $timer_task_log , date('Y-m-d H:i:s'));

@@ -49,6 +49,8 @@ class CreateVideoTable extends Migration
             $table->tinyInteger('file_process_status')->default(0)->comment('文件处理处理状态：-1-处理失败 0-待处理 1-处理中 2-处理完成 ');
             $table->unsignedSmallInteger('index')->default(0)->comment('剧集索引，仅当 type=pro 的时候有效');
             $table->integer('weight')->default(0)->comment('权重');
+            $table->string('directory' , 1024)->default('')->comment('目录');
+
 
             $table->timestamps();
 

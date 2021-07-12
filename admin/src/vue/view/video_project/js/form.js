@@ -109,9 +109,16 @@ export default {
         } ,
 
         getTopTags () {
+            if (this.form.module_id <= 0) {
+                return ;
+            }
             this.pending('getTopTags' , true);
             Api.tag
-                .topByModuleId(this.form.module_id)
+                .top({
+                    module_id: this.form.module_id ,
+                    type: 'video_project' ,
+                    size: 10 ,
+                })
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
                         this.errorHandle(res.message);
@@ -460,6 +467,7 @@ export default {
                 .findOrCreateTag({
                     name ,
                     module_id: this.form.module_id ,
+                    type: 'video_project' ,
                     user_id: this.form.user_id ,
                 })
                 .then((res) => {
@@ -470,6 +478,7 @@ export default {
                     }
                     this.tags.push(res.data);
                     this.dom.tagInput.html('');
+                    this.dom.tagInput.origin('focus');
                 })
                 .finally(() => {
 

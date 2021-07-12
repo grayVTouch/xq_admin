@@ -39,8 +39,14 @@ export default new Vuex.Store({
 
         // 视图状态
         showView: true ,
+
+        settings: {} ,
     } ,
     mutations: {
+        settings (state , payload) {
+            state.settings = payload;
+        } ,
+
         user (state , payload) {
             state.user = payload;
         } ,
@@ -78,6 +84,11 @@ export default new Vuex.Store({
         } ,
     } ,
     actions: {
+
+        settings (context , payload) {
+            context.commit('settings' , payload);
+        } ,
+
         user (context , payload) {
             context.commit('user' , payload);
         } ,

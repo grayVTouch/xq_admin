@@ -169,6 +169,9 @@ export default {
             if (!G.isNumeric(form.module_id)) {
                 error.module_id = '请选择模块';
             }
+            if (G.isEmptyString(form.type)) {
+                error.type = '请选择类型';
+            }
             return {
                 status: G.isEmptyObject(error) ,
                 error ,

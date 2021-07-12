@@ -1,5 +1,11 @@
 <template>
-    <i-select v-model="valueCopy" filterable @on-change="changeEvent" :style="`width: ${width}px`">
+    <i-select
+              v-model="valueCopy"
+              filterable
+              @on-change="changeEvent"
+              :style="`width: ${width}px`"
+              :disabled="disabled"
+    >
         <i-option v-if="has" :value="top.key">{{ top.value }}</i-option>
         <i-option v-for="v in data" :value="v[attr.id]" :key="v[attr.id]">{{ v[attr.floor] > 1 ? '|' + '_'.repeat((v[attr.floor] - 1) * 10) : '' }}{{ v[attr.name] }}</i-option>
     </i-select>
@@ -69,6 +75,10 @@
                 type: [String , Number] ,
                 default: 200 ,
             } ,
+            disabled: {
+                type: Boolean ,
+                default: false ,
+            }
         } ,
 
         methods: {
@@ -83,6 +93,9 @@
                 // 所以，必须要加上 immediate
                 immediate: true ,
                 handler (newVal , oldVal) {
+                    if (newVal === this.valueCopy) {
+                        return ;
+                    }
                     this.valueCopy = newVal;
                 }
             } ,

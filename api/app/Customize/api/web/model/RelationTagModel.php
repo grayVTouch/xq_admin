@@ -154,27 +154,23 @@ class RelationTagModel extends Model
         $where = [
             ['rt.relation_type' , '=' , 'image_project'] ,
         ];
-
         if ($filter['module_id'] !== '') {
             $where[] = ['rt.module_id' , '=' , $filter['module_id']];
         }
-
         if ($filter['value'] !== '') {
             $where[] = ['rt.name' , 'like' , "%{$value}%"];
         }
-
-        return self::from('xq_relation_tag as rt')
+        $query = self::from('xq_relation_tag as rt')
             ->select('rt.*' , DB::raw('count(rt.id) as total'))
-            ->where($where)
-            ->whereExists(function($query) use($filter){
-                if ($filter['type'] === '') {
-                    return ;
-                }
+            ->where($where);
+        if ($filter['type'] !== '') {
+            $query->whereExists(function($query) use($filter){
                 $query->from('xq_image_project')
                     ->where('type' , $filter['type'])
                     ->whereRaw('rt.relation_id = id');
-            })
-            ->groupBy('rt.tag_id')
+            });
+        }
+        return $query->groupBy('rt.tag_id')
             ->orderBy('total' , 'desc')
             ->orderBy('rt.id' , 'asc')
             ->paginate($size);

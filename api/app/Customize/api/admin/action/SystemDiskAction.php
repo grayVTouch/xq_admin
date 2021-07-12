@@ -19,6 +19,7 @@ use function api\admin\parse_order;
 use function core\array_unit;
 use function core\current_datetime;
 use function core\format_capacity;
+use function core\format_path;
 
 class SystemDiskAction extends Action
 {
@@ -53,7 +54,7 @@ class SystemDiskAction extends Action
                 $free_space = format_capacity($free_space);
                 $suitable_res[] = [
                     'name'          => sprintf('%30s 【总容量：%30s】 【可用容量：%30s】' , $v , $total_space , $free_space) ,
-                    'path'          => $v ,
+                    'path'          => format_path($v) ,
                 ];
             }
         } else {

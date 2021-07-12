@@ -7,10 +7,11 @@ use App\Customize\api\admin\job\middleware\BootMiddleware;
 use App\Customize\api\admin\model\ImageModel;
 use App\Customize\api\admin\model\VideoModel;
 use App\Customize\api\admin\model\ResourceModel;
+use App\Customize\api\admin\model\VideoProjectModel;
 use App\Customize\api\admin\model\VideoSrcModel;
 use App\Customize\api\admin\model\VideoSubtitleModel;
 use App\Customize\api\admin\util\FileUtil;
-use App\Customize\api\admin\util\ResourceUtil;
+use App\Customize\api\admin\repository\ResourceRepository;
 use Core\Lib\File;
 use Core\Wrapper\FFmpeg;
 use Exception;
@@ -60,7 +61,7 @@ class VideoResourceHandleJob extends FileBaseJob implements ShouldQueue
             // 仅在本地存储模式下才执行移植任务
             $video = VideoModel::find($this->videoId);
             if (empty($video)) {
-                throw new Exception('视频专题不存在【' . $this->videoId . '】');
+                throw new Exception('视频不存在【' . $this->videoId . '】');
             }
             if ($video->file_process_status !== 0) {
                 // 当前文件处理状态无需处理
@@ -94,11 +95,18 @@ class VideoResourceHandleJob extends FileBaseJob implements ShouldQueue
             if (!File::exists($save_dir)) {
                 File::mkdir($save_dir , 0777 , true);
             }
+            if ($video->type === 'pro') {
+                // 记录保存的目录
+                ResourceRepository::create('' , $save_dir , 'local' , 1 , 0);
+                VideoProjectModel::updateById($video->video_project_id , [
+                    'directory' => $save_dir ,
+                ]);
+            }
             // 处理文件名称
             $get_video_name = function($type , $name , $index){
                 if ($type === 'pro') {
                     // [sprintf 函数可访问右侧链接](https://www.runoob.com/php/func-string-sprintf.html)
-                    return empty($name) ? sprintf("%'03s" , $index) : $name;
+                    return empty($name) ? sprintf("%'04s" , $index) : $name;
                 }
                 return $name;
             };
@@ -112,7 +120,7 @@ class VideoResourceHandleJob extends FileBaseJob implements ShouldQueue
             $preview_url                    = FileUtil::generateUrlByRealPath($preview_file);
             if (!File::exists($video_first_frame_file)) {
                 // 移动文件
-                $resource = ResourceModel::findByUrl($video->thumb_for_program);
+                $resource = ResourceModel::findByUrlOrPath($video->thumb_for_program);
                 if (empty($resource)) {
                     throw new Exception("资源记录未找到：{$video->thumb_for_program}");
                 }
@@ -121,12 +129,12 @@ class VideoResourceHandleJob extends FileBaseJob implements ShouldQueue
                     'thumb_for_program' => $video_first_frame_url
                 ]);
                 // 删除源文件
-                ResourceUtil::delete($video->thumb_for_program);
-                ResourceUtil::create($video_first_frame_url , $video_first_frame_file , 'local' , 1 , 0);
+                ResourceRepository::delete($video->thumb_for_program);
+                ResourceRepository::create($video_first_frame_url , $video_first_frame_file , 'local' , 1 , 0);
             }
             if (!File::exists($video_simple_preview_file)) {
                 // 移动文件
-                $resource = ResourceModel::findByUrl($video->simple_preview);
+                $resource = ResourceModel::findByUrlOrPath($video->simple_preview);
                 if (empty($resource)) {
                     throw new Exception("资源记录未找到：{$video->simple_preview}");
                 }
@@ -135,12 +143,12 @@ class VideoResourceHandleJob extends FileBaseJob implements ShouldQueue
                     'simple_preview' => $video_simple_preview_url
                 ]);
                 // 删除源文件
-                ResourceUtil::delete($video->simple_preview);
-                ResourceUtil::create($video_simple_preview_url , $video_simple_preview_file , 'local' , 1 , 0);
+                ResourceRepository::delete($video->simple_preview);
+                ResourceRepository::create($video_simple_preview_url , $video_simple_preview_file , 'local' , 1 , 0);
             }
             if (!File::exists($preview_file)) {
                 // 移动文件
-                $resource = ResourceModel::findByUrl($video->preview);
+                $resource = ResourceModel::findByUrlOrPath($video->preview);
                 if (empty($resource)) {
                     throw new Exception("资源记录未找到：{$video->preview}");
                 }
@@ -149,15 +157,15 @@ class VideoResourceHandleJob extends FileBaseJob implements ShouldQueue
                     'preview' => $preview_url
                 ]);
                 // 删除源文件
-                ResourceUtil::delete($video->preview);
-                ResourceUtil::create($preview_url , $preview_file , 'local' , 1 , 0);
+                ResourceRepository::delete($video->preview);
+                ResourceRepository::create($preview_url , $preview_file , 'local' , 1 , 0);
             }
             // 视频文件
             foreach ($video->videos as $v)
             {
                 try {
                     DB::beginTransaction();
-                    $resource = ResourceModel::findByUrl($v->src);
+                    $resource = ResourceModel::findByUrlOrPath($v->src);
                     if (empty($resource)) {
                         DB::rollBack();
                         continue ;
@@ -183,8 +191,8 @@ class VideoResourceHandleJob extends FileBaseJob implements ShouldQueue
                             'src' => $target_url
                         ]);
                         // 删除源文件
-                        ResourceUtil::delete($v->src);
-                        ResourceUtil::create($target_url , $target_file , 'local' , 1 , 0);
+                        ResourceRepository::delete($v->src);
+                        ResourceRepository::create($target_url , $target_file , 'local' , 1 , 0);
                     }
                     DB::commit();
                 } catch (Exception $e) {
@@ -197,7 +205,7 @@ class VideoResourceHandleJob extends FileBaseJob implements ShouldQueue
             {
                 try {
                     DB::beginTransaction();
-                    $resource = ResourceModel::findByUrl($v->src);
+                    $resource = ResourceModel::findByUrlOrPath($v->src);
                     if (empty($resource)) {
                         DB::rollBack();
                         continue ;
@@ -231,8 +239,8 @@ class VideoResourceHandleJob extends FileBaseJob implements ShouldQueue
                             'src' => $target_url
                         ]);
                         // 删除源文件
-                        ResourceUtil::delete($v->src);
-                        ResourceUtil::create($target_url , $target_file , 'local' , 1 , 0);
+                        ResourceRepository::delete($v->src);
+                        ResourceRepository::create($target_url , $target_file , 'local' , 1 , 0);
                     }
                     DB::commit();
                 } catch (Exception $e) {

@@ -1,5 +1,7 @@
 const form = {
     module_id: '' ,
+    type: '' ,
+    p_id: '' ,
     weight: 0 ,
     status: 1 ,
     is_enabled: 1 ,
@@ -21,6 +23,12 @@ export default {
 
         mode: {
             type: String ,
+            default: 'add' ,
+        } ,
+
+        addMode: {
+            type: String ,
+            // add-添加 add_next-添加下级
             default: 'add' ,
         } ,
     } ,
@@ -98,8 +106,7 @@ export default {
                            reject();
                            return ;
                        }
-                       this.form = res.data;
-                       resolve();
+                       resolve(res.data);
                    }).finally(() => {
                        this.pending('findById' , false);
                    });
@@ -110,7 +117,11 @@ export default {
             this.getModules();
             if (this.mode === 'add') {
                 // 添加
-                this.handleStep('module');
+                if (this.addMode === 'add_next') {
+                    this.handleForm();
+                } else {
+                    this.handleStep('module');
+                }
             } else {
                 this.handleForm();
             }
@@ -129,9 +140,21 @@ export default {
             if (this.mode === 'edit') {
                 this.findById(this.id)
                     .then((res) => {
-                        this.getCategories(this.form.module_id);
+                        this.form = res;
+                        this.getCategories();
                         this.owner = this.form.user ? this.form.user : G.copy(owner);
                     });
+            } else {
+                if (this.addMode === 'add_next') {
+                    this.findById(this.id)
+                        .then((res) => {
+                            this.form.type = res.type;
+                            this.form.module_id = res.module_id;
+                            this.form.p_id = res.id;
+
+                            this.getCategories();
+                        });
+                }
             }
         } ,
 
@@ -241,7 +264,6 @@ export default {
             this.$refs['user-selector'].show();
         } ,
 
-
         getCategoryExcludeSelfAndChildrenByIdAndData (id , data) {
             const selfAndChildren = G.t.childrens(id , data , null , true , false);
             const selfAndChildrenIds = [];
@@ -258,7 +280,13 @@ export default {
             return res;
         } ,
 
-        getCategories (moduleId) {
+        getCategories () {
+            if (this.form.module_id < 1) {
+                return ;
+            }
+            if (G.isEmptyString(this.form.type)) {
+                return ;
+            }
             this.pending('getCategories' , true);
             Api.category
                 .search({
@@ -283,12 +311,12 @@ export default {
                 return ;
             }
             this.form.p_id = '';
-            this.getCategories(moduleId);
+            this.getCategories();
         } ,
 
         typeChangedEvent () {
             this.myValue.error.type = '';
-            this.getCategories(this.form.module_id);
+            this.getCategories();
         } ,
 
 

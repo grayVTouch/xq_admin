@@ -40,7 +40,7 @@ class VideoHandler extends Handler
         $model->__thumb__ = empty($model->thumb) ? $model->thumb_for_program : $model->thumb;
 
         $model->__name__ = $model->type === 'pro' ?
-            (empty($model->name) ? sprintf("%'03s" , $model->index) : $model->name)
+            (empty($model->name) ? sprintf("%'04s" , $model->index) : $model->name)
             :
             $model->name;
 

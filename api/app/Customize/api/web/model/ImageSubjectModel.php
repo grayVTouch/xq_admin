@@ -17,7 +17,7 @@ class ImageSubjectModel extends Model
         $filter['id'] = $filter['id'] ?? '';
         $filter['name'] = $filter['name'] ?? '';
         $order['field'] = $order['field'] ?? 'id';
-        $order['value'] = $order['value'] ?? 'asc';
+        $order['value'] = $order['value'] ?? 'desc';
         $where = [];
         if ($filter['id'] !== '') {
             $where[] = ['id' , '=' , $filter['id']];

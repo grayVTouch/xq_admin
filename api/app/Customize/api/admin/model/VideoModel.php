@@ -5,6 +5,7 @@ namespace App\Customize\api\admin\model;
 
 
 use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class VideoModel extends Model
@@ -97,8 +98,11 @@ class VideoModel extends Model
         ])->first();
     }
 
-    public static function getByVideoProjectId()
+    public static function getByVideoProjectId(int $video_project_id): Collection
     {
-
+        return self::where([
+            ['type' , '=' , 'pro'] ,
+            ['video_project_id' , '=' , $video_project_id] ,
+        ])->get();
     }
 }

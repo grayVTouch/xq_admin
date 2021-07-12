@@ -2,6 +2,7 @@
 
 use App\Model\PositionModel;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class PositionSeeder extends Seeder
 {
@@ -13,13 +14,12 @@ class PositionSeeder extends Seeder
     public function run()
     {
         $datetime = date('Y-m-d H:i:s');
-        PositionModel::insert([
+        $data = [
             [
                 'name' => '首页幻灯片' ,
                 'value' => 'home' ,
                 'platform' => 'web' ,
                 'description' => '' ,
-                'updated_at' =>  $datetime ,
                 'created_at' => $datetime ,
             ] ,
             [
@@ -27,7 +27,6 @@ class PositionSeeder extends Seeder
                 'value' => 'image_project' ,
                 'platform' => 'web' ,
                 'description' => '' ,
-                'updated_at' =>  $datetime ,
                 'created_at' => $datetime ,
             ] ,
             [
@@ -35,7 +34,6 @@ class PositionSeeder extends Seeder
                 'value' => 'video_project' ,
                 'platform' => 'web' ,
                 'description' => '' ,
-                'updated_at' =>  $datetime ,
                 'created_at' => $datetime ,
             ] ,
             [
@@ -43,7 +41,6 @@ class PositionSeeder extends Seeder
                 'value' => 'image' ,
                 'platform' => 'web' ,
                 'description' => '非专题图片' ,
-                'updated_at' =>  $datetime ,
                 'created_at' => $datetime ,
             ] ,
             [
@@ -51,9 +48,29 @@ class PositionSeeder extends Seeder
                 'value' => 'video' ,
                 'platform' => 'web' ,
                 'description' => '非专题视频' ,
-                'updated_at' =>  $datetime ,
                 'created_at' => $datetime ,
             ] ,
-        ]);
+        ];
+
+        try {
+            DB::beginTransaction();
+            foreach ($data as $v)
+            {
+                $where = [
+                    'name' => $v['name'] ,
+                    'value' => $v['value'] ,
+                    'platform' => $v['platform'] ,
+                ];
+                $insertData = $v;
+                unset($insertData['name']);
+                unset($insertData['value']);
+                unset($insertData['platform']);
+                DB::table('xq_position')->updateOrInsert($where , $insertData);
+            }
+            DB::commit();
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 }

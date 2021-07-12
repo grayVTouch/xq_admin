@@ -25,6 +25,8 @@ import mySearchFormItem from '@vue/view/public/common/my_search_form_item.vue';
 import myVideoPreview from '@vue/view/public/common/my_video_preview.vue';
 import myResourceSelector from '@vue/view/public/core/selector/my_resource_selector.vue';
 import myImagePreview from '@vue/view/public/common/my_image_preview.vue';
+import myTooltip from '@vue/view/public/common/my_tooltip.vue';
+import myCategorySelector from '@vue/view/public/core/selector/my_category_selector.vue';
 
 Vue.component('my-base' , myBase);
 // Vue.component('my-loading' , loading);
@@ -51,10 +53,12 @@ Vue.component('my-video-company-selector' , myVideoCompanySelector);
 Vue.component('my-video-project-selector' , myVideoProjectSelector);
 Vue.component('my-video-project-selector' , myVideoProjectSelector);
 Vue.component('my-resource-selector' , myResourceSelector);
+Vue.component('my-category-selector' , myCategorySelector);
 
 Vue.component('my-search-form' , mySearchForm);
 Vue.component('my-search-form-item' , mySearchFormItem);
 Vue.component('my-video-preview' , myVideoPreview);
 Vue.component('my-image-preview' , myImagePreview);
+Vue.component('my-tooltip' , myTooltip);
 
 

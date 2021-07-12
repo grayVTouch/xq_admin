@@ -8,7 +8,7 @@ use App\Customize\api\admin\model\ModuleModel;
 use App\Customize\api\admin\model\RegionModel;
 use App\Customize\api\admin\model\UserModel;
 use App\Customize\api\admin\model\VideoCompanyModel;
-use App\Customize\api\admin\util\ResourceUtil;
+use App\Customize\api\admin\repository\ResourceRepository;
 use App\Http\Controllers\api\admin\Base;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -95,9 +95,9 @@ class VideoCompanyAction extends Action
                 'fail_reason' ,
                 'updated_at' ,
             ]));
-            ResourceUtil::used($param['thumb']);
+            ResourceRepository::used($param['thumb']);
             if ($res->thumb !== $param['thumb']) {
-                ResourceUtil::delete($res->thumb);
+                ResourceRepository::delete($res->thumb);
             }
             DB::commit();
             return self::success('操作成功');
@@ -161,7 +161,7 @@ class VideoCompanyAction extends Action
                 'updated_at' ,
                 'created_at' ,
             ]));
-            ResourceUtil::used($param['thumb']);
+            ResourceRepository::used($param['thumb']);
             DB::commit();
             return self::success('' , $id);
         } catch(Exception $e) {
@@ -196,7 +196,7 @@ class VideoCompanyAction extends Action
         }
         try {
             DB::beginTransaction();
-            ResourceUtil::delete($res->thumb);
+            ResourceRepository::delete($res->thumb);
             $count = VideoCompanyModel::destroy($res->id);
             DB::commit();
             return self::success('操作成功' , $count);
@@ -213,7 +213,7 @@ class VideoCompanyAction extends Action
             DB::beginTransaction();
             foreach ($res as $v)
             {
-                ResourceUtil::delete($v->thumb);
+                ResourceRepository::delete($v->thumb);
             }
             $count = VideoCompanyModel::destroy($ids);
             DB::commit();

@@ -5,7 +5,6 @@ const show = genUrl('tag/{id}');
 const destroy = genUrl('tag/{id}');
 const destroyAll = genUrl('destroy_all_tag');
 const search = genUrl('search_tag');
-const topByModuleId = genUrl('top_by_module_id');
 const findOrCreateTag = genUrl('find_or_create_tag');
 
 export default {
@@ -45,10 +44,8 @@ export default {
         });
     } ,
 
-    topByModuleId (moduleId) {
-        return Http.get(topByModuleId , {
-            module_id: moduleId
-        });
+    top (query) {
+        return Http.get(`${TopContext.api}/top_tags` , query);
     } ,
 
     findOrCreateTag (data) {

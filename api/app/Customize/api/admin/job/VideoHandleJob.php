@@ -7,9 +7,10 @@ use App\Customize\api\admin\job\middleware\BootMiddleware;
 use App\Customize\api\admin\model\DiskModel;
 use App\Customize\api\admin\model\ResourceModel;
 use App\Customize\api\admin\model\VideoModel;
+use App\Customize\api\admin\model\VideoProjectModel;
 use App\Customize\api\admin\model\VideoSrcModel;
 use App\Customize\api\admin\model\VideoSubtitleModel;
-use App\Customize\api\admin\util\ResourceUtil;
+use App\Customize\api\admin\repository\ResourceRepository;
 use Core\Lib\File;
 use Core\Lib\ImageProcessor;
 use Core\Wrapper\FFmpeg;
@@ -118,15 +119,15 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
             if (File::exists($temp_dir)) {
                 File::delete($temp_dir);
             }
-            ResourceUtil::delete($video->thumb_for_program);
-            ResourceUtil::delete($video->preview);
+            ResourceRepository::delete($video->thumb_for_program);
+            ResourceRepository::delete($video->preview);
             foreach ($video->videos as $v)
             {
-                ResourceUtil::delete($v->src);
+                ResourceRepository::delete($v->src);
             }
             foreach ($video->video_subtitles as $v)
             {
-                ResourceUtil::delete($v->src);
+                ResourceRepository::delete($v->src);
             }
             VideoSrcModel::delByVideoId($video->id);
             // 清理旧数据 end -------------------------------------------------------
@@ -134,8 +135,8 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
             // ......处理新数据
             $merge_video_subtitle               = $video->merge_video_subtitle == 1 && !empty($video->video_subtitles);
             $first_video_subtitle               = $merge_video_subtitle ? $video->video_subtitles[0] : null;
-            $first_video_subtitle_resource      = $merge_video_subtitle ? ResourceModel::findByUrl($first_video_subtitle->src) : null;
-            $video_resource                     = ResourceModel::findByUrl($video->src);
+            $first_video_subtitle_resource      = $merge_video_subtitle ? ResourceModel::findByUrlOrPath($first_video_subtitle->src) : null;
+            $video_resource                     = ResourceModel::findByUrlOrPath($video->src);
             $video_info                         = FFprobe::create($video_resource->path)->coreInfo();
 
             $video_simple_preview_config        = my_config('app.video_simple_preview');
@@ -145,6 +146,13 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
 
             if (!File::exists($save_dir)) {
                 File::mkdir($save_dir, 0777, true);
+            }
+            if ($video->type === 'pro') {
+                // 记录目录
+                ResourceRepository::create('' , $save_dir , 'local' , 1 , 0);
+                VideoProjectModel::updateById($video->video_project_id , [
+                    'directory' => $save_dir ,
+                ]);
             }
 
             if (!File::exists($temp_dir)) {
@@ -158,7 +166,7 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
             $get_video_name = function($type , $name , $index){
                 if ($type === 'pro') {
                     // [sprintf 函数可访问右侧链接](https://www.runoob.com/php/func-string-sprintf.html)
-                    return empty($name) ? sprintf("%'03s" , $index) : $name;
+                    return empty($name) ? sprintf("%'04s" , $index) : $name;
                 }
                 return $name;
             };
@@ -182,7 +190,7 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
             VideoModel::updateById($video->id , [
                 'thumb_for_program' => $video_first_frame_url ,
             ]);
-            ResourceUtil::create($video_first_frame_url , $video_first_frame_file , 'local' , 1 , 0);
+            ResourceRepository::create($video_first_frame_url , $video_first_frame_file , 'local' , 1 , 0);
 
             /**
              * 视频简略预览
@@ -223,7 +231,7 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
             VideoModel::updateById($video->id , [
                 'simple_preview'    => $video_simple_preview_url ,
             ]);
-            ResourceUtil::create($video_simple_preview_url , $video_simple_preview_file , 'local' , 1 , 0);
+            ResourceRepository::create($video_simple_preview_url , $video_simple_preview_file , 'local' , 1 , 0);
 
             /**
              * 视频完整进度预览
@@ -290,7 +298,7 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
                 'video_process_status'    => 2 ,
             ]);
 
-            ResourceUtil::create($preview_url , $preview_file , 'local' , 1 , 0);
+            ResourceRepository::create($preview_url , $preview_file , 'local' , 1 , 0);
 
             /**
              * 视频转码
@@ -333,7 +341,7 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
                     'definition'    => $k ,
                     'created_at'   => date('Y-m-d H:i:s') ,
                 ]);
-                ResourceUtil::create($transcoded_access_url , $transcoded_file , 'local' , 1 , 0);
+                ResourceRepository::create($transcoded_access_url , $transcoded_file , 'local' , 1 , 0);
             }
 
             if ($is_hd) {
@@ -365,25 +373,25 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
                     'created_at'   => date('Y-m-d H:i:s') ,
                 ]);
                 // 删除源文件
-                ResourceUtil::delete($video->src);
-                ResourceUtil::create($transcoded_access_url , $transcoded_file , 'local' , 1 , 0);
+                ResourceRepository::delete($video->src);
+                ResourceRepository::create($transcoded_access_url , $transcoded_file , 'local' , 1 , 0);
             } else {
                 // 删除原视频文件
-                ResourceUtil::delete($video->src);
+                ResourceRepository::delete($video->src);
             }
 
             if ($merge_video_subtitle) {
                 // 字幕合成完毕后删除字幕
                 foreach ($video->video_subtitles as $v)
                 {
-                    ResourceUtil::delete($v->src);
+                    ResourceRepository::delete($v->src);
                 }
                 VideoSubtitleModel::delByVideoId($video->id);
             } else {
                 // 字幕转换
                 foreach ($video->video_subtitles as $v)
                 {
-                    $video_subtitle_resource = ResourceModel::findByUrl($v->src);
+                    $video_subtitle_resource = ResourceModel::findByUrlOrPath($v->src);
                     if (!File::exists($video_subtitle_resource->path)) {
                         // 字幕文件不存在，跳过
                         continue ;
@@ -397,8 +405,8 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
                     VideoSubtitleModel::updateById($v->id , [
                         'src' => $video_subtitle_convert_access_url
                     ]);
-                    ResourceUtil::delete($v->src);
-                    ResourceUtil::create($video_subtitle_convert_access_url , $video_subtitle_convert_file , 'local' , 1 , 0);
+                    ResourceRepository::delete($v->src);
+                    ResourceRepository::create($video_subtitle_convert_access_url , $video_subtitle_convert_file , 'local' , 1 , 0);
                 }
             }
             File::delete($temp_dir);

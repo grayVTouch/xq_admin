@@ -45,6 +45,42 @@
                             </td>
                         </tr>
 
+                        <tr :class="{error: myValue.error.thumb}">
+                            <td>封面</td>
+                            <td>
+                                <div ref="thumb">
+                                    <!-- 上传图片组件 -->
+                                    <div class='uploader'>
+                                        <div class="upload">
+                                            <div class="handler">
+
+                                                <div class="line input hide">
+                                                    <input type="file" class="file-input">
+                                                </div>
+
+                                                <div class="line icon">
+                                                    <div class="ico">
+                                                        <div class="feedback run-action-feedback-round"><i class="iconfont run-iconfont run-iconfont-shangchuan"></i></div>
+                                                        <div class="clear run-action-feedback-round" title="清空"><i class="iconfont run-iconfont run-iconfont-qingkong"></i></div>
+                                                    </div>
+                                                    <div class="text">请选择要上传的文件</div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="msg"></div>
+                                        </div>
+                                        <div class="preview"></div>
+
+                                    </div>
+                                </div>
+
+                                <span class="need"></span>
+                                <div class="msg"></div>
+                                <div class="e-msg">{{ myValue.error.thumb }}</div>
+                            </td>
+                        </tr>
+
                         <tr :class="{error: myValue.error.status}">
                             <td>状态</td>
                             <td>

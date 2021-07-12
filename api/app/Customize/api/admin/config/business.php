@@ -101,6 +101,13 @@ return [
         2 => '处理完成' ,
     ] ,
 
+    'video_project_file_process_status' => [
+        -1 => '处理失败' ,
+        0 => '待处理' ,
+        1 => '处理中' ,
+        2 => '处理完成' ,
+    ] ,
+
     'end_status_for_video_project' => [
         'making' => '连载中' ,
         'completed' => '已完结' ,
@@ -149,14 +156,6 @@ return [
         1 => '审核成功' ,
     ] ,
 
-    'category_type' => [
-        'video' => '视频',
-        'video_project' => '视频专题' ,
-        'image_project' => '图片专题' ,
-        'image' => '图片' ,
-    ] ,
-
-
     'status_for_video_project' => [
         -1 => '审核失败',
         0 => '待审核' ,
@@ -169,4 +168,11 @@ return [
         'video_project' => '视频专题' ,
     ] ,
 
+    // 内容分类
+    'content_type' => [
+        'video' => '视频',
+        'video_project' => '视频专题' ,
+        'image_project' => '图片专题' ,
+        'image' => '图片' ,
+    ] ,
 ];

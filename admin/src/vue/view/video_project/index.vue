@@ -12,7 +12,7 @@
                 </my-search-form-item>
 
                 <my-search-form-item name="模块">
-                    <my-select clear="true" :data="modules" empty="" v-model="search.module_id"></my-select>
+                    <my-select :clear="true" :data="modules" empty="" v-model="search.module_id"></my-select>
                     <my-loading v-if="myValue.pending.getModules"></my-loading>
                 </my-search-form-item>
 
@@ -70,6 +70,10 @@
                 <template v-slot:video_company_id="{row,index}">{{ row.video_company ? `${row.video_company.name}【${row.video_company.id}】` : `unknow【${row.video_company_id}】` }}</template>
                 <template v-slot:user_id="{row,index}">{{ row.user ? `${row.user.username}【${row.user.id}】` : `unknow【${row.user_id}】` }}</template>
                 <template v-slot:status="{row,index}"><b :class="{'run-red': row.status === -1 , 'run-gray': row.status === 0 , 'run-green': row.status === 1}">{{ row.__status__ }}</b></template>
+                <template v-slot:end_status="{row,index}"><b :class="{'run-red': row.end_status === 'making' , 'run-gray': row.end_status === 'terminated' , 'run-green': row.end_status === 'completed'}">{{ row.__end_status__ }}</b></template>
+                <template v-slot:file_process_status="{row,index}">
+                    <b :class="{'run-gray': row.file_process_status === -1 , 'run-red': row.file_process_status === 0 , 'run-green': row.file_process_status >= 1}">{{ row.__file_process_status__ }}</b>
+                </template>
                 <template v-slot:tags="{row,index}">
                     <i-poptip placement="right" width="400" title="标签" :transfer="true" trigger="hover">
                         <i-button>悬浮可查看详情</i-button>
@@ -87,9 +91,13 @@
                 <template v-slot:status="{row,index}">
                     <span class="run-weight" :class="{'run-red': row.status == 'making' , 'run-green': row.status === 'completed' , 'run-gray': row.status === 'terminated'}">{{ row.__status__ }}</span>
                 </template>
-                <template v-slot:action="{row , index}">
-                    <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
-                    <my-table-button type="error" :loading="myValue.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
+                <template v-slot:action="{row,index}">
+<!--                    <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>-->
+<!--                    <my-table-button type="error" :loading="myValue.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>-->
+
+                    <my-tooltip content="点击查看web端详情">
+                        <my-table-button @click="linkToShowAtWeb(row)"><my-icon icon="web"></my-icon></my-table-button>
+                    </my-tooltip>
                 </template>
             </i-table>
         </template>

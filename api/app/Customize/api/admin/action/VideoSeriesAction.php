@@ -8,7 +8,10 @@ use App\Customize\api\admin\handler\UserHandler;
 use App\Customize\api\admin\model\ModuleModel;
 use App\Customize\api\admin\model\VideoSeriesModel;
 use App\Customize\api\admin\model\UserModel;
+use App\Customize\api\admin\repository\ResourceRepository;
 use App\Http\Controllers\api\admin\Base;
+use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use function api\admin\get_form_error;
@@ -69,16 +72,28 @@ class VideoSeriesAction extends Action
         }
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
         $param['updated_at']    = current_datetime();
-        VideoSeriesModel::updateById($res->id , array_unit($param , [
-            'name' ,
-            'weight' ,
-            'module_id' ,
-            'user_id' ,
-            'status' ,
-            'fail_reason' ,
-            'updated_at' ,
-        ]));
-        return self::success('操作成功');
+        try {
+            DB::beginTransaction();
+            VideoSeriesModel::updateById($res->id , array_unit($param , [
+                'name' ,
+                'thumb' ,
+                'weight' ,
+                'module_id' ,
+                'user_id' ,
+                'status' ,
+                'fail_reason' ,
+                'updated_at' ,
+            ]));
+            if ($res->thumb !== $param['thumb']) {
+                ResourceRepository::delete($res->thumb);
+            }
+            ResourceRepository::used($param['thumb']);
+            DB::commit();
+            return self::success('操作成功');
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function store(Base $context , array $param = [])
@@ -112,17 +127,25 @@ class VideoSeriesAction extends Action
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
         $param['updated_at']    = $datetime;
         $param['created_at']    = $datetime;
-        $id = VideoSeriesModel::insertGetId(array_unit($param , [
-            'name' ,
-            'weight' ,
-            'module_id' ,
-            'user_id' ,
-            'status' ,
-            'fail_reason' ,
-            'updated_at' ,
-            'created_at' ,
-        ]));
-        return self::success('' , $id);
+        try {
+            $id = VideoSeriesModel::insertGetId(array_unit($param , [
+                'name' ,
+                'thumb' ,
+                'weight' ,
+                'module_id' ,
+                'user_id' ,
+                'status' ,
+                'fail_reason' ,
+                'updated_at' ,
+                'created_at' ,
+            ]));
+            ResourceRepository::used($param['thumb']);
+            DB::commit();
+            return self::success('' , $id);
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public static function show(Base $context , $id , array $param = [])

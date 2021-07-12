@@ -22,6 +22,7 @@ class TagHandler extends Handler
         $model = convert_object($model);
 
         $model->__status__ = get_config_key_mapping_value('business.status_for_tag' , $model->status);
+        $model->__type__ = get_config_key_mapping_value('business.content_type' , $model->type);
 
         return $model;
     }

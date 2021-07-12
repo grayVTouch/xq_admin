@@ -57,13 +57,19 @@
                 <template v-slot:is_enabled="{row,index}"><my-switch v-model="row.is_enabled" :loading="myValue.pending['is_enabled__' + row.id]" :extra="{id: row.id , field: 'is_enabled'}" @on-change="updateBoolValEvent" /></template>
 
                 <template v-slot:action="{row , index}">
-                    <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
-                    <my-table-button type="error" :loading="myValue.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>
+                    <my-table-button @click="addNextLevelEvent(row)"><my-icon icon="add" />添加下级</my-table-button>
+<!--                    <my-table-button type="error" :loading="myValue.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>-->
                 </template>
             </i-table>
         </template>
 
-        <my-form ref="form" :id="current.id" :mode="myValue.mode" @on-success="getData"></my-form>
+        <my-form
+                ref="form"
+                :id="current.id"
+                :mode="myValue.mode"
+                :add-mode="myValue.addMode"
+                @on-success="getData"
+        ></my-form>
     </my-base>
 </template>
 

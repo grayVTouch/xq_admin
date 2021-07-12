@@ -3,6 +3,13 @@ const form = {
     weight: 0 ,
     status: 1 ,
     is_enabled: 1 ,
+    value: '' ,
+    p_id: '' ,
+};
+
+const category = {
+    id: 0 ,
+    name: 'unknow' ,
 };
 
 export default {
@@ -18,6 +25,11 @@ export default {
             type: String ,
             default: 'add' ,
         } ,
+
+        addMode: {
+            type: String ,
+            default: 'add_next' ,
+        } ,
     } ,
 
     computed: {
@@ -28,27 +40,29 @@ export default {
 
     data () {
         return {
-            form: G.copy(form) ,
+            form: G.copy(form),
 
             myValue: {
-                show: false ,
-                showModuleSelector: false ,
-                showTypeSelector: false ,
+                show: false,
+                showModuleSelector: false,
+                showTypeSelector: false,
                 /**
                  * module - 选择模块
                  * form - 输入表单
                  */
-                step: 'module' ,
-            } ,
+                step: 'module',
+            },
 
-            dom: {} ,
+            dom: {},
 
-            ins: {} ,
+            ins: {},
 
-            modules: [] ,
+            modules: [],
 
             // 分类
-            navs: [] ,
+            navs: [],
+
+            category: G.copy(category),
 
         };
     } ,
@@ -95,8 +109,7 @@ export default {
                            reject();
                            return ;
                        }
-                       this.form = res.data;
-                       resolve();
+                       resolve(res.data);
                    }).finally(() => {
                        this.pending('findById' , false);
                    });
@@ -107,7 +120,11 @@ export default {
             this.getModules();
             if (this.mode === 'add') {
                 // 添加
-                this.handleModuleStep();
+                if (this.addMode === 'add_next') {
+                    this.handleFormStep();
+                } else {
+                    this.handleModuleStep();
+                }
             } else {
                 this.handleFormStep();
             }
@@ -127,9 +144,21 @@ export default {
             this.myValue.show = true;
             if (this.mode === 'edit') {
                 this.findById(this.id)
-                    .then(() => {
+                    .then((res) => {
+                        this.form = res;
                         this.getNavs();
                     });
+            } else {
+                if (this.addMode === 'add_next') {
+                    this.findById(this.id)
+                        .then((res) => {
+                            this.form.module_id = res.module_id;
+                            this.form.type = res.type;
+                            this.form.p_id = res.id;
+
+                            this.getNavs();
+                        });
+                }
             }
         } ,
 
@@ -172,6 +201,7 @@ export default {
             this.modules    = [];
             this.navs = [];
             this.form       = G.copy(form);
+            this.category   = G.copy(category);
             this.error();
         } ,
 
@@ -183,8 +213,8 @@ export default {
             if (G.isEmptyString(form.type)) {
                 error.type = '请选择类型';
             }
-            if (G.isEmptyString(form.value)) {
-                error.value = '请填写值';
+            if (!G.isNumeric(form.value)) {
+                error.value = '请选择分类';
             }
             if (!G.isNumeric(form.module_id)) {
                 error.module_id = '请选择模块';
@@ -249,6 +279,12 @@ export default {
         } ,
 
         getNavs () {
+            if (this.form.module_id <= 0) {
+                return ;
+            }
+            if (G.isEmptyString(this.form.type)) {
+                return ;
+            }
             this.pending('getNavs' , true);
             Api.nav
                 .search({
@@ -292,6 +328,21 @@ export default {
                 }
             }
             throw new Error('未找到 id 对应记录：' + id);
+        } ,
+
+        categoryChangedEvent (row) {
+            this.category = {
+                id: row.id ,
+                name: row.name ,
+            };
+            this.myValue.error.value = '';
+            this.form.value = row.id;
+
+            console.log('category row id' , row.id , row);
+        } ,
+
+        openCategorySelector () {
+            this.$refs['category-selector'].show();
         } ,
     } ,
 }

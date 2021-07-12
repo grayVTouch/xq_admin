@@ -29,6 +29,7 @@ export default {
                 modal: false ,
                 error: {} ,
                 mode: '' ,
+                addMode: '' ,
             } ,
             table: {
                 field: [
@@ -99,13 +100,13 @@ export default {
                         minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
-                    // {
-                    //     title: '操作' ,
-                    //     slot: 'action' ,
-                    //     minWidth: TopContext.table.action + 80 ,
-                    //     align: TopContext.table.alignCenter ,
-                    //     fixed: 'right' ,
-                    // } ,
+                    {
+                        title: '操作' ,
+                        slot: 'action' ,
+                        minWidth: TopContext.table.action - 50 ,
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
+                    } ,
                 ] ,
                 data: [] ,
             } ,
@@ -247,7 +248,7 @@ export default {
                 return ;
             }
             const self = this;
-            this.confirmModal('你确定删除吗？'  , (res) => {
+            this.confirmModal('将会连同子类一并删除！确定删除吗？'  , (res) => {
                 if (!res) {
                     G.invoke(callback , this , false);
                     return ;
@@ -364,6 +365,15 @@ export default {
             this.edit(record);
         } ,
 
+        addNextLevelEvent (row) {
+            this.setValue('mode' , 'add');
+            this.setValue('addMode' , 'add_next');
+            this.current = row;
+            this.$nextTick(() => {
+                this.$refs.form.openFormModal();
+            });
+        } ,
+
         editEventByButton () {
             if (!this.checkOneSelection()) {
                 return ;
@@ -374,6 +384,7 @@ export default {
 
         addEvent () {
             this.setValue('mode' , 'add');
+            this.setValue('addMode' , 'add');
             this.$nextTick(() => {
                 this.$refs.form.openFormModal();
             });

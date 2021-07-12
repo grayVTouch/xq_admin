@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Model\AdminPermissionModel;
-use Illuminate\Console\Command;
 
 class AdminPermissionSeeder extends Command
 {

@@ -97,6 +97,20 @@ export default {
                             reject();
                             return ;
                         }
+                        res.data.forEach((v) => {
+                            switch (v.relation_type)
+                            {
+                                case 'image_project':
+                                    this.handleImageProject(v.relation);
+                                    break;
+                                case 'video_project':
+                                    v.relation.user = v.relation.user ? v.relation.user : {};
+                                    v.relation.user_play_record = v.relation.user_play_record ? v.relation.user_play_record : {};
+                                    v.relation.user_play_record.video = v.relation.user_play_record.video ? v.relation.user_play_record.video : {};
+                                    break;
+                                default:
+                            }
+                        });
                         this.favorites = res.data;
                         resolve();
                     })

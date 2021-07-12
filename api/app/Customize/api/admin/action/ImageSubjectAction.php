@@ -8,7 +8,7 @@ use App\Customize\api\admin\handler\UserHandler;
 use App\Customize\api\admin\model\ImageSubjectModel;
 use App\Customize\api\admin\model\ModuleModel;
 use App\Customize\api\admin\model\UserModel;
-use App\Customize\api\admin\util\ResourceUtil;
+use App\Customize\api\admin\repository\ResourceRepository;
 use App\Http\Controllers\api\admin\Base;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -86,9 +86,9 @@ class ImageSubjectAction extends Action
                 'fail_reason' ,
                 'updated_at' ,
             ]));
-            ResourceUtil::used($param['thumb']);
+            ResourceRepository::used($param['thumb']);
             if ($res->thumb !== $param['thumb']) {
-                ResourceUtil::delete($res->thumb);
+                ResourceRepository::delete($res->thumb);
             }
             DB::commit();
             return self::success('操作成功');
@@ -145,7 +145,7 @@ class ImageSubjectAction extends Action
                 'updated_at' ,
                 'created_at' ,
             ]));
-            ResourceUtil::used($param['thumb']);
+            ResourceRepository::used($param['thumb']);
             DB::commit();
             return self::success('' , $id);
         } catch (Exception $e) {
@@ -178,7 +178,7 @@ class ImageSubjectAction extends Action
         }
         try {
             DB::beginTransaction();
-            ResourceUtil::delete($res->thumb);
+            ResourceRepository::delete($res->thumb);
             $count = ImageSubjectModel::destroy($res->id);
             DB::commit();
             return self::success('操作成功' , $count);
@@ -195,7 +195,7 @@ class ImageSubjectAction extends Action
             DB::beginTransaction();
             foreach ($res as $v)
             {
-                ResourceUtil::delete($v->thumb);
+                ResourceRepository::delete($v->thumb);
             }
             $count = ImageSubjectModel::destroy($ids);
             DB::commit();

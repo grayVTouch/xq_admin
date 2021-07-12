@@ -23,7 +23,7 @@ use App\Customize\api\web\model\PraiseModel;
 use App\Customize\api\web\model\UserModel;
 use App\Customize\api\web\model\UserTokenModel;
 use App\Customize\api\web\model\VideoProjectModel;
-use App\Customize\api\web\util\CollectionGroupUtil;
+use App\Customize\api\web\repository\CollectionGroupRepository;
 use App\Http\Controllers\api\web\Base;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -834,6 +834,16 @@ class UserAction extends Action
                         ImageProjectHandler::tags($v1->relation);
                         ImageProjectHandler::collectCount($v1->relation);
                         ImageProjectHandler::isPraised($v1->relation);
+                        ImageProjectHandler::isCollected($v1->relation);
+                        break;
+                    case 'video_project':
+                        VideoProjectHandler::user($v1->relation);
+                        VideoProjectHandler::isPraised($v1->relation);
+                        VideoProjectHandler::isCollected($v1->relation);
+                        VideoProjectHandler::userPlayRecord($v1->relation);
+                        if (!empty($v1->relation)) {
+                            UserVideoProjectPlayRecordHandler::video($v1->relation->user_play_record);
+                        }
                         break;
                 }
             }
@@ -962,6 +972,10 @@ class UserAction extends Action
                     VideoProjectHandler::user($v->relation);
                     VideoProjectHandler::isPraised($v->relation);
                     VideoProjectHandler::isCollected($v->relation);
+                    VideoProjectHandler::userPlayRecord($v->relation);
+                    if (!empty($v->relation)) {
+                        UserVideoProjectPlayRecordHandler::video($v->relation->user_play_record);
+                    }
                     break;
             }
         }

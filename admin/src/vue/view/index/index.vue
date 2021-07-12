@@ -74,6 +74,11 @@
                                     <my-icon icon="lianjie1"></my-icon>
                                 </div>
                             </Tooltip>
+                            <Tooltip content="执行资源清理任务">
+                                <div v-ripple @click="executeResourceClearJob">
+                                    <my-icon icon="delete"></my-icon>
+                                </div>
+                            </Tooltip>
                         </div>
 
                         <div class="right">
@@ -135,7 +140,7 @@
                                 <div class="right">
                                     <!-- 面包屑 -->
                                     <template v-for="(v,k) in state().positions">
-                                        <span v-ripple class="text" :class="{'run-cursor-not-allow':  !v.view }" @click="open(v)">{{ v.cn }}</span>
+                                        <span v-ripple class="text" :class="{'run-cursor-not-allow':  !v.view }" @click="navigationTo(v)">{{ v.cn }}</span>
                                         <span class="delimiter" v-if="!(k == state().positions.length - 1)">/</span>
                                     </template>
                                 </div>

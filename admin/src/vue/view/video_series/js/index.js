@@ -66,6 +66,12 @@ export default {
                         align: TopContext.table.alignCenter,
                     },
                     {
+                        title: '封面',
+                        slot: 'thumb',
+                        width: TopContext.table.image,
+                        align: TopContext.table.alignCenter,
+                    },
+                    {
                         title: '状态',
                         slot: 'status',
                         minWidth: TopContext.table.status,

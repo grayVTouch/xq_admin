@@ -16,8 +16,8 @@ use App\Customize\api\admin\model\ImageSubjectModel;
 use App\Customize\api\admin\model\TagModel;
 use App\Customize\api\admin\model\UserModel;
 use App\Customize\api\admin\util\FileUtil;
-use App\Customize\api\admin\util\ImageProjectUtil;
-use App\Customize\api\admin\util\ResourceUtil;
+use App\Customize\api\admin\repository\ImageProjectRepository;
+use App\Customize\api\admin\repository\ResourceRepository;
 use App\Http\Controllers\api\admin\Base;
 use Core\Lib\File;
 use Exception;
@@ -150,9 +150,9 @@ class ImageProjectAction extends Action
                 'updated_at' ,
                 'created_at' ,
             ]));
-            ResourceUtil::used($param['thumb']);
+            ResourceRepository::used($param['thumb']);
             if ($image_project->thumb !== $param['thumb']) {
-                ResourceUtil::delete($image_project->thumb);
+                ResourceRepository::delete($image_project->thumb);
             }
             $my_tags = RelationTagModel::getByRelationTypeAndRelationId('image_project' , $image_project->id);
             foreach ($tags as $v)
@@ -191,7 +191,7 @@ class ImageProjectAction extends Action
                     'updated_at'        => $datetime ,
                     'created_at'        => $datetime ,
                 ]);
-                ResourceUtil::used($v);
+                ResourceRepository::used($v);
             }
             DB::commit();
             // 图片迁移
@@ -277,7 +277,7 @@ class ImageProjectAction extends Action
                 'updated_at' ,
                 'created_at' ,
             ]));
-            ResourceUtil::used($param['thumb']);
+            ResourceRepository::used($param['thumb']);
             foreach ($tags as $v)
             {
                 $tag = TagModel::find($v);
@@ -307,7 +307,7 @@ class ImageProjectAction extends Action
                     'updated_at'        => $datetime ,
                     'created_at'        => $datetime ,
                 ]);
-                ResourceUtil::used($v);
+                ResourceRepository::used($v);
             }
             DB::commit();
             // 图片迁移
@@ -347,7 +347,7 @@ class ImageProjectAction extends Action
     {
         try {
             DB::beginTransaction();
-            ImageProjectUtil::delete($id);
+            ImageProjectRepository::delete($id);
             DB::commit();
             return self::success('操作成功');
         } catch(Exception $e) {
@@ -363,7 +363,7 @@ class ImageProjectAction extends Action
             DB::beginTransaction();
             foreach ($ids as $id)
             {
-                ImageProjectUtil::delete($id);
+                ImageProjectRepository::delete($id);
             }
             DB::commit();
             return self::success('操作成功');
@@ -385,7 +385,7 @@ class ImageProjectAction extends Action
                     return self::error('部分图片记录不存在' , '' , 404);
                 }
                 ImageModel::destroy($res->id);
-                ResourceUtil::delete($res->src);
+                ResourceRepository::delete($res->src);
             }
             DB::commit();
             return self::success('操作成功');

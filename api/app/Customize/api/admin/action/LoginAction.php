@@ -7,6 +7,7 @@ namespace App\Customize\api\admin\action;
 use App\Customize\api\admin\handler\AdminHandler;
 use App\Customize\api\admin\model\AdminModel;
 use App\Customize\api\admin\model\AdminTokenModel;
+use App\Customize\api\admin\model\SystemSettingsModel;
 use App\Http\Controllers\api\admin\Base;
 use App\Http\Controllers\Controller;
 use Exception;
@@ -29,12 +30,19 @@ class LoginAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-//        if (empty($param['captcha_key'])) {
-//            return self::error('必要参数丢失【captcha_key】');
-//        }
-//        if (!Captcha::check_api($param['captcha_code'] , $param['captcha_key'])) {
-//            return self::error('图形验证码错误');
-//        }
+        $is_enable_grapha_verify_code_for_login = SystemSettingsModel::getValueByKey('is_enable_grapha_verify_code_for_login');
+        if ($is_enable_grapha_verify_code_for_login == 1) {
+            if (empty($param['captcha_code'])) {
+                return self::error('必要参数丢失【captcha_code】');
+            }
+            // 启用了图形验证码
+            if (empty($param['captcha_key'])) {
+                return self::error('必要参数丢失【captcha_key】');
+            }
+            if (!Captcha::check_api($param['captcha_code'] , $param['captcha_key'])) {
+                return self::error('图形验证码错误');
+            }
+        }
         $user = AdminModel::findByUsername($param['username']);
         if (empty($user)) {
             return self::error('用户不存在');

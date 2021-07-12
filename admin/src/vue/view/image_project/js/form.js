@@ -217,7 +217,11 @@ export default {
 
         getTopTags (moduleId) {
             Api.tag
-                .topByModuleId(moduleId)
+                .top({
+                    module_id: moduleId ,
+                    type: 'image_project' ,
+                    size: 10 ,
+                })
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
                         this.errorHandle(res.message);
@@ -583,6 +587,7 @@ export default {
                 .findOrCreateTag({
                     name ,
                     module_id: this.form.module_id ,
+                    type: 'image_project' ,
                     user_id: this.form.user_id ,
                 })
                 .then((res) => {
@@ -593,6 +598,7 @@ export default {
                     }
                     this.tags.push(res.data);
                     this.dom.tagInput.html('');
+                    this.dom.tagInput.origin('focus');
                 });
         } ,
 

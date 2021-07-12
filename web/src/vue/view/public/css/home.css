@@ -719,6 +719,15 @@
     vertical-align: top;
 }
 
+.logged-layer > .favorites .collection > .list .item .thumb .progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 4px;
+    background-color: var(--progress-bar-color);
+}
+
 .logged-layer > .favorites .collection > .list .item .info {
     display: flex;
     flex-direction: column;

@@ -8,7 +8,7 @@ use App\Customize\api\admin\model\ImageModel;
 use App\Customize\api\admin\model\ImageProjectModel;
 use App\Customize\api\admin\model\ResourceModel;
 use App\Customize\api\admin\util\FileUtil;
-use App\Customize\api\admin\util\ResourceUtil;
+use App\Customize\api\admin\repository\ResourceRepository;
 use Core\Lib\File;
 use Core\Lib\ImageProcessor;
 use Exception;
@@ -74,6 +74,20 @@ class ImageProjectResourceHandleJob extends FileBaseJob implements ShouldQueue
             if (!File::exists($save_dir)) {
                 File::mkdir($save_dir , 0777 , true);
             }
+            if ($image_project->type === 'pro') {
+                ResourceRepository::create('' , $save_dir , 'local' , 1 , 0);
+                ImageProjectModel::updateById($image_project->id , [
+                    'directory' => $save_dir ,
+                ]);
+            }
+            $origin_dir = $save_dir . '/原图';
+            $preview_dir = $save_dir . '/预览图';
+            if (!File::exists($origin_dir)) {
+                File::mkdir($origin_dir , 0777 , true);
+            }
+            if (!File::exists($preview_dir)) {
+                File::mkdir($preview_dir , 0777 , true);
+            }
             ImageProjectHandler::images($image_project);
             $index = 0;
 
@@ -88,7 +102,7 @@ class ImageProjectResourceHandleJob extends FileBaseJob implements ShouldQueue
                      * 移动原图
                      * *******************
                      */
-                    $resource = ResourceModel::findByUrl($v->original_src);
+                    $resource = ResourceModel::findByUrlOrPath($v->original_src);
                     if (empty($resource)) {
                         DB::rollBack();
                         continue ;
@@ -101,7 +115,7 @@ class ImageProjectResourceHandleJob extends FileBaseJob implements ShouldQueue
                     $extension      = get_extension($v->original_src);
                     $filename       = "{$image_project->name}【{$index}】.{$extension}";
                     $source_file    = $resource->path;
-                    $target_file    = $this->generateRealPath($save_dir , $filename);
+                    $target_file    = $this->generateRealPath($origin_dir , $filename);
                     $target_url     = FileUtil::generateUrlByRealPath($target_file);
                     if ($source_file !== $target_file) {
                         if (File::exists($target_file)) {
@@ -111,8 +125,8 @@ class ImageProjectResourceHandleJob extends FileBaseJob implements ShouldQueue
                         // 移动文件
                         File::move($source_file , $target_file);
                         // 删除源文件
-                        ResourceUtil::delete($v->original_src);
-                        ResourceUtil::create($target_url , $target_file , 'local' , 1 , 0);
+                        ResourceRepository::delete($v->original_src);
+                        ResourceRepository::create($target_url , $target_file , 'local' , 1 , 0);
                     }
 
                     // 更新原图地址
@@ -137,7 +151,7 @@ class ImageProjectResourceHandleJob extends FileBaseJob implements ShouldQueue
                             'extension' => $extension ,
                         ] , false);
                     } else {
-                        $resource = ResourceModel::findByUrl($v->src);
+                        $resource = ResourceModel::findByUrlOrPath($v->src);
                         if (empty($resource)) {
                             DB::rollBack();
                             continue ;
@@ -150,7 +164,7 @@ class ImageProjectResourceHandleJob extends FileBaseJob implements ShouldQueue
                         $source_file = $resource->path;
                     }
                     $filename       = "{$image_project->name}【{$index}】【预览图】.{$extension}";
-                    $target_file    = $this->generateRealPath($save_dir , $filename);
+                    $target_file    = $this->generateRealPath($preview_dir , $filename);
                     $target_url     = FileUtil::generateUrlByRealPath($target_file);
                     if ($source_file !== $target_file) {
                         if (File::exists($target_file)) {
@@ -159,8 +173,8 @@ class ImageProjectResourceHandleJob extends FileBaseJob implements ShouldQueue
                         }
                         File::move($source_file , $target_file);
                         // 删除旧文件
-                        ResourceUtil::delete($v->src);
-                        ResourceUtil::create($target_url , $target_file , 'local' , 1 , 0);
+                        ResourceRepository::delete($v->src);
+                        ResourceRepository::create($target_url , $target_file , 'local' , 1 , 0);
                     }
 
                     // 更新预览图地址

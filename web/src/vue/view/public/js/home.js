@@ -684,7 +684,13 @@ export default {
                             v1.relation.user = v1.relation.user ? v1.relation.user : {};
                             v1.relation.module = v1.relation.module ? v1.relation.module : {};
                             v1.relation.collection_group = v1.relation.collection_group ? v1.relation.collection_group : {};
-                            v1.relation.relation = v1.relation.relation ? v1.relation.relation : {};
+                            // v1.relation.relation = v1.relation.relation ? v1.relation.relation : {};
+
+                            if (v.relation_type === 'video_project') {
+                                v1.relation.user = v1.relation.user ? v1.relation.user : {};
+                                v1.relation.user_play_record = v1.relation.user_play_record ? v1.relation.user_play_record : {};
+                                v1.relation.user_play_record.video = v1.relation.user_play_record.video ? v1.relation.user_play_record.video : {};
+                            }
                         });
                     });
                     this.favorites.total_collection_group = data.total_collection_group;

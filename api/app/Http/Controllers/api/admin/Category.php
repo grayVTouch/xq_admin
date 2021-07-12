@@ -15,6 +15,7 @@ class Category extends Base
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
         $param['type'] = $param['type'] ?? '';
+        $param['is_enabled'] = $param['is_enabled'] ?? '';
         $res = CategoryAction::index($this , $param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);

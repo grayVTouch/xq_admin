@@ -112,7 +112,14 @@
                                                         </div>
                                                     </a>
                                                     <a v-if="v.relation_type === 'video_project'" class="item video-project" target="_blank" :href="`#/video_project/${v.relation_id}/show`">
-                                                        <div class="thumb"><img :src="v.relation.thumb ? v.relation.thumb : TopContext.res.notFound" v-judge-img-size class="image judge-img-size" alt=""></div>
+                                                        <div class="thumb">
+                                                            <img
+                                                                    :src="v.relation.user_play_record.video.__thumb__ ? v.relation.user_play_record.video.__thumb__ : TopContext.res.notFound"
+                                                                    v-judge-img-size
+                                                                    class="image judge-img-size"
+                                                                    alt="">
+                                                            <div class="progress-bar" :style="`width: ${v.relation.user_play_record.ratio * 100}%`"></div>
+                                                        </div>
                                                         <div class="info">
                                                             <div class="name f-14">{{ v.relation.name }}</div>
                                                             <div class="time f-12">

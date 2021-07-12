@@ -9,6 +9,7 @@ use App\Customize\api\admin\model\ModuleModel;
 use App\Customize\api\admin\model\RelationTagModel;
 use App\Customize\api\admin\model\UserModel;
 use App\Customize\api\admin\model\VideoCompanyModel;
+use App\Customize\api\admin\model\VideoModel;
 use App\Customize\api\admin\model\VideoSeriesModel;
 use App\Customize\api\admin\model\Model;
 use stdClass;
@@ -25,8 +26,9 @@ class VideoProjectHandler extends Handler
         }
         $model = convert_object($model);
 
-        $model->__end_status__  = empty($model->end_status) ? '' : get_config_key_mapping_value('business.end_status_for_video_project' , $model->status);
+        $model->__end_status__  = empty($model->end_status) ? '' : get_config_key_mapping_value('business.end_status_for_video_project' , $model->end_status);
         $model->__status__      = empty($model->status) ? '' : get_config_key_mapping_value('business.status_for_video_project' , $model->status);
+        $model->__file_process_status__    = get_config_key_mapping_value('business.video_project_file_process_status' , $model->file_process_status);
 
         return $model;
     }
@@ -90,5 +92,15 @@ class VideoProjectHandler extends Handler
         }
         $tags = RelationTagModel::getByRelationTypeAndRelationId('video_project' , $model->id);
         $model->tags = $tags;
+    }
+
+    public static function videos($model): void
+    {
+        if (empty($model)) {
+            return ;
+        }
+        $videos = VideoModel::getByVideoProjectId($model->id);
+        $videos = VideoHandler::handleAll($videos);
+        $model->videos = $videos;
     }
 }

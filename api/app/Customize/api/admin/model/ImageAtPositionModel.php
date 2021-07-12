@@ -20,7 +20,7 @@ class ImageAtPositionModel extends Model
         $filter['platform'] = $filter['platform'] ?? '';
         $filter['position_id'] = $filter['position_id'] ?? '';
         $order['field'] = $order['field'] ?? 'id';
-        $order['value'] = $order['value'] ?? 'asc';
+        $order['value'] = $order['value'] ?? 'desc';
         $where = [];
         if ($filter['id'] !== '') {
             $where[] = ['id' , '=' , $filter['id']];

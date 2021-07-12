@@ -47,6 +47,9 @@ class QueueHandleJob implements ShouldQueue
             case 'flush':
                 $this->flush();
                 break;
+            case 'resource_clear':
+                $this->resourceClear();
+                break;
             default:
                 throw new Exception('不支持的动作:' . $this->action);
         }
@@ -71,6 +74,17 @@ class QueueHandleJob implements ShouldQueue
         exec($command , $res , $status);
         if ($status > 0) {
             $msg = '清空失败队列发生错误！错误信息：' . implode("\n" , $res);
+            throw new Exception($msg);
+        }
+    }
+
+    // 清理资源文件
+    private function resourceClear()
+    {
+        $command = sprintf('php %s resource:clear' , $this->artisan);
+        exec($command , $res , $status);
+        if ($status > 0) {
+            $msg = '清理资源文件发生错误！错误信息：' . implode("\n" , $res);
             throw new Exception($msg);
         }
     }

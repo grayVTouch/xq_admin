@@ -9,4 +9,8 @@ export default {
     avatar (query) {
         return Http.get(avatar , query);
     } ,
+
+    settings () {
+        return Http.get(`${TopContext.api}/login_settings`);
+    } ,
 };

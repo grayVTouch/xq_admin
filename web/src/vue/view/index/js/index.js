@@ -14,6 +14,20 @@ export default {
     name: "index" ,
     data () {
         return {
+            listData: [
+                'http://res.xq.test/g_resource/专题图片/萌奈子/萌奈子【1】【预览图】.webp' ,
+                'http://res.xq.test/upload/专题图片/日向雏田/日向雏田【1】.jpg' ,
+                'http://res.xq.test/g_resource/专题图片/萌奈子/萌奈子【3】【预览图】.webp' ,
+                'http://res.xq.test/g_resource/专题图片/姗姗 01/姗姗 01【44】【预览图】.webp' ,
+                'http://res.xq.test/g_resource/专题图片/萌奈子 2/萌奈子 2【1】【预览图】.webp' ,
+                'http://res.xq.test/upload/专题图片/测试专题/测试专题【1】.jpg' ,
+
+                'http://res.xq.test/g_resource/专题图片/萌奈子 2/萌奈子 2【2】【预览图】.webp' ,
+                'http://res.xq.test/upload/系统资源/20210612/20210612075948pcAevU.jpg' ,
+                'http://res.xq.test/upload/系统资源/20210614/20210614080130rUAKir.jpg' ,
+                'http://res.xq.test/g_resource/专题图片/萌奈子/萌奈子【37】【预览图】.webp' ,
+                'http://res.xq.test/g_resource/专题图片/萌奈子/萌奈子【43】【预览图】.webp' ,
+            ] ,
             dom: {} ,
             ins: {} ,
             val: {

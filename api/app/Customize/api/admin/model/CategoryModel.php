@@ -29,17 +29,17 @@ class CategoryModel extends Model
     {
         $filter['module_id']    = $filter['module_id'] ?? '';
         $filter['type']         = $filter['type'] ?? '';
-
+        $filter['is_enabled']   = $filter['is_enabled'] ?? '';
         $where = [];
-
         if ($filter['module_id'] !== '') {
             $where[] = ['module_id' , '=' , $filter['module_id']];
         }
-
         if ($filter['type'] !== '') {
             $where[] = ['type' , '=' , $filter['type']];
         }
-
+        if ($filter['is_enabled'] !== '') {
+            $where[] = ['is_enabled' , '=' , $filter['is_enabled']];
+        }
         return self::where($where)
             ->orderBy('weight' , 'desc')
             ->orderBy('id' , 'asc')

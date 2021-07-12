@@ -4,6 +4,7 @@
                 v-model="myValue.show"
                 :title="title"
                 :loading="myValue.pending.submitEvent"
+                width="700"
                 @on-ok="submitEvent"
                 @on-cancel="closeFormModal"
         >
@@ -36,7 +37,7 @@
                         <tr :class="{error: myValue.error.type}">
                             <td>所属类型：</td>
                             <td>
-                                <i-select v-model="form.type" class="w-400" @on-change="typeChangedEvent" :disabled="mode === 'add'">
+                                <i-select v-model="form.type" class="w-400" @on-change="typeChangedEvent" :disabled="mode === 'add' || addMode === 'add_next'">
                                     <i-option v-for="(v,k) in TopContext.business.category.type" :key="k" :value="k">{{ v }}</i-option>
                                 </i-select>
                                 <span class="need">*</span>
@@ -48,7 +49,8 @@
                         <tr :class="{error: myValue.error.module_id}">
                             <td>所属模块</td>
                             <td>
-                                <my-select :data="modules" :disabled="mode === 'add'" v-model="form.module_id" @change="moduleChangedEvent" :width="TopContext.style.inputItemW"></my-select>
+                                <my-select :data="modules" :disabled="mode === 'add' || addMode === 'add_next'" v-model="form.module_id" @change="moduleChangedEvent" :width="TopContext.style.inputItemW"></my-select>
+                                <i-button type="primary" :loading="myValue.pending.getModules" @click="getModules">刷新</i-button>
                                 <span class="need">*</span>
                                 <div class="msg"></div>
                                 <div class="e-msg">{{ myValue.error.module_id }}</div>
@@ -58,8 +60,16 @@
                         <tr :class="{error: myValue.error.p_id}">
                             <td>上级分类</td>
                             <td>
-                                <my-deep-select :data="categories" v-model="form.p_id" :has="true" :attr="myValue.attr"  @change="myValue.error.p_id = ''" :width="TopContext.style.inputItemW"></my-deep-select>
-                                <my-loading v-if="myValue.pending.getCategories"></my-loading>
+                                <my-deep-select
+                                        :data="categories"
+                                        v-model="form.p_id"
+                                        :has="true"
+                                        :attr="myValue.attr"
+                                        @change="myValue.error.p_id = ''"
+                                        :width="TopContext.style.inputItemW"
+                                        :disabled="mode === 'add' && addMode === 'add_next'"
+                                ></my-deep-select>
+                                <i-button type="primary" :loading="myValue.pending.getCategories" @click="getCategories(form.module_id)">刷新</i-button>
                                 <span class="need">*</span>
                                 <div class="msg">请务必选择模块、类型后操作</div>
                                 <div class="e-msg">{{ myValue.error.p_id }}</div>

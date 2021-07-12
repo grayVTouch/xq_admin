@@ -7,7 +7,7 @@ use App\Customize\api\admin\handler\ImageAtPositionHandler;
 use App\Customize\api\admin\model\ImageAtPositionModel;
 use App\Customize\api\admin\model\ModuleModel;
 use App\Customize\api\admin\model\PositionModel;
-use App\Customize\api\admin\util\ResourceUtil;
+use App\Customize\api\admin\repository\ResourceRepository;
 use App\Http\Controllers\api\admin\Base;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -69,9 +69,9 @@ class ImageAtPositionAction extends Action
                 'link' ,
                 'module_id' ,
             ]));
-            ResourceUtil::used($param['src']);
+            ResourceRepository::used($param['src']);
             if ($res->src !== $param['src']) {
-                ResourceUtil::delete($res->src);
+                ResourceRepository::delete($res->src);
             }
             DB::commit();
             return self::success('操作成功');
@@ -110,7 +110,7 @@ class ImageAtPositionAction extends Action
                 'link' ,
                 'module_id' ,
             ]));
-            ResourceUtil::used($param['src']);
+            ResourceRepository::used($param['src']);
             DB::commit();
             return self::success('' , $id);
         } catch(Exception $e) {
@@ -144,7 +144,7 @@ class ImageAtPositionAction extends Action
         try {
             DB::beginTransaction();
             $count = ImageAtPositionModel::destroy($id);
-            ResourceUtil::delete($res->src);
+            ResourceRepository::delete($res->src);
             DB::commit();
             return self::success($count);
         } catch(Exception $e) {
@@ -160,7 +160,7 @@ class ImageAtPositionAction extends Action
             $res = ImageAtPositionModel::find($ids);
             foreach ($res as $v)
             {
-                ResourceUtil::delete($v->src);
+                ResourceRepository::delete($v->src);
             }
             $count = ImageAtPositionModel::destroy($ids);
             DB::commit();

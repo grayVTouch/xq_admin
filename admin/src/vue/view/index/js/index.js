@@ -1,9 +1,7 @@
-// import base from '@vue/view/public/base.vue';
 
 import route from '@vue/router/index.js';
 
 import menu from '../menu.vue';
-import navigation from '../navigation.vue';
 import disk from '../disk.vue';
 
 export default {
@@ -49,7 +47,6 @@ export default {
 
     components: {
         'my-menu': menu ,
-        'my-navigation': navigation ,
         'my-disk': disk ,
     } ,
 
@@ -94,11 +91,13 @@ export default {
                     const user = data.user ? data.user : {
                         permission: []
                     };
+                    const settings = data.settings ? data.settings : {};
                     // 无结构权限列表
                     const permission = user.permission ? user.permission : [];
                     // 有结构权限列表
                     const permissionWithStructure = G.tree.childrens(0 , permission , this.field , false , true);
                     this.$store.dispatch('user' , user);
+                    this.$store.dispatch('settings' , settings);
                     this.$store.dispatch('myPermission' , permission);
                     this.$store.dispatch('myPermissionWithStructure' , permissionWithStructure);
 
@@ -108,7 +107,7 @@ export default {
                     });
 
                     // 磁盘选择器处理
-                    if (data.is_init_disk !== 1) {
+                    if (settings.is_init_disk !== 1) {
                         this.$Modal.warning({
                             title: '请添加磁盘' ,
                             content: '你尚未添加存储磁盘，这会导致图片、文件等上传失败！请尽快处理，点击确认添加磁盘！' ,
@@ -377,14 +376,18 @@ export default {
                 return ;
             }
             this.pending('clearFailedJobs' , true);
-            Api.job.flush().then((res) => {
-                this.pending('clearFailedJobs' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                this.message('success' , '操作成功');
-            });
+            Api.job
+                .flush()
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    this.message('success' , '操作成功');
+                })
+                .finally(() => {
+                    this.pending('clearFailedJobs' , false);
+                });
         } ,
 
         // 重试失败的队列
@@ -394,23 +397,54 @@ export default {
                 return ;
             }
             this.pending('clearFailedJobs' , true);
-            Api.job.retry().then((res) => {
-                this.pending('clearFailedJobs' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                this.message('success' , '操作成功');
-            });
+            Api.job
+                .retry()
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    this.message('success' , '操作成功');
+                })
+                .finally(() => {
+                    this.pending('clearFailedJobs' , false);
+                });
+        } ,
+
+        // 重试失败的队列
+        executeResourceClearJob () {
+            if (this.pending('executeResourceClearJob')) {
+                this.message('warning' , '请求中...请耐心等待');
+                return ;
+            }
+            this.pending('executeResourceClearJob' , true);
+            Api.job
+                .resourceClear()
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    this.message('success' , '操作成功');
+                })
+                .finally(() => {
+                    this.pending('executeResourceClearJob' , false);
+                });
         } ,
 
         // 刷新当前局部视图
         reloadLocalView () {
-            console.log('我很好');
             this.myValue.showView = false;
             this.$nextTick(() => {
                 this.myValue.showView = true;
             });
+        } ,
+
+        navigationTo (route) {
+            if (!route.enable || !route.is_view) {
+                return ;
+            }
+            this.openWindow(route.value , '_self');
         } ,
     } ,
 };

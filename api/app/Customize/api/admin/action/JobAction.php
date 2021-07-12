@@ -21,4 +21,10 @@ class JobAction extends Action
         QueueHandleJob::dispatch('flush');
         return self::success('操作成功');
     }
+
+    public static function resourceClear(Base $context , array $param = []): array
+    {
+        QueueHandleJob::dispatch('resource_clear');
+        return self::success('操作成功');
+    }
 }

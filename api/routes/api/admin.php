@@ -19,6 +19,7 @@ use App\Http\Controllers\api\admin\Position;
 use App\Http\Controllers\api\admin\Region;
 use App\Http\Controllers\api\admin\Role;
 use App\Http\Controllers\api\admin\SystemDisk;
+use App\Http\Controllers\api\admin\SystemSettings;
 use App\Http\Controllers\api\admin\Tag;
 use App\Http\Controllers\api\admin\User;
 use App\Http\Controllers\api\admin\video;
@@ -56,6 +57,8 @@ Route::prefix('admin')
                 Route::post('upload_subtitle'   , [File::class , 'uploadSubtitle'])->name('upload_subtitle');
                 Route::post('upload_office'     , [File::class , 'uploadOffice'])->name('upload_office');
 
+                // 系统设置
+                Route::get('login_settings' , [SystemSettings::class , 'loginSettings']);
             });
 
         Route::middleware([
@@ -160,7 +163,7 @@ Route::prefix('admin')
             Route::delete('destroy_all_tag' , [Tag::class , 'destroyAll']);
             Route::delete('tag/{id}'        , [Tag::class , 'destroy']);
             Route::get('search_tag'         , [Tag::class , 'search']);
-            Route::get('top_by_module_id'   , [Tag::class , 'topByModuleId']);
+            Route::get('top_tags'   , [Tag::class , 'top']);
 
 
             /**
@@ -366,11 +369,20 @@ Route::prefix('admin')
              */
             Route::post('retry_job' , [Job::class , 'retry']);
             Route::post('flush_job' , [Job::class , 'flush']);
+            Route::post('resource_clear_job' , [Job::class , 'resourceClear']);
 
             /**
              * 视频字幕相关
              */
             Route::delete('video_subtitle/{id}'         , [VideoSubtitle::class , 'destroy']);
             Route::delete('destroy_all_video_subtitle'  , [VideoSubtitle::class , 'destroyAll']);
+
+            /**
+             * ****************************
+             * 系统设置
+             * ****************************
+             */
+            Route::get('common_settings' , [SystemSettings::class , 'data']);
+            Route::put('common_settings' , [SystemSettings::class , 'update']);
         });
     });

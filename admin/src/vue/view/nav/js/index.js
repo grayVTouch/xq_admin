@@ -29,6 +29,7 @@ export default {
                 modal: false ,
                 error: {} ,
                 mode: '' ,
+                addMode: '' ,
             } ,
             table: {
                 field: [
@@ -94,13 +95,13 @@ export default {
                         minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
-                    // {
-                    //     title: '操作' ,
-                    //     slot: 'action' ,
-                    //     minWidth: TopContext.table.action ,
-                    //     align: TopContext.table.alignCenter ,
-                    //     fixed: 'right' ,
-                    // } ,
+                    {
+                        title: '操作' ,
+                        slot: 'action' ,
+                        minWidth: TopContext.table.action - 50,
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
+                    } ,
                 ] ,
                 data: [] ,
             } ,
@@ -340,6 +341,15 @@ export default {
             }
             const current = this.getFirstSelection();
             this.edit(current);
+        } ,
+
+        addNextLevelEvent (row) {
+            this.setValue('mode' , 'add');
+            this.setValue('addMode' , 'add_next');
+            this.current = row;
+            this.$nextTick(() => {
+                this.$refs.form.openFormModal();
+            });
         } ,
 
         addEvent () {

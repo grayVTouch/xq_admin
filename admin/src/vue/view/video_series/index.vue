@@ -60,6 +60,9 @@
                 <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
                 <template v-slot:user_id="{row,index}">{{ row.user ? `${row.user.username}【${row.user.id}】` : `unknow【${row.user_id}】` }}</template>
                 <template v-slot:status="{row,index}"><b :class="{'run-red': row.status === -1 , 'run-gray': row.status === 0 , 'run-green': row.status === 1}">{{ row.__status__ }}</b></template>
+                <template v-slot:thumb="{row,index}">
+                    <my-table-image-preview :src="row.thumb"></my-table-image-preview>
+                </template>
                 <template v-slot:action="{row , index}">
                     <my-table-button @click="editEvent(row)"><my-icon icon="edit" />编辑</my-table-button>
                     <my-table-button type="error" :loading="myValue.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>

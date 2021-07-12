@@ -14,11 +14,11 @@ class UserSeeder extends Seeder
     public function run()
     {
         $datetime = date('Y-m-d H:i:s');
-        DB::table('xq_user')->insert([
-            'username'      => 'admin' ,
-            'password'      => Hash::make('123456') ,
+        DB::table('xq_user')->updateOrInsert([
+            'username'      => config('my.client_username') ,
+        ] , [
+            'password'      => Hash::make(config('my.client_password')) ,
             'is_system'     => 1 ,
-            'updated_at'    => $datetime ,
             'created_at'    => $datetime ,
         ]);
     }

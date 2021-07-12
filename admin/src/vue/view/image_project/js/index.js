@@ -94,13 +94,13 @@ export default {
                         minWidth: TopContext.table.name ,
                         align: TopContext.table.alignCenter
                     } ,
-                    {
-                        title: '图片列表' ,
-                        slot: 'images' ,
-                        minWidth: TopContext.table.name ,
-                        align: TopContext.table.alignCenter ,
-                        fixed: 'right' ,
-                    } ,
+                    // {
+                    //     title: '图片列表' ,
+                    //     slot: 'images' ,
+                    //     minWidth: TopContext.table.name ,
+                    //     align: TopContext.table.alignCenter ,
+                    //     fixed: 'right' ,
+                    // } ,
                     {
                         title: '标签' ,
                         slot: 'tags' ,
@@ -164,6 +164,13 @@ export default {
                         key: 'created_at' ,
                         minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
+                    } ,
+                    {
+                        title: '操作' ,
+                        slot: 'action' ,
+                        minWidth: TopContext.table.action - 40 ,
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
                     } ,
                 ] ,
                 total: 0 ,
@@ -435,6 +442,13 @@ export default {
 
         rowDblclickEvent (row , index) {
             this.editEvent(row);
+        } ,
+
+        linkToShowForImageProjectAtWeb (row) {
+            const settings = this.state().settings;
+            let url = settings.web_url + settings.show_for_image_project_at_web;
+            url = url.replace('{id}' , row.id);
+            this.openWindow(url , '_blank');
         } ,
     } ,
 }

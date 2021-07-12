@@ -176,12 +176,10 @@ class VideoProjectAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
             return self::error('模块不存在' , '' , 404);
         }
-
         $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
         $res = RelationTagModel::hotTagsInVideoSubjectByFilterAndLimit($param , $size);
         $res = RelationTagHandler::handleAll($res);

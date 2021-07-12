@@ -27,7 +27,9 @@
                         <template v-slot:avatar="{row,index}">
                             <my-table-image-preview :src="row.avatar"></my-table-image-preview>
                         </template>
-                        <template v-slot:action="{row,index}"><my-table-button>选择</my-table-button></template>
+                        <template v-slot:action="{row,index}">
+                            <my-table-button @click="rowClickEvent(row,index)">选择</my-table-button>
+                        </template>
                     </i-table>
                 </div>
                 <div class="pager">
@@ -71,7 +73,7 @@
 
     export default {
 
-        name: "my-video-series-selector" ,
+        name: "my-video-company-selector" ,
 
         props: {
             moduleId: {

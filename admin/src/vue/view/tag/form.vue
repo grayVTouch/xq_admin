@@ -43,6 +43,18 @@
                             </td>
                         </tr>
 
+                        <tr :class="{error: myValue.error.type}">
+                            <td>类型</td>
+                            <td>
+                                <i-select v-model="form.type" class="w-400">
+                                    <i-option v-for="(v,k) in TopContext.business.contentType" :key="k" :value="k">{{ v }}</i-option>
+                                </i-select>
+                                <span class="need">*</span>
+                                <div class="msg"></div>
+                                <div class="e-msg">{{ myValue.error.type }}</div>
+                            </td>
+                        </tr>
+
                         <tr :class="{error: myValue.error.status}">
                             <td>状态</td>
                             <td>

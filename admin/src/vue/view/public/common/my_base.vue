@@ -12,7 +12,7 @@
             </div>
         </div>
 
-        <div class="line" v-if="showAction || showPage">
+        <div class="line" v-if="showActions">
             <div class="run-action-title">
                 <div class="left">
                     <slot name="action" v-if="showAction"></slot>
@@ -36,13 +36,13 @@
 
         </div>
 
-        <div class="line">
+        <div class="line" v-if="showActions">
             <div class="run-action-title">
                 <div class="left">
-                    <slot name="action"></slot>
+                    <slot name="action" v-if="showAction"></slot>
                 </div>
                 <div class="right">
-                    <slot name="page"></slot>
+                    <slot name="page" v-if="showPage"></slot>
                 </div>
             </div>
         </div>
@@ -57,6 +57,10 @@
 
         props: {
             showSearch: {
+                type: Boolean ,
+                default: true ,
+            } ,
+            showActions: {
                 type: Boolean ,
                 default: true ,
             } ,

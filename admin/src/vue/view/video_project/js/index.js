@@ -132,16 +132,24 @@ export default {
                     } ,
                     {
                         title: '完结状态' ,
-                        slot: 'status' ,
+                        slot: 'end_status' ,
                         minWidth: TopContext.table.status ,
                         align: TopContext.table.alignCenter ,
                         fixed: 'right' ,
                     } ,
                     {
-                        title: '状态',
+                        title: '审核状态',
                         slot: 'status',
                         minWidth: TopContext.table.status ,
                         align: TopContext.table.alignCenter,
+                        fixed: 'right' ,
+                    },
+                    {
+                        title: '文件处理状态',
+                        slot: 'file_process_status',
+                        minWidth: TopContext.table.status + 50 ,
+                        align: TopContext.table.alignCenter,
+                        fixed: 'right' ,
                     },
                     {
                         title: '失败原因',
@@ -179,13 +187,13 @@ export default {
                         minWidth: TopContext.table.time ,
                         align: TopContext.table.alignCenter ,
                     } ,
-                    // {
-                    //     title: '操作' ,
-                    //     slot: 'action' ,
-                    //     minWidth: TopContext.table.action ,
-                    //     align: TopContext.table.alignCenter ,
-                    //     fixed: 'right' ,
-                    // } ,
+                    {
+                        title: '操作' ,
+                        slot: 'action' ,
+                        minWidth: TopContext.table.action - 100 ,
+                        align: TopContext.table.alignCenter ,
+                        fixed: 'right' ,
+                    } ,
                 ] ,
                 total: 0 ,
                 page: 1 ,
@@ -450,6 +458,13 @@ export default {
         videoCompanyChangedEvent (row) {
             this.search.video_company_id = row.id;
             this.searchEvent();
+        } ,
+
+        linkToShowAtWeb (row) {
+            const settings = this.state().settings;
+            let url = settings.web_url + settings.show_for_video_project_at_web;
+            url = url.replace('{id}' , row.id);
+            this.openWindow(url , '_blank');
         } ,
     } ,
 }

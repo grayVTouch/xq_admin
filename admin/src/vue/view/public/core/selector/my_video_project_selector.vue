@@ -27,7 +27,7 @@
                         </template>
                         <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
                         <template v-slot:action="{row,index}">
-                            <my-table-button>选择</my-table-button>
+                            <my-table-button @click="rowClickEvent(row,index)">选择</my-table-button>
                         </template>
                     </i-table>
                 </div>

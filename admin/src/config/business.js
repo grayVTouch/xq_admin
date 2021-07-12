@@ -1,5 +1,12 @@
 export default {
 
+    contentType: {
+        image: '图片' ,
+        video: '视频' ,
+        image_project: '图片专题' ,
+        video_project: '视频专题' ,
+    } ,
+
     bool: {
         integer: {
             0: '否',

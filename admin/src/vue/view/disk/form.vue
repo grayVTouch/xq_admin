@@ -27,7 +27,7 @@
                             <td>
                                 <input type="text" v-model="form.prefix" @input="myValue.error.prefix = ''" class="form-text">
                                 <span class="need">*</span>
-                                <div class="msg">例如：upload</div>
+                                <div class="msg">例如：upload；不允许重复</div>
                                 <div class="e-msg">{{ myValue.error.prefix }}</div>
                             </td>
                         </tr>

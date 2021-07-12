@@ -71,12 +71,6 @@
                             <template v-for="v in collections.data">
                                 <a v-if="v.relation_type === 'image_project'" class="item" target="_blank" :key="v.id" :href="`#/image_project/${v.relation_id}/show`">
 
-                                    <div class="checkbox">
-                                        <div class="mask">
-                                            <input type="checkbox" class="input-checkbox">
-                                        </div>
-                                    </div>
-
                                     <div class="thumb">
                                         <div class="mask"><img :src="v.relation.thumb ? v.relation.thumb : TopContext.res.notFound" alt="" v-judge-img-size class="image judge-img-size"></div>
                                     </div>
@@ -97,14 +91,14 @@
 
                                 <a v-if="v.relation_type === 'video_project'" class="item" target="_blank" :key="v.id" :href="`#/video_project/${v.relation_id}/show`">
 
-                                    <div class="checkbox">
-                                        <div class="mask">
-                                            <input type="checkbox" class="input-checkbox">
-                                        </div>
-                                    </div>
-
                                     <div class="thumb">
-                                        <div class="mask"><img :src="v.relation.thumb ? v.relation.thumb : TopContext.res.notFound" alt="" v-judge-img-size class="image judge-img-size"></div>
+                                        <div class="mask">
+                                            <img
+                                                    :src="v.relation.user_play_record.video.__thumb__ ? v.relation.user_play_record.video.__thumb__ : TopContext.res.notFound"
+                                                    v-judge-img-size
+                                                    class="image judge-img-size">
+                                        </div>
+                                        <div class="progress-bar" :style="`width: ${v.relation.user_play_record.ratio * 100}%`"></div>
                                     </div>
                                     <div class="info">
                                         <div class="title">

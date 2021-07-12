@@ -28,6 +28,7 @@ class Tag extends Base
     {
         $param = $this->request->post();
         $param['name']          = $param['name'] ?? '';
+        $param['type']        = $param['type'] ?? '';
         $param['description']   = $param['description'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
         $param['module_id']     = $param['module_id'] ?? '';
@@ -45,6 +46,7 @@ class Tag extends Base
     {
         $param = $this->request->post();
         $param['name']          = $param['name'] ?? '';
+        $param['type']        = $param['type'] ?? '';
         $param['description']   = $param['description'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
         $param['module_id']        = $param['module_id'] ?? '';
@@ -62,6 +64,7 @@ class Tag extends Base
     {
         $param = $this->request->post();
         $param['name']          = $param['name'] ?? '';
+        $param['type']        = $param['type'] ?? '';
         $param['description']   = $param['description'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
         $param['module_id']     = $param['module_id'] ?? '';
@@ -104,10 +107,13 @@ class Tag extends Base
         return success($res['message'] , $res['data']);
     }
 
-    public function topByModuleId()
+    public function top()
     {
-        $module_id = $this->request->query('module_id') ?? 0;
-        $res = TagAction::topByModuleId($this , $module_id);
+        $param = $this->request->query();
+        $param['module_id'] = $param['module_id'] ?? '';
+        $param['type'] = $param['type'] ?? '';
+        $param['size'] = $param['size'] ?? '';
+        $res = TagAction::top($this , $param);
         if ($res['code'] != 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }

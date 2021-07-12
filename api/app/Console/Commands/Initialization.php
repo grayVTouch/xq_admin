@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Exception;
-use Illuminate\Console\Command;
 
 class Initialization extends Command
 {

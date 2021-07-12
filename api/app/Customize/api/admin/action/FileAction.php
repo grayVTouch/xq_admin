@@ -5,7 +5,7 @@ namespace App\Customize\api\admin\action;
 
 
 use App\Customize\api\admin\util\FileUtil;
-use App\Customize\api\admin\util\ResourceUtil;
+use App\Customize\api\admin\repository\ResourceRepository;
 use App\Http\Controllers\api\admin\Base;
 use Core\Lib\ImageProcessor;
 use Exception;
@@ -29,9 +29,9 @@ class FileAction extends Action
         try {
             $dir        = date('Ymd');
             $path       = FileUtil::upload($file , $dir);
-            $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
+            $real_path  = FileUtil::generateRealPath($path);
             $url        = FileUtil::generateUrlByRelativePath($path);
-            ResourceUtil::create($url , $real_path , 'local');
+            ResourceRepository::create($url , $real_path , 'local' , 1 , 0);
             return self::success('' , $url);
         } catch(Exception $e) {
             return self::error($e->getMessage() , $e->getTraceAsString());
@@ -60,7 +60,7 @@ class FileAction extends Action
         try {
             $dir        = date('Ymd');
             $path       = FileUtil::upload($file , $dir);
-            $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
+            $real_path  = FileUtil::generateRealPath($path);
             $url        = FileUtil::generateUrlByRelativePath($path);
             if (empty($param['m'])) {
                 if (!empty($param['w'])) {
@@ -77,13 +77,14 @@ class FileAction extends Action
                 $mode = $param['m'];
             }
             if (in_array($mode , $mode_range)) {
-                $real_path          = FileUtil::generateRealPathByRelativePathWithPrefix($path);
-                $image_handle_dir   = FileUtil::dir($dir);
-                if (!file_exists($image_handle_dir)) {
+                $o_real_path        = $real_path;
+                $real_path          = FileUtil::generateRealPath($path);
+                $save_dir           = FileUtil::dir('system' , $dir);
+                if (!file_exists($save_dir)) {
                     // 目录不存在则创建
-                    mkdir($image_handle_dir , 0755 , true);
+                    mkdir($save_dir , 0755 , true);
                 }
-                $image_processor    = new ImageProcessor($image_handle_dir);
+                $image_processor    = new ImageProcessor($save_dir);
                 $real_path = $image_processor->compress($real_path , [
                     'mode'      => $mode ,
                     'ratio'     => $param['r'] ,
@@ -91,11 +92,10 @@ class FileAction extends Action
                     'height'    => $param['h'] ,
                 ] , false);
                 // 删除源文件
-                FileUtil::deleteWithoutPrefix($path);
-                $relative_path  = FileUtil::prefix() . '/' . str_replace(FileUtil::dir() . '/' , '' , $real_path);
-                $url            = FileUtil::generateUrlByRelativePath($relative_path);
+                unlink($o_real_path);
+                $url = FileUtil::generateUrlByRealPath($real_path);
             }
-            ResourceUtil::create($url , $real_path , 'local');
+            ResourceRepository::create($url , $real_path , 'local' , 1 , 0);
             return self::success('' , $url);
         } catch(Exception $e) {
             return self::error($e->getMessage() , $e->getTraceAsString());
@@ -114,9 +114,9 @@ class FileAction extends Action
         try {
             $dir        = date('Ymd');
             $path       = FileUtil::upload($file , $dir);
-            $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
+            $real_path  = FileUtil::generateRealPath($path);
             $url        = FileUtil::generateUrlByRelativePath($path);
-            ResourceUtil::create($url , $real_path , 'local');
+            ResourceRepository::create($url , $real_path , 'local' , 1 , 0);
             return self::success('' , $url);
         } catch(Exception $e) {
             return self::error($e->getMessage() , $e->getTraceAsString());
@@ -140,9 +140,9 @@ class FileAction extends Action
         try {
             $dir        = date('Ymd');
             $path       = FileUtil::upload($file , $dir);
-            $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
+            $real_path  = FileUtil::generateRealPath($path);
             $url        = FileUtil::generateUrlByRelativePath($path);
-            ResourceUtil::create($url , $real_path , 'local');
+            ResourceRepository::create($url , $real_path , 'local' , 1 , 0);
             return self::success('' , $url);
         } catch(Exception $e) {
             return self::error($e->getMessage() , $e->getTraceAsString());
@@ -161,9 +161,9 @@ class FileAction extends Action
         try {
             $dir        = date('Ymd');
             $path       = FileUtil::upload($file , $dir);
-            $real_path  = FileUtil::generateRealPathByRelativePathWithPrefix($path);
+            $real_path  = FileUtil::generateRealPath($path);
             $url        = FileUtil::generateUrlByRelativePath($path);
-            ResourceUtil::create($url , $real_path , 'local');
+            ResourceRepository::create($url , $real_path , 'local' , 1 , 0);
             return self::success('' , $url);
         } catch(Exception $e) {
             return self::error($e->getMessage() , $e->getTraceAsString());

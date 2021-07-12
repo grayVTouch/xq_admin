@@ -40,12 +40,16 @@ class CreateVideoProjectTable extends Migration
             $table->unsignedBigInteger('user_id')->default(0)->comment('xq_user.id，发布者用户id');
             $table->tinyInteger('status')->default(0)->comment('状态： -1-审核不通过 0-待审核 1-审核通过');
             $table->string('fail_reason' , 255)->default('')->comment('失败原因，当status=-1时，必须提供');
+            $table->tinyInteger('file_process_status')->default(0)->comment('文件处理处理状态：-1-处理失败 0-待处理 1-处理中 2-处理完成 ');
 
             $table->unsignedBigInteger('praise_count')->default(0)->comment('点赞数');
             $table->unsignedBigInteger('against_count')->default(0)->comment('反对数');
             $table->unsignedBigInteger('view_count')->default(0)->comment('观看次数');
             $table->unsignedBigInteger('play_count')->default(0)->comment('播放数量');
             $table->unsignedBigInteger('collect_count')->default(0)->comment('收藏量');
+            $table->string('directory' , 1024)->default('')->comment('目录');
+
+
 
             $table->timestamps();
 

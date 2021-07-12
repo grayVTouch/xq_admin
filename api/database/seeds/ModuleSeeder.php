@@ -2,6 +2,7 @@
 
 use App\Model\ModuleModel;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class ModuleSeeder extends Seeder
@@ -15,7 +16,7 @@ class ModuleSeeder extends Seeder
     {
 
         $datetime = date('Y-m-d H:i:s');
-        ModuleModel::insert([
+        $data = [
             [
                 'id' => 1 ,
                 'name' => '开发模式' ,
@@ -24,7 +25,6 @@ class ModuleSeeder extends Seeder
                 'is_auth' => 1 ,
                 'is_default' => 1 ,
                 'weight' => 0 ,
-                'updated_at' =>  $datetime ,
                 'created_at' => $datetime ,
             ] ,
             [
@@ -35,9 +35,24 @@ class ModuleSeeder extends Seeder
                 'is_auth' => 1 ,
                 'is_default' => 0 ,
                 'weight' => 0 ,
-                'updated_at' =>  $datetime ,
                 'created_at' => $datetime ,
             ] ,
-        ]);
+        ];
+        try {
+            DB::beginTransaction();
+            foreach ($data as $v)
+            {
+                $where = [
+                    'name' => $v['name'] ,
+                ];
+                $insertData = $v;
+                unset($insertData['name']);
+                DB::table('xq_module')->updateOrInsert($where , $insertData);
+            }
+            DB::commit();
+        } catch(Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 }

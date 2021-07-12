@@ -14,8 +14,8 @@ use App\Customize\api\admin\model\VideoProjectModel;
 use App\Customize\api\admin\model\UserModel;
 use App\Customize\api\admin\model\VideoSubtitleModel;
 use App\Customize\api\admin\util\FileUtil;
-use App\Customize\api\admin\util\ResourceUtil;
-use App\Customize\api\admin\util\VideoUtil;
+use App\Customize\api\admin\repository\ResourceRepository;
+use App\Customize\api\admin\repository\VideoRepository;
 use App\Http\Controllers\api\admin\Base;
 use Core\Lib\File;
 use Exception;
@@ -155,7 +155,7 @@ class VideoAction extends Action
                     'src'           => $v['src'] ,
                     'created_at'   => $param['created_at'] ,
                 ]);
-                ResourceUtil::used($v['src']);
+                ResourceRepository::used($v['src']);
             }
             $video_subtitles = VideoSubtitleModel::getByVideoId($video->id);
             if (
@@ -190,14 +190,14 @@ class VideoAction extends Action
                 'file_process_status' ,
                 'updated_at' ,
             ]));
-            ResourceUtil::used($param['src']);
-            ResourceUtil::used($param['thumb']);
+            ResourceRepository::used($param['src']);
+            ResourceRepository::used($param['thumb']);
             if ($video->thumb !== $param['thumb']) {
-                ResourceUtil::delete($video->thumb);
+                ResourceRepository::delete($video->thumb);
             }
             if ($video->src !== $param['src'] ) {
                 // 视频源发生变动
-                ResourceUtil::delete($video->src);
+                ResourceRepository::delete($video->src);
             }
             DB::commit();
             if ($is_video_need_handle) {
@@ -307,8 +307,8 @@ class VideoAction extends Action
                 'updated_at' ,
                 'created_at' ,
             ]));
-            ResourceUtil::used($param['thumb']);
-            ResourceUtil::used($param['src']);
+            ResourceRepository::used($param['thumb']);
+            ResourceRepository::used($param['src']);
             // 视频字幕
             foreach ($video_subtitles as $v)
             {
@@ -319,7 +319,7 @@ class VideoAction extends Action
                     'updated_at'   => $datetime ,
                     'created_at'   => $datetime ,
                 ]);
-                ResourceUtil::used($v['src']);
+                ResourceRepository::used($v['src']);
             }
             DB::commit();
             VideoHandleJob::dispatch($id);
@@ -357,7 +357,7 @@ class VideoAction extends Action
     {
         try {
             DB::beginTransaction();
-            VideoUtil::delete($id);
+            VideoRepository::delete($id);
             DB::commit();
             return self::success('操作成功');
         } catch(Exception $e) {
@@ -372,7 +372,7 @@ class VideoAction extends Action
             DB::beginTransaction();
             foreach ($ids as $id)
             {
-                VideoUtil::delete($id);
+                VideoRepository::delete($id);
             }
             DB::commit();
             return self::success('操作成功');
@@ -389,7 +389,7 @@ class VideoAction extends Action
             DB::beginTransaction();
             foreach ($res as $video_src)
             {
-                ResourceUtil::delete($video_src->src);
+                ResourceRepository::delete($video_src->src);
                 VideoSrcModel::destroy($video_src->id);
             }
             DB::commit();

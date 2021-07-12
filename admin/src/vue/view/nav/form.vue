@@ -3,6 +3,7 @@
         <my-form-modal
                 v-model="myValue.show"
                 :title="title"
+                width="700"
                 :loading="myValue.pending.submitEvent"
                 @on-ok="submitEvent"
                 @on-cancel="closeFormModal"
@@ -37,7 +38,7 @@
                             <td>所属模块</td>
                             <td>
                                 <my-select :data="modules" :disabled="mode === 'add'" v-model="form.module_id" @change="moduleChangedEvent" :width="TopContext.style.inputItemW"></my-select>
-                                <my-loading v-if="myValue.pending.getModules"></my-loading>
+                                <i-button type="primary" :loading="myValue.pending.getModules" @click="getModules">刷新</i-button>
                                 <span class="need">*</span>
                                 <div class="msg"></div>
                                 <div class="e-msg">{{ myValue.error.module_id }}</div>
@@ -47,7 +48,15 @@
                         <tr :class="{error: myValue.error.p_id}">
                             <td>上级导航菜单</td>
                             <td>
-                                <my-deep-select :data="navs" v-model="form.p_id" :has="true" :attr="myValue.attr"  @change="myValue.error.p_id = ''" :width="TopContext.style.inputItemW"></my-deep-select>
+                                <my-deep-select
+                                        :data="navs"
+                                        v-model="form.p_id"
+                                        :has="true"
+                                        :attr="myValue.attr"
+                                        @change="myValue.error.p_id = ''"
+                                        :width="TopContext.style.inputItemW"
+                                        :disabled="mode === 'add' && addMode === 'add_next'"
+                                ></my-deep-select>
                                 <my-loading v-if="myValue.pending.getNavs"></my-loading>
                                 <span class="need">*</span>
                                 <div class="msg">请务必选择类型、模块后操作</div>
@@ -56,11 +65,17 @@
                         </tr>
 
                         <tr :class="{error: myValue.error.value}">
-                            <td>值</td>
+                            <td>分类值</td>
                             <td>
-                                <input type="text" v-model="form.value" class="form-text" @input="myValue.error.value = ''">
+                                <input
+                                        type="text"
+                                        class="form-text"
+                                        readonly
+                                        :value="`${category.name}【${category.id}】`"
+                                >
+                                <i-button @click="openCategorySelector">选择分类</i-button>
                                 <span class="need">*</span>
-                                <div class="msg"></div>
+                                <div class="msg">请务必先选择 模块、类型 后在操作！</div>
                                 <div class="e-msg">{{ myValue.error.value }}</div>
                             </td>
                         </tr>
@@ -150,6 +165,14 @@
                 <i-button type="primary" @click="nextStepAtForm">确认</i-button>
             </template>
         </my-form-modal>
+
+        <!-- 分类选择器 -->
+        <my-category-selector
+            ref="category-selector"
+            :module-id="form.module_id"
+            :type="form.type"
+            @on-change="categoryChangedEvent"
+        ></my-category-selector>
 
     </div>
 </template>

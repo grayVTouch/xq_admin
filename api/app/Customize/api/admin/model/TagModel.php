@@ -47,28 +47,33 @@ class TagModel extends Model
             ->get();
     }
 
-    public static function topByModuleId(int $module_id = 0 , int $size = 10): Collection
+    public static function topByModuleIdAndTypeAndLimit(int $module_id , string $type , int $size = 10): Collection
     {
-        return self::where('module_id' , $module_id)
+        return self::where([
+                ['module_id' , '=' , $module_id] ,
+                ['type' , '=' , $type] ,
+            ])
             ->orderBy('count' , 'desc')
             ->limit($size)
             ->get();
     }
 
-    public static function findByModuleIdAndName(int $module_id , string $name = ''): ?TagModel
+    public static function findByModuleIdAndNameAndType(int $module_id , string $name , string $type): ?TagModel
     {
         return self::where([
             ['module_id' , '=' , $module_id] ,
             ['name' , '=' , $name] ,
+            ['type' , '=' , $type] ,
         ])->first();
     }
 
-    public static function findByExcludeIdAndModuleIdAndName(int $exclude_id , int $module_id , string $name = ''): ?TagModel
+    public static function findByExcludeIdAndModuleIdAndNameAndType(int $exclude_id , int $module_id , string $name , string $type): ?TagModel
     {
         return self::where([
             ['id' , '!=' , $exclude_id] ,
             ['module_id' , '=' , $module_id] ,
             ['name' , '=' , $name] ,
+            ['type' , '=' , $type] ,
         ])->first();
     }
 }

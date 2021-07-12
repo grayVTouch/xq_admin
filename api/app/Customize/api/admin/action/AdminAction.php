@@ -8,7 +8,9 @@ namespace App\Customize\api\admin\action;
 use App\Customize\api\admin\handler\AdminHandler;
 use App\Customize\api\admin\model\AdminModel;
 use App\Customize\api\admin\model\DiskModel;
-use App\Customize\api\admin\util\ResourceUtil;
+use App\Customize\api\admin\model\SystemSettingsModel;
+use App\Customize\api\admin\model\WebRouteMappingModel;
+use App\Customize\api\admin\repository\ResourceRepository;
 use App\Http\Controllers\api\admin\Base;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -24,12 +26,20 @@ use function core\array_unit;
 
 class AdminAction extends Action
 {
-    public static function info(Base $context , array $param)
+    public static function info(Base $context , array $param = []): array
     {
+
         $disk_count = DiskModel::countByIsDefault();
         return self::success('' , [
             'user' => user() ,
-            'is_init_disk' => $disk_count > 0 ? 1 : 0 ,
+            'settings' => [
+                'is_init_disk' => $disk_count > 0 ? 1 : 0 ,
+                'web_url' => SystemSettingsModel::getValueByKey('web_url') ,
+                'show_for_image_project_at_web' => WebRouteMappingModel::findBySymbol('ImageProject::show')->url ,
+                'show_for_video_project_at_web' => WebRouteMappingModel::findBySymbol('VideoProject::show')->url ,
+                'show_for_video_at_web' => WebRouteMappingModel::findBySymbol('Video::show')->url ,
+                'show_for_image_at_web' => WebRouteMappingModel::findBySymbol('Image::show')->url ,
+            ]
         ]);
     }
 
@@ -103,10 +113,10 @@ class AdminAction extends Action
                 'role_id' ,
                 'sex' ,
             ]));
-            ResourceUtil::used($param['avatar']);
+            ResourceRepository::used($param['avatar']);
             if ($res->avatar !== $param['avatar']) {
                 // 添加到待删除资源列表
-                ResourceUtil::delete($res->avatar);
+                ResourceRepository::delete($res->avatar);
             }
             DB::commit();
             return self::success('操作成功');
@@ -145,7 +155,7 @@ class AdminAction extends Action
                 'email' ,
                 'role_id' ,
             ]));
-            ResourceUtil::used($param['avatar']);
+            ResourceRepository::used($param['avatar']);
             DB::commit();
             return self::success('' , $id);
         } catch(Exception $e) {
@@ -181,7 +191,7 @@ class AdminAction extends Action
         try {
             DB::beginTransaction();
             $count = AdminModel::destroy($id);
-            ResourceUtil::delete($res->avatar);
+            ResourceRepository::delete($res->avatar);
             DB::commit();
             return self::success('操作成功' , $count);
         } catch(Exception $e) {
@@ -200,7 +210,7 @@ class AdminAction extends Action
                 if ($v->is_root) {
                     return self::error('包含超级管理员，禁止操作' , '' , 403);
                 }
-                ResourceUtil::delete($v->avatar);
+                ResourceRepository::delete($v->avatar);
                 AdminModel::destroy($v->id);
             }
             DB::commit();

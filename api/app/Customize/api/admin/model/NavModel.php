@@ -56,7 +56,7 @@ class NavModel extends Model
         $field = $field ?? '*';
 
         $order['field'] = $order['field'] ?? 'id';
-        $order['value'] = $order['value'] ?? 'asc';
+        $order['value'] = $order['value'] ?? 'desc';
 
         $where = [];
 

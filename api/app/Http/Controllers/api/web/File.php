@@ -23,7 +23,7 @@ class File extends Base
 
     public function uploadImage()
     {
-        $param = $this->request->post();
+        $param = $this->request->query();
         $param['m'] = $param['m'] ?? '';
         $param['w'] = $param['w'] ?? '';
         $param['h'] = $param['h'] ?? '';

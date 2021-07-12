@@ -30,10 +30,14 @@ export default {
                     submit: true
                 } ,
             } ,
+            settings: {
+                is_enable_grapha_verify_code_for_login: 1 ,
+            } ,
         };
     } ,
 
     mounted () {
+        this.loginSettings();
         this.captcha();
     } ,
 
@@ -46,15 +50,29 @@ export default {
             }));
         } ,
 
+        loginSettings () {
+            Api.login
+                .settings()
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    this.settings = {...res.data};
+                });
+        } ,
+
         captcha () {
-            Api.misc.captcha().then((res) => {
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                this.myValue.captcha = res.data;
-                this.form.captcha_key = res.data.key;
-            });
+            Api.misc
+                .captcha()
+                .then((res) => {
+                    if (res.code !== TopContext.code.Success) {
+                        this.errorHandle(res.message);
+                        return ;
+                    }
+                    this.myValue.captcha = res.data;
+                    this.form.captcha_key = res.data.key;
+                });
         } ,
 
         focusEvent (e) {
@@ -92,9 +110,9 @@ export default {
             if (G.isEmptyString(this.form.password)) {
                 error.password = '请填写密码';
             }
-            // if (G.isEmptyString(this.form.captcha_code)) {
-            //     error.captcha_code = '请填写验证码';
-            // }
+            if (this.settings.is_enable_grapha_verify_code_for_login && G.isEmptyString(this.form.captcha_code)) {
+                error.captcha_code = '请填写验证码';
+            }
             return {
                 status: G.isEmptyObject(error) ,
                 error ,

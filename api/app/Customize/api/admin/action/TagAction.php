@@ -37,9 +37,11 @@ class TagAction extends Action
 
     public static function update(Base $context , $id , array $param = [])
     {
+        $type_range = my_config_keys('business.content_type');
         $status_range = my_config_keys('business.status_for_tag');
         $validator = Validator::make($param , [
             'name'      => 'required' ,
+            'type' => ['required' , Rule::in($type_range)] ,
             'module_id' => 'required|integer' ,
             'user_id'   => 'required|integer' ,
             'status'    => ['required' , Rule::in($status_range)] ,
@@ -55,7 +57,7 @@ class TagAction extends Action
         if (empty($module)) {
             return self::error('模块不存在' , '' , 404);
         }
-        $tag = TagModel::findByExcludeIdAndModuleIdAndName($res->id , $module->id , $param['name']);
+        $tag = TagModel::findByExcludeIdAndModuleIdAndNameAndType($res->id , $module->id , $param['name'] , $param['type']);
         if (!empty($tag)) {
             return self::error('标签已经存在');
         }
@@ -71,6 +73,7 @@ class TagAction extends Action
         $param['updated_at']    = $datetime;
         TagModel::updateById($res->id , array_unit($param , [
             'name' ,
+            'type' ,
             'weight' ,
             'module_id' ,
             'user_id' ,
@@ -83,9 +86,11 @@ class TagAction extends Action
 
     public static function store(Base $context , array $param = [])
     {
+        $type_range = my_config_keys('business.content_type');
         $status_range = my_config_keys('business.status_for_tag');
         $validator = Validator::make($param , [
             'name'      => 'required' ,
+            'type' => ['required' , Rule::in($type_range)] ,
             'module_id' => 'required|integer' ,
             'user_id'   => 'required|integer' ,
             'status'    => ['required' , Rule::in($status_range)] ,
@@ -97,7 +102,7 @@ class TagAction extends Action
         if (empty($module)) {
             return self::error('模块不存在' , '' , 404);
         }
-        $tag = TagModel::findByModuleIdAndName($module->id , $param['name']);
+        $tag = TagModel::findByModuleIdAndNameAndType($module->id , $param['name'] , $param['type']);
         if (!empty($tag)) {
             return self::error('标签已经存在');
         }
@@ -114,6 +119,7 @@ class TagAction extends Action
         $param['created_at']    = $datetime;
         $id = TagModel::insertGetId(array_unit($param , [
             'name' ,
+            'type' ,
             'weight' ,
             'module_id' ,
             'user_id' ,
@@ -127,8 +133,10 @@ class TagAction extends Action
 
     public static function findOrCreate(Base $context , array $param = [])
     {
+        $type_range = my_config_keys('business.content_type');
         $validator = Validator::make($param , [
             'name'      => 'required' ,
+            'type' => ['required' , Rule::in($type_range)] ,
             'module_id' => 'required|integer' ,
             'user_id'   => 'required|integer' ,
         ]);
@@ -139,7 +147,7 @@ class TagAction extends Action
         if (empty($module)) {
             return self::error('模块不存在' , '' , 404);
         }
-        $tag = TagModel::findByModuleIdAndName($module->id , $param['name']);
+        $tag = TagModel::findByModuleIdAndNameAndType($module->id , $param['name'] , $param['type']);
         if (!empty($tag)) {
             return self::success('' , $tag);
         }
@@ -153,6 +161,7 @@ class TagAction extends Action
         $param['created_at']    = $datetime;
         $id = TagModel::insertGetId(array_unit($param , [
             'name' ,
+            'type' ,
             'module_id' ,
             'user_id' ,
             'status' ,
@@ -205,13 +214,23 @@ class TagAction extends Action
         return self::success('' , $res);
     }
 
-    public static function topByModuleId(Base $context , int $module_id ,  array $param = [])
+    public static function top(Base $context ,  array $param = [])
     {
-        if (empty($module_id)) {
-            return self::success('' , []);
+        $type_range = my_config_keys('business.content_type');
+        $validator = Validator::make($param , [
+            'module_id' => 'required' ,
+            'type' => ['required' , Rule::in($type_range)] ,
+            'size' => 'required|integer' ,
+        ]);
+        if ($validator->fails()) {
+            return self::error($validator->errors()->first() , $validator->errors());
         }
-        $size = 10;
-        $res = TagModel::topByModuleId($module_id , $size);
+        $module = ModuleModel::find($param['module_id']);
+        if (empty($module)) {
+            return self::error('模块未找到' , '' , 404);
+        }
+        $size = empty($param['size']) ? $param['size'] : 10;
+        $res = TagModel::topByModuleIdAndTypeAndLimit($module->id , $param['type'] , $size);
         $res = TagHandler::handleAll($res);
         return self::success('' , $res);
     }

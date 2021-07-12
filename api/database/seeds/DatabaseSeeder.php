@@ -11,12 +11,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(AdminPermissionSeeder::class);
-        $this->call(RegionSeeder::class);
         $this->call(RoleSeeder::class);
         $this->call(AdminSeeder::class);
         $this->call(ModuleSeeder::class);
         $this->call(PositionSeeder::class);
         $this->call(UserSeeder::class);
+        $this->call(WebRouteMappingSeeder::class);
+        $this->call(SystemSettingsSeeder::class);
+        $this->call(RegionSeeder::class);
     }
 }

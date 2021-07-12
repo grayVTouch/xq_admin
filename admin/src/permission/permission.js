@@ -51,7 +51,7 @@ export default [
     {
         key: 'image_manager' ,
         cn: '图片管理' ,
-        en: 'Image Manager' ,
+        en: 'Image' ,
         // 路由路径
         path: '' ,
         hidden: false ,
@@ -227,6 +227,18 @@ export default [
         sIco: systemIco ,
         bIco: systemIco ,
         children: [
+            {
+
+                cn: '通用设置' ,
+                en: 'Settings' ,
+                // 路由路径
+                path: '/system/settings' ,
+                hidden: false ,
+                view: true ,
+                sIco: systemIco ,
+                bIco: systemIco ,
+                children: [] ,
+            } ,
             {
 
                 cn: '存储管理' ,

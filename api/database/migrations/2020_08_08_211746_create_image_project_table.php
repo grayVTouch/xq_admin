@@ -33,6 +33,7 @@ class CreateImageProjectTable extends Migration
             $table->tinyInteger('status')->default(0)->comment('审核状态：-1-审核失败 0-待审核 1-审核通过');
             $table->string('fail_reason' , 1000)->default('')->comment('失败原因，当 status=-1 时，必须提供');
             $table->tinyInteger('process_status')->default(0)->comment('处理状态：-1-处理失败 0-待处理 1-处理中 2-处理完毕');
+            $table->string('directory' , 1024)->default('')->comment('目录');
 
             $table->timestamps();
 
