@@ -58,7 +58,7 @@ class FileUtil
         if (!File::moveUploadedFile($source , $target)) {
             return false;
         }
-        return self::generateRelativePathWithPrefix($target);
+        return self::generateWithPrefixRelativePath($target);
     }
 
     // 普通文件移动
@@ -73,7 +73,7 @@ class FileUtil
         if (!File::move($path , $target)) {
             return false;
         }
-        return self::generateRelativePathWithPrefix($target);
+        return self::generateWithPrefixRelativePath($target);
     }
 
     // 普通文件保存
@@ -138,14 +138,14 @@ class FileUtil
      */
     public static function generateRealPathByRelativePathWithoutPrefix(string $path = ''): string
     {
-        $path = self::generateRelativePathWithPrefix($path);
-        return self::generateRealPath($path);
+        $path = self::generateWithPrefixRelativePath($path);
+        return self::generateRealPathByWithPrefixRelativePath($path);
     }
 
     // 删除文件（通过相对路径）
     public static function deleteWithoutPrefix(string $relative_path = ''): void
     {
-        $real_path = self::generateRealPathByRelativePathWithoutPrefix($relative_path);
+        $real_path = self::generateRealPathByWithoutPrefixRelativePath($relative_path);
         if (!File::exists($real_path)) {
             return ;
         }
@@ -155,7 +155,7 @@ class FileUtil
     // 删除文件（通过相对路径）
     public static function deleteWithPrefix(string $relative_path = ''): void
     {
-        $real_path = self::generateRealPath($relative_path);
+        $real_path = self::generateRealPathByWithPrefixRelativePath($relative_path);
         if (!File::exists($real_path)) {
             return ;
         }
@@ -219,7 +219,7 @@ class FileUtil
     public static function generateUrlByRealPath(string $real_path = ''): string
     {
         $real_path                      = format_path($real_path);
-        $relative_path_with_prefix      = self::generateRelativePathWithPrefix($real_path);
+        $relative_path_with_prefix      = self::generateWithPrefixRelativePath($real_path);
         $res_url                        = my_config('app.res_url');
         $res_url                        = rtrim($res_url , '/');
         return $res_url . '/' . $relative_path_with_prefix;
@@ -234,7 +234,7 @@ class FileUtil
      */
     public static function existsByRelativePathWithPrefix(string $relative_path = ''): bool
     {
-        $real_path = self::generateRealPath($relative_path);
+        $real_path = self::generateRealPathByWithPrefixRelativePath($relative_path);
         return File::exists($real_path);
     }
 
@@ -247,7 +247,7 @@ class FileUtil
      */
     public static function existsByRelativePathWithoutPrefix(string $relative_path = ''): bool
     {
-        $real_path = self::generateRealPathByRelativePathWithoutPrefix($relative_path);
+        $real_path = self::generateRealPathByWithoutPrefixRelativePath($relative_path);
         return file_exists($real_path);
     }
 }

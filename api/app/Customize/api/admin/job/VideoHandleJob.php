@@ -90,7 +90,11 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
                 'video_process_status' => 1 ,
             ]);
             $video = VideoHandler::handle($video);
-
+            // 附加：模块
+            VideoHandler::module($video);
+            if (empty($video->module)) {
+                throw new Exception("视频所属模块不存在【{$video->module_id}】");
+            }
             // 附加：视频专题
             VideoHandler::videoProject($video);
             // 附加：视频
@@ -110,8 +114,8 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
                 $dir_prefix = my_config('app.dir')['video'] . '/' . date('Ymd' , strtotime($video->created_at));
                 $dirname    = $video->name;
             }
-            $save_dir = FileUtil::generateRealPathByRelativePathWithoutPrefix($dir_prefix . '/' . $dirname);
-            $temp_dir = FileUtil::generateRealPathByRelativePathWithoutPrefix($dir_prefix . '/' . $dirname . '/temp');
+            $save_dir = FileUtil::generateRealPathByWithoutPrefixRelativePath($video->module->name . '/' . $dir_prefix . '/' . $dirname);
+            $temp_dir = $save_dir . '/temp';
 
             $this->tempDir = $temp_dir;
 
@@ -184,7 +188,11 @@ class VideoHandleJob extends FileBaseJob implements ShouldQueue
                 ->quiet()
                 ->save($video_first_frame_file);
             // 图片处理
-            $video_first_frame_compress_file = ImageProcessor::originCompress($video_first_frame_file , 'webp' , 100);
+            $image_processor = new ImageProcessor($save_dir);
+            $video_first_frame_compress_file = $image_processor->compress($video_first_frame_file , [
+                'mode' => 'fix-width' ,
+                'width' => 1920 ,
+            ] , false);
             File::dFile($video_first_frame_file);
             File::move($video_first_frame_compress_file , $video_first_frame_file);
             VideoModel::updateById($video->id , [

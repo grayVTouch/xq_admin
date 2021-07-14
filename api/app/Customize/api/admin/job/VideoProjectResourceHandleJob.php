@@ -79,18 +79,21 @@ class VideoProjectResourceHandleJob extends FileBaseJob implements ShouldQueue
                 ]);
                 return ;
             }
+            VideoProjectHandler::module($video_project);
+            if (empty($video_project->module)) {
+                throw new Exception("视频专题所属模块不存在【{$video_project->module_id}】");
+            }
             VideoProjectModel::updateById($video_project->id , [
                 // 处理中
                 'file_process_status' => 1 ,
             ]);
             $dir_prefix = my_config('app.dir')['video_project'];
-            $target_save_dir = FileUtil::generateRealPathByRelativePathWithoutPrefix($dir_prefix . '/' . $video_project->name);
+            $target_save_dir = FileUtil::generateRealPathByWithoutPrefixRelativePath($video_project->module->name . '/' . $dir_prefix . '/' . $video_project->name);
             if (empty($this->originalName)) {
                 // 添加动作 - 仅创建目录即可
-                if (File::exists($target_save_dir)) {
-                    return ;
+                if (!File::exists($target_save_dir)) {
+                    File::mkdir($target_save_dir , 0777 , true);
                 }
-                File::mkdir($target_save_dir , 0777 , true);
                 ResourceRepository::create('' , $target_save_dir , 'local' , 1 , 0);
                 VideoProjectModel::updateById($video_project->id , [
                     'directory' => $target_save_dir ,
@@ -99,7 +102,7 @@ class VideoProjectResourceHandleJob extends FileBaseJob implements ShouldQueue
                 return ;
             }
             // 保存目录
-            $origin_save_dir = FileUtil::generateRealPathByRelativePathWithoutPrefix($dir_prefix . '/' . $this->originalName);
+            $origin_save_dir = FileUtil::generateRealPathByWithoutPrefixRelativePath($video_project->module->name . '/' . $dir_prefix . '/' . $this->originalName);
             if (!File::isDir($origin_save_dir)) {
                 // 源目录不存在则创建
                 File::mkdir($origin_save_dir , 0777 , true);

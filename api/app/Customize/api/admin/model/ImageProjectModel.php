@@ -69,12 +69,30 @@ class ImageProjectModel extends Model
         return self::where('name' , $name)->first();
     }
 
+    public static function findByModuleIdAndName(int $module_id , string $name): ?ImageProjectModel
+    {
+        return self::where([
+            ['module_id' , '=' , $module_id] ,
+            ['name' , '=' , $name] ,
+        ])->first();
+    }
+
     public static function findByNameAndExcludeId(string $name , int $exclude_id): ?ImageProjectModel
     {
         return self::where([
                 ['name' , '=' , $name] ,
                 ['id' , '!=' , $exclude_id] ,
             ])
+            ->first();
+    }
+
+    public static function findByModuleIdAndNameAndExcludeId(int $module_id , string $name , int $exclude_id): ?ImageProjectModel
+    {
+        return self::where([
+            ['module_id' , '=' , $module_id] ,
+            ['name' , '=' , $name] ,
+            ['id' , '!=' , $exclude_id] ,
+        ])
             ->first();
     }
 }

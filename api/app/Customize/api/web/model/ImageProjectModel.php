@@ -12,7 +12,7 @@ class ImageProjectModel extends Model
 {
     protected $table = 'xq_image_project';
 
-    public static function getNewestByFilterAndLimit(array $filter = [] , int $size = 0): Collection
+    public static function getNewestByFilterAndSize(array $filter = [] , int $size = 0): Collection
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -36,7 +36,7 @@ class ImageProjectModel extends Model
             ->get();
     }
 
-    public static function getHotByFilterAndLimit(array $filter = [] , int $size = 0): Collection
+    public static function getHotByFilterAndSize(array $filter = [] , int $size = 0): Collection
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -65,7 +65,7 @@ class ImageProjectModel extends Model
             ->get();
     }
 
-    public static function getHotWithPagerByFilterAndLimit(array $filter = [] , int $size = 0): Paginator
+    public static function getHotWithPagerByFilterAndSize(array $filter = [] , int $size = 0): Paginator
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -94,7 +94,7 @@ class ImageProjectModel extends Model
     }
 
 
-    public static function getByTagIdAndFilterAndLimit(int $tag_id , array $filter = [] , int $size = 0): Collection
+    public static function getByTagIdAndFilterAndSize(int $tag_id , array $filter = [] , int $size = 0): Collection
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -129,7 +129,7 @@ class ImageProjectModel extends Model
     }
 
     // 标签对应的图片专题-非严格模式匹配
-    public static function getByTagIdsAndFilterAndLimit(array $tag_ids = [] , array $filter = [] , int $size = 0): Paginator
+    public static function getByTagIdsAndFilterAndSize(array $tag_ids = [] , array $filter = [] , int $size = 0): Paginator
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -164,7 +164,7 @@ class ImageProjectModel extends Model
     }
 
     // 标签对应的图片专题-严格模式匹配
-    public static function getInStrictByTagIdsAndFilterAndLimit(array $tag_ids = [] , array $filter = [] , int $size = 0): Paginator
+    public static function getInStrictByTagIdsAndFilterAndSize(array $tag_ids = [] , array $filter = [] , int $size = 0): Paginator
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -201,7 +201,7 @@ class ImageProjectModel extends Model
             ->paginate($size);
     }
 
-    public static function getNewestWithPagerByFilterAndLimit(array $filter = [] , int $size = 0): Paginator
+    public static function getNewestWithPagerByFilterAndSize(array $filter = [] , int $size = 0): Paginator
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -224,7 +224,7 @@ class ImageProjectModel extends Model
             ->paginate($size);
     }
 
-    public static function getWithPagerInStrictByFilterAndOrderAndLimit(array $filter = [] , $order = null , int $size = 20)
+    public static function getWithPagerInStrictByFilterAndOrderAndSize(array $filter = [] , $order = null , int $size = 20)
     {
         $filter['value']        = $filter['value'] ?? '';
         $filter['module_id']    = $filter['module_id'] ?? '';
@@ -279,7 +279,7 @@ class ImageProjectModel extends Model
             ->paginate($size);
     }
 
-    public static function getWithPagerInLooseByFilterAndOrderAndLimit(array $filter = [] , $order = null , int $size = 20)
+    public static function getWithPagerInLooseByFilterAndOrderAndSize(array $filter = [] , $order = null , int $size = 20)
     {
         $filter['value']        = $filter['value'] ?? '';
         $filter['module_id']    = $filter['module_id'] ?? '';
@@ -336,7 +336,7 @@ class ImageProjectModel extends Model
         return self::where('id' , $id)->$mode($field , $step);
     }
 
-    public static function recommendExcludeSelfByFilterAndLimit(int $self_id , array $filter = [] , int $size = 20): Collection
+    public static function recommendExcludeSelfByFilterAndSize(int $self_id , array $filter = [] , int $size = 20): Collection
     {
         $filter['module_id']    = $filter['module_id'] ?? '';
         $filter['category_id']  = $filter['category_id'] ?? '';
@@ -370,4 +370,6 @@ class ImageProjectModel extends Model
             ->limit($size)
             ->get();
     }
+
+
 }

@@ -14,9 +14,18 @@
                         <tr :class="{error: myValue.error.name}">
                             <td>名称</td>
                             <td>
-                                <input type="text" v-model="form.name" @input="myValue.error.name=''" class="form-text">
+                                <input
+                                        type="text"
+                                        v-model="form.name"
+                                        @input="myValue.error.name=''"
+                                        :class="{'form-text': true , disabled: mode === 'edit'}"
+                                        :readonly="mode === 'edit'"
+                                >
                                 <span class="need">*</span>
-                                <div class="msg"></div>
+                                <div class="msg run-red">
+                                    <template v-if="mode === 'edit'">禁止修改</template>
+                                    <template v-if="mode === 'add'">一旦添加则禁止修改名称！清谨慎操作</template>
+                                </div>
                                 <div class="e-msg">{{ myValue.error.name }}</div>
                             </td>
                         </tr>

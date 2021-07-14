@@ -12,13 +12,13 @@ import style from './style.js';
  */
 
 // 接口 host
-const api = 'http://api.xq.test';
+const api = config.apiUrl;
 // 资源 host
-const resUrl = 'http://res.xq.test';
+const resUrl = config.resUrl;
 
 window.TopContext = {
     // 调试模式
-    debug: true ,
+    debug: config.debug ,
     api: api + '/api/admin' ,
     resUrl ,
     // 图片上传 api

@@ -29,7 +29,7 @@ class FileAction extends Action
         try {
             $dir        = date('Ymd');
             $path       = FileUtil::upload($file , $dir);
-            $real_path  = FileUtil::generateRealPath($path);
+            $real_path  = FileUtil::generateRealPathByWithPrefixRelativePath($path);
             $url        = FileUtil::generateUrlByRelativePath($path);
             ResourceRepository::create($url , $real_path , 'local' , 1 , 0);
             return self::success('' , $url);
@@ -52,15 +52,20 @@ class FileAction extends Action
             'm' => ['sometimes' , Rule::in($mode_range)] ,
             'w' => 'sometimes|integer' ,
             'h' => 'sometimes|integer' ,
-            'file' => 'required|mimes:jpg,jpeg,png,gif,webp' ,
+//            'file' => 'required|mimes:jpg,jpeg,png,gif,webp' ,
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
+        $mime_range = ['jpg','jpeg','png','gif','webp','bmp'];
+        $extension = $file->getClientOriginalExtension();
+        if (!in_array($extension , $mime_range)) {
+            return self::error("不支持的格式【${$extension}】，当前支持的格式有：" . implode(',' , $mime_range));
+        }
         try {
             $dir        = date('Ymd');
             $path       = FileUtil::upload($file , $dir);
-            $real_path  = FileUtil::generateRealPath($path);
+            $real_path  = FileUtil::generateRealPathByWithPrefixRelativePath($path);
             $url        = FileUtil::generateUrlByRelativePath($path);
             if (empty($param['m'])) {
                 if (!empty($param['w'])) {
@@ -78,7 +83,7 @@ class FileAction extends Action
             }
             if (in_array($mode , $mode_range)) {
                 $o_real_path        = $real_path;
-                $real_path          = FileUtil::generateRealPath($path);
+                $real_path          = FileUtil::generateRealPathByWithPrefixRelativePath($path);
                 $save_dir           = FileUtil::dir('system' , $dir);
                 if (!file_exists($save_dir)) {
                     // 目录不存在则创建
@@ -106,15 +111,20 @@ class FileAction extends Action
     public static function uploadVideo(Base $context , ?UploadedFile $file , array $param = [])
     {
         $validator = Validator::make($param , [
-            'file' => 'required|mimes:mp4,mov,mkv,avi,flv,rm,rmvb,ts' ,
+//            'file' => 'required|mimes:mp4,mov,mkv,avi,flv,rm,rmvb,ts,webm' ,
         ]);
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
+        $mime_range = ['mp4','mov','mkv','avi','flv','rm','rmvb','ts','webm'];
+        $extension = $file->getClientOriginalExtension();
+        if (!in_array($extension , $mime_range)) {
+            return self::error("不支持的格式【${$extension}】，当前支持的格式有：" . implode(',' , $mime_range));
+        }
         try {
             $dir        = date('Ymd');
             $path       = FileUtil::upload($file , $dir);
-            $real_path  = FileUtil::generateRealPath($path);
+            $real_path  = FileUtil::generateRealPathByWithPrefixRelativePath($path);
             $url        = FileUtil::generateUrlByRelativePath($path);
             ResourceRepository::create($url , $real_path , 'local' , 1 , 0);
             return self::success('' , $url);
@@ -133,14 +143,14 @@ class FileAction extends Action
             return self::error($validator->errors()->first() , $validator->errors());
         }
         $extension = $file->getClientOriginalExtension();
-        $ext_range = ['ass' , 'idx' , 'sub' , 'srt' , 'vtt' , 'ssa'];
-        if (!in_array($extension , $ext_range)) {
-            return self::error('不支持的文件类型');
+        $mime_range = ['ass' , 'idx' , 'sub' , 'srt' , 'vtt' , 'ssa'];
+        if (!in_array($extension , $mime_range)) {
+            return self::error("不支持的格式【${$extension}】，当前支持的格式有：" . implode(',' , $mime_range));
         }
         try {
             $dir        = date('Ymd');
             $path       = FileUtil::upload($file , $dir);
-            $real_path  = FileUtil::generateRealPath($path);
+            $real_path  = FileUtil::generateRealPathByWithPrefixRelativePath($path);
             $url        = FileUtil::generateUrlByRelativePath($path);
             ResourceRepository::create($url , $real_path , 'local' , 1 , 0);
             return self::success('' , $url);
@@ -161,7 +171,7 @@ class FileAction extends Action
         try {
             $dir        = date('Ymd');
             $path       = FileUtil::upload($file , $dir);
-            $real_path  = FileUtil::generateRealPath($path);
+            $real_path  = FileUtil::generateRealPathByWithPrefixRelativePath($path);
             $url        = FileUtil::generateUrlByRelativePath($path);
             ResourceRepository::create($url , $real_path , 'local' , 1 , 0);
             return self::success('' , $url);

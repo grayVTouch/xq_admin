@@ -21,6 +21,7 @@ class CategoryAction extends Action
 {
     public static function index(Base $context , array $param = [])
     {
+        $param['type'] = empty($param['type']) ? [] : array_filter(explode(',' , $param['type']));
         $res = CategoryModel::getByFilter($param);
         $res = CategoryHandler::handleAll($res);
         foreach ($res as $v)
@@ -42,6 +43,7 @@ class CategoryAction extends Action
 
     public static function search(Base $context , array $param = [])
     {
+        $param['type'] = empty($param['type']) ? [] : array_filter(explode(',' , $param['type']));
         $res = CategoryModel::getByFilter($param);
         $res = CategoryHandler::handleAll($res);
         $res = object_to_array($res);

@@ -34,7 +34,7 @@ class ModuleAction extends Action
         $bool_for_int = my_config_keys('business.bool_for_int');
 
         $validator = Validator::make($param , [
-            'name'          => 'required' ,
+//            'name'          => 'required' ,
             'is_enabled'    => ['required' , Rule::in($bool_for_int)] ,
             'is_default'    => ['required' , Rule::in($bool_for_int)] ,
             'is_auth'       => ['required' , Rule::in($bool_for_int)] ,
@@ -50,7 +50,7 @@ class ModuleAction extends Action
         try {
             DB::beginTransaction();
             ModuleModel::updateById($res->id , array_unit($param , [
-                'name' ,
+//                'name' ,
                 'description' ,
                 'is_enabled' ,
                 'is_auth' ,
@@ -128,16 +128,16 @@ class ModuleAction extends Action
             'is_default'       => ['required' , Rule::in($bool_for_int)] ,
             'is_auth'          => ['required' , Rule::in($bool_for_int)] ,
         ]);
-
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
         $param['weight']        = $param['weight'] === '' ? 0 : $param['weight'];
         $param['created_at']   = current_datetime();
-
+        if (!empty(ModuleModel::findByName($param['name']))) {
+            return self::error('名称已经被使用');
+        }
         try {
             DB::beginTransaction();
-
             $id = ModuleModel::insertGetId(array_unit($param , [
                 'name' ,
                 'description' ,
@@ -146,13 +146,10 @@ class ModuleAction extends Action
                 'weight' ,
                 'is_default' ,
             ]));
-
             if ($param['is_default']) {
                 ModuleModel::setNotDefaultByExcludeId($id);
             }
-
             DB::commit();
-
             return self::success('' , $id);
         } catch(Exception $e) {
 

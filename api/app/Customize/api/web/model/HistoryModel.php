@@ -12,7 +12,7 @@ class HistoryModel extends Model
     protected $table = 'xq_history';
 
     // 获取给定数量的历史记录（按照时间倒叙排序）
-    public static function getOrderTimeByModuleIdAndUserIdAndLimit(int $module_id , int $user_id , int $size = 20)
+    public static function getOrderTimeByModuleIdAndUserIdAndSize(int $module_id , int $user_id , int $size = 20)
     {
         return self::where([
                 ['module_id' , '=' , $module_id] ,
@@ -23,7 +23,7 @@ class HistoryModel extends Model
             ->get();
     }
 
-    public static function getByModuleIdAndUserIdAndRelationTypeAndValueAndLimit(int $module_id , int $user_id , string $relation_type = '' , string $value = '' , int $size = 20): Paginator
+    public static function getByModuleIdAndUserIdAndRelationTypeAndValueAndSize(int $module_id , int $user_id , string $relation_type = '' , string $value = '' , int $size = 20): Paginator
     {
         $where = [
             ['h.module_id' , '=' , $module_id] ,

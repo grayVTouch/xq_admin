@@ -230,7 +230,7 @@ class TagAction extends Action
             return self::error('模块未找到' , '' , 404);
         }
         $size = empty($param['size']) ? $param['size'] : 10;
-        $res = TagModel::topByModuleIdAndTypeAndLimit($module->id , $param['type'] , $size);
+        $res = TagModel::topByModuleIdAndTypeAndSize($module->id , $param['type'] , $size);
         $res = TagHandler::handleAll($res);
         return self::success('' , $res);
     }

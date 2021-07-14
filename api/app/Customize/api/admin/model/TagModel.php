@@ -47,7 +47,7 @@ class TagModel extends Model
             ->get();
     }
 
-    public static function topByModuleIdAndTypeAndLimit(int $module_id , string $type , int $size = 10): Collection
+    public static function topByModuleIdAndTypeAndSize(int $module_id , string $type , int $size = 10): Collection
     {
         return self::where([
                 ['module_id' , '=' , $module_id] ,

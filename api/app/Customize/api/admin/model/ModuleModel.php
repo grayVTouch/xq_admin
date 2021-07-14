@@ -36,4 +36,9 @@ class ModuleModel extends Model
                 'is_default' => 0 ,
             ]);
     }
+
+    public static function findByName(string $name): ?ModuleModel
+    {
+        return self::where('name' , $name)->first();
+    }
 }

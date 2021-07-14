@@ -81,12 +81,12 @@ class VideoProjectAction extends Action
         if (empty($video_project)) {
             return self::error('视频专题不存在' , '' , 404);
         }
-        if (VideoProjectModel::findByNameAndExcludeId($param['name'] , $video_project->id)) {
-            return self::error('名称已经被使用');
-        }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
             return self::error('模块不存在');
+        }
+        if (VideoProjectModel::findByModuleIdAndExcludeIdAndName($module->id , $video_project->id , $param['name'])) {
+            return self::error('名称已经被使用');
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {
@@ -214,12 +214,12 @@ class VideoProjectAction extends Action
         if ($validator->fails()) {
             return self::error($validator->errors()->first() , $validator->errors());
         }
-        if (VideoProjectModel::findByName($param['name'])) {
-            return self::error('名称已经被使用');
-        }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
             return self::error('模块不存在');
+        }
+        if (VideoProjectModel::findByModuleIdAndName($module->id , $param['name'])) {
+            return self::error('名称已经被使用');
         }
         $user = UserModel::find($param['user_id']);
         if (empty($user)) {

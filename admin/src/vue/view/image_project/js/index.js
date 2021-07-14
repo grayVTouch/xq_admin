@@ -5,6 +5,17 @@ const current = {id: 0};
 const search = {
     size: TopContext.size ,
     category_id: '' ,
+    image_subject_id: '' ,
+};
+
+const imageSubject = {
+    id: 0 ,
+    name: 'unknow' ,
+};
+
+const myUser = {
+    id: 0 ,
+    name: 'unknow' ,
 };
 
 export default {
@@ -17,83 +28,83 @@ export default {
     data () {
         return {
             filter: {
-                id: '' ,
-            } ,
-            dom: {} ,
-            ins: {} ,
+                id: '',
+            },
+            dom: {},
+            ins: {},
             myValue: {
-                pending: {} ,
-                error: {} ,
+                pending: {},
+                error: {},
                 // edit-编辑 add-添加
-                mode: '' ,
-                selectedIds: [] ,
+                mode: '',
+                selectedIds: [],
                 // 抽屉
-                drawer: false ,
-                showImagePreview: false ,
-            } ,
+                drawer: false,
+                showImagePreview: false,
+            },
             table: {
                 field: [
                     {
                         type: 'selection',
-                        width: TopContext.table.checkbox ,
-                        align: TopContext.table.alignCenter ,
-                        fixed: 'left' ,
+                        width: TopContext.table.checkbox,
+                        align: TopContext.table.alignCenter,
+                        fixed: 'left',
                     },
                     {
-                        title: 'id' ,
-                        key: 'id' ,
-                        minWidth: TopContext.table.id ,
-                        align: TopContext.table.alignCenter ,
-                        fixed: 'left' ,
-                        sortable: 'custom' ,
-                    } ,
+                        title: 'id',
+                        key: 'id',
+                        minWidth: TopContext.table.id,
+                        align: TopContext.table.alignCenter,
+                        fixed: 'left',
+                        sortable: 'custom',
+                    },
                     {
-                        title: '名称' ,
-                        key: 'name' ,
-                        width: TopContext.table.name ,
-                        align: TopContext.table.alignCenter ,
-                        fixed: 'left' ,
-                        resizable: true ,
-                        ellipsis: true ,
+                        title: '名称',
+                        key: 'name',
+                        width: TopContext.table.name,
+                        align: TopContext.table.alignCenter,
+                        fixed: 'left',
+                        resizable: true,
+                        ellipsis: true,
                         // tooltip: true ,
-                    } ,
+                    },
                     {
-                        title: '封面' ,
-                        slot: 'thumb' ,
-                        minWidth: TopContext.table.image ,
-                        align: TopContext.table.alignCenter ,
-                        fixed: 'left' ,
-                    } ,
+                        title: '封面',
+                        slot: 'thumb',
+                        minWidth: TopContext.table.image,
+                        align: TopContext.table.alignCenter,
+                        fixed: 'left',
+                    },
                     {
-                        title: '用户【id】' ,
-                        slot: 'user_id' ,
-                        minWidth: TopContext.table.name ,
+                        title: '用户【id】',
+                        slot: 'user_id',
+                        minWidth: TopContext.table.name,
                         align: TopContext.table.alignCenter
-                    } ,
+                    },
                     {
-                        title: '模块【id】' ,
-                        slot: 'module_id' ,
-                        minWidth: TopContext.table.name ,
+                        title: '模块【id】',
+                        slot: 'module_id',
+                        minWidth: TopContext.table.name,
                         align: TopContext.table.alignCenter
-                    } ,
+                    },
                     {
-                        title: '分类【id】' ,
-                        slot: 'category_id' ,
-                        minWidth: TopContext.table.name ,
+                        title: '分类【id】',
+                        slot: 'category_id',
+                        minWidth: TopContext.table.name,
                         align: TopContext.table.alignCenter
-                    } ,
+                    },
                     {
-                        title: '类型' ,
-                        key: '__type__' ,
-                        minWidth: TopContext.table.type ,
+                        title: '类型',
+                        key: '__type__',
+                        minWidth: TopContext.table.type,
                         align: TopContext.table.alignCenter
-                    } ,
+                    },
                     {
-                        title: '关联主体【id】' ,
-                        slot: 'image_subject_id' ,
-                        minWidth: TopContext.table.name ,
+                        title: '关联主体【id】',
+                        slot: 'image_subject_id',
+                        minWidth: TopContext.table.name,
                         align: TopContext.table.alignCenter
-                    } ,
+                    },
                     // {
                     //     title: '图片列表' ,
                     //     slot: 'images' ,
@@ -102,106 +113,118 @@ export default {
                     //     fixed: 'right' ,
                     // } ,
                     {
-                        title: '标签' ,
-                        slot: 'tags' ,
-                        minWidth: TopContext.table.name ,
+                        title: '标签',
+                        slot: 'tags',
+                        minWidth: TopContext.table.name,
                         align: TopContext.table.alignCenter
-                    } ,
+                    },
                     {
-                        title: '处理状态' ,
-                        key: '__process_status__' ,
+                        title: '处理状态',
+                        key: '__process_status__',
                         // slot: 'status' ,
-                        minWidth: TopContext.table.status ,
-                        align: TopContext.table.alignCenter ,
-                        fixed: 'right' ,
-                    } ,
+                        minWidth: TopContext.table.status,
+                        align: TopContext.table.alignCenter,
+                        fixed: 'right',
+                    },
                     {
-                        title: '审核状态' ,
-                        key: '__status__' ,
-                        slot: 'status' ,
-                        minWidth: TopContext.table.status ,
-                        align: TopContext.table.alignCenter ,
-                        fixed: 'right' ,
-                    } ,
+                        title: '审核状态',
+                        key: '__status__',
+                        slot: 'status',
+                        minWidth: TopContext.table.status,
+                        align: TopContext.table.alignCenter,
+                        fixed: 'right',
+                    },
                     {
-                        title: '失败原因' ,
-                        key: 'fail_reason' ,
-                        minWidth: TopContext.table.desc ,
+                        title: '失败原因',
+                        key: 'fail_reason',
+                        minWidth: TopContext.table.desc,
                         align: TopContext.table.alignCenter
-                    } ,
+                    },
 
                     {
-                        title: '浏览次数' ,
-                        key: 'view_count' ,
-                        minWidth: TopContext.table.number ,
+                        title: '浏览次数',
+                        key: 'view_count',
+                        minWidth: TopContext.table.number,
                         align: TopContext.table.alignCenter
-                    } ,
+                    },
                     {
-                        title: '获赞次数' ,
-                        key: 'praise_count' ,
-                        minWidth: TopContext.table.number ,
+                        title: '获赞次数',
+                        key: 'praise_count',
+                        minWidth: TopContext.table.number,
                         align: TopContext.table.alignCenter
-                    } ,
+                    },
 
                     {
-                        title: '描述' ,
-                        key: 'description' ,
-                        minWidth: TopContext.table.desc ,
-                        align: TopContext.table.alignCenter ,
-                        resizable: true ,
-                        ellipsis: true ,
-                        tooltip: true ,
-                    } ,
+                        title: '描述',
+                        key: 'description',
+                        minWidth: TopContext.table.desc,
+                        align: TopContext.table.alignCenter,
+                        resizable: true,
+                        ellipsis: true,
+                        tooltip: true,
+                    },
 
                     {
-                        title: '权重' ,
-                        key: 'weight' ,
-                        minWidth: TopContext.table.weight ,
-                        align: TopContext.table.alignCenter ,
-                    } ,
+                        title: '权重',
+                        key: 'weight',
+                        minWidth: TopContext.table.weight,
+                        align: TopContext.table.alignCenter,
+                    },
                     {
-                        title: '创建时间' ,
-                        key: 'created_at' ,
-                        minWidth: TopContext.table.time ,
-                        align: TopContext.table.alignCenter ,
-                    } ,
+                        title: '创建时间',
+                        key: 'created_at',
+                        minWidth: TopContext.table.time,
+                        align: TopContext.table.alignCenter,
+                    },
                     {
-                        title: '操作' ,
-                        slot: 'action' ,
-                        minWidth: TopContext.table.action - 40 ,
-                        align: TopContext.table.alignCenter ,
-                        fixed: 'right' ,
-                    } ,
-                ] ,
-                total: 0 ,
-                page: 1 ,
-                data: [] ,
-            } ,
+                        title: '操作',
+                        slot: 'action',
+                        minWidth: TopContext.table.action - 40,
+                        align: TopContext.table.alignCenter,
+                        fixed: 'right',
+                    },
+                ],
+                total: 0,
+                page: 1,
+                data: [],
+            },
 
-            search: G.copy(search) ,
+            search: G.copy(search),
 
-            modules: [] ,
+            modules: [],
 
-            categories: [] ,
+            categories: [],
 
-            form: {}  ,
+            form: {},
 
-            current: G.copy(current) ,
+            current: G.copy(current),
 
-            selection: [] ,
+            selection: [],
+
+            imageSubject: G.copy(imageSubject),
+
+            myUser: G.copy(myUser),
         };
     } ,
 
     mounted () {
         this.initDom();
         this.initIns();
-        this.getData();
-        this.getModules();
+        this.getModules()
+            .then(() => {
+                this.search.module_id = this.moduleId;
+                this.getCategories();
+                this.getData();
+            });
     } ,
 
     computed: {
         showBatchBtn () {
             return this.selection.length > 0;
+        } ,
+
+        moduleId () {
+            return this.modules.length > 0 ? this.modules[0].id : '';
         } ,
     } ,
 
@@ -225,17 +248,17 @@ export default {
             });
         } ,
 
-        getCategories (moduleId) {
+        getCategories () {
             this.categories = [];
             this.search.category_id = '';
-            if (!G.isNumeric(moduleId)) {
+            if (!G.isNumeric(this.search.module_id)) {
                 return ;
             }
             this.pending('getCategories' , true);
             Api.category
                 .search({
-                    module_id: moduleId ,
-                    type: 'image_project' ,
+                    module_id: this.search.module_id ,
+                    type: 'image,image_project' ,
                 })
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
@@ -250,18 +273,22 @@ export default {
         } ,
 
         getModules () {
-            this.pending('getModules' , true);
-            Api.module
-                .all()
-                .then((res) => {
-                    if (res.code !== TopContext.code.Success) {
-                        this.errorHandle(res.message);
-                        return ;
-                    }
-                    this.modules = res.data;
-                }).finally(() => {
-                    this.pending('getModules' , false);
-                });
+            return new Promise((resolve , reject) => {
+                this.pending('getModules' , true);
+                Api.module.all()
+                    .then((res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            this.errorHandle(res.message);
+                            reject();
+                            return ;
+                        }
+                        this.modules = res.data;
+                        resolve();
+                    })
+                    .finally(() => {
+                        this.pending('getModules' , false);
+                    });
+            });
         } ,
 
         getData () {
@@ -356,6 +383,11 @@ export default {
 
         resetEvent () {
             this.search = G.copy(search);
+            this.search.module_id = this.moduleId;
+
+            this.imageSubject = G.copy(imageSubject);
+            this.myUser = G.copy(myUser);
+
             this.getData();
         } ,
 
@@ -449,6 +481,33 @@ export default {
             let url = settings.web_url + settings.show_for_image_project_at_web;
             url = url.replace('{id}' , row.id);
             this.openWindow(url , '_blank');
+        } ,
+
+        showImageSubjectSelector() {
+            if (this.search.module_id < 1) {
+                this.errorHandle('请选择模块');
+                return ;
+            }
+            this.$refs['image-subject-selector'].show();
+        } ,
+
+        imageSubjectChangedEvent (row) {
+            this.imageSubject = G.copy(row);
+            this.search.image_subject_id = row.id;
+            this.searchEvent();
+        } ,
+
+        showUserSelector() {
+            this.$refs['user-selector'].show();
+        } ,
+
+        userChangedEvent (row) {
+            this.myUser = {
+                id: row.id ,
+                name: this.getUsername(row.username , row.nickname) ,
+            };
+            this.search.user_id = row.id;
+            this.searchEvent();
         } ,
     } ,
 }

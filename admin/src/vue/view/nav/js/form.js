@@ -146,6 +146,11 @@ export default {
                 this.findById(this.id)
                     .then((res) => {
                         this.form = res;
+
+                        this.category = res.category ? {
+                            id: res.category.id ,
+                            name: res.category.name ,
+                        } : G.copy(category);
                         this.getNavs();
                     });
             } else {

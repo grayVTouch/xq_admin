@@ -37,7 +37,7 @@ class ImageSubjectModel extends Model
             ->get();
     }
 
-    public static function getWithPagerInImageProjectByModuleIdAndValueAndLimit(int $module_id , string $value = '' , int $size = 20)
+    public static function getWithPagerInImageProjectByModuleIdAndValueAndSize(int $module_id , string $value = '' , int $size = 20)
     {
         return self::from('xq_image_subject as is')
             ->where('name' , 'like' , "%{$value}%")

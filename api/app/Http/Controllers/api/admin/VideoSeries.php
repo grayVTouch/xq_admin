@@ -33,6 +33,7 @@ class VideoSeries extends Base
     {
         $param = $this->request->post();
         $param['name']          = $param['name'] ?? '';
+        $param['thumb']        = $param['thumb'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
         $param['module_id']     = $param['module_id'] ?? '';
         $param['user_id']       = $param['user_id'] ?? '';
@@ -49,6 +50,7 @@ class VideoSeries extends Base
     {
         $param = $this->request->post();
         $param['name']          = $param['name'] ?? '';
+        $param['thumb']        = $param['thumb'] ?? '';
         $param['weight']        = $param['weight'] ?? '';
         $param['module_id']     = $param['module_id'] ?? '';
         $param['user_id']       = $param['user_id'] ?? '';

@@ -72,6 +72,11 @@ class VideoResourceHandleJob extends FileBaseJob implements ShouldQueue
                 'file_process_status' => 1 ,
             ]);
             $video = VideoHandler::handle($video);
+            // 附加：模块
+            VideoHandler::module($video);
+            if (empty($video->module)) {
+                throw new Exception("视频所属模块不存在【{$video->module_id}】");
+            }
             // 附加：视频专题
             VideoHandler::videoProject($video);
             // 附加：视频
@@ -91,7 +96,7 @@ class VideoResourceHandleJob extends FileBaseJob implements ShouldQueue
                 $dirname    = $video->name;
             }
             // 保存目录
-            $save_dir = FileUtil::generateRealPathByRelativePathWithoutPrefix($dir_prefix . '/' . $dirname);
+            $save_dir = FileUtil::generateRealPathByWithoutPrefixRelativePath($video->module->name . '/' . $dir_prefix . '/' . $dirname);
             if (!File::exists($save_dir)) {
                 File::mkdir($save_dir , 0777 , true);
             }

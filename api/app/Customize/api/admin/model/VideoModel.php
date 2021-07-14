@@ -105,4 +105,21 @@ class VideoModel extends Model
             ['video_project_id' , '=' , $video_project_id] ,
         ])->get();
     }
+
+    public static function findByModuleIdAndName(int $module_id , string $name): ?VideoModel
+    {
+        return self::where([
+            ['module_id' , '=' , $module_id] ,
+            ['name' , '=' , $name] ,
+        ])->first();
+    }
+
+    public static function findByModuleIdAndExcludeIdAndName(int $module_id , int $exclude_id , string $name): ?VideoModel
+    {
+        return self::where([
+            ['id' , '!=' , $exclude_id] ,
+            ['module_id' , '=' , $module_id] ,
+            ['name' , '=' , $name] ,
+        ])->first();
+    }
 }

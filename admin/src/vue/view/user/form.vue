@@ -16,7 +16,7 @@
                         <td>
                             <input type="text" v-model="form.username" @input="myValue.error.username=''" class="form-text">
                             <span class="need">*</span>
-                            <div class="msg"></div>
+                            <div class="msg">长度最少6位</div>
                             <div class="e-msg">{{ myValue.error.username }}</div>
                         </td>
                     </tr>
@@ -26,8 +26,18 @@
                         <td>
                             <input type="text" v-model="form.password" @input="myValue.error.password=''" class="form-text">
                             <span class="need"></span>
-                            <div class="msg"><template v-if="mode === 'edit'">为空，则使用原密码</template></div>
+                            <div class="msg">长度最少6位；<template v-if="mode === 'edit'">为空，则使用原密码</template></div>
                             <div class="e-msg">{{ myValue.error.password }}</div>
+                        </td>
+                    </tr>
+
+                    <tr :class="{error: myValue.error.nickname}">
+                        <td>昵称</td>
+                        <td>
+                            <input type="text" v-model="form.nickname" @input="myValue.error.username=''" class="form-text">
+                            <span class="need">*</span>
+                            <div class="msg"></div>
+                            <div class="e-msg">{{ myValue.error.nickname }}</div>
                         </td>
                     </tr>
 

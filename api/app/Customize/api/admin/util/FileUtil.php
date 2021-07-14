@@ -32,10 +32,44 @@ class FileUtil
         return self::$disk = $disk;
     }
 
+    /**
+     * 文件路径前缀
+     *
+     * @return  string
+     * @throws Exception
+     */
+    public static function prefix(): string
+    {
+        $disk = self::disk();
+        return $disk->prefix;
+    }
+
+    public static function path(): string
+    {
+        $disk = self::disk();
+        return $disk->path;
+    }
+
     // 生成随机的文件名
     public static function filename(): string
     {
         return date('YmdHis') . random(6 , 'letter' , true);
+    }
+
+    /**
+     * 从目录前缀生成文件保存目录的绝对路径
+     *
+     * @param string $suffix
+     * @return string
+     * @throws Exception
+     */
+    public static function dir(string $type , string $suffix = ''): string
+    {
+        $dir_prefix = my_config('app.dir')[$type];
+        $disk = $disk = self::disk();
+        $suffix = empty($suffix) ? '' : trim($suffix , '/');
+        $dir = $disk->path . '/' . $dir_prefix . '/' . $suffix;
+        return format_path($dir);
     }
 
     /**
@@ -58,36 +92,7 @@ class FileUtil
         if (!File::moveUploadedFile($source , $target)) {
             return false;
         }
-        return self::generateRelativePathWithPrefix($target);
-    }
-
-    // 普通文件移动
-    public static function move(string $path , string $dir = ''): ?string
-    {
-        $save_dir   = self::dir('system' , $dir);
-        $extension  = get_extension($path);
-        $filename   = self::filename();
-        $file       = $filename . '.' . $extension;
-        $target     = $save_dir . '/' . $file;
-        File::mkdir($save_dir  , 0755 , true);
-        if (!File::move($path , $target)) {
-            return false;
-        }
-        return self::generateRelativePathWithPrefix($target);
-    }
-
-    // 普通文件保存
-    public static function save(string $content , string $file , string $dir = ''): string
-    {
-        $save_dir   = self::dir('system' , $dir);
-        $target     = $save_dir . '/' . $file;
-        File::mkdir($save_dir , 0755 , true);
-        File::write($target , $content);
-        $path = self::path();
-        $relative_path = str_replace($path , '' , $target);
-        $relative_path = ltrim($relative_path , '/');
-        $prefix     = self::prefix();
-        return format_path($prefix . '/' . $relative_path);
+        return self::generateWithPrefixRelativePath($target);
     }
 
     /**
@@ -97,7 +102,7 @@ class FileUtil
      * @return string
      * @throws Exception
      */
-    public static function generateRealPath(string $relative_path = ''): string
+    public static function generateRealPathByWithPrefixRelativePath(string $relative_path = ''): string
     {
         if (empty($relative_path)) {
             return '';
@@ -107,26 +112,14 @@ class FileUtil
             throw new Exception('提供的路径不符合规范');
         }
         $prefix = $parse[0];
-        $disk = DiskModel::findByPrefix($prefix);
+        $disk = $prefix === self::prefix() ? self::disk() : DiskModel::findByPrefix($prefix);
         if (empty($disk)) {
             throw new Exception('磁盘记录未找到');
         }
-        $path = $disk->path . '/' . ltrim(str_replace($prefix , '' , $relative_path) , '/\\');
+        $path = str_replace($prefix , '' , $relative_path);
+        $path = ltrim($path , '/\\');
+        $path = $disk->path . '/' . $path;
         return format_path($path);
-    }
-
-
-    // 根据用户提供的路径生成符合规则的相对路径
-    public static function generateRelativePathWithPrefix(string $path = ''): string
-    {
-        if (empty($path)) {
-            return '';
-        }
-        $prefix = self::prefix();
-        $dir    = self::path();
-        $relative_path = str_replace($dir , '' , $path);
-        $relative_path = ltrim($relative_path , '/');
-        return format_path($prefix . '/' . $relative_path);
     }
 
     /**
@@ -136,64 +129,23 @@ class FileUtil
      * @return string
      * @throws Exception
      */
-    public static function generateRealPathByRelativePathWithoutPrefix(string $path = ''): string
+    public static function generateRealPathByWithoutPrefixRelativePath(string $path = ''): string
     {
-        $path = self::generateRelativePathWithPrefix($path);
-        return self::generateRealPath($path);
+        $path = self::generateWithPrefixRelativePath($path);
+        return self::generateRealPathByWithPrefixRelativePath($path);
     }
 
-    // 删除文件（通过相对路径）
-    public static function deleteWithoutPrefix(string $relative_path = ''): void
+    // 根据用户提供的路径生成符合规则的相对路径
+    public static function generateWithPrefixRelativePath(string $path = ''): string
     {
-        $real_path = self::generateRealPathByRelativePathWithoutPrefix($relative_path);
-        if (!File::exists($real_path)) {
-            return ;
+        if (empty($path)) {
+            return '';
         }
-        File::delete($real_path);
-    }
-
-    // 删除文件（通过相对路径）
-    public static function deleteWithPrefix(string $relative_path = ''): void
-    {
-        $real_path = self::generateRealPath($relative_path);
-        if (!File::exists($real_path)) {
-            return ;
-        }
-        File::delete($real_path);
-    }
-
-    /**
-     * 从目录前缀生成文件保存目录的绝对路径
-     *
-     * @param string $suffix
-     * @return string
-     * @throws Exception
-     */
-    public static function dir(string $type , string $suffix = ''): string
-    {
-        $dir_prefix = my_config('app.dir')[$type];
-        $disk = $disk = self::disk();
-        $suffix = empty($suffix) ? '' : trim($suffix , '/');
-        $dir = $disk->path . '/' . $dir_prefix . '/' . $suffix;
-        return format_path($dir);
-    }
-
-    /**
-     * 文件路径前缀
-     *
-     * @return  string
-     * @throws Exception
-     */
-    public static function prefix(): string
-    {
-        $disk = self::disk();
-        return $disk->prefix;
-    }
-
-    public static function path(): string
-    {
-        $disk = self::disk();
-        return $disk->path;
+        $prefix = self::prefix();
+        $dir    = self::path();
+        $relative_path = str_replace($dir , '' , $path);
+        $relative_path = ltrim($relative_path , '/');
+        return format_path($prefix . '/' . $relative_path);
     }
 
     /**
@@ -219,35 +171,10 @@ class FileUtil
     public static function generateUrlByRealPath(string $real_path = ''): string
     {
         $real_path                      = format_path($real_path);
-        $relative_path_with_prefix      = self::generateRelativePathWithPrefix($real_path);
+        $relative_path_with_prefix      = self::generateWithPrefixRelativePath($real_path);
         $res_url                        = my_config('app.res_url');
         $res_url                        = rtrim($res_url , '/');
         return $res_url . '/' . $relative_path_with_prefix;
     }
 
-    /**
-     * 从相对路径判断其实际路径对应的文件是否存在
-     *
-     * @param string $relative_path
-     * @return bool
-     * @throws Exception
-     */
-    public static function existsByRelativePathWithPrefix(string $relative_path = ''): bool
-    {
-        $real_path = self::generateRealPath($relative_path);
-        return File::exists($real_path);
-    }
-
-    /**
-     * 检查给定的目录是否存在
-     *
-     * @param string $relative_path
-     * @return bool
-     * @throws Exception
-     */
-    public static function existsByRelativePathWithoutPrefix(string $relative_path = ''): bool
-    {
-        $real_path = self::generateRealPathByRelativePathWithoutPrefix($relative_path);
-        return file_exists($real_path);
-    }
 }

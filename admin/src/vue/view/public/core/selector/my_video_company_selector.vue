@@ -33,7 +33,14 @@
                     </i-table>
                 </div>
                 <div class="pager">
-                    <my-page :total="table.total" :size="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
+                    <my-page
+                            :total="table.total"
+                            :size="table.size"
+                            :sizes="table.sizes"
+                            :page="table.page"
+                            @on-page-change="pageEvent"
+                            @on-size-change="sizeEvent"
+                    ></my-page>
                 </div>
             </div>
         </template>
@@ -64,6 +71,7 @@
             } ,
         ] ,
         size: TopContext.size ,
+        sizes: TopContext.sizes ,
         search: {
             value: '' ,
         } ,
@@ -93,7 +101,7 @@
                 this.pending('getData' , true);
                 Api.videoCompany
                     .search({
-                        limit: this.table.limit ,
+                        size: this.table.size ,
                         page: this.table.page ,
                         ...this.table.search ,
                         module_id: this.moduleId ,
@@ -106,6 +114,7 @@
                         const data = res.data;
                         this.table.total = data.total;
                         this.table.page = data.current_page;
+                        this.table.size = data.per_page;
                         this.table.data = data.data;
                     })
                     .finally(() => {
@@ -113,8 +122,15 @@
                     });
             } ,
 
-            pageEvent (page) {
+            pageEvent (page , size) {
                 this.table.page = page;
+                this.table.size = size;
+                this.getData();
+            } ,
+
+            sizeEvent (size , page) {
+                this.table.page = page;
+                this.table.size = size;
                 this.getData();
             } ,
 

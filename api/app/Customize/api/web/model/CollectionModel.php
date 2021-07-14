@@ -95,7 +95,7 @@ class CollectionModel extends Model
         ])->count();
     }
 
-    public static function getByModuleIdAndUserIdAndCollectionGroupIdAndLimit(int $module_id , string $user_id , int $collection_group_id , int $size = 20): Collection
+    public static function getByModuleIdAndUserIdAndCollectionGroupIdAndSize(int $module_id , string $user_id , int $collection_group_id , int $size = 20): Collection
     {
         return self::where([
                 ['module_id' , '=' , $module_id] ,
@@ -107,7 +107,7 @@ class CollectionModel extends Model
             ->get();
     }
 
-    public static function getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndLimit(int $module_id , int $user_id , int $collection_group_id , string $relation_type = '' , int $size = 20): Paginator
+    public static function getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndSize(int $module_id , int $user_id , int $collection_group_id , string $relation_type = '' , int $size = 20): Paginator
     {
         $where = [
             ['module_id' , '=' , $module_id] ,
@@ -122,7 +122,7 @@ class CollectionModel extends Model
             ->paginate($size);
     }
 
-    public static function getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndValueAndRelationTypeAndLimit(int $module_id , int $user_id , int $collection_group_id , string $value = '' , string $relation_type = '' , int $size = 20): Paginator
+    public static function getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndValueAndRelationTypeAndSize(int $module_id , int $user_id , int $collection_group_id , string $value = '' , string $relation_type = '' , int $size = 20): Paginator
     {
 //        print_r(func_get_args());
         $where = [

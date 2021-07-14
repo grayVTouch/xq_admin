@@ -50,7 +50,7 @@ class ResourceHandle extends Command
     {
         $start_time = date('Y-m-d H:i:s');
         $timer_task_log = "【start: {$start_time}】 资源清理任务开始执行...";
-        $res = ResourceModel::getWaitDeleteByLimitIdAndLimit(0 , $this->limit);
+        $res = ResourceModel::getWaitDeleteByLimitIdAndSize(0 , $this->limit);
         $time = time();
         $loop_count = 0;
         echo $timer_task_log . PHP_EOL;
@@ -89,7 +89,7 @@ class ResourceHandle extends Command
                 $deleted_count++;
             }
             usleep($this->interval);
-            $res = ResourceModel::getWaitDeleteByLimitIdAndLimit($last->id , $this->limit);
+            $res = ResourceModel::getWaitDeleteByLimitIdAndSize($last->id , $this->limit);
             echo "\n";
         }
         $end_time = date('Y-m-d H:i:s');

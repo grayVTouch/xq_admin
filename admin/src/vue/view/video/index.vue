@@ -4,20 +4,8 @@
         <template slot="search">
             <my-search-form @submit="searchEvent">
 
-                <my-search-form-item name="id">
-                    <input type="text" class="form-text" v-model="search.id" />
-                </my-search-form-item>
-
-                <my-search-form-item name="名称">
-                    <input type="text" class="form-text" v-model="search.name" />
-                </my-search-form-item>
-
-                <my-search-form-item name="用户ID">
-                    <input type="text" class="form-text" v-model="search.user_id" />
-                </my-search-form-item>
-
                 <my-search-form-item name="模块">
-                    <my-select :clear="true" :data="modules" v-model="search.module_id" empty="" @change="getCategories"></my-select>
+                    <my-select :data="modules" v-model="search.module_id" empty="" @change="getCategories"></my-select>
                     <my-loading v-if="myValue.pending.getModules"></my-loading>
                 </my-search-form-item>
 
@@ -33,8 +21,34 @@
                     </i-radio-group>
                 </my-search-form-item>
 
-                <my-search-form-item name="视频专题ID">
-                    <input type="number" class="form-text run-cursor-pointer" v-model="search.video_project_id" readonly @click="openVideoSelector" />
+                <my-search-form-item name="ID">
+                    <input type="text" class="form-text" v-model="search.id" />
+                </my-search-form-item>
+
+                <my-search-form-item name="名称">
+                    <input type="text" class="form-text" v-model="search.name" />
+                </my-search-form-item>
+
+                <my-search-form-item name="用户">
+                    <i-input
+                            :value="myUser.id > 0 ? `${myUser.name}【${myUser.id}】` : ''"
+                            class="w-200 run-cursor"
+                            suffix="ios-search"
+                            placeholder="请选择"
+                            :readonly="true"
+                            @click.native="showUserSelector"
+                    ></i-input>
+                </my-search-form-item>
+
+                <my-search-form-item name="视频专题">
+                    <i-input
+                            :value="videoProject.id > 0 ? `${videoProject.name}【${videoProject.id}】` : ''"
+                            class="w-200 run-cursor"
+                            suffix="ios-search"
+                            placeholder="请选择"
+                            :readonly="true"
+                            @click.native="showVideoProjectSelector"
+                    ></i-input>
                 </my-search-form-item>
 
                 <my-search-form-item name="状态">
@@ -138,6 +152,11 @@
                 :module-id="search.module_id"
                 @on-change="videoProjectChangedEvent"
         ></my-video-project-selector>
+
+        <my-user-selector
+                ref="user-selector"
+                @on-change="userChangedEvent"
+        ></my-user-selector>
     </my-base>
 </template>
 

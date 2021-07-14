@@ -10,7 +10,7 @@ class ResourceModel extends Model
     //
     protected $table = 'xq_resource';
 
-    public static function getWaitDeleteByLimitIdAndLimit(int $limit_id = 0 , int $size = 20): Collection
+    public static function getWaitDeleteByLimitIdAndSize(int $limit_id = 0 , int $size = 20): Collection
     {
         return self::where(function($query){
                 $query->where('is_used' , 0)

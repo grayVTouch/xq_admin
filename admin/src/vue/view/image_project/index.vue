@@ -4,27 +4,28 @@
         <template slot="search">
             <my-search-form @submit="searchEvent">
 
-                <my-search-form-item name="id">
-                    <input type="text" class="form-text" v-model="search.id" />
-                </my-search-form-item>
-
-                <my-search-form-item name="名称">
-                    <input type="text" class="form-text" v-model="search.name" />
-                </my-search-form-item>
-
-                <my-search-form-item name="用户id">
-                    <input type="text" class="form-text" v-model="search.user_id" />
-                </my-search-form-item>
-
                 <my-search-form-item name="模块">
                     <my-select :data="modules" v-model="search.module_id" empty="" @change="getCategories"></my-select>
                     <my-loading v-if="myValue.pending.getModules"></my-loading>
                 </my-search-form-item>
 
                 <my-search-form-item name="分类">
-                    <my-deep-select :data="categories" v-model="search.category_id" :has="false" empty=""></my-deep-select>
+                    <my-deep-select :data="categories" v-model="search.category_id" :has="false" empty="">
+                        <template v-slot:extra="{row , index}">【{{ row.__type__ }}】</template>
+                    </my-deep-select>
                     <my-loading v-if="myValue.pending.getCategories"></my-loading>
                     <span class="msg">请选择模块后操作</span>
+                </my-search-form-item>
+
+                <my-search-form-item name="图片主体">
+                    <i-input
+                            :value="imageSubject.id > 0 ? `${imageSubject.name}【${imageSubject.id}】` : ''"
+                            class="w-200 run-cursor"
+                            suffix="ios-search"
+                            placeholder="请选择"
+                            :readonly="true"
+                            @click.native="showImageSubjectSelector"
+                    ></i-input>
                 </my-search-form-item>
 
                 <my-search-form-item name="类型">
@@ -33,8 +34,23 @@
                     </i-radio-group>
                 </my-search-form-item>
 
-                <my-search-form-item name="关联主体id">
-                    <input type="text" class="form-text" v-model="search.image_subject_id" />
+                <my-search-form-item name="ID">
+                    <input type="text" class="form-text" v-model="search.id" />
+                </my-search-form-item>
+
+                <my-search-form-item name="名称">
+                    <input type="text" class="form-text" v-model="search.name" />
+                </my-search-form-item>
+
+                <my-search-form-item name="用户">
+                    <i-input
+                            :value="myUser.id > 0 ? `${myUser.name}【${myUser.id}】` : ''"
+                            class="w-200 run-cursor"
+                            suffix="ios-search"
+                            placeholder="请选择"
+                            :readonly="true"
+                            @click.native="showUserSelector"
+                    ></i-input>
                 </my-search-form-item>
 
                 <my-search-form-item name="状态">
@@ -144,6 +160,17 @@
             :visible.sync="myValue.showImagePreview"
             :images="current.images"
         ></my-image-preview>
+
+        <my-image-subject-selector
+                ref="image-subject-selector"
+                :module-id="search.module_id"
+                @on-change="imageSubjectChangedEvent"
+        ></my-image-subject-selector>
+
+        <my-user-selector
+                ref="user-selector"
+                @on-change="userChangedEvent"
+        ></my-user-selector>
 
     </my-base>
 

@@ -3,7 +3,12 @@
     <my-base>
         <template slot="search">
             <my-search-form @submit="searchEvent">
-                <my-search-form-item name="id">
+                <my-search-form-item name="模块">
+                    <my-select :clear="true" :data="modules" empty="" v-model="search.module_id"></my-select>
+                    <my-loading v-if="myValue.pending.getModules"></my-loading>
+                </my-search-form-item>
+
+                <my-search-form-item name="ID">
                     <input type="text" class="form-text" v-model="search.id" />
                 </my-search-form-item>
 
@@ -11,17 +16,26 @@
                     <input type="text" class="form-text" v-model="search.name" />
                 </my-search-form-item>
 
-                <my-search-form-item name="模块">
-                    <my-select :clear="true" :data="modules" empty="" v-model="search.module_id"></my-select>
-                    <my-loading v-if="myValue.pending.getModules"></my-loading>
+                <my-search-form-item name="视频系列">
+                    <i-input
+                            :value="myVideoSeries.id > 0 ? `${myVideoSeries.name}【${myVideoSeries.id}】` : ''"
+                            class="w-200 run-cursor"
+                            suffix="ios-search"
+                            placeholder="请选择"
+                            :readonly="true"
+                            @click.native="openVideoSeriesSelector"
+                    ></i-input>
                 </my-search-form-item>
 
-                <my-search-form-item name="视频系列ID">
-                    <input type="text" class="form-text run-cursor-pointer" v-model="search.video_series_id" readonly @click="openVideoSeriesSelector" />
-                </my-search-form-item>
-
-                <my-search-form-item name="视频制作公司ID">
-                    <input type="text" class="form-text run-cursor-pointer" v-model="search.video_company_id" readonly @click="openVideoCompanySelector" />
+                <my-search-form-item name="视频制作公司">
+                    <i-input
+                            :value="myVideoCompany.id > 0 ? `${myVideoCompany.name}【${myVideoCompany.id}】` : ''"
+                            class="w-200 run-cursor"
+                            suffix="ios-search"
+                            placeholder="请选择"
+                            :readonly="true"
+                            @click.native="openVideoCompanySelector"
+                    ></i-input>
                 </my-search-form-item>
 
                 <my-search-form-item :show-separator="false">

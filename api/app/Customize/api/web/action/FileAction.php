@@ -28,7 +28,7 @@ class FileAction extends Action
         try {
             $dir        = date('Ymd');
             $path       = FileUtil::upload($file , $dir);
-            $real_path  = FileUtil::generateRealPath($path);
+            $real_path  = FileUtil::generateRealPathByWithPrefixRelativePath($path);
             $url        = FileUtil::generateUrlByRelativePath($path);
             ResourceRepository::create($url , $real_path , 'local' , 1 , 0);
             return self::success('' , $url);
@@ -59,7 +59,7 @@ class FileAction extends Action
         try {
             $dir        = date('Ymd');
             $path       = FileUtil::upload($file , $dir);
-            $real_path  = FileUtil::generateRealPath($path);
+            $real_path  = FileUtil::generateRealPathByWithPrefixRelativePath($path);
             $url        = FileUtil::generateUrlByRelativePath($path);
             if (empty($param['m'])) {
                 if (!empty($param['w'])) {
@@ -77,7 +77,7 @@ class FileAction extends Action
             }
             if (in_array($mode , $mode_range)) {
                 $o_real_path        = $real_path;
-                $real_path          = FileUtil::generateRealPath($path);
+                $real_path          = FileUtil::generateRealPathByWithPrefixRelativePath($path);
                 $save_dir           = FileUtil::dir('system' , $dir);
                 if (!file_exists($save_dir)) {
                     // 目录不存在则创建
@@ -113,7 +113,7 @@ class FileAction extends Action
         try {
             $dir        = date('Ymd');
             $path       = FileUtil::upload($file , $dir);
-            $real_path  = FileUtil::generateRealPath($path);
+            $real_path  = FileUtil::generateRealPathByWithPrefixRelativePath($path);
             $url        = FileUtil::generateUrlByRelativePath($path);
             ResourceRepository::create($url , $real_path , 'local' , 1 , 0);
             return self::success('' , $url);
@@ -139,7 +139,7 @@ class FileAction extends Action
         try {
             $dir        = date('Ymd');
             $path       = FileUtil::upload($file , $dir);
-            $real_path  = FileUtil::generateRealPath($path);
+            $real_path  = FileUtil::generateRealPathByWithPrefixRelativePath($path);
             $url        = FileUtil::generateUrlByRelativePath($path);
             ResourceRepository::create($url , $real_path , 'local' , 1 , 0);
             return self::success('' , $url);
@@ -160,7 +160,7 @@ class FileAction extends Action
         try {
             $dir        = date('Ymd');
             $path       = FileUtil::upload($file , $dir);
-            $real_path  = FileUtil::generateRealPath($path);
+            $real_path  = FileUtil::generateRealPathByWithPrefixRelativePath($path);
             $url        = FileUtil::generateUrlByRelativePath($path);
             ResourceRepository::create($url , $real_path , 'local' , 1 , 0);
             return self::success('' , $url);

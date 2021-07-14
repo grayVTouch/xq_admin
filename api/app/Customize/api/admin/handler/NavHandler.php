@@ -4,6 +4,7 @@
 namespace App\Customize\api\admin\handler;
 
 
+use App\Customize\api\admin\model\CategoryModel;
 use App\Customize\api\admin\model\Model;
 use App\Customize\api\admin\model\ModuleModel;
 use App\Customize\api\admin\model\NavModel;
@@ -50,5 +51,11 @@ class NavHandler extends Handler
         $model->parent = $nav;
     }
 
+    public static function category($model): void
+    {
+        $category = CategoryModel::find($model->value);
+        $category = CategoryHandler::handle($category);
+        $model->category = $category;
+    }
 
 }

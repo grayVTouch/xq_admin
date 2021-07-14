@@ -47,6 +47,7 @@ class User extends Base
     {
         $param = $this->request->post();
         $param['username']      = $param['username'] ?? '';
+        $param['nickname']      = $param['nickname'] ?? '';
         $param['password']  = $param['password'] ?? '';
         $param['sex']       = $param['sex'] ?? '';
         $param['birthday']  = $param['birthday'] ?? '';
@@ -66,6 +67,7 @@ class User extends Base
     {
         $param = $this->request->post();
         $param['username']      = $param['username'] ?? '';
+        $param['nickname']      = $param['nickname'] ?? '';
         $param['password']  = $param['password'] ?? '';
         $param['sex']       = $param['sex'] ?? '';
         $param['birthday']  = $param['birthday'] ?? '';

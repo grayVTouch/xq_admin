@@ -98,12 +98,12 @@ class ImageProjectAction extends Action
         if ($param['type'] === 'pro' && $param['name'] === '') {
             return self::error('名称尚未提供');
         }
-        if ($param['name'] !== '' && ImageProjectModel::findByNameAndExcludeId($param['name'] , $image_project->id)) {
-            return self::error('名称已经被使用');
-        }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
             return self::error('模块不存在');
+        }
+        if ($param['name'] !== '' && ImageProjectModel::findByModuleIdAndNameAndExcludeId($module->id , $param['name'] , $image_project->id)) {
+            return self::error('名称已经被使用');
         }
         $category = CategoryModel::find($param['category_id']);
         if (empty($category)) {
@@ -225,12 +225,12 @@ class ImageProjectAction extends Action
         if ($param['type'] === 'pro' && $param['name'] === '') {
             return self::error('名称尚未提供');
         }
-        if ($param['name'] !== '' && ImageProjectModel::findByName($param['name'])) {
-            return self::error('名称已经被使用');
-        }
         $module = ModuleModel::find($param['module_id']);
         if (empty($module)) {
             return self::error('模块不存在');
+        }
+        if ($param['name'] !== '' && ImageProjectModel::findByModuleIdAndName($module->id , $param['name'])) {
+            return self::error('名称已经被使用');
         }
         $category = CategoryModel::find($param['category_id']);
         if (empty($category)) {

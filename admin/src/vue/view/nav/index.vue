@@ -45,17 +45,13 @@
                     @on-row-dblclick="rowDblclickEvent"
                     @on-sort-change="sortChangeEvent"
             >
-<!--                <template v-slot:name="{row,index}">-->
-<!--                    <template v-if="row.floor > 1">{{ '|' + '_'.repeat((row.floor - 1) * 10) + row.name + `【${row.module ? row.module.name : 'unknow'}】` }}</template>-->
-<!--                    <template v-else>{{ row.name + `【${row.module ? row.module.name : 'unknow'}】` }}</template>-->
-<!--                </template>-->
                 <template v-slot:name="{row,index}">
                     <template v-if="row.floor > 1">{{ '|' + '_'.repeat((row.floor - 1) * 10) + row.name }}</template>
                     <template v-else>{{ row.name }}</template>
                 </template>
                 <template v-slot:module_id="{row,index}">{{ row.module ? `${row.module.name}【${row.module.id}】` : `unknow【${row.module_id}】` }}</template>
                 <template v-slot:is_enabled="{row,index}"><my-switch v-model="row.is_enabled" :loading="myValue.pending['is_enabled__' + row.id]" :extra="{id: row.id , field: 'is_enabled'}" @on-change="updateBoolValEvent" /></template>
-
+                <template v-slot:value="{row,index}">{{ row.category ? `${row.category.name}【${row.category.id}】` : `unknow【${row.value}】` }}</template>
                 <template v-slot:action="{row , index}">
                     <my-table-button @click="addNextLevelEvent(row)"><my-icon icon="add" />添加下级</my-table-button>
 <!--                    <my-table-button type="error" :loading="myValue.pending['delete_' + row.id]" @click="destroyEvent(index , row)"><my-icon icon="shanchu" />删除</my-table-button>-->

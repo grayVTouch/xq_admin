@@ -1,6 +1,8 @@
 import myForm from '../form.vue';
 
-const search = {};
+const search = {
+    // type: 'image_project' ,
+};
 
 const current = {id: ''};
 
@@ -10,6 +12,11 @@ export default {
     computed: {
         showBatchBtn () {
             return this.selection.length > 0;
+        } ,
+
+
+        moduleId () {
+            return this.modules.length > 0 ? this.modules[0].id : '';
         } ,
     } ,
 
@@ -126,8 +133,12 @@ export default {
     mounted () {
         this.initDom();
         this.initIns();
-        this.getModules();
-        this.getData();
+
+        this.getModules()
+            .then(() => {
+                this.search.module_id = this.moduleId;
+                this.getData();
+            });
     } ,
 
 
@@ -135,49 +146,27 @@ export default {
     methods: {
 
         getModules () {
-            this.pending('getModules' , true);
-            Api.module
-                .all()
-                .then((res) => {
-                    if (res.code !== TopContext.code.Success) {
-                        this.errorHandle(res.message);
-                        return ;
-                    }
-                    this.modules = res.data;
-                })
-                .finally(() => {
-                    this.pending('getModules' , false);
-                });
-        } ,
-
-        getCategories (moduleId) {
-            this.pending('getCategories' , true);
-            Api.category.searchByModuleId(moduleId , (res) => {
-                this.pending('getCategories' , false);
-                if (res.code !== TopContext.code.Success) {
-                    this.errorHandle(res.message);
-                    return ;
-                }
-                if (this.myValue.mode === 'edit') {
-                    data = this.getCategoryExcludeSelfAndChildrenByIdAndData(this.form.id , data);
-                }
-                this.categories = data;
+            return new Promise((resolve , reject) => {
+                this.pending('getModules' , true);
+                Api.module.all()
+                    .then((res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            this.errorHandle(res.message);
+                            reject();
+                            return ;
+                        }
+                        this.modules = res.data;
+                        resolve();
+                    })
+                    .finally(() => {
+                        this.pending('getModules' , false);
+                    });
             });
-        } ,
-
-
-
-        moduleChangedEvent (moduleId) {
-            this.myValue.error.module_id = '';
-            this.form.p_id = 0;
-            this.getCategories(moduleId);
         } ,
 
         initDom () {
 
         } ,
-
-
 
         initIns () {
 
@@ -300,18 +289,8 @@ export default {
 
         resetEvent () {
             this.search = G.copy(search);
-            this.getData();
-        } ,
+            this.search.module_id = this.moduleId;
 
-        pageEvent (page , size) {
-            this.search.page = page;
-            this.search.size = size;
-            this.getData();
-        } ,
-
-        sizeEvent (size , page) {
-            this.search.page = page;
-            this.search.size = size;
             this.getData();
         } ,
 

@@ -20,6 +20,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use function api\admin\my_config;
 use function core\get_extension;
+use function core\random;
 
 class ImageProjectResourceHandleJob extends FileBaseJob implements ShouldQueue
 {
@@ -63,6 +64,11 @@ class ImageProjectResourceHandleJob extends FileBaseJob implements ShouldQueue
             if (empty($image_project)) {
                 throw new Exception('图片专题不存在【' . $this->imageProjectId . '】');
             }
+            ImageProjectHandler::module($image_project);
+            if (empty($image_project->module)) {
+                throw new Exception("图片专题所属模块不存在【{$image_project->module_id}】");
+            }
+            $origin_save_dir = $image_project->directory;
             $dir_prefix = '';
             if ($image_project->type === 'pro') {
                 $dir_prefix = my_config('app.dir')['image_project'];
@@ -70,23 +76,28 @@ class ImageProjectResourceHandleJob extends FileBaseJob implements ShouldQueue
                 $dir_prefix = my_config('app.dir')['image'] . '/' . date('Ymd' , strtotime($image_project->created_at));
             }
             // 保存目录
-            $save_dir = FileUtil::generateRealPathByRelativePathWithoutPrefix($dir_prefix . '/' . $image_project->name);
+            $save_dir = $image_project->module->name  . '/';
+            $save_dir .= $dir_prefix;
+            $save_dir .= $image_project->type === 'pro' ? '/' . $image_project->name : '';
+            $save_dir = FileUtil::generateRealPathByWithoutPrefixRelativePath($save_dir);
             if (!File::exists($save_dir)) {
                 File::mkdir($save_dir , 0777 , true);
             }
+            ResourceRepository::create('' , $save_dir , 'local' , 1 , 0);
+            ImageProjectModel::updateById($image_project->id , [
+                'directory' => $save_dir ,
+            ]);
+            $origin_dir = '';
+            $preview_dir = '';
             if ($image_project->type === 'pro') {
-                ResourceRepository::create('' , $save_dir , 'local' , 1 , 0);
-                ImageProjectModel::updateById($image_project->id , [
-                    'directory' => $save_dir ,
-                ]);
-            }
-            $origin_dir = $save_dir . '/原图';
-            $preview_dir = $save_dir . '/预览图';
-            if (!File::exists($origin_dir)) {
-                File::mkdir($origin_dir , 0777 , true);
-            }
-            if (!File::exists($preview_dir)) {
-                File::mkdir($preview_dir , 0777 , true);
+                $origin_dir = $save_dir . '/原图';
+                $preview_dir = $save_dir . '/预览图';
+                if (!File::exists($origin_dir)) {
+                    File::mkdir($origin_dir , 0777 , true);
+                }
+                if (!File::exists($preview_dir)) {
+                    File::mkdir($preview_dir , 0777 , true);
+                }
             }
             ImageProjectHandler::images($image_project);
             $index = 0;
@@ -112,8 +123,14 @@ class ImageProjectResourceHandleJob extends FileBaseJob implements ShouldQueue
                         DB::rollBack();
                         continue ;
                     }
+                    $random_value = date('YmdHis') . random(6 , 'letter' , true);
                     $extension      = get_extension($v->original_src);
-                    $filename       = "{$image_project->name}【{$index}】.{$extension}";
+                    if ($image_project->type === 'pro') {
+                        $filename   = "{$image_project->name}【{$index}】.{$extension}";
+                    } else {
+                        $origin_dir = $save_dir;
+                        $filename   =  $random_value . '【原图】.' . $extension;
+                    }
                     $source_file    = $resource->path;
                     $target_file    = $this->generateRealPath($origin_dir , $filename);
                     $target_url     = FileUtil::generateUrlByRealPath($target_file);
@@ -163,7 +180,12 @@ class ImageProjectResourceHandleJob extends FileBaseJob implements ShouldQueue
                         }
                         $source_file = $resource->path;
                     }
-                    $filename       = "{$image_project->name}【{$index}】【预览图】.{$extension}";
+                    if ($image_project->type === 'pro') {
+                        $filename       = "{$image_project->name}【{$index}】【预览图】.{$extension}";
+                    } else {
+                        $preview_dir    = $save_dir;
+                        $filename       = $random_value . '【预览图】.' . $extension;
+                    }
                     $target_file    = $this->generateRealPath($preview_dir , $filename);
                     $target_url     = FileUtil::generateUrlByRealPath($target_file);
                     if ($source_file !== $target_file) {
@@ -189,6 +211,14 @@ class ImageProjectResourceHandleJob extends FileBaseJob implements ShouldQueue
                     DB::rollBack();
                     throw $e;
                 }
+            }
+            if (
+                !empty($origin_save_dir) &&
+                $origin_save_dir !== $save_dir &&
+                File::isDir($origin_save_dir)
+            )
+            {
+                File::delete($origin_save_dir);
             }
         }
         ImageProjectModel::updateById($this->imageProjectId , [

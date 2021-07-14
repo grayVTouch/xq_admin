@@ -28,7 +28,7 @@
                                 <td>名称：</td>
                                 <td>
                                     <input type="text" class="form-text" v-model="form.name" @input="myValue.error.name = ''">
-                                    <span class="need"></span>
+                                    <span class="need"><template v-if="form.type === 'misc'">*</template></span>
                                     <div class="msg"></div>
                                     <div class="e-msg">{{ myValue.error.name }}</div>
                                 </td>
@@ -92,7 +92,7 @@
                                 </td>
                             </tr>
 
-                            <tr :class="{error: myValue.error.index}">
+                            <tr :class="{error: myValue.error.index}" v-show="form.type === 'pro'">
                                 <td>视频索引</td>
                                 <td>
                                     <input type="number" v-model="form.index" @input="myValue.error.index = ''" class="form-text">

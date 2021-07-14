@@ -53,7 +53,7 @@ export default {
                         align: TopContext.table.alignCenter,
                     },
                     {
-                        title: 'thumb',
+                        title: '封面',
                         slot: 'thumb',
                         minWidth: TopContext.table.image ,
                         align: TopContext.table.alignCenter,
@@ -123,13 +123,23 @@ export default {
     mounted () {
         this.initDom();
         this.initIns();
-        this.getData();
-        this.getModules();
+        this.getModules()
+            .then(() => {
+                // if (this.modules.length > 0) {
+                //     this.search.module_id = this.modules[0].id;
+                // }
+                this.search.module_id = this.moduleId;
+                this.getData();
+            });
     } ,
 
     computed: {
         showBatchBtn () {
             return this.selection.length > 0;
+        } ,
+
+        moduleId () {
+            return this.modules.length > 0 ? this.modules[0].id : '';
         } ,
     } ,
 
@@ -140,18 +150,22 @@ export default {
     methods: {
 
         getModules () {
-            this.pending('getModules' , true);
-            Api.module.all()
-                .then((res) => {
-                    if (res.code !== TopContext.code.Success) {
-                        this.errorHandle(res.message);
-                        return ;
-                    }
-                    this.modules = res.data;
-                })
-                .finally(() => {
-                    this.pending('getModules' , false);
-                });
+            return new Promise((resolve , reject) => {
+                this.pending('getModules' , true);
+                Api.module.all()
+                    .then((res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            this.errorHandle(res.message);
+                            reject();
+                            return ;
+                        }
+                        this.modules = res.data;
+                        resolve();
+                    })
+                    .finally(() => {
+                        this.pending('getModules' , false);
+                    });
+            });
         } ,
 
         initDom () {
@@ -254,6 +268,7 @@ export default {
 
         resetEvent () {
             this.search = G.copy(search);
+            this.search.module_id = this.moduleId;
             this.getData();
         } ,
 

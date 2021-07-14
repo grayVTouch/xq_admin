@@ -4,7 +4,7 @@
 namespace App\Http\Controllers\api\web;
 
 
-use App\Customize\api\web\action\ImageProjectAction;
+use App\Customize\api\web\action\ImageAction;
 use App\Customize\api\web\action\UserAction;
 use function api\web\error;
 use function api\web\success;
@@ -17,7 +17,7 @@ class Image extends Base
         $param['module_id'] = $param['module_id'] ?? '';
         $param['type']      = $param['type'] ?? '';
         $param['size']     = $param['size'] ?? '';
-        $res = ImageProjectAction::newest($this , $param);
+        $res = ImageAction::newest($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
@@ -30,7 +30,7 @@ class Image extends Base
         $param['module_id'] = $param['module_id'] ?? '';
         $param['type']      = $param['type'] ?? '';
         $param['size']     = $param['size'] ?? '';
-        $res = ImageProjectAction::hot($this , $param);
+        $res = ImageAction::hot($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
@@ -43,7 +43,7 @@ class Image extends Base
         $param['module_id'] = $param['module_id'] ?? '';
         $param['type']      = $param['type'] ?? '';
         $param['size']     = $param['size'] ?? '';
-        $res = ImageProjectAction::hotWithPager($this , $param);
+        $res = ImageAction::hotWithPager($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
@@ -56,7 +56,7 @@ class Image extends Base
         $param['module_id'] = $param['module_id'] ?? '';
         $param['type']      = $param['type'] ?? '';
         $param['size']     = $param['size'] ?? '';
-        $res = ImageProjectAction::newestWithPager($this , $param);
+        $res = ImageAction::newestWithPager($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
@@ -72,7 +72,7 @@ class Image extends Base
         $param['tag_id']      = $param['tag_id'] ?? '';
         $param['type']      = $param['type'] ?? '';
         $param['size']     = $param['size'] ?? '';
-        $res = ImageProjectAction::getByTagId($this , $param);
+        $res = ImageAction::getByTagId($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
@@ -89,7 +89,7 @@ class Image extends Base
         $param['mode']      = $param['mode'] ?? '';
         $param['size']     = $param['size'] ?? '';
 
-        $res = ImageProjectAction::getWithPagerByTagIds($this , $param);
+        $res = ImageAction::getWithPagerByTagIds($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'] , $res['code']);
         }
@@ -105,7 +105,7 @@ class Image extends Base
         $param['type']      = $param['type'] ?? '';
         $param['size']     = $param['size'] ?? '';
 
-        $res = ImageProjectAction::hotTags($this , $param);
+        $res = ImageAction::hotTags($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }
@@ -119,7 +119,7 @@ class Image extends Base
         $param['module_id'] = $param['module_id'] ?? '';
         $param['size'] = $param['size'] ?? '';
         $param['value'] = $param['value'] ?? '';
-        $res = ImageProjectAction::hotTagsWithPager($this , $param);
+        $res = ImageAction::hotTagsWithPager($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }
@@ -130,7 +130,7 @@ class Image extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $res = ImageProjectAction::show($this , $id , $param);
+        $res = ImageAction::show($this , $id , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }
@@ -142,7 +142,7 @@ class Image extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $res = ImageProjectAction::category($this , $param);
+        $res = ImageAction::category($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }
@@ -155,7 +155,7 @@ class Image extends Base
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
         $param['value'] = $param['value'] ?? '';
-        $res = ImageProjectAction::imageSubject($this , $param);
+        $res = ImageAction::imageSubject($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }
@@ -174,7 +174,7 @@ class Image extends Base
         $param['size'] = $param['size'] ?? '';
         $param['value'] = $param['value'] ?? '';
         $param['mode'] = $param['mode'] ?? '';
-        $res = ImageProjectAction::index($this , $param);
+        $res = ImageAction::index($this , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }
@@ -183,7 +183,7 @@ class Image extends Base
 
     public function incrementViewCount(int $image_subject_id)
     {
-        $res = ImageProjectAction::incrementViewCount($this , $image_subject_id);
+        $res = ImageAction::incrementViewCount($this , $image_subject_id);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }
@@ -197,7 +197,7 @@ class Image extends Base
         $param['type']  = $param['type'] ?? '';
         $param['size'] = $param['size'] ?? '';
 
-        $res = ImageProjectAction::recommend($this , $image_subject_id , $param);
+        $res = ImageAction::recommend($this , $image_subject_id , $param);
         if ($res['code'] !== 0) {
             return error($res['message'] , $res['data'], $res['code']);
         }

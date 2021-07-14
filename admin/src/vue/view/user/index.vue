@@ -4,7 +4,7 @@
         <template slot="search">
 
             <my-search-form @submit="searchEvent">
-                <my-search-form-item name="id">
+                <my-search-form-item name="ID">
                     <input type="text" class="form-text" v-model="search.id" />
                 </my-search-form-item>
 

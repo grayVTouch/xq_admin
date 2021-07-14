@@ -15,7 +15,6 @@ class ImageProject extends Base
     {
         $param = $this->request->query();
         $param['module_id'] = $param['module_id'] ?? '';
-        $param['type']      = $param['type'] ?? '';
         $param['size']     = $param['size'] ?? '';
         $res = ImageProjectAction::newest($this , $param);
         if ($res['code'] !== 0) {

@@ -272,7 +272,7 @@ class UserAction extends Action
         }
         $user = user();
         $size = $param['size'] ? $param['size'] : my_config('app.limit');
-        $res = HistoryModel::getOrderTimeByModuleIdAndUserIdAndLimit($module->id , $user->id , $size);
+        $res = HistoryModel::getOrderTimeByModuleIdAndUserIdAndSize($module->id , $user->id , $size);
         $res = HistoryHandler::handleAll($res);
         $date = date('Y-m-d');
         $yesterday = date_create('yesterday')->format('Y-m-d');
@@ -347,7 +347,7 @@ class UserAction extends Action
         }
         $user = user();
         $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
-        $res = HistoryModel::getByModuleIdAndUserIdAndRelationTypeAndValueAndLimit($module->id , $user->id , $param['relation_type'] , $param['value'] ,$size);
+        $res = HistoryModel::getByModuleIdAndUserIdAndRelationTypeAndValueAndSize($module->id , $user->id , $param['relation_type'] , $param['value'] ,$size);
         $res = HistoryHandler::handlePaginator($res);
         // 对时间进行分组
         $date = date('Y-m-d');
@@ -789,7 +789,7 @@ class UserAction extends Action
         }
         $size = $param['size'] ? $param['size'] : my_config('app.limit');
         $user = user();
-        $res = CollectionModel::getByModuleIdAndUserIdAndCollectionGroupIdAndLimit($module->id , $user->id , $collection_group->id , $size);
+        $res = CollectionModel::getByModuleIdAndUserIdAndCollectionGroupIdAndSize($module->id , $user->id , $collection_group->id , $size);
         $res = CollectionHandler::handleAll($res);
         foreach ($res as $v)
         {
@@ -817,11 +817,11 @@ class UserAction extends Action
         $relation_limit = $param['relation_limit'] ? $param['relation_limit'] : my_config('app.limit');
         $user = user();
         $total_collection_group = CollectionGroupModel::countByModuleIdAndUserId($module->id , $user->id);
-        $collection_group = CollectionGroupModel::getByModuleIdAndUserIdAndLimit($module->id , $user->id , $collection_limit);
+        $collection_group = CollectionGroupModel::getByModuleIdAndUserIdAndSize($module->id , $user->id , $collection_limit);
         $collection_group = CollectionGroupHandler::handleAll($collection_group);
         foreach ($collection_group as $v)
         {
-            $collections = CollectionModel::getByModuleIdAndUserIdAndCollectionGroupIdAndLimit($module->id , $user->id , $v->id , $relation_limit);
+            $collections = CollectionModel::getByModuleIdAndUserIdAndCollectionGroupIdAndSize($module->id , $user->id , $v->id , $relation_limit);
             $collections = CollectionHandler::handleAll($collections);
             foreach ($collections as $v1)
             {
@@ -953,7 +953,7 @@ class UserAction extends Action
             return self::error('收藏夹不存在' , '' , 404);
         }
         $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
-        $res = CollectionModel::getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndValueAndRelationTypeAndLimit($module->id , $collection_group->user_id , $collection_group->id , $param['value'] , $param['relation_type'] , $size);
+        $res = CollectionModel::getWithPagerByModuleIdAndUserIdAndCollectionGroupIdAndValueAndRelationTypeAndSize($module->id , $collection_group->user_id , $collection_group->id , $param['value'] , $param['relation_type'] , $size);
         $res = CollectionHandler::handlePaginator($res);
         foreach ($res->data as $v)
         {
@@ -1054,7 +1054,7 @@ class UserAction extends Action
             return self::error('用户不存在' , '' , 404);
         }
         $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
-        $res = FocusUserModel::getWithPagerByUserIdAndLimit($user->id , $size);
+        $res = FocusUserModel::getWithPagerByUserIdAndSize($user->id , $size);
         $res = FocusUserHandler::handlePaginator($res);
         return self::success('' , $res);
     }
@@ -1066,7 +1066,7 @@ class UserAction extends Action
             return self::error('用户不存在' , '' , 404);
         }
         $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
-        $res = FocusUserModel::getWithPagerByFocusUserIdAndLimit($user->id , $size);
+        $res = FocusUserModel::getWithPagerByFocusUserIdAndSize($user->id , $size);
         $res = FocusUserHandler::handlePaginator($res);
         return self::success('' , $res);
     }

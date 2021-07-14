@@ -11,6 +11,16 @@ const search = {
     status: '' ,
 };
 
+const videoProject = {
+    id: 0 ,
+    name: 'unknow' ,
+};
+
+const myUser = {
+    id: 0 ,
+    name: 'unknow' ,
+};
+
 export default {
     name: "index",
 
@@ -223,19 +233,32 @@ export default {
 
             // 当前选中项
             selection: [] ,
+
+            videoProject: G.copy(videoProject) ,
+
+            myUser: G.copy(myUser) ,
         };
     } ,
 
     mounted () {
         this.initDom();
         this.initIns();
-        this.getData();
-        this.getModules();
+        this.getModules()
+            .then(() => {
+                this.search.module_id = this.moduleId;
+
+                this.getCategories();
+                this.getData();
+            });
     } ,
 
     computed: {
         showBatchBtn () {
             return this.selection.length > 0;
+        } ,
+
+        moduleId () {
+            return this.modules.length > 0 ? this.modules[0].id : '';
         } ,
     } ,
 
@@ -252,31 +275,35 @@ export default {
         } ,
 
         getModules () {
-            this.pending('getModules' , true);
-            Api.module
-                .all()
-                .then((res) => {
-                    if (res.code !== TopContext.code.Success) {
-                        this.errorHandle(res.message);
-                        return ;
-                    }
-                    this.modules = res.data;
-                })
-                .finally(() => {
-                    this.pending('getModules' , false);
-                });
+            return new Promise((resolve , reject) => {
+                this.pending('getModules' , true);
+                Api.module.all()
+                    .then((res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            this.errorHandle(res.message);
+                            reject();
+                            return ;
+                        }
+                        this.modules = res.data;
+                        resolve();
+                    })
+                    .finally(() => {
+                        this.pending('getModules' , false);
+                    });
+            });
         } ,
 
-        getCategories (moduleId) {
+        getCategories () {
             this.search.category_id = '';
             this.categories         = [];
-            if (!G.isNumeric(moduleId)) {
+            if (!G.isNumeric(this.search.module_id)) {
                 return ;
             }
             this.pending('getCategories' , true);
             Api.category
                 .search({
-                    module_id: moduleId
+                    module_id: this.search.module_id ,
+                    type: 'video' ,
                 })
                 .then((res) => {
                     if (res.code !== TopContext.code.Success) {
@@ -429,6 +456,10 @@ export default {
 
         resetEvent () {
             this.search = G.copy(search);
+            this.search.module_id = this.moduleId;
+
+            this.videoProject = G.copy(videoProject);
+            this.myUser = G.copy(myUser);
             this.getData();
         } ,
 
@@ -517,7 +548,7 @@ export default {
             this.editEvent(row);
         } ,
 
-        openVideoSelector () {
+        showVideoProjectSelector () {
             if (this.search.module_id <= 0) {
                 this.errorHandle('请先选择模块');
                 return ;
@@ -527,6 +558,20 @@ export default {
 
         videoProjectChangedEvent (row) {
             this.search.video_project_id = row.id;
+            this.videoProject = G.copy(row);
+            this.searchEvent();
+        } ,
+
+        showUserSelector () {
+            this.$refs['user-selector'].show();
+        } ,
+
+        userChangedEvent (row) {
+            this.myUser = {
+                id: row.id ,
+                name: this.getUsername(row.username , row.nickname)
+            };
+            this.search.user_id = row.id;
             this.searchEvent();
         } ,
 

@@ -97,7 +97,7 @@ class CollectionGroupModel extends Model
             ->get();
     }
 
-    public static function getByModuleIdAndUserIdAndLimit(int $module_id , int $user_id , int $size = 20): Collection
+    public static function getByModuleIdAndUserIdAndSize(int $module_id , int $user_id , int $size = 20): Collection
     {
         return self::where([
                 ['module_id' , '=' , $module_id] ,

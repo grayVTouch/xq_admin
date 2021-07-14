@@ -24,8 +24,8 @@
                             :data="table.data"
                             :columns="table.field"
                             @on-row-click="rowClickEvent">
-                        <template v-slot:avatar="{row,index}">
-                            <my-table-image-preview :src="row.avatar"></my-table-image-preview>
+                        <template v-slot:thumb="{row,index}">
+                            <my-table-image-preview :src="row.thumb"></my-table-image-preview>
                         </template>
                         <template v-slot:action="{row,index}">
                             <my-table-button @click="rowClickEvent(row,index)">选择</my-table-button>
@@ -33,7 +33,14 @@
                     </i-table>
                 </div>
                 <div class="pager">
-                    <my-page :total="table.total" :size="table.limit" :page="table.page" @on-change="pageEvent"></my-page>
+                    <my-page
+                            :total="table.total"
+                            :size="table.size"
+                            :sizes="table.sizes"
+                            :page="table.page"
+                            @on-page-change="pageEvent"
+                            @on-size-change="sizeEvent"
+                    ></my-page>
                 </div>
             </div>
         </template>
@@ -53,6 +60,10 @@
                 key: 'name' ,
             } ,
             {
+                title: '封面' ,
+                slot: 'thumb' ,
+            } ,
+            {
                 title: '创建时间' ,
                 key: 'created_at' ,
             } ,
@@ -64,6 +75,7 @@
             } ,
         ] ,
         size: TopContext.size ,
+        sizes: TopContext.sizes ,
         search: {
             value: '' ,
         } ,
@@ -105,6 +117,7 @@
                         }
                         const data = res.data;
                         this.table.total = data.total;
+                        this.table.size = data.per_page;
                         this.table.page = data.current_page;
                         this.table.data = data.data;
                     })
@@ -113,11 +126,17 @@
                     });
             } ,
 
-            pageEvent (page) {
+            pageEvent (page , size) {
                 this.table.page = page;
+                this.table.size = size;
                 this.getData();
             } ,
 
+            sizeEvent (size , page) {
+                this.table.page = page;
+                this.table.size = size;
+                this.getData();
+            } ,
             searchEvent (e) {
                 this.table.page = 1;
                 this.getData();

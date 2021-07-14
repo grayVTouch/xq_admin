@@ -141,8 +141,11 @@ export default {
                 this.findById(this.id)
                     .then((res) => {
                         this.form = res;
+
                         this.getCategories();
+
                         this.owner = this.form.user ? this.form.user : G.copy(owner);
+                        // this.
                     });
             } else {
                 if (this.addMode === 'add_next') {

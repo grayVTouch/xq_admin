@@ -73,6 +73,7 @@ class UserAction extends Action
             DB::beginTransaction();
             UserModel::updateById($res->id , array_unit($param , [
                 'username' ,
+                'nickname' ,
                 'password' ,
                 'birthday' ,
                 'avatar' ,
@@ -123,6 +124,7 @@ class UserAction extends Action
             DB::beginTransaction();
             $id = UserModel::insertGetId(array_unit($param , [
                 'username' ,
+                'nickname' ,
                 'password' ,
                 'birthday' ,
                 'avatar' ,

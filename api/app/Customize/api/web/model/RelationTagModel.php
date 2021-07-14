@@ -40,7 +40,7 @@ class RelationTagModel extends Model
     }
 
     // 热门标签-返回给定数量
-    public static function hotTagsByRelationTypeAndFilterAndLimit(string $relation_type , array $filter = [] , int $size = 20): Collection
+    public static function hotTagsByRelationTypeAndFilterAndSize(string $relation_type , array $filter = [] , int $size = 20): Collection
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -69,7 +69,7 @@ class RelationTagModel extends Model
     }
 
     // 热门标签-返回给定数量
-    public static function hotTagsInImageProjectByFilterAndLimit(array $filter = [] , int $size = 20): Collection
+    public static function hotTagsInImageProjectByFilterAndSize(array $filter = [] , int $size = 20): Collection
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -100,7 +100,7 @@ class RelationTagModel extends Model
             ->get();
     }
 
-    public static function hotTagsInVideoSubjectByFilterAndLimit(array $filter = [] , int $size = 20): Collection
+    public static function hotTagsInVideoSubjectByFilterAndSize(array $filter = [] , int $size = 20): Collection
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
 
@@ -122,7 +122,7 @@ class RelationTagModel extends Model
     }
 
     // 热门标签-分页
-    public static function hotTagsWithPagerByValueAndRelationTypeAndFilterAndLimit(string $value , string $relation_type , array $filter = [] , int $size = 20): Paginator
+    public static function hotTagsWithPagerByValueAndRelationTypeAndFilterAndSize(string $value , string $relation_type , array $filter = [] , int $size = 20): Paginator
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -146,7 +146,7 @@ class RelationTagModel extends Model
     }
 
     // 热门标签-图片专题-分页
-    public static function hotTagsWithPagerInImageProjectByValueAndFilterAndLimit(string $value , array $filter = [] , int $size = 20): Paginator
+    public static function hotTagsWithPagerInImageProjectByValueAndFilterAndSize(string $value , array $filter = [] , int $size = 20): Paginator
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
         $filter['type']      = $filter['type'] ?? '';
@@ -177,7 +177,7 @@ class RelationTagModel extends Model
     }
 
     // 热门标签-视频专题-分页
-    public static function hotTagsWithPagerInVideoProjectByValueAndFilterAndLimit(string $value , array $filter = [] , int $size = 20): Paginator
+    public static function hotTagsWithPagerInVideoProjectByValueAndFilterAndSize(string $value , array $filter = [] , int $size = 20): Paginator
     {
         $filter['module_id'] = $filter['module_id'] ?? '';
 

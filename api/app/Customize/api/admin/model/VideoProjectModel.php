@@ -68,11 +68,28 @@ class VideoProjectModel extends Model
         return self::where('name' , $name)->first();
     }
 
+    public static function findByModuleIdAndName(int $module_id , string $name): ?VideoProjectModel
+    {
+        return self::where([
+            ['module_id' , '=' , $module_id] ,
+            ['name' , '=' , $name] ,
+        ])->first();
+    }
+
     public static function findByNameAndExcludeId(string $name , int $exclude_id): ?VideoProjectModel
     {
         return self::where([
             ['name' , '=' , $name] ,
             ['id' , '!=' , $exclude_id] ,
+        ])->first();
+    }
+
+    public static function findByModuleIdAndExcludeIdAndName(int $module_id , int $exclude_id , string $name): ?VideoProjectModel
+    {
+        return self::where([
+            ['id' , '!=' , $exclude_id] ,
+            ['module_id' , '=' , $module_id] ,
+            ['name' , '=' , $name] ,
         ])->first();
     }
 }

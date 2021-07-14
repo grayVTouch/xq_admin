@@ -23,16 +23,15 @@ class NavAction extends Action
     public static function index(Base $context , array $param = [])
     {
         $res = NavModel::getByFilter($param);
-        $res = NavHandler::handleAll($res , [
-            'module' ,
-            'parent'
-        ]);
+        $res = NavHandler::handleAll($res);
         foreach ($res as $v)
         {
             // 附加：模块
             NavHandler::module($v);
             // 附加：上级项
             NavHandler::parent($v , false);
+            // 附加：分类
+            NavHandler::category($v);
         }
         $res = object_to_array($res);
         $res = Category::childrens(0 , $res , [
@@ -164,6 +163,8 @@ class NavAction extends Action
         NavHandler::module($res);
         // 附加：上级
         NavHandler::parent($res , false);
+        // 附加：分类
+        NavHandler::category($res);
 
         return self::success('' , $res);
     }

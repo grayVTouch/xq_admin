@@ -120,6 +120,12 @@ class VideoAction extends Action
             $param['category_id'] = 0;
         } else {
             // 杂项
+            if ($param['name'] === '') {
+                return self::error('名称尚未提供');
+            }
+            if (!empty(VideoModel::findByModuleIdAndExcludeIdAndName($module->id , $video->id , $param['name']))) {
+                return self::error('名称已经存在');
+            }
             $category = CategoryModel::find($param['category_id']);
             if (empty($category)) {
                 return self::error('分类不存在');
@@ -255,6 +261,12 @@ class VideoAction extends Action
             }
             $param['category_id'] = 0;
         } else {
+            if ($param['name'] === '') {
+                return self::error('名称尚未提供');
+            }
+            if (!empty(VideoModel::findByModuleIdAndName($module->id , $param['name']))) {
+                return self::error('名称已经存在');
+            }
             // 杂项
             $category = CategoryModel::find($param['category_id']);
             if (empty($category)) {
@@ -280,7 +292,7 @@ class VideoAction extends Action
         $param['created_at']    = $param['created_at'] === '' ? $datetime : $param['created_at'];
         $video_subtitles        = $param['video_subtitles'] === '' ? [] : json_decode($param['video_subtitles'] , true);
         $param['video_process_status']  = 0;
-        $param['file_process_status']   = 2;
+        $param['file_process_status']   = 0;
         try {
             DB::beginTransaction();
             $id = VideoModel::insertGetId(array_unit($param , [
@@ -322,7 +334,9 @@ class VideoAction extends Action
                 ResourceRepository::used($v['src']);
             }
             DB::commit();
-            VideoHandleJob::dispatch($id);
+            VideoHandleJob::withChain([
+                new VideoResourceHandleJob($id) ,
+            ])->dispatch($id);
             return self::success('操作成功' , $id);
         } catch(Exception $e) {
             throw $e;
@@ -403,6 +417,9 @@ class VideoAction extends Action
     // 重新运行队列
     public static function retry(Base $context , array $ids = [] , array $param = []): array
     {
+        if (empty($ids)) {
+            return self::error('请提供需要重试的视频列表');
+        }
         $videos = [];
         foreach ($ids as $id)
         {
@@ -420,32 +437,15 @@ class VideoAction extends Action
             }
             $videos[] = $video;
         }
-        /**
-         * 建立图片目录
-         * 移动图片到指定的目录
-         */
-        $disk   = my_config('app.disk');
-        $prefix = FileUtil::prefix();
         foreach ($videos as $video)
         {
-            if ($disk !== 'local') {
-                // todo 其他存储介质的视频处理
-                continue ;
-            }
-            if ($video->type === 'pro') {
-                $save_dir       = FileUtil::generateRealPathByRelativePathWithoutPrefix($video->video_project->name);
-            } else {
-                $dirname        = my_config('app.dir')['video'];
-                $date_string    = date('Ymd' , strtotime($video->video_project->created_at));
-                $save_dir       = FileUtil::generateRealPathByRelativePathWithoutPrefix($dirname . '/' . $date_string);
-            }
-            if (!File::exists($save_dir)) {
-                File::mkdir($save_dir , 0777 , true);
-            }
             VideoModel::updateById($video->id , [
                 'video_process_status' => 0 ,
+                'file_process_status' => 0 ,
             ]);
-            VideoHandleJob::dispatch($video->id , $prefix , $save_dir);
+            VideoHandleJob::withChain([
+                new VideoResourceHandleJob($video->id) ,
+            ])->dispatch($video->id);
         }
         return self::success('操作成功');
     }

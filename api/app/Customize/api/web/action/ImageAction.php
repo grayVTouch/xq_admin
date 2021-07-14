@@ -4,10 +4,12 @@
 namespace App\Customize\api\web\action;
 
 use App\Customize\api\web\handler\CategoryHandler;
+use App\Customize\api\web\handler\ImageHandler;
 use App\Customize\api\web\handler\ImageProjectHandler;
 use App\Customize\api\web\handler\RelationTagHandler;
 use App\Customize\api\web\handler\ImageSubjectHandler;
 use App\Customize\api\web\model\CategoryModel;
+use App\Customize\api\web\model\ImageModel;
 use App\Customize\api\web\model\ImageProjectModel;
 use App\Customize\api\web\model\ModuleModel;
 use App\Customize\api\web\model\RelationTagModel;
@@ -22,7 +24,7 @@ use function api\web\my_config_keys;
 use function api\web\parse_order;
 use function core\object_to_array;
 
-class ImageProjectAction extends Action
+class ImageAction extends Action
 {
     /**
      * @param Base $context
@@ -39,22 +41,16 @@ class ImageProjectAction extends Action
             return self::error($validator->errors()->first() , $validator->errors());
         }
         $size = $param['size'] === '' ? my_config('app.limit') : $param['size'];
-        $res = ImageProjectModel::getNewestByFilterAndSize($param , $size);
-        $res = ImageProjectHandler::handleAll($res);
+        $res = ImageModel::getNewestByFilterAndSize($param , $size);
+        $res = ImageHandler::handleAll($res);
         foreach ($res as $v)
         {
             // 附加：用户
-            ImageProjectHandler::user($v);
-            // 附加：图片
-            ImageProjectHandler::images($v);
-            // 附加：标签
-            ImageProjectHandler::tags($v);
+            ImageHandler::user($v);
             // 附加：是否收藏
-            ImageProjectHandler::isCollected($v);
+            ImageHandler::isCollected($v);
             // 附加：是否点赞
-            ImageProjectHandler::isPraised($v);
-            // 附加：收藏数量
-            ImageProjectHandler::collectCount($v);
+            ImageHandler::isPraised($v);
         }
         return self::success('' , $res);
     }

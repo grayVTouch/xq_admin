@@ -108,26 +108,29 @@ export default {
     mounted () {
         this.initDom();
         this.initIns();
-        this.getData();
         this.getModules();
+        this.getData();
     } ,
 
     methods: {
 
         getModules () {
-            this.pending('getModules' , true);
-            Api.module
-                .all()
-                .then((res) => {
-                    if (res.code !== TopContext.code.Success) {
-                        this.errorHandle(res.message);
-                        return ;
-                    }
-                    this.modules = res.data;
-                })
-                .finally(() => {
-                    this.pending('getModules' , false);
-                });
+            return new Promise((resolve , reject) => {
+                this.pending('getModules' , true);
+                Api.module.all()
+                    .then((res) => {
+                        if (res.code !== TopContext.code.Success) {
+                            this.errorHandle(res.message);
+                            reject();
+                            return ;
+                        }
+                        this.modules = res.data;
+                        resolve();
+                    })
+                    .finally(() => {
+                        this.pending('getModules' , false);
+                    });
+            });
         } ,
 
 
@@ -226,6 +229,7 @@ export default {
 
         resetEvent () {
             this.search = G.copy(search);
+
             this.getData();
         } ,
 

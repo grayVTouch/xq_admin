@@ -7,7 +7,9 @@
               :disabled="disabled"
     >
         <i-option v-if="has" :value="top.key">{{ top.value }}</i-option>
-        <i-option v-for="v in data" :value="v[attr.id]" :key="v[attr.id]">{{ v[attr.floor] > 1 ? '|' + '_'.repeat((v[attr.floor] - 1) * 10) : '' }}{{ v[attr.name] }}</i-option>
+        <i-option v-for="(v,k) in data" :value="v[attr.id]" :key="v[attr.id]">
+            {{ v[attr.floor] > 1 ? '|' + '_'.repeat((v[attr.floor] - 1) * 10) : '' }}{{ v[attr.name] }}<slot name="extra" :row="v" :index="k"></slot>
+        </i-option>
     </i-select>
 </template>
 

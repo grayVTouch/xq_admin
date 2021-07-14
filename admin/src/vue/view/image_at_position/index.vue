@@ -3,18 +3,17 @@
     <my-base>
         <template slot="search">
             <my-search-form @submit="searchEvent">
+                <my-search-form-item name="模块">
+                    <my-select :data="modules" empty="" v-model="search.module_id"></my-select>
+                    <my-loading v-if="myValue.pending.getModules"></my-loading>
+                </my-search-form-item>
 
-                <my-search-form-item name="id">
+                <my-search-form-item name="ID">
                     <input type="text" class="form-text" v-model="search.id" />
                 </my-search-form-item>
 
                 <my-search-form-item name="名称">
                     <input type="text" class="form-text" v-model="search.name" />
-                </my-search-form-item>
-
-                <my-search-form-item name="模块">
-                    <my-select :data="modules" empty="" v-model="search.module_id"></my-select>
-                    <my-loading v-if="myValue.pending.getModules"></my-loading>
                 </my-search-form-item>
 
                 <my-search-form-item :show-separator="false">
